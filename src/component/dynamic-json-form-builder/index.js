@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Form from "@rjsf/core";
 import 'bootstrap/dist/css/bootstrap.css';
 import _ from 'lodash';
+import { FormattedMessage} from "react-intl";
 
 import {
     MultiColSelectorWidget,
@@ -220,31 +221,41 @@ class Index extends Component {
                                 <div className={"container"}>
                                     <div id={`${FormID}-errorMsg`}>
                                     </div>
-                                    {(globalContext && globalContext.hasOwnProperty("LanguageContext")) ?
-                                        <globalContext.LanguageContext.Consumer>
-                                            {({language}) => (
-                                                <div>
-                                                    <button className={"btn btn-info"}
-                                                            style={
-                                                                {backgroundColor: language.submitBtnColor}}
-                                                            type="submit">{language.submitBtnContent}
-                                                    </button>
-                                                    <button className={"btn btn-secondary ml-3"}
-                                                            style={{backgroundColor: language.cancelBtnColor}}
-                                                            type="button">{language.cancelBtnContent}
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </globalContext.LanguageContext.Consumer>
-                                        : <div>
-                                            <button className={"btn btn-info"}
-                                                    type="submit">Submit
-                                            </button>
-                                            <button className={"btn btn-secondary ml-3"}
-                                                    type="button">Cancel
-                                            </button>
-                                        </div>}
-
+                                    {/*{(globalContext && globalContext.hasOwnProperty("LanguageContext")) ?*/}
+                                    {/*    <globalContext.LanguageContext.Consumer>*/}
+                                    {/*        {({language}) => (*/}
+                                    {/*            <div>*/}
+                                    {/*                <button className={"btn btn-info"}*/}
+                                    {/*                        style={*/}
+                                    {/*                            {backgroundColor: language.submitBtnColor}}*/}
+                                    {/*                        type="submit">{language.submitBtnContent}*/}
+                                    {/*                </button>*/}
+                                    {/*                <button className={"btn btn-secondary ml-3"}*/}
+                                    {/*                        style={{backgroundColor: language.cancelBtnColor}}*/}
+                                    {/*                        type="button">{language.cancelBtnContent}*/}
+                                    {/*                </button>*/}
+                                    {/*            </div>*/}
+                                    {/*        )}*/}
+                                    {/*    </globalContext.LanguageContext.Consumer>*/}
+                                    {/*    : <div>*/}
+                                    {/*        <button className={"btn btn-info"}*/}
+                                    {/*                type="submit">Submit*/}
+                                    {/*        </button>*/}
+                                    {/*        <button className={"btn btn-secondary ml-3"}*/}
+                                    {/*                type="button">Cancel*/}
+                                    {/*        </button>*/}
+                                    {/*    </div>*/}
+                                    {/*}*/}
+                                    <div>
+                                        <button className={"btn btn-info"}
+                                                type="submit"><FormattedMessage id={"btn-submit"} defaultMessage={"Submit"}>
+                                        </FormattedMessage>
+                                        </button>
+                                        <button className={"btn btn-secondary ml-3"}
+                                                type="button"><FormattedMessage id={"btn-cancel"} defaultMessage={"Cancel"}>
+                                        </FormattedMessage>
+                                        </button>
+                                    </div>
                                 </div>
                             </Form>
 

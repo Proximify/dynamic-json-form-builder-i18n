@@ -4,6 +4,7 @@ import {PlusCircleIcon, PencilIcon, XIcon} from '@primer/octicons-react'
 import Modal from 'react-modal';
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
+import { FormattedMessage } from "react-intl";
 
 Modal.setAppElement("#root");
 
@@ -142,13 +143,13 @@ export function CustomArrayFieldTemplate(props) {
                                 }
                                 setItemIndex(-1);
                                 setIsOpen(false);
-                            }}>Cancel
+                            }}><FormattedMessage id={"btn-cancel"} defaultMessage={"Cancel"}></FormattedMessage>
                     </button>
                     <button className={"btn btn-outline-primary mt-3"}
                             disabled={ModalFormValidator(items[itemIndex].children.props.formData) === false}
                             onClick={(e) => {
                                 setIsOpen(false)
-                            }}>Save
+                            }}><FormattedMessage id={"btn-save"} defaultMessage={"Save"}></FormattedMessage>
                     </button>
                 </div>
             </Modal>
@@ -244,15 +245,10 @@ export function CustomUploadFieldTemplate(props) {
                 <div className={"container"}>
                     {children}
                     <div className={"d-flex justify-content-end"}>
-                        {/*<button className={"btn btn-outline-secondary mr-2 mt-3"}*/}
-                        {/*        onClick={() => {*/}
-                        {/*            setState({...state, isLoading: true, fileList: null, isUploadModalOpen: false});*/}
-                        {/*        }}>Cancel*/}
-                        {/*</button>*/}
                         <button className={"btn btn-outline-secondary mt-3"}
                                 onClick={() => {
                                     setState({...state, isLoading: true, fileList: null, isUploadModalOpen: false});
-                                }}>Close
+                                }}><FormattedMessage id={"btn-close"} defaultMessage={"Close"}></FormattedMessage>
                         </button>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import 'bootstrap';
 import {XIcon} from "@primer/octicons-react";
+import { FormattedMessage } from "react-intl";
 
 /**
  * This is the custom widget for multiple languages input field
@@ -273,7 +274,8 @@ export function MultiLangTextInputWidget(props) {
                 <a className={`btn ${style.btnUndo} ${!state.discardedContent ? "d-none" : ""}`}
                    onClick={() => {
                        handleLangChange()
-                   }}>{language.language === "EN" ? "undo" : "restaurer"}</a>
+                   }}><FormattedMessage id={"btn-undo"} defaultMessage={"undo"}>
+                </FormattedMessage></a>
             </div>
         </div>
     );

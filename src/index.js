@@ -3,10 +3,15 @@ import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
 import 'bootstrap/dist/css/bootstrap.css';
-import Form from './dynamic-json-form-builder';
-import ModalStyle from  './ModalStyles.json';
+import Form from './component/dynamic-json-form-builder';
+import ModalStyle from './ModalStyles.json';
 import api from "./api";
 import style from "./style.module.scss";
+// import './i18n';
+import {IntlProvider} from "react-intl";
+import en from './component/lang/en-CA.json';
+import fr from './component/lang/fr-CA.json';
+
 
 class App extends Component {
     constructor(props) {
@@ -38,7 +43,7 @@ class App extends Component {
         customTestFiled: (value) => {
             return !value ? null : (value === "test" ? null : "is not valid");
         },
-        customFieldLessThan100: (value) => {
+        fileFieldSizeLimit: (value) => {
             return !value ? null : (value < 100 ? null : "is too large");
         }
     }
@@ -47,25 +52,29 @@ class App extends Component {
         name: this.validationMethods["requiredField"],
         email: this.validationMethods["emailField"],
         signature: this.validationMethods["customTestFiled"],
-        age: this.validationMethods["customFieldLessThan100"]
+        age: this.validationMethods["fileFieldSizeLimit"]
     }
 
     render() {
+        console.log(navigator.language)
         return (
             <LanguageContext.Provider value={this.state}>
                 <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
-                <Form
-                    formID={"user-profile-form"}
-                    resourceURL={"form/"}
-                    validationDeclaration={this.validationDeclaration}
-                    HTTPMethod={"PATCH"}
-                    formContext={{
-                        api: api,
-                        globalContext: {language,LanguageContext},
-                        style: style,
-                        modalStyle: ModalStyle
-                    }}
-                />
+                <IntlProvider locale={this.state.language.language === "EN" ? 'en-CA' : 'fr-CA'}
+                              messages={this.state.language.language === "EN" ? en : fr}>
+                    <Form
+                        formID={"user-profile-form"}
+                        resourceURL={"form/"}
+                        validationDeclaration={this.validationDeclaration}
+                        HTTPMethod={"PATCH"}
+                        formContext={{
+                            api: api,
+                            globalContext: {language, LanguageContext},
+                            style: style,
+                            modalStyle: ModalStyle
+                        }}
+                    />
+                </IntlProvider>
             </LanguageContext.Provider>
         );
     }
