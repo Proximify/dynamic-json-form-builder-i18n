@@ -4,7 +4,6 @@ import {PlusCircleIcon, PencilIcon, XIcon} from '@primer/octicons-react'
 import Modal from 'react-modal';
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
-import { FormattedMessage } from "react-intl";
 
 Modal.setAppElement("#root");
 
@@ -143,13 +142,13 @@ export function CustomArrayFieldTemplate(props) {
                                 }
                                 setItemIndex(-1);
                                 setIsOpen(false);
-                            }}><FormattedMessage id={"btn-cancel"} defaultMessage={"Cancel"}></FormattedMessage>
+                            }}>Cancel
                     </button>
                     <button className={"btn btn-outline-primary mt-3"}
                             disabled={ModalFormValidator(items[itemIndex].children.props.formData) === false}
                             onClick={(e) => {
                                 setIsOpen(false)
-                            }}><FormattedMessage id={"btn-save"} defaultMessage={"Save"}></FormattedMessage>
+                            }}>Save
                     </button>
                 </div>
             </Modal>
@@ -248,7 +247,7 @@ export function CustomUploadFieldTemplate(props) {
                         <button className={"btn btn-outline-secondary mt-3"}
                                 onClick={() => {
                                     setState({...state, isLoading: true, fileList: null, isUploadModalOpen: false});
-                                }}><FormattedMessage id={"btn-close"} defaultMessage={"Close"}></FormattedMessage>
+                                }}>Close
                         </button>
                     </div>
                 </div>
@@ -256,6 +255,7 @@ export function CustomUploadFieldTemplate(props) {
         )
     }
 
+    // todo: link not working
     const ModalFilePreview = (props) => {
         return (
             <Modal

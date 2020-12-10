@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import 'bootstrap';
 import {XIcon} from "@primer/octicons-react";
-import { FormattedMessage } from "react-intl";
+import { useTranslation } from 'react-i18next';
 
 /**
  * This is the custom widget for multiple languages input field
@@ -12,8 +12,12 @@ import { FormattedMessage } from "react-intl";
 export function MultiLangTextInputWidget(props) {
     // console.log("MultiLangTextInputWidget", props);
 
+
     const {value} = props;
-    const {language} = useContext(props.formContext.globalContext.LanguageContext);
+
+    const { t, i18n } = useTranslation();
+
+    // const {language} = useContext(props.formContext.globalContext.LanguageContext);
     const style = props.formContext.style;
     const isFirstRun = useRef(true);
     const isLangFirstRun = useRef(true);
@@ -112,7 +116,7 @@ export function MultiLangTextInputWidget(props) {
 
         handleChange()
 
-    }, [language])
+    }, [i18n.language])
 
     useEffect(() => {
         if (isFirstRun.current) {
@@ -274,8 +278,8 @@ export function MultiLangTextInputWidget(props) {
                 <a className={`btn ${style.btnUndo} ${!state.discardedContent ? "d-none" : ""}`}
                    onClick={() => {
                        handleLangChange()
-                   }}><FormattedMessage id={"btn-undo"} defaultMessage={"undo"}>
-                </FormattedMessage></a>
+                   }}>{t('btn-undo')}
+            </a>
             </div>
         </div>
     );

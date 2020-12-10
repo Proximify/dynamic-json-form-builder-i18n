@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import Form from "@rjsf/core";
 import 'bootstrap/dist/css/bootstrap.css';
 import _ from 'lodash';
-import { FormattedMessage} from "react-intl";
+import './i18n';
+
+import {useTranslation, withTranslation} from "react-i18next";
 
 import {
     MultiColSelectorWidget,
@@ -186,6 +188,10 @@ class Index extends Component {
     }
 
     render() {
+        const { t,i18n } = this.props;
+        console.log(i18n);
+
+
         const {isLoaded, loadingError, FormSchema, FormData, FormContext, FormID, validation} = this.state;
         const globalContext = FormContext.globalContext ?? null;
 
@@ -194,7 +200,7 @@ class Index extends Component {
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
-            console.log(_.isEqual(generateUISchema(FormSchema),uiSchema));
+            console.log(_.isEqual(generateUISchema(FormSchema), uiSchema));
             return (
                 <div className={"container"}>
                     <div className={"row d-flex justify-content-center"}>
@@ -246,16 +252,18 @@ class Index extends Component {
                                     {/*        </button>*/}
                                     {/*    </div>*/}
                                     {/*}*/}
+
                                     <div>
                                         <button className={"btn btn-info"}
-                                                type="submit"><FormattedMessage id={"btn-submit"} defaultMessage={"Submit"}>
-                                        </FormattedMessage>
+                                                type="submit">
+                                            {t('btn-submit')}
                                         </button>
                                         <button className={"btn btn-secondary ml-3"}
-                                                type="button"><FormattedMessage id={"btn-cancel"} defaultMessage={"Cancel"}>
-                                        </FormattedMessage>
+                                                type="button">
+                                            {t('btn-cancel')}
                                         </button>
                                     </div>
+
                                 </div>
                             </Form>
 
@@ -267,4 +275,4 @@ class Index extends Component {
     }
 }
 
-export default Index;
+export default withTranslation()(Index);
