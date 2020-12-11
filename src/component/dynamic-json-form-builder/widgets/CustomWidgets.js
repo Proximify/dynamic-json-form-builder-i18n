@@ -145,7 +145,6 @@ export function MultiColSelectorWidget(props) {
 
     return (
         <div>
-            {/*<strong>{props.label}</strong>*/}
             <Select
                 options={enumItems}
                 onChange={handleChange}
@@ -177,20 +176,14 @@ export function FileInputWidget(props) {
         'image/png', 'image/jpeg', 'image/jpg']
 
     const checkMimeType = (event) => {
-        //getting file object
         let files = event.target.files
-        //define message container
         let err = []
-        // loop access array
         for (let x = 0; x < files.length; x++) {
-            // compare file type find doesn't match
             if (!types.includes(files[x].type)) {
-                // create error message and assign to container
                 err[x] = files[x].type + ' is not a supported format\n';
             }
         }
-        for (let z = 0; z < err.length; z++) {// if message not same old that mean has error
-            // discard selected file
+        for (let z = 0; z < err.length; z++) {
             toast.error(err[z])
             event.target.value = null
         }
@@ -217,8 +210,7 @@ export function FileInputWidget(props) {
                 err[x] = files[x].type + 'is too large, please pick a smaller file\n';
             }
         }
-        for (let z = 0; z < err.length; z++) {// if message not same old that mean has error
-            // discard selected file
+        for (let z = 0; z < err.length; z++) {
             toast.error(err[z])
             event.target.value = null
         }
@@ -228,7 +220,6 @@ export function FileInputWidget(props) {
     const onChangeHandler = event => {
         let files = event.target.files
         if (maxSelectFile(event) && checkMimeType(event) && checkFileSize(event)) {
-            // if return true allow to setState
             setSelectedFiles(files);
             setLoaded(0);
         }

@@ -197,7 +197,6 @@ class Index extends Component {
             if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
                 i18n.changeLanguage(this.props.language.toLowerCase());
             }
-            console.log(i18n.language)
             return (
                 <div className={"container"}>
                     <div className={"row d-flex justify-content-center"}>

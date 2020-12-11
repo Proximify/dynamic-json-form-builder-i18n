@@ -194,7 +194,6 @@ export function CustomArrayFieldTemplate(props) {
  * @constructor
  */
 export function CustomUploadFieldTemplate(props) {
-    // console.log("CustomUploadFieldTemplate", props);
     const {id, label, children, required, title} = props;
     const {t, i18n} = useTranslation();
     const [state, setState] = useState({
@@ -235,10 +234,6 @@ export function CustomUploadFieldTemplate(props) {
                 </div>
             </div>
         );
-    }
-
-    const getFile = () => {
-        return `http://127.0.0.1:443/file/${state.fileList[state.selectFileIndex]}`
     }
 
     const ModalFileUpload = (props) => {
