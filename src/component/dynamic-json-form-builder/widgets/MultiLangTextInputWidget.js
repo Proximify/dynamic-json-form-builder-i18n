@@ -36,9 +36,9 @@ export function MultiLangTextInputWidget(props) {
     useEffect(() => {
         if (value) {
             let valueObj = JSON.parse(props.value);
-            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [document.documentElement.lang.toUpperCase()];
+            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
             if (valueObj.language === "Bilingual" && languageList.length === 2) {
-                const htmlPageLang = document.documentElement.lang;
+                const htmlPageLang = i18n.language;
                 const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
                 const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
                 const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : "";
@@ -61,10 +61,10 @@ export function MultiLangTextInputWidget(props) {
                 })
             }
         } else {
-            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [document.documentElement.lang.toUpperCase()];
+            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
             setState({
                 ...state,
-                primaryLanguage: document.documentElement.lang.toUpperCase(),
+                primaryLanguage: i18n.language.toUpperCase(),
                 languageList: languageList
             })
         }
@@ -77,8 +77,8 @@ export function MultiLangTextInputWidget(props) {
         }
         if (!value) {
             if (state.isBilingual) {
-                if (state.languageList.includes(document.documentElement.lang.toUpperCase())) {
-                    const primaryLanguage = document.documentElement.lang.toUpperCase();
+                if (state.languageList.includes(i18n.language.toUpperCase())) {
+                    const primaryLanguage = i18n.language.toUpperCase();
                     const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
                     setState({
                         ...state,
@@ -87,12 +87,12 @@ export function MultiLangTextInputWidget(props) {
                     })
                 }
             } else {
-                if (state.languageList.includes(document.documentElement.lang.toUpperCase()))
-                    setState({...state, primaryLanguage: document.documentElement.lang.toUpperCase()})
+                if (state.languageList.includes(i18n.language.toUpperCase()))
+                    setState({...state, primaryLanguage: i18n.language.toUpperCase()})
             }
-        } else if (state.languageList.includes(document.documentElement.lang.toUpperCase())) {
+        } else if (state.languageList.includes(i18n.language.toUpperCase())) {
             if (state.isBilingual && state.languageList.length === 2) {
-                const primaryLanguage = document.documentElement.lang.toUpperCase();
+                const primaryLanguage = i18n.language.toUpperCase();
                 const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
                 const primaryContent = state.primaryLanguage !== primaryLanguage ? state.secondaryContent : state.primaryContent;
                 const secondaryContent = state.primaryLanguage !== primaryLanguage ? state.primaryContent : state.secondaryContent;
@@ -107,7 +107,7 @@ export function MultiLangTextInputWidget(props) {
                 if (!state.isBilingual && (!state.primaryContent || state.primaryContent === "")) {
                     setState({
                         ...state,
-                        primaryLanguage: document.documentElement.lang.toUpperCase()
+                        primaryLanguage: i18n.language.toUpperCase()
                     })
                 }
             }
@@ -147,7 +147,7 @@ export function MultiLangTextInputWidget(props) {
         if (state.languageList.length < 2)
             return;
 
-        if (state.primaryLanguage === document.documentElement.lang.toUpperCase()) {
+        if (state.primaryLanguage === i18n.language.toUpperCase()) {
             setState({
                 ...state,
                 isBilingual: true,
