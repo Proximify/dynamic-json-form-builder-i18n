@@ -12,7 +12,6 @@
     "bootstrap": "^4.5.3",
     "i18next": "^19.8.4",
     "i18next-browser-languagedetector": "^6.0.1",
-    "i18next-http-backend": "^1.0.21",
     "i18next-locize-backend": "^4.1.8",
     "jquery": "^3.5.1",
     "js-file-download": "^0.4.12",

@@ -4,6 +4,7 @@ import {PlusCircleIcon, PencilIcon, XIcon} from '@primer/octicons-react'
 import Modal from 'react-modal';
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
+import {useTranslation} from 'react-i18next';
 
 Modal.setAppElement("#root");
 
@@ -43,6 +44,7 @@ export function CustomArrayFieldTemplate(props) {
     const [itemIndex, setItemIndex] = useState(-1);
     const [isAddNew, setIsAddNew] = useState(false);
     const [currentData, setCurrentData] = useState(null);
+    const {t, i18n} = useTranslation();
 
     // This function read the formData parsed in and extract the data and create HTML elements for each record
     const getItemList = () => {
@@ -142,13 +144,15 @@ export function CustomArrayFieldTemplate(props) {
                                 }
                                 setItemIndex(-1);
                                 setIsOpen(false);
-                            }}>Cancel
+                            }}>
+                        {t('btn-cancel')}
                     </button>
                     <button className={"btn btn-outline-primary mt-3"}
                             disabled={ModalFormValidator(items[itemIndex].children.props.formData) === false}
                             onClick={(e) => {
                                 setIsOpen(false)
-                            }}>Save
+                            }}>
+                        {t('btn-save')}
                     </button>
                 </div>
             </Modal>
@@ -192,7 +196,7 @@ export function CustomArrayFieldTemplate(props) {
 export function CustomUploadFieldTemplate(props) {
     // console.log("CustomUploadFieldTemplate", props);
     const {id, label, children, required, title} = props;
-
+    const {t, i18n} = useTranslation();
     const [state, setState] = useState({
         isLoading: true,
         fileList: null,
@@ -233,6 +237,10 @@ export function CustomUploadFieldTemplate(props) {
         );
     }
 
+    const getFile = () => {
+        return `http://127.0.0.1:443/file/${state.fileList[state.selectFileIndex]}`
+    }
+
     const ModalFileUpload = (props) => {
         return (
             <Modal
@@ -247,7 +255,8 @@ export function CustomUploadFieldTemplate(props) {
                         <button className={"btn btn-outline-secondary mt-3"}
                                 onClick={() => {
                                     setState({...state, isLoading: true, fileList: null, isUploadModalOpen: false});
-                                }}>Close
+                                }}>
+                            {t('btn-close')}
                         </button>
                     </div>
                 </div>
@@ -255,7 +264,6 @@ export function CustomUploadFieldTemplate(props) {
         )
     }
 
-    // todo: link not working
     const ModalFilePreview = (props) => {
         return (
             <Modal
@@ -263,7 +271,7 @@ export function CustomUploadFieldTemplate(props) {
                 contentLabel="File Edit Modal"
                 id={`${title}_edit_modal`}
                 closeOnEscape={true}
-                style={props.modalStyle.ModalFilePreview ?? undefined}
+                style={props.context.modalStyle.ModalFilePreview ?? undefined}
             >
                 <div className={"row h-100"}>
                     <div className={"col col-2"}>
@@ -283,7 +291,7 @@ export function CustomUploadFieldTemplate(props) {
                         <div className={"border border-secondary h-75 p-2 py-2"}>
                             <FileViewer
                                 fileType={state.fileList[state.selectFileIndex].split('.').pop()}
-                                filePath={`http://127.0.0.1:443/file/${state.fileList[state.selectFileIndex]}`}
+                                filePath={`${props.context.api.defaults.baseURL}file/${state.fileList[state.selectFileIndex]}`}
                             />
                         </div>
                     </div>
@@ -355,7 +363,7 @@ export function CustomUploadFieldTemplate(props) {
                     {state.isUploadModalOpen ? <ModalFileUpload modalStyle={props.formContext.modalStyle}/> : null}
                 </div>
                 <div id={`${title}_edit_modal`}>
-                    {state.isPreviewModalOpen ? <ModalFilePreview modalStyle={props.formContext.modalStyle}/> : null}
+                    {state.isPreviewModalOpen ? <ModalFilePreview context={props.formContext}/> : null}
                 </div>
             </div>
         </div>

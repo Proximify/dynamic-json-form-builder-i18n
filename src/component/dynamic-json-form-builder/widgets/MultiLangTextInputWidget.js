@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import 'bootstrap';
 import {XIcon} from "@primer/octicons-react";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 /**
  * This is the custom widget for multiple languages input field
@@ -11,13 +11,8 @@ import { useTranslation } from 'react-i18next';
  // */
 export function MultiLangTextInputWidget(props) {
     // console.log("MultiLangTextInputWidget", props);
-
-
     const {value} = props;
-
-    const { t, i18n } = useTranslation();
-
-    // const {language} = useContext(props.formContext.globalContext.LanguageContext);
+    const {t, i18n} = useTranslation();
     const style = props.formContext.style;
     const isFirstRun = useRef(true);
     const isLangFirstRun = useRef(true);
@@ -47,7 +42,7 @@ export function MultiLangTextInputWidget(props) {
                 const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
                 const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
                 const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : "";
-                const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ?valueObj[secondaryLanguage] : "";
+                const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ? valueObj[secondaryLanguage] : "";
                 setState({
                     ...state,
                     isBilingual: true,
@@ -67,7 +62,11 @@ export function MultiLangTextInputWidget(props) {
             }
         } else {
             const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [document.documentElement.lang.toUpperCase()];
-            setState({...state, primaryLanguage: document.documentElement.lang.toUpperCase(),languageList: languageList})
+            setState({
+                ...state,
+                primaryLanguage: document.documentElement.lang.toUpperCase(),
+                languageList: languageList
+            })
         }
     }, [])
 
@@ -77,8 +76,8 @@ export function MultiLangTextInputWidget(props) {
             return;
         }
         if (!value) {
-            if (state.isBilingual){
-                if (state.languageList.includes(document.documentElement.lang.toUpperCase())){
+            if (state.isBilingual) {
+                if (state.languageList.includes(document.documentElement.lang.toUpperCase())) {
                     const primaryLanguage = document.documentElement.lang.toUpperCase();
                     const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
                     setState({
@@ -87,7 +86,7 @@ export function MultiLangTextInputWidget(props) {
                         secondaryLanguage: secondaryLanguage
                     })
                 }
-            }else {
+            } else {
                 if (state.languageList.includes(document.documentElement.lang.toUpperCase()))
                     setState({...state, primaryLanguage: document.documentElement.lang.toUpperCase()})
             }
@@ -113,9 +112,7 @@ export function MultiLangTextInputWidget(props) {
                 }
             }
         }
-
         handleChange()
-
     }, [i18n.language])
 
     useEffect(() => {
@@ -278,8 +275,9 @@ export function MultiLangTextInputWidget(props) {
                 <a className={`btn ${style.btnUndo} ${!state.discardedContent ? "d-none" : ""}`}
                    onClick={() => {
                        handleLangChange()
-                   }}>{t('btn-undo')}
-            </a>
+                   }}>
+                    {t('btn-undo')}
+                </a>
             </div>
         </div>
     );

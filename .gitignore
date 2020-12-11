@@ -10,6 +10,7 @@
 
 # production
 /build
+/dynamic-json-form-builder-i18n
 
 # Optional eslint cache
 .eslintcache
@@ -25,3 +26,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock

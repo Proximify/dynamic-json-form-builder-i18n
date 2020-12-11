@@ -3,11 +3,10 @@ import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
 import 'bootstrap/dist/css/bootstrap.css';
-import Form from './component/dynamic-json-form-builder';
+import Form from './component/dynamic-json-form-builder/index';
 import ModalStyle from './ModalStyles.json';
 import api from "./api";
 import style from "./style.module.scss";
-import { I18nextProvider } from "react-i18next";
 import i18n from './component/dynamic-json-form-builder/i18n';
 
 class App extends Component {
@@ -16,8 +15,6 @@ class App extends Component {
 
         this.toggleLanguage = (value) => {
             console.log(language[value]);
-
-            i18n.changeLanguage(language[value].language.toLowerCase());
 
             this.setState({
                 language: language[value]
@@ -60,15 +57,14 @@ class App extends Component {
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
-
                         <Form
                             formID={"user-profile-form"}
                             resourceURL={"form/"}
                             validationDeclaration={this.validationDeclaration}
                             HTTPMethod={"PATCH"}
+                            language={ this.state.language.language}
                             formContext={{
                                 api: api,
-                                globalContext: {language, LanguageContext},
                                 style: style,
                                 modalStyle: ModalStyle
                             }}

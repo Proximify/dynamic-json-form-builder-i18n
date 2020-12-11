@@ -3,8 +3,7 @@ import Form from "@rjsf/core";
 import 'bootstrap/dist/css/bootstrap.css';
 import _ from 'lodash';
 import './i18n';
-
-import {useTranslation, withTranslation} from "react-i18next";
+import {withTranslation} from 'react-i18next';
 
 import {
     MultiColSelectorWidget,
@@ -188,19 +187,17 @@ class Index extends Component {
     }
 
     render() {
-        const { t,i18n } = this.props;
-        console.log(i18n);
-
-
         const {isLoaded, loadingError, FormSchema, FormData, FormContext, FormID, validation} = this.state;
-        const globalContext = FormContext.globalContext ?? null;
-
+        const {t, i18n} = this.props;
         if (loadingError) {
             return <h3>Loading Error: {loadingError}</h3>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
-            console.log(_.isEqual(generateUISchema(FormSchema), uiSchema));
+            if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
+                i18n.changeLanguage(this.props.language.toLowerCase());
+            }
+            console.log(i18n.language)
             return (
                 <div className={"container"}>
                     <div className={"row d-flex justify-content-center"}>
@@ -227,32 +224,22 @@ class Index extends Component {
                                 <div className={"container"}>
                                     <div id={`${FormID}-errorMsg`}>
                                     </div>
-                                    {/*{(globalContext && globalContext.hasOwnProperty("LanguageContext")) ?*/}
-                                    {/*    <globalContext.LanguageContext.Consumer>*/}
-                                    {/*        {({language}) => (*/}
+                                    {/*<Translation>*/}
+                                    {/*    {*/}
+                                    {/*        (t, {i18n}) => (*/}
                                     {/*            <div>*/}
                                     {/*                <button className={"btn btn-info"}*/}
-                                    {/*                        style={*/}
-                                    {/*                            {backgroundColor: language.submitBtnColor}}*/}
-                                    {/*                        type="submit">{language.submitBtnContent}*/}
+                                    {/*                        type="submit">*/}
+                                    {/*                    {t('btn-submit')}*/}
                                     {/*                </button>*/}
                                     {/*                <button className={"btn btn-secondary ml-3"}*/}
-                                    {/*                        style={{backgroundColor: language.cancelBtnColor}}*/}
-                                    {/*                        type="button">{language.cancelBtnContent}*/}
+                                    {/*                        type="button">*/}
+                                    {/*                    {t('btn-cancel')}*/}
                                     {/*                </button>*/}
                                     {/*            </div>*/}
-                                    {/*        )}*/}
-                                    {/*    </globalContext.LanguageContext.Consumer>*/}
-                                    {/*    : <div>*/}
-                                    {/*        <button className={"btn btn-info"}*/}
-                                    {/*                type="submit">Submit*/}
-                                    {/*        </button>*/}
-                                    {/*        <button className={"btn btn-secondary ml-3"}*/}
-                                    {/*                type="button">Cancel*/}
-                                    {/*        </button>*/}
-                                    {/*    </div>*/}
-                                    {/*}*/}
-
+                                    {/*        )*/}
+                                    {/*    }*/}
+                                    {/*</Translation>*/}
                                     <div>
                                         <button className={"btn btn-info"}
                                                 type="submit">
@@ -263,10 +250,8 @@ class Index extends Component {
                                             {t('btn-cancel')}
                                         </button>
                                     </div>
-
                                 </div>
                             </Form>
-
                         </div>
                     </div>
                 </div>

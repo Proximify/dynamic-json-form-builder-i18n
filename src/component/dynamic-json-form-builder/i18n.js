@@ -1,10 +1,7 @@
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
-
-//import Backend from 'i18next-http-backend';
 import Backend from "i18next-locize-backend";
 import LanguageDetector from 'i18next-browser-languagedetector';
-import Editor from "locize-editor";
 
 const locizeOptions = {
     projectId: 'a14220c9-76bc-4f52-88fb-3d1d65c39bcc',
@@ -25,7 +22,6 @@ i18n
         ns: ['Form'],
         defaultNS: 'Form',
         lng: 'en',
-        // keySeparator: false,
         react: {
             wait: true,
             withRef: false,
@@ -36,10 +32,6 @@ i18n
         interpolation: {
             escapeValue: false
         }
-
-
     });
-
-// i18n.addResourceBundle('en', 'translations', fetchData);
 
 export default i18n;
