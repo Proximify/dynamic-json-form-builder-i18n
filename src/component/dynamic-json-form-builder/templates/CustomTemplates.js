@@ -121,13 +121,14 @@ export function CustomArrayFieldTemplate(props) {
      * @returns {JSX.Element}
      * @constructor
      */
-    const ModalArrayFieldContent = (props) => {
+    const ModalArrayFieldContent = () => {
+        console.log(props)
         return (
             <Modal
                 isOpen={isOpen}
                 contentLabel={`${title} Modal`}
                 id={`${title}_modal_${itemIndex}`}
-                style={props.modalStyle.modalArrayFieldContent ?? undefined}
+                style={props.formContext.modalStyle.modalArrayFieldContent ?? undefined}
             >
                 <div className={"pt-3"}>
                     {items[itemIndex].children}
@@ -176,7 +177,7 @@ export function CustomArrayFieldTemplate(props) {
                     </ul>
                 </div>
                 <div id={`${title}_modal`}>
-                    {isOpen ? <ModalArrayFieldContent modalStyle={props.formContext.modalStyle}/> : null}
+                    {isOpen ? <ModalArrayFieldContent /> : null}
                 </div>
             </div>
         </div>
@@ -236,13 +237,13 @@ export function CustomUploadFieldTemplate(props) {
         );
     }
 
-    const ModalFileUpload = (props) => {
+    const ModalFileUpload = () => {
         return (
             <Modal
                 isOpen={state.isUploadModalOpen}
                 contentLabel="File Add Modal"
                 id={`${title}_add_modal`}
-                style={props.modalStyle.modalFileUpload ?? undefined}
+                style={props.formContext.modalStyle.modalFileUpload ?? undefined}
             >
                 <div className={"container"}>
                     {children}
@@ -259,14 +260,14 @@ export function CustomUploadFieldTemplate(props) {
         )
     }
 
-    const ModalFilePreview = (props) => {
+    const ModalFilePreview = () => {
         return (
             <Modal
                 isOpen={state.isPreviewModalOpen}
                 contentLabel="File Edit Modal"
                 id={`${title}_edit_modal`}
                 closeOnEscape={true}
-                style={props.context.modalStyle.ModalFilePreview ?? undefined}
+                style={props.formContext.modalStyle.ModalFilePreview ?? undefined}
             >
                 <div className={"row h-100"}>
                     <div className={"col col-2"}>
@@ -355,10 +356,10 @@ export function CustomUploadFieldTemplate(props) {
                     </ul>
                 </div>
                 <div id={`${title}_add_modal`}>
-                    {state.isUploadModalOpen ? <ModalFileUpload modalStyle={props.formContext.modalStyle}/> : null}
+                    {state.isUploadModalOpen ? <ModalFileUpload /> : null}
                 </div>
                 <div id={`${title}_edit_modal`}>
-                    {state.isPreviewModalOpen ? <ModalFilePreview context={props.formContext}/> : null}
+                    {state.isPreviewModalOpen ? <ModalFilePreview /> : null}
                 </div>
             </div>
         </div>

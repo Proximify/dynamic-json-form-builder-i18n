@@ -7,7 +7,6 @@ import Form from './component/dynamic-json-form-builder/index';
 import ModalStyle from './ModalStyles.json';
 import api from "./api";
 import style from "./style.module.scss";
-import i18n from './component/dynamic-json-form-builder/i18n';
 
 class App extends Component {
     constructor(props) {
