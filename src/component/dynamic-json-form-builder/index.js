@@ -20,12 +20,14 @@ import {
 import generateUISchema from "./helper/UISchemaGenerator";
 import formValidatorGenerator from './helper/formValidatorGenerator';
 import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget'
+import {MultiLangRichTextWidget} from "./widgets/MultiLangRichTextWidget";
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
     windowedSelectorWidget: WindowedSelectorWidget,
     textWidget: TextInputWidget,
     multiLangTextInputWidget: MultiLangTextInputWidget,
+    multiLangRichTextWidget: MultiLangRichTextWidget,
     singleSelectWidget: SingleSelectWidget,
     fileInputWidget: FileInputWidget
 };
@@ -92,7 +94,11 @@ const uiSchema = {
     "resume": {
         "ui:FieldTemplate": customTemplates["uploadFieldTemplate"],
         "ui:widget": "fileInputWidget"
-    }
+    },
+    "work-experience": {
+        "ui:FieldTemplate": customTemplates["fieldTemplate"],
+        "ui:widget": "multiLangRichTextWidget"
+    },
 };
 
 class Index extends Component {
@@ -204,7 +210,8 @@ class Index extends Component {
                             <Form
                                 id={FormID}
                                 schema={FormSchema}
-                                uiSchema={generateUISchema(FormSchema)}
+                                // uiSchema={generateUISchema(FormSchema)}
+                                uiSchema={uiSchema}
                                 formData={FormData}
                                 formContext={
                                     this.props.formContext ?? null
