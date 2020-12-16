@@ -1,4 +1,6 @@
-export default {
+import style from "./style.module.scss";
+
+export const ToolbarStyleDefault = {
     options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'],
     inline: {
         inDropdown: false,
@@ -137,3 +139,15 @@ export default {
         redo: {icon: 'redo', className: undefined},
     }
 }
+
+export const ToolbarStyleCompact = {
+    options: ['inline'],
+    inline: {
+        inDropdown: false,
+        className: 'richTextToolbarInline',
+        style: {backgroundColor: 'red'},
+        options: ["bold", 'italic', 'underline']
+    }
+}
+
+export default ToolbarStyleDefault;

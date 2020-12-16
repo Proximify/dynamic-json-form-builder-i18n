@@ -230,22 +230,6 @@ class Index extends Component {
                                 <div className={"container"}>
                                     <div id={`${FormID}-errorMsg`}>
                                     </div>
-                                    {/*<Translation>*/}
-                                    {/*    {*/}
-                                    {/*        (t, {i18n}) => (*/}
-                                    {/*            <div>*/}
-                                    {/*                <button className={"btn btn-info"}*/}
-                                    {/*                        type="submit">*/}
-                                    {/*                    {t('btn-submit')}*/}
-                                    {/*                </button>*/}
-                                    {/*                <button className={"btn btn-secondary ml-3"}*/}
-                                    {/*                        type="button">*/}
-                                    {/*                    {t('btn-cancel')}*/}
-                                    {/*                </button>*/}
-                                    {/*            </div>*/}
-                                    {/*        )*/}
-                                    {/*    }*/}
-                                    {/*</Translation>*/}
                                     <div>
                                         <button className={"btn btn-info"}
                                                 type="submit">

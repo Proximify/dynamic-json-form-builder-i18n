@@ -1,17 +1,17 @@
 import React, {useEffect, useRef, useState} from "react";
 import 'bootstrap';
-import {ContentState, convertFromRaw, convertToRaw, EditorState,RichUtils} from "draft-js";
+import {ContentState, convertToRaw, EditorState} from "draft-js";
 import {Editor} from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import richTextFieldToolBarStyle from '../style/richTextFieldToolBarStyle';
-import PropTypes from 'prop-types';
+import {ToolbarStyleDefault, ToolbarStyleCompact} from '../../../RichTextToolBarStyle.js';
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from 'html-to-draftjs';
 import {useTranslation} from "react-i18next";
-import {XIcon} from "@primer/octicons-react";
-import {LanguageContext} from "../../../language-context";
+import {BsCaretRightFill, BsTrashFill} from 'react-icons/bs';
+import '../style/style.css';
 
 export function MultiLangRichTextWidget(props) {
+    console.log("MultiLangRichTextWidget", props)
     const {value} = props;
     const {t, i18n} = useTranslation();
     const style = props.formContext.style;
@@ -184,18 +184,20 @@ export function MultiLangRichTextWidget(props) {
     const LangDropDownBtn = () => {
         return (
             <div className="input-group-append">
-                <div className="btn-group dropright">
-                    <button type="button"
-                            className={`btn ${style.btnLanguage} dropdown-toggle p-0`}
-                            data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"
-                            id={`${props.id}_lang_btn`}>{state.primaryLanguage}
-                    </button>
+                <div className={`btn-group dropright richTextBtnInline`}>
+                    <a type="button"
+                       className={`btn dropdown-toggle richTextBtnLanguage p-0`}
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false"
+                       id={`${props.id}_lang_btn`}>{state.primaryLanguage}
+                        <BsCaretRightFill className="multiLangControlBtnIcon"/>
+                    </a>
                     <div className="dropdown-menu" id={`${props.id}_multi_lang_selection_dropdown`}>
                         {state.languageList.map((lang, index) => {
                             return (
                                 <a className={`dropdown-item ${(state.primaryLanguage === lang && !state.isBilingual) ? "active" : ""}`}
                                    href="#"
+                                   key={index}
                                    onClick={(e) => {
                                        e.preventDefault();
                                        if (state.isBilingual) {
@@ -249,18 +251,23 @@ export function MultiLangRichTextWidget(props) {
     const LangCloseBtn = () => {
         return (
             <div className={`input-group-append`}>
-                <button type="button"
-                        className={`btn ${style.btnLanguage} p-0 pl-1"`}
-                        onClick={(event) => {
-                            setState({
-                                ...state,
-                                isBilingual: false,
-                                secondaryLanguage: "",
-                                secondaryContent: null,
-                                discardedContent: state.secondaryContent
-                            })
-                        }}>{state.secondaryLanguage}<XIcon verticalAlign='middle' size={13}/>
-                </button>
+                <div className={`btn-group richTextBtnInline`}>
+                    <button
+                       className={`btn richTextBtnLanguage p-0 pl-1"`}
+                       data-toggle={"tooltip"}
+                       data-placement={"left"}
+                       title={"Delete this content"}
+                       onClick={(event) => {
+                           setState({
+                               ...state,
+                               isBilingual: false,
+                               secondaryLanguage: "",
+                               secondaryContent: null,
+                               discardedContent: state.secondaryContent
+                           })
+                       }}>{state.secondaryLanguage}<BsTrashFill className="multiLangControlBtnIcon"/>
+                    </button>
+                </div>
             </div>
         )
     }
@@ -268,128 +275,48 @@ export function MultiLangRichTextWidget(props) {
     return (
         <div id={`${props.id}_multi_lang_input_group`}>
             <div className="my-auto text-center input-group">
-                <div style={{
-                    border: "1px solid #ced4da",
-                    minHeight: "300px",
-                    borderRadius: "0.2rem 0.2rem 0.2rem 0.2rem"
-                }}>
+                <div className="multiLangRichTextField">
                     <Editor
                         editorState={state.primaryContent}
                         wrapperClassName="multiLangRichTextWrapper"
                         toolbarClassName="multiLangRichTextToolbar"
                         editorClassName="multiLangRichTextEditor"
-                        // stripPastedStyles={true}
-                        // spellCheck={true}
-                        // placeholder={"Enter something..."}
-                        // toolbar={{richTextFieldToolBarStyle}}
+                        stripPastedStyles={true}
+                        spellCheck={true}
+                        toolbar={ToolbarStyleCompact}
+                        tool
                         onEditorStateChange={text => {
                             setState({...state, primaryContent: text})
                         }}
-                        toolbarCustomButtons={[<LangDropDownBtn />]}
+                        toolbarCustomButtons={[<LangDropDownBtn/>]}
                         onBlur={() => {
                             handleChange()
                         }}
                     />
                 </div>
-                {/*<div className="input-group-append">*/}
-                {/*    <div className="btn-group dropright">*/}
-                {/*        <button type="button"*/}
-                {/*                className={`btn ${style.btnLanguage} dropdown-toggle p-0`}*/}
-                {/*                data-toggle="dropdown"*/}
-                {/*                aria-haspopup="true" aria-expanded="false"*/}
-                {/*                id={`${props.id}_lang_btn`}>{state.primaryLanguage}*/}
-                {/*        </button>*/}
-                {/*        <div className="dropdown-menu" id={`${props.id}_multi_lang_selection_dropdown`}>*/}
-                {/*            {state.languageList.map((lang, index) => {*/}
-                {/*                return (*/}
-                {/*                    <a className={`dropdown-item ${(state.primaryLanguage === lang && !state.isBilingual) ? "active" : ""}`}*/}
-                {/*                       href="#"*/}
-                {/*                       onClick={(e) => {*/}
-                {/*                           e.preventDefault();*/}
-                {/*                           if (state.isBilingual) {*/}
-                {/*                               if (state.primaryLanguage === lang) {*/}
-                {/*                                   setState({*/}
-                {/*                                       ...state,*/}
-                {/*                                       isBilingual: false,*/}
-                {/*                                       primaryContent: state.primaryContent.getCurrentContent().hasText() ? state.primaryContent : state.secondaryContent,*/}
-                {/*                                       secondaryLanguage: "",*/}
-                {/*                                       secondaryContent: null,*/}
-                {/*                                       discardedContent: (state.primaryContent.getCurrentContent().hasText() && state.secondaryContent.getCurrentContent().hasText()) ? state.secondaryContent : null*/}
-                {/*                                   })*/}
-                {/*                               } else {*/}
-                {/*                                   setState({*/}
-                {/*                                       ...state,*/}
-                {/*                                       isBilingual: false,*/}
-                {/*                                       primaryLanguage: state.secondaryLanguage,*/}
-                {/*                                       primaryContent: state.secondaryContent.getCurrentContent().hasText() ? state.secondaryContent : state.primaryContent,*/}
-                {/*                                       secondaryLanguage: "",*/}
-                {/*                                       secondaryContent: null,*/}
-                {/*                                       discardedContent: (state.primaryContent.getCurrentContent().hasText() && state.secondaryContent.getCurrentContent().hasText()) ? state.primaryContent : null*/}
-                {/*                                   })*/}
-                {/*                               }*/}
-                {/*                           } else {*/}
-                {/*                               if (state.primaryLanguage !== lang) {*/}
-                {/*                                   setState({...state, primaryLanguage: lang})*/}
-                {/*                               }*/}
-                {/*                           }*/}
-                {/*                       }}>{languageLabel[lang]} Only</a>*/}
-                {/*                )*/}
-                {/*            })}*/}
-                {/*            {state.languageList.length === 2 ?*/}
-                {/*                <a className={`dropdown-item ${state.isBilingual ? "active" : ""}`}*/}
-                {/*                   href="#"*/}
-                {/*                   onClick={(e) => {*/}
-                {/*                       e.preventDefault();*/}
-                {/*                       if (!state.isBilingual) {*/}
-                {/*                           console.log(state);*/}
-                {/*                           handleLangChange()*/}
-                {/*                       }*/}
-                {/*                   }}>Bilingual</a>*/}
-                {/*                : null*/}
-                {/*            }*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
             </div>
             <div
                 className={`my-auto text-center input-group pt-1 ${!state.isBilingual ? "d-none" : ""}`}>
-                <div style={{
-                    border: "1px solid #ced4da",
-                    minHeight: "300px",
-                    borderRadius: "0.2rem 0.2rem 0.2rem 0.2rem"
-                }}>
+                <div className="multiLangRichTextField">
                     <Editor
                         editorState={state.secondaryContent}
-                        toolbarClassName="toolbarClassName"
-                        wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
+                        wrapperClassName="multiLangRichTextWrapper"
+                        toolbarClassName="multiLangRichTextToolbar"
+                        editorClassName="multiLangRichTextEditor"
                         stripPastedStyles={true}
+                        toolbar={ToolbarStyleCompact}
                         onEditorStateChange={text => {
                             setState({...state, secondaryContent: text})
                         }}
-                        toolbarCustomButtons={[<LangCloseBtn />]}
+                        toolbarCustomButtons={[<LangCloseBtn/>]}
                         onBlur={() => {
                             handleChange()
                         }}
                     />
                 </div>
-                {/*<div className={`input-group-append`}>*/}
-                {/*    <button type="button"*/}
-                {/*            className={`btn ${style.btnLanguage} p-0 pl-1"`}*/}
-                {/*            onClick={(event) => {*/}
-                {/*                setState({*/}
-                {/*                    ...state,*/}
-                {/*                    isBilingual: false,*/}
-                {/*                    secondaryLanguage: "",*/}
-                {/*                    secondaryContent: null,*/}
-                {/*                    discardedContent: state.secondaryContent*/}
-                {/*                })*/}
-                {/*            }}>{state.secondaryLanguage}<XIcon verticalAlign='middle' size={13}/>*/}
-                {/*    </button>*/}
-                {/*</div>*/}
             </div>
             <div>
-                <a className={`btn ${style.btnUndo} ${!state.discardedContent ? "d-none" : ""}`}
+                <a className={`btn ${style.btnUndo} ${(!state.discardedContent || !state.discardedContent.getCurrentContent().hasText()) ? "d-none" : ""}`}
                    onClick={() => {
                        handleLangChange()
                    }}>{t('btn-undo')}

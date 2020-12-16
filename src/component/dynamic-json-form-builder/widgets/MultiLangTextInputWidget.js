@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import 'bootstrap';
-import {XIcon} from "@primer/octicons-react";
+import {BsX, BsCaretRightFill} from 'react-icons/bs';
 import {useTranslation} from 'react-i18next';
 
 /**
@@ -189,8 +189,10 @@ export function MultiLangTextInputWidget(props) {
                         <button type="button"
                                 className={`btn ${style.btnLanguage} dropdown-toggle p-0`}
                                 data-toggle="dropdown"
+                                style={{justifyContent: "center", alignItems: "center"}}
                                 aria-haspopup="true" aria-expanded="false"
                                 id={`${props.id}_lang_btn`}>{state.primaryLanguage}
+                            <BsCaretRightFill size={"0.8em"} style={{justifyContent: "center", alignItems: "center"}}/>
                         </button>
 
                         <div className="dropdown-menu" id={`${props.id}_multi_lang_selection_dropdown`}>
@@ -261,6 +263,7 @@ export function MultiLangTextInputWidget(props) {
                 <div className={`input-group-append`}>
                     <button type="button"
                             className={`btn ${style.btnLanguage} p-0 pl-1"`}
+                            style={{justifyContent: "center", alignItems: "center"}}
                             onClick={(event) => {
                                 setState({
                                     ...state,
@@ -269,7 +272,10 @@ export function MultiLangTextInputWidget(props) {
                                     secondaryContent: "",
                                     discardedContent: state.secondaryContent
                                 })
-                            }}>{state.secondaryLanguage}<XIcon verticalAlign='middle' size={13}/>
+                            }}>{state.secondaryLanguage}<BsX size={"1em"} style={{
+                        justifyContent: "center",
+                        verticalAlign: "text-center"
+                    }}/>
                     </button>
                 </div>
             </div>

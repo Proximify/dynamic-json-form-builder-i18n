@@ -1,0 +1,75 @@
+.rdw-option-wrapper {
+    background-color: #f0f0ee;
+}
+
+.multiLangRichTextField {
+    border: 1px solid #ced4da;
+    width: 100%;
+    min-height: 150px;
+    border-radius: 0.2rem 0.2rem 0.2rem 0.2rem;
+}
+
+.multiLangRichTextWrapper {
+    height: 100%;
+}
+
+.multiLangRichTextToolbar {
+    background-color: #f0f0ee;
+    margin: 0;
+    height: 33px;
+    padding: 0;
+    justify-content: space-between;
+}
+
+.richTextToolbarInline {
+    margin: 0;
+}
+
+.multiLangRichTextEditor {
+    height: auto;
+    min-height: 117px;
+}
+
+.public-DraftStyleDefault-block {
+    margin: 2px 5px;
+    height: 100%;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.richTextBtnInline {
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+    flex-wrap: wrap;
+}
+
+.btn {
+    z-index: 0 !important;
+}
+
+.richTextBtnLanguage{
+    /*padding: 5px !important;*/
+    font-size: 16px;
+    height: 20px;
+    width: 42px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: capitalize;
+    z-index: 0 !important;
+    color: #717981;
+}
+
+.multiLangControlBtnIcon{
+    color: #97a2ae;
+    padding: 1px;
+    margin-left: 1px;
+}
+
+.rdw-option-active {
+    background-color: #ddd9d9 !important
+}
