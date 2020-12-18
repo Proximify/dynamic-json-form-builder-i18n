@@ -56,6 +56,9 @@ class App extends Component {
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
+                    <div className={"container"}>
+                        <div className={"row d-flex justify-content-center"}>
+                            <div className={"col-xl-8 col-lg-6 col-md-7 col-sm-10 col-12"}>
                         <Form
                             formID={"user-profile-form"}
                             resourceURL={"form/"}
@@ -68,6 +71,9 @@ class App extends Component {
                                 modalStyle: ModalStyle
                             }}
                         />
+                            </div>
+                        </div>
+                    </div>
                 </LanguageContext.Provider>
             </Suspense>
         );

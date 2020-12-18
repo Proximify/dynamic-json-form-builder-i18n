@@ -4,6 +4,7 @@ import WindowedSelect from "react-windowed-select";
 import 'bootstrap';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NumberFormat from "react-number-format";
 
 /**
  * This is the custom widget for single input field
@@ -15,28 +16,52 @@ export function TextInputWidget(props) {
     // console.log("TextInputWidget", props);
     const [value, setValue] = useState(props.value);
     return (
-        <div className="my-auto">
-            {/*<label htmlFor={props.schema.id} className="col-sm-2 col-form-label my-auto">{props.schema.title}{props.required ? "*" : null}</label>*/}
-            <input
-                className={"col-lg-12 col-sm-12 form-control"}
-                type="text"
-                id={props.schema.id}
-                value={value ?? ""}
-                required={props.required}
-                onChange={(event) => {
-                    if (!props.rawErrors || props.rawErrors.length === 0) {
-                        setValue(event.target.value);
-                    } else {
-                        setValue(event.target.value);
+        <input
+            className={"form-control"}
+            type="text"
+            id={props.schema.id}
+            value={value}
+            required={props.required}
+            onChange={(event) => {
+                if (!props.rawErrors || props.rawErrors.length === 0) {
+                    setValue(event.target.value);
+                } else {
+                    setValue(event.target.value);
 
-                        props.onChange(event.target.value)
-                    }
-                }}
-                onBlur={(event) =>
-                    props.onChange(value)
+                    props.onChange(event.target.value ?? undefined)
                 }
-            />
-        </div>
+            }}
+            onBlur={(event) =>
+                props.onChange(value)
+            }
+        />
+    );
+}
+
+export function PhoneNumInputWidget(props){
+    console.log("phoneNumInputWidget", props);
+    const [value, setValue] = useState(props.value);
+
+    return (
+        <NumberFormat
+            className={"form-control"}
+            type="text"
+            id={props.schema.id}
+            value={value}
+            format={"+# (###) ###-####"}
+            mask={"_"}
+            onValueChange={(valueObj) => {
+                if (!props.rawErrors || props.rawErrors.length === 0) {
+                    setValue(valueObj.value);
+                } else {
+                    setValue(valueObj.value);
+                    props.onChange(valueObj.value ?? undefined)
+                }
+            }}
+            onBlur={() =>
+                props.onChange(value)
+            }
+        />
     );
 }
 
@@ -59,20 +84,15 @@ export function SingleSelectWidget(props) {
         }
     }
     return (
-        <div className="my-auto">
-            {/*<label htmlFor={props.schema.id} className="col-sm-2 col-form-label my-auto">{props.schema.title}</label>*/}
-            <div className="col-lg-12 col-sm-12 p-0">
-                <Select
-                    id={props.schema.id}
-                    options={options.enumOptions}
-                    defaultValue={options.enumOptions[options.enumOptions.map(function (e) {
-                        return e.value;
-                    }).indexOf(value)]}
-                    onChange={handleChange}
-                    isClearable={true}
-                />
-            </div>
-        </div>
+        <Select
+            id={props.schema.id}
+            options={options.enumOptions}
+            defaultValue={options.enumOptions[options.enumOptions.map(function (e) {
+                return e.value;
+            }).indexOf(value)]}
+            onChange={handleChange}
+            isClearable={true}
+        />
     );
 }
 
@@ -266,5 +286,7 @@ export function FileInputWidget(props) {
         </div>
     )
 }
+
+
 
 export default TextInputWidget;

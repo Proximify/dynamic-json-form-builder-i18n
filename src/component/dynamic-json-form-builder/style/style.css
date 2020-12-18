@@ -18,7 +18,7 @@
     margin: 0;
     height: 33px;
     padding: 0;
-    justify-content: space-between;
+    justify-content: space-between !important;
 }
 
 .richTextToolbarInline {
@@ -33,6 +33,10 @@
 .public-DraftStyleDefault-block {
     margin: 2px 5px;
     height: 100%;
+}
+
+.DraftEditor-editorContainer{
+    z-index: 0 !important;
 }
 
 .dropdown-toggle::after {
@@ -72,4 +76,25 @@
 
 .rdw-option-active {
     background-color: #ddd9d9 !important
+}
+
+.fundBundleFund{
+    padding: 0;
+    width: 80% !important;
+}
+
+.fundBundleCurrency{
+    padding: 0;
+    width: 20% !important;
+}
+
+.fundFieldFund {
+    border-radius: 0.2rem 0.0rem 0.0rem 0.2rem !important;
+}
+
+.fundFieldCurrency {
+    border-radius: 0.0rem 0.2rem 0.2rem 0.0rem !important;
+    background-color: white !important;
+    border-color: #ced4da !important;
+    color: #999494 !important;
 }

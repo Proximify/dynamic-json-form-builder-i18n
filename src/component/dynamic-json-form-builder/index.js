@@ -7,35 +7,46 @@ import {withTranslation} from 'react-i18next';
 
 import {
     MultiColSelectorWidget,
+    PhoneNumInputWidget,
     SingleSelectWidget,
     TextInputWidget,
     WindowedSelectorWidget,
-    FileInputWidget,
+    FileInputWidget
 } from "./widgets/CustomWidgets";
 import {
     CustomFieldTemplate,
     CustomArrayFieldTemplate,
-    CustomUploadFieldTemplate
+    CustomUploadFieldTemplate,
+    BundleFieldTemplate
 } from "./templates/CustomTemplates";
 import generateUISchema from "./helper/UISchemaGenerator";
 import formValidatorGenerator from './helper/formValidatorGenerator';
 import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget'
-import {MultiLangRichTextWidget} from "./widgets/MultiLangRichTextWidget";
+import {MultiLangRichTextAreaWidget} from "./widgets/MultiLangRichTextAreaWidget";
+import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./templates/FundFieldTemplate";
+import {FundFieldWidget, CurrencyFieldWidget} from "./widgets/FundFieldWidget";
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
     windowedSelectorWidget: WindowedSelectorWidget,
     textWidget: TextInputWidget,
     multiLangTextInputWidget: MultiLangTextInputWidget,
-    multiLangRichTextWidget: MultiLangRichTextWidget,
+    multiLangRichTextAreaWidget: MultiLangRichTextAreaWidget,
     singleSelectWidget: SingleSelectWidget,
-    fileInputWidget: FileInputWidget
+    fileInputWidget: FileInputWidget,
+    phoneNumInputWidget:PhoneNumInputWidget,
+    fundFieldWidget:FundFieldWidget,
+    currencyFieldWidget:CurrencyFieldWidget
 };
 
 const customTemplates = {
     fieldTemplate: CustomFieldTemplate,
     arrayFieldTemplate: CustomArrayFieldTemplate,
-    uploadFieldTemplate: CustomUploadFieldTemplate
+    uploadFieldTemplate: CustomUploadFieldTemplate,
+    bundleFieldTemplate: BundleFieldTemplate,
+    fundBundleFieldTemplate: FundBundleFieldTemplate,
+    fundFieldTemplate:FundFieldTemplate,
+    currencyFieldTemplate:CurrencyFieldTemplate,
 }
 
 /**
@@ -61,7 +72,7 @@ const uiSchema = {
     },
     "phone": {
         "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "textWidget"
+        "ui:widget": "phoneNumInputWidget"
     },
     "hobby": {
         "ui:FieldTemplate": customTemplates["fieldTemplate"],
@@ -97,8 +108,38 @@ const uiSchema = {
     },
     "work-experience": {
         "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "multiLangRichTextWidget"
+        "ui:widget": "multiLangRichTextAreaWidget"
     },
+    "bundle-field": {
+        "ui:ObjectFieldTemplate": customTemplates["bundleFieldTemplate"],
+        "BDL-field1":{
+            "ui:FieldTemplate": customTemplates["fieldTemplate"],
+            "ui:widget": "textWidget"
+        },
+        "BDL-field2":{
+            "ui:FieldTemplate": customTemplates["fieldTemplate"],
+            "ui:widget": "singleSelectWidget",
+            "ui:emptyValue": ""
+        },
+        "BDL-field3":{
+            "ui:FieldTemplate": customTemplates["fieldTemplate"],
+            "ui:widget": "textWidget"
+        }
+    },
+    "funding-bundle": {
+        "ui:ObjectFieldTemplate": customTemplates["fundBundleFieldTemplate"],
+        "converted-funding":{
+            "ui:widget":"hidden"
+        },
+        "funding": {
+            "ui:FieldTemplate": customTemplates["fundFieldTemplate"],
+            "ui:widget": "fundFieldWidget"
+        },
+        "currency":{
+            "ui:FieldTemplate": customTemplates["currencyFieldTemplate"],
+            "ui:widget": "currencyFieldWidget"
+        }
+    }
 };
 
 class Index extends Component {
@@ -203,48 +244,45 @@ class Index extends Component {
             if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
                 i18n.changeLanguage(this.props.language.toLowerCase());
             }
+            // console.log((uiSchema));
+            // console.log((generateUISchema(FormSchema)))
+            // console.log(_.isEqual(uiSchema,generateUISchema(FormSchema)))
             return (
-                <div className={"container"}>
-                    <div className={"row d-flex justify-content-center"}>
-                        <div className={"col-xl-5 col-lg-5 col-md-7 col-sm-10 col-12"}>
-                            <Form
-                                id={FormID}
-                                schema={FormSchema}
-                                // uiSchema={generateUISchema(FormSchema)}
-                                uiSchema={uiSchema}
-                                formData={FormData}
-                                formContext={
-                                    this.props.formContext ?? null
-                                }
-                                widgets={customWidgets}
-                                showErrorList={false}
-                                liveValidate
-                                onChange={() => {
-                                    console.log("data changed")
-                                }}
-                                validate={validation}
-                                onError={(errors) => {
-                                    this.onErrorMsgChange(errors);
-                                }}
-                                onSubmit={({formData}) => this.onFormSubmit(formData)}>
-                                <div className={"container"}>
-                                    <div id={`${FormID}-errorMsg`}>
-                                    </div>
-                                    <div>
-                                        <button className={"btn btn-info"}
-                                                type="submit">
-                                            {t('btn-submit')}
-                                        </button>
-                                        <button className={"btn btn-secondary ml-3"}
-                                                type="button">
-                                            {t('btn-cancel')}
-                                        </button>
-                                    </div>
-                                </div>
-                            </Form>
+                <Form
+                    id={FormID}
+                    schema={FormSchema}
+                    uiSchema={generateUISchema(FormSchema)}
+                    // uiSchema={uiSchema}
+                    formData={FormData}
+                    formContext={
+                        this.props.formContext ?? null
+                    }
+                    widgets={customWidgets}
+                    showErrorList={false}
+                    liveValidate
+                    onChange={() => {
+                        console.log("data changed")
+                    }}
+                    validate={validation}
+                    onError={(errors) => {
+                        this.onErrorMsgChange(errors);
+                    }}
+                    onSubmit={({formData}) => this.onFormSubmit(formData)}>
+                    <div className={"container"}>
+                        <div id={`${FormID}-errorMsg`}>
+                        </div>
+                        <div>
+                            <button className={"btn btn-info"}
+                                    type="submit">
+                                {t('btn-submit')}
+                            </button>
+                            <button className={"btn btn-secondary ml-3"}
+                                    type="button">
+                                {t('btn-cancel')}
+                            </button>
                         </div>
                     </div>
-                </div>
+                </Form>
             );
         }
     }

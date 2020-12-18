@@ -10,8 +10,14 @@ import {useTranslation} from "react-i18next";
 import {BsCaretRightFill, BsTrashFill} from 'react-icons/bs';
 import '../style/style.css';
 
-export function MultiLangRichTextWidget(props) {
-    console.log("MultiLangRichTextWidget", props)
+/**
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export function MultiLangRichTextAreaWidget(props) {
+     console.log("MultiLangRichTextWidget", props)
     const {value} = props;
     const {t, i18n} = useTranslation();
     const style = props.formContext.style;
@@ -198,8 +204,7 @@ export function MultiLangRichTextWidget(props) {
                                 <a className={`dropdown-item ${(state.primaryLanguage === lang && !state.isBilingual) ? "active" : ""}`}
                                    href="#"
                                    key={index}
-                                   onClick={(e) => {
-                                       e.preventDefault();
+                                   onClick={() => {
                                        if (state.isBilingual) {
                                            if (state.primaryLanguage === lang) {
                                                setState({
@@ -233,8 +238,7 @@ export function MultiLangRichTextWidget(props) {
                         {state.languageList.length === 2 ?
                             <a className={`dropdown-item ${state.isBilingual ? "active" : ""}`}
                                href="#"
-                               onClick={(e) => {
-                                   e.preventDefault();
+                               onClick={() => {
                                    if (!state.isBilingual) {
                                        console.log(state);
                                        handleLangChange()

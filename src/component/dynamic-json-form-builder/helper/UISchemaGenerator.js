@@ -1,9 +1,20 @@
-import {CustomFieldTemplate, CustomArrayFieldTemplate, CustomUploadFieldTemplate} from "../templates/CustomTemplates";
+import {
+    CustomFieldTemplate,
+    CustomArrayFieldTemplate,
+    CustomUploadFieldTemplate,
+    BundleFieldTemplate
+} from "../templates/CustomTemplates";
+import {FundBundleFieldTemplate, FundFieldTemplate, CurrencyFieldTemplate} from "../templates/FundFieldTemplate";
 
 const customTemplates = {
     fieldTemplate: CustomFieldTemplate,
     arrayFieldTemplate: CustomArrayFieldTemplate,
-    uploadFieldTemplate: CustomUploadFieldTemplate
+    uploadFieldTemplate: CustomUploadFieldTemplate,
+    bundleFieldTemplate: BundleFieldTemplate,
+    fundBundleFieldTemplate: FundBundleFieldTemplate,
+    fundFieldTemplate: FundFieldTemplate,
+    currencyFieldTemplate: CurrencyFieldTemplate,
+
 }
 
 /**
@@ -45,19 +56,26 @@ const generateUISchemaRecursively = (schemaObj) => {
                 // if obj has largeEnum:true property, use react-windowed-select widget
                 if (schemaObj.hasOwnProperty("largeEnum") && schemaObj.largeEnum === true) {
                     json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"windowedSelectorWidget","ui:emptyValue":""`
+                } else if (schemaObj.hasOwnProperty("style") && schemaObj.style === "fundingBundleCurrency") {
+                    json += `"ui:FieldTemplate":"currencyFieldTemplate","ui:widget":"currencyFieldWidget"`;
                 } else {
                     // use regular select widget
                     json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"singleSelectWidget","ui:emptyValue":""`;
                 }
-            } else if (schemaObj.hasOwnProperty("style")) {
-                if (schemaObj.style === "textarea") {
-                    json += `"ui:widget":"textarea"`;
+            } else if (schemaObj.hasOwnProperty("bilingual") && schemaObj.bilingual === true) {
+                if (schemaObj.hasOwnProperty("textarea") && schemaObj.textarea === true) {
+                    json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"multiLangRichTextAreaWidget"`;
                 } else {
-                    console.warn("Unhandled schema string object style, expect 'textarea', given: ", schemaObj);
+                    json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"multiLangTextInputWidget"`;
+
                 }
-            } else if (schemaObj.hasOwnProperty("format")) {
-                if (schemaObj.format === "file") {
+
+
+            } else if (schemaObj.hasOwnProperty("style")) {
+                if (schemaObj.style === "file") {
                     json += `"ui:FieldTemplate":"uploadFieldTemplate","ui:widget":"fileInputWidget"`;
+                } else if (schemaObj.style === "fundingBundleFunding") {
+                    json += `"ui:FieldTemplate":"fundFieldTemplate","ui:widget":"fundFieldWidget"`;
                 } else {
                     console.warn("Unhandled schema string object format, expect 'file', given: ", schemaObj);
                 }
@@ -71,6 +89,12 @@ const generateUISchemaRecursively = (schemaObj) => {
             json += (schemaObj.id.includes("_array_item")) ? `` : `"${schemaObj.id}":{`;
             if (schemaObj.hasOwnProperty("enum")) {
                 json += `"ui:widget":"singleSelectWidget","ui:emptyValue": ""`;
+            } else if (schemaObj.hasOwnProperty("style")) {
+                if (schemaObj.style === "fundingBundleConvertedFunding") {
+                    json += `"ui:widget":"hidden"`;
+                }else if (schemaObj.style ==="phoneNumField"){
+                    json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"phoneNumInputWidget"`;
+                }
             } else {
                 json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"textWidget"`;
             }
@@ -103,7 +127,21 @@ const generateUISchemaRecursively = (schemaObj) => {
                 console.warn("Unhandled schema object, expect property 'items', given: ", schemaObj);
             }
         } else if (schemaObj.type === "object") {
-            if (schemaObj.hasOwnProperty("properties")) {
+            if (schemaObj.hasOwnProperty("style")) {
+                json += `"${schemaObj.id}":{`;
+                if (schemaObj.style === "regularBundleField") {
+                    json += `"ui:ObjectFieldTemplate":"bundleFieldTemplate",`;
+                } else if (schemaObj.style === "fundingBundleField") {
+                    json += `"ui:ObjectFieldTemplate":"fundBundleFieldTemplate",`;
+                }
+                if (schemaObj.hasOwnProperty("properties")) {
+                    Object.keys(schemaObj.properties).forEach((childObjectKey) => {
+                        const childObject = schemaObj.properties[childObjectKey];
+                        json += generateUISchemaRecursively(childObject);
+                    })
+                }
+                json += "},";
+            } else if (schemaObj.hasOwnProperty("properties")) {
                 Object.keys(schemaObj.properties).forEach((childObjectKey) => {
                     const childObject = schemaObj.properties[childObjectKey];
                     json += generateUISchemaRecursively(childObject);
@@ -138,6 +176,25 @@ const customTemplatesConverter = (UISchemaObj) => {
             UISchemaObj[key]['ui:FieldTemplate'] = customTemplates[UISchemaObj[key]['ui:FieldTemplate']];
         } else if (UISchemaObj[key].hasOwnProperty("ui:ArrayFieldTemplate")) {
             UISchemaObj[key]['ui:ArrayFieldTemplate'] = customTemplates[UISchemaObj[key]['ui:ArrayFieldTemplate']];
+        } else if (UISchemaObj[key].hasOwnProperty("ui:ObjectFieldTemplate")){
+            // console.log(UISchemaObj[key],customTemplates[UISchemaObj[key]['ui:ObjectFieldTemplate']])
+            UISchemaObj[key]['ui:ObjectFieldTemplate'] = customTemplates[UISchemaObj[key]['ui:ObjectFieldTemplate']];
+            Object.keys(UISchemaObj[key]).forEach((subKey)=>{
+                if (UISchemaObj[key][subKey].hasOwnProperty("ui:FieldTemplate"))
+                {
+                    // console.log(UISchemaObj[key][subKey]["ui:FieldTemplate"],customTemplates[UISchemaObj[key]['ui:FieldTemplate']]);
+                    UISchemaObj[key][subKey]["ui:FieldTemplate"] = customTemplates[UISchemaObj[key][subKey]["ui:FieldTemplate"]];
+                    // console.log(UISchemaObj[key][subKey]);
+                }
+            })
+            // for (const child in UISchemaObj[key]){
+            //     if (UISchemaObj[key].hasOwnProperty(child)){
+            //         console.log(child);
+            //         if (child.hasOwnProperty("ui:FieldTemplate")){}
+            //
+            //     }
+            //
+            // }
         }
     })
 }

@@ -17,7 +17,7 @@ Modal.setAppElement("#root");
 export function CustomFieldTemplate(props) {
     const {id, label, children, description, errors, help, required, rawErrors} = props;
     const style = props.formContext.style;
-    // console.log("CustomFieldTemplate", props);
+    // console.log("CustomFieldTemplate", props.children);
     return (
         <div className="form-group row justify-content-center mx-auto my-xl-3 my-lg-3 my-md-2 my-sm-2 my-0">
             <label htmlFor={id}
@@ -177,7 +177,7 @@ export function CustomArrayFieldTemplate(props) {
                     </ul>
                 </div>
                 <div id={`${title}_modal`}>
-                    {isOpen ? <ModalArrayFieldContent /> : null}
+                    {isOpen ? <ModalArrayFieldContent/> : null}
                 </div>
             </div>
         </div>
@@ -287,7 +287,7 @@ export function CustomUploadFieldTemplate(props) {
                         <div className={"border border-secondary h-75 p-2 py-2"}>
                             <FileViewer
                                 fileType={state.fileList[state.selectFileIndex].split('.').pop()}
-                                filePath={`${props.context.api.defaults.baseURL}file/${state.fileList[state.selectFileIndex]}`}
+                                filePath={`${props.formContext.api.defaults.baseURL}file/${state.fileList[state.selectFileIndex]}`}
                             />
                         </div>
                     </div>
@@ -356,11 +356,76 @@ export function CustomUploadFieldTemplate(props) {
                     </ul>
                 </div>
                 <div id={`${title}_add_modal`}>
-                    {state.isUploadModalOpen ? <ModalFileUpload /> : null}
+                    {state.isUploadModalOpen ? <ModalFileUpload/> : null}
                 </div>
                 <div id={`${title}_edit_modal`}>
-                    {state.isPreviewModalOpen ? <ModalFilePreview /> : null}
+                    {state.isPreviewModalOpen ? <ModalFilePreview/> : null}
                 </div>
+            </div>
+        </div>
+    )
+}
+
+/**
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export function CombinedFieldTemplateFirst(props) {
+    console.log("CombinedFieldTemplateFirst", props);
+    const {id, label, children, required, rawErrors} = props;
+    const style = props.formContext.style;
+    return (
+        <div>
+            {children}
+            {rawErrors ? rawErrors.map((error, index) => {
+                return (<li className={style.msgError} key={index}>{error}</li>)
+            }) : null}
+        </div>
+
+    );
+}
+
+/**
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export function CombinedFieldTemplateSecond(props) {
+    const {id, label, children, required, rawErrors} = props;
+    const style = props.formContext.style;
+    return (
+        <div>
+            {children}
+        </div>
+    );
+}
+
+/**
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export function BundleFieldTemplate(props) {
+    const {id, label, title, required, rawErrors} = props;
+    const style = props.formContext.style;
+    return (
+        <div className="form-group row justify-content-center mx-auto my-xl-3 my-lg-3 my-md-2 my-sm-2 my-0">
+            <label htmlFor={id}
+                   className="col-lg-4 col-md-3 col-sm-3 col-10 col-form-label">{title}{required ? "*" : null}</label>
+            <div className="col-lg-8 col-md-9 col-sm-9 col-10">
+                <div className="input-group">
+                    {props.properties.map((element, index) => {
+                        return (<div className={`col-${12 / props.properties.length} px-0 ${index > 0 ? "pl-2" : ""}`}
+                                     key={index}>{element.content}</div>)
+                    })}
+                </div>
+                {rawErrors ? rawErrors.map((error, index) => {
+                    return (<li className={style.msgError} key={index}>{error}</li>)
+                }) : null}
             </div>
         </div>
     )
