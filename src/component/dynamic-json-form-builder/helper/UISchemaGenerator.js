@@ -56,9 +56,10 @@ const generateUISchemaRecursively = (schemaObj) => {
                 // if obj has largeEnum:true property, use react-windowed-select widget
                 if (schemaObj.hasOwnProperty("largeEnum") && schemaObj.largeEnum === true) {
                     json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"windowedSelectorWidget","ui:emptyValue":""`
-                } else if (schemaObj.hasOwnProperty("style") && schemaObj.style === "fundingBundleCurrency") {
-                    json += `"ui:FieldTemplate":"currencyFieldTemplate","ui:widget":"currencyFieldWidget"`;
-                } else {
+                }
+                // else if (schemaObj.hasOwnProperty("style") && schemaObj.style === "fundingBundleCurrency") {
+                // }
+                else {
                     // use regular select widget
                     json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"singleSelectWidget","ui:emptyValue":""`;
                 }
@@ -106,10 +107,10 @@ const generateUISchemaRecursively = (schemaObj) => {
          */
         else if (schemaObj.hasOwnProperty("multiCol") && schemaObj.multiCol === true && schemaObj.hasOwnProperty("enum")) {
             json += `"${schemaObj.id}":{`;
-            if (schemaObj.hasOwnProperty("enum")) {
-                json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"multiColSelectorWidget","ui:emptyValue":""`;
+            if (schemaObj.hasOwnProperty("style") && schemaObj.style=== "fundingBundleCurrency") {
+                json += `"ui:FieldTemplate":"currencyFieldTemplate","ui:widget":"currencyFieldWidget"`;
             } else {
-                console.warn("Unhandled situation, expect property 'enum', given: ", schemaObj);
+                json += `"ui:FieldTemplate":"fieldTemplate","ui:widget":"multiColSelectorWidget","ui:emptyValue":""`;
             }
             json += "},"
         } else if (schemaObj.type === "array") {

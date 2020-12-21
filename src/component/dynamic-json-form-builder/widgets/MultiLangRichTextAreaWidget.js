@@ -17,7 +17,7 @@ import '../style/style.css';
  * @constructor
  */
 export function MultiLangRichTextAreaWidget(props) {
-     console.log("MultiLangRichTextWidget", props)
+    // console.log("MultiLangRichTextWidget", props)
     const {value} = props;
     const {t, i18n} = useTranslation();
     const style = props.formContext.style;
@@ -50,14 +50,14 @@ export function MultiLangRichTextAreaWidget(props) {
                 const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
                 const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : null;
                 const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ? valueObj[secondaryLanguage] : null;
-                // console.log(primaryLanguage, primaryContent, secondaryLanguage, secondaryContent);
+                console.log(primaryLanguage, primaryContent, secondaryLanguage, secondaryContent);
                 setState({
                     ...state,
                     isBilingual: true,
                     primaryLanguage: primaryLanguage,
-                    primaryContent: EditorState.createWithContent(getContentFromHTML(primaryContent)),
+                    primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
                     secondaryLanguage: secondaryLanguage,
-                    secondaryContent: EditorState.createWithContent(getContentFromHTML(secondaryContent)),
+                    secondaryContent: secondaryContent ? EditorState.createWithContent(getContentFromHTML(secondaryContent)) : EditorState.createEmpty(),
                     languageList: languageList
                 })
             } else {
@@ -67,7 +67,7 @@ export function MultiLangRichTextAreaWidget(props) {
                 setState({
                     ...state,
                     primaryLanguage: primaryLanguage,
-                    primaryContent: EditorState.createWithContent(getContentFromHTML(primaryContent)),
+                    primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
                     languageList: languageList
                 })
             }
@@ -257,19 +257,19 @@ export function MultiLangRichTextAreaWidget(props) {
             <div className={`input-group-append`}>
                 <div className={`btn-group richTextBtnInline`}>
                     <button
-                       className={`btn richTextBtnLanguage p-0 pl-1"`}
-                       data-toggle={"tooltip"}
-                       data-placement={"left"}
-                       title={"Delete this content"}
-                       onClick={(event) => {
-                           setState({
-                               ...state,
-                               isBilingual: false,
-                               secondaryLanguage: "",
-                               secondaryContent: null,
-                               discardedContent: state.secondaryContent
-                           })
-                       }}>{state.secondaryLanguage}<BsTrashFill className="multiLangControlBtnIcon"/>
+                        className={`btn richTextBtnLanguage p-0 pl-1"`}
+                        data-toggle={"tooltip"}
+                        data-placement={"left"}
+                        title={"Delete this content"}
+                        onClick={(event) => {
+                            setState({
+                                ...state,
+                                isBilingual: false,
+                                secondaryLanguage: "",
+                                secondaryContent: null,
+                                discardedContent: state.secondaryContent
+                            })
+                        }}>{state.secondaryLanguage}<BsTrashFill className="multiLangControlBtnIcon"/>
                     </button>
                 </div>
             </div>

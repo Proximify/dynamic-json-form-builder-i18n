@@ -26,16 +26,16 @@
 }
 
 .multiLangRichTextEditor {
-    height: auto;
-    min-height: 117px;
+    height: auto !important;
+    min-height: calc(100% - 33px) !important;
 }
 
 .public-DraftStyleDefault-block {
-    margin: 2px 5px;
+    margin: 2px 5px !important;
     height: 100%;
 }
 
-.DraftEditor-editorContainer{
+.DraftEditor-editorContainer {
     z-index: 0 !important;
 }
 
@@ -46,7 +46,7 @@
 .richTextBtnInline {
     display: flex;
     align-items: center;
-    margin: 0 !important;
+    margin-bottom: 6px;
     flex-wrap: wrap;
 }
 
@@ -54,7 +54,7 @@
     z-index: 0 !important;
 }
 
-.richTextBtnLanguage{
+.richTextBtnLanguage {
     /*padding: 5px !important;*/
     font-size: 16px;
     height: 20px;
@@ -68,7 +68,7 @@
     color: #717981;
 }
 
-.multiLangControlBtnIcon{
+.multiLangControlBtnIcon {
     color: #97a2ae;
     padding: 1px;
     margin-left: 1px;
@@ -78,23 +78,26 @@
     background-color: #ddd9d9 !important
 }
 
-.fundBundleFund{
+.fundBundleFund {
     padding: 0;
-    width: 80% !important;
+    width: calc(100% - 160px);
 }
 
-.fundBundleCurrency{
+.fundBundleCurrency {
     padding: 0;
-    width: 20% !important;
+    width: 160px;
 }
 
 .fundFieldFund {
     border-radius: 0.2rem 0.0rem 0.0rem 0.2rem !important;
+    border-right: dotted 1px;
+    border-right-color: #c1bebe;
 }
 
-.fundFieldCurrency {
+.fundFieldCurrency .css-yk16xz-control {
     border-radius: 0.0rem 0.2rem 0.2rem 0.0rem !important;
     background-color: white !important;
     border-color: #ced4da !important;
     color: #999494 !important;
+    border-left: 0;
 }

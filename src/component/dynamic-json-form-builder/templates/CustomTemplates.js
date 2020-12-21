@@ -332,7 +332,7 @@ export function CustomUploadFieldTemplate(props) {
                                 <li className={"list-group-item p-1"} key={index}>
                                     <div className={"row"}>
                                         <div className={"col col-10 py-0"}>
-                                            <p className={"m-0 d-inline-block text-truncate"}
+                                            <p className={"m-0 text-truncate"}
                                                style={{maxWidth: "100%"}}
                                                onClick={(event) => {
                                                    setState({

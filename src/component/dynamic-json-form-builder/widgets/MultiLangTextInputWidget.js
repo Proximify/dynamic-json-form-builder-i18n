@@ -200,6 +200,7 @@ export function MultiLangTextInputWidget(props) {
                                 return (
                                     <a className={`dropdown-item ${(state.primaryLanguage === lang && !state.isBilingual) ? "active" : ""}`}
                                        href="#"
+                                       key={index}
                                        onClick={(e) => {
                                            e.preventDefault();
                                            if (state.isBilingual) {

@@ -39,7 +39,7 @@ export function TextInputWidget(props) {
 }
 
 export function PhoneNumInputWidget(props){
-    console.log("phoneNumInputWidget", props);
+    // console.log("phoneNumInputWidget", props);
     const [value, setValue] = useState(props.value);
 
     return (
@@ -154,10 +154,12 @@ export function MultiColSelectorWidget(props) {
         <table className={"table"}>
             <tbody>
             <tr>
-                <td className={"w-25 p-2"}>{value[0]}</td>
-                <td className={"w-25 p-2"}>{value[1]}</td>
-                <td className={"w-25 p-2"}>{value[2]}</td>
-                <td className={"w-25 p-2"}>{value[3]}</td>
+                {value.map((val, index)=>{
+                    return(
+                        <td className={"w-25 p-2"} key={index}>{val}</td>
+                    )
+                })}
+
             </tr>
             </tbody>
         </table>

@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react";
 import 'bootstrap';
 import NumberFormat from 'react-number-format';
 import '../style/style.css';
+import WindowedSelect from "react-windowed-select";
+import Select from "react-select";
 
 /**
  *
@@ -10,7 +12,7 @@ import '../style/style.css';
  * @constructor
  */
 export function FundFieldWidget(props) {
-    console.log("TextInputWidget", props);
+    // console.log("FundFieldWidget", props);
     const [value, setValue] = useState(props.value);
 
     return (
@@ -44,26 +46,75 @@ export function FundFieldWidget(props) {
  * @constructor
  */
 export function CurrencyFieldWidget(props) {
-    return (
-        <div className="btn-group dropdown">
-            <a type="button" className="btn btn-secondary dropdown-toggle fundFieldCurrency" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                {props.value ?? "CAD"}
-            </a>
-            <div className="dropdown-menu">
-                {props.options.enumOptions.map((element, index) => {
-                    return (
-                        <a className={`dropdown-item ${((props.value ?? "CAD") === element.value) ? "active" : ""}`}
-                           href="#"
-                           key={index} onClick={(e) => {
-                            e.preventDefault();
-                            props.onChange(element.value);
-                        }}>
-                            {element.value}
-                        </a>
+    console.log("CurrencyFieldWidget", props);
+
+    const {options, value} = props;
+
+    const handleChange = (value) => {
+        console.log("Selected!!", value);
+        if (value === null) {
+            props.onChange(undefined);
+        } else {
+            props.onChange(value.value);
+        }
+    }
+
+    const formatOptionLabel = ({label, value}) => (
+        <table className={"table"} style={{height: "100%", padding: "0", margin: "0"}}>
+            <tbody>
+            <tr>
+                {value.map((val, index)=>{
+                    return(
+                        <td className={"w-50 pl-2"} key={index}>{val}</td>
                     )
                 })}
-            </div>
+
+            </tr>
+            </tbody>
+        </table>
+    );
+
+    return (
+        <div>
+            <WindowedSelect
+                className={"fundFieldCurrency"}
+                value={value ? {value: [value[0]]} : {value: [options.enumOptions[0].value[0]]}}
+                onChange={handleChange}
+                formatOptionLabel={formatOptionLabel}
+                defaultValue={value ? options.enumOptions[options.enumOptions.map(function (e) {
+                    return e.value;
+                }).indexOf(value ?? "")] : options.enumOptions[0]}
+                options={options.enumOptions}
+            />
         </div>
     );
+
+    // const formatOptionLabel = ({label, value}) => (
+    //     <table className={"table"}>
+    //         <tbody>
+    //         <tr>
+    //             {value.map((val, index)=>{
+    //                 return(
+    //                     <td className={"w-25 p-2"} key={index}>{val}</td>
+    //                 )
+    //             })}
+    //
+    //         </tr>
+    //         </tbody>
+    //     </table>
+    // );
+    //
+    // return (
+    //     <div>
+    //         <Select
+    //             options={enumItems}
+    //             onChange={handleChange}
+    //             formatOptionLabel={formatOptionLabel}
+    //             defaultValue={options.enumOptions[options.enumOptions.map(function (e) {
+    //                 return e.value.join('');
+    //             }).indexOf((value) ? value.join('') : "")]}
+    //             isClearable
+    //         />
+    //     </div>
+    // );
 }

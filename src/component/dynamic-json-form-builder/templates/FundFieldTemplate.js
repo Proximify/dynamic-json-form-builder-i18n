@@ -22,7 +22,7 @@ export function FundBundleFieldTemplate(props) {
         }
         if (props.formData.hasOwnProperty("funding") && props.formData["funding"]) {
             if (!props.formData.hasOwnProperty("currency") || !props.formData["currency"]) {
-                props.formData["currency"] = "CAD";
+                props.formData["currency"] = ["CAD","Canadian Dollar"];
             }
         }
     }, [props.formData])
@@ -34,8 +34,8 @@ export function FundBundleFieldTemplate(props) {
             <div className="col-lg-8 col-md-9 col-sm-9 col-10">
                 <div className="input-group">
                     <div className={"fundBundleFund"}>{properties[0].content}</div>
-                    <div className="input-group-append fundBundleCurrency">{properties[1].content}</div>
-                    {(props.formData["funding"] && formData === props.formData && props.formData["currency"] !== "CAD") ?
+                    <div className={"fundBundleCurrency"}>{properties[1].content}</div>
+                    {(props.formData["funding"] && formData === props.formData && props.formData["currency"][0] !== "CAD") ?
                         <li>Convert to CAD: xxx</li> : null}
                 </div>
                 {rawErrors ? rawErrors.map((error, index) => {
@@ -75,7 +75,7 @@ export function FundFieldTemplate(props) {
 export function CurrencyFieldTemplate(props) {
     const {id, label, children, description, errors, help, required, rawErrors} = props;
     const style = props.formContext.style;
-    // console.log("MoneyFieldTemplate", props.children);
+    // console.log("CurrencyFieldTemplate", props);
     return (
         <div>
             {children}
