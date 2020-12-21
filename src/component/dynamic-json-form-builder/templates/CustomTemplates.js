@@ -117,7 +117,7 @@ export function CustomArrayFieldTemplate(props) {
     }
 
     /**
-     * This is the modal defination
+     * This is the modal definition
      * @returns {JSX.Element}
      * @constructor
      */
@@ -128,12 +128,12 @@ export function CustomArrayFieldTemplate(props) {
                 isOpen={isOpen}
                 contentLabel={`${title} Modal`}
                 id={`${title}_modal_${itemIndex}`}
-                style={props.formContext.modalStyle.modalArrayFieldContent ?? undefined}
+                // style={props.formContext.modalStyle.modalArrayFieldContent ?? undefined}
+                style={{height: "200px"}}
             >
                 <div className={"pt-3"}>
                     {items[itemIndex].children}
                 </div>
-                {console.log(currentData)}
                 <div className={"d-flex align-items-end justify-content-end"}>
                     <button className={"btn btn-outline-secondary mr-2 mt-3"}
                             onClick={(e) => {

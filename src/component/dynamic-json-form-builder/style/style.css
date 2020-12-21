@@ -80,12 +80,12 @@
 
 .fundBundleFund {
     padding: 0;
-    width: calc(100% - 160px);
+    width: calc(100% - 130px);
 }
 
 .fundBundleCurrency {
     padding: 0;
-    width: 160px;
+    width: 130px;
 }
 
 .fundFieldFund {
@@ -100,4 +100,17 @@
     border-color: #ced4da !important;
     color: #999494 !important;
     border-left: 0;
+}
+
+.currencyFieldCode {
+    color: #999;
+    padding: 0;
+    margin: 0;
+}
+
+.currencyFieldName {
+    color: #333;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
 }

@@ -3,7 +3,6 @@ import 'bootstrap';
 import NumberFormat from 'react-number-format';
 import '../style/style.css';
 import WindowedSelect from "react-windowed-select";
-import Select from "react-select";
 
 /**
  *
@@ -60,15 +59,13 @@ export function CurrencyFieldWidget(props) {
     }
 
     const formatOptionLabel = ({label, value}) => (
-        <table className={"table"} style={{height: "100%", padding: "0", margin: "0"}}>
+        <table>
             <tbody>
             <tr>
-                {value.map((val, index)=>{
-                    return(
-                        <td className={"w-50 pl-2"} key={index}>{val}</td>
-                    )
-                })}
-
+                <td className="currencyFieldCode">{value[0]}</td>
+            </tr>
+            <tr>
+                <td className="currencyFieldName">{value[1]}</td>
             </tr>
             </tbody>
         </table>
@@ -88,33 +85,4 @@ export function CurrencyFieldWidget(props) {
             />
         </div>
     );
-
-    // const formatOptionLabel = ({label, value}) => (
-    //     <table className={"table"}>
-    //         <tbody>
-    //         <tr>
-    //             {value.map((val, index)=>{
-    //                 return(
-    //                     <td className={"w-25 p-2"} key={index}>{val}</td>
-    //                 )
-    //             })}
-    //
-    //         </tr>
-    //         </tbody>
-    //     </table>
-    // );
-    //
-    // return (
-    //     <div>
-    //         <Select
-    //             options={enumItems}
-    //             onChange={handleChange}
-    //             formatOptionLabel={formatOptionLabel}
-    //             defaultValue={options.enumOptions[options.enumOptions.map(function (e) {
-    //                 return e.value.join('');
-    //             }).indexOf((value) ? value.join('') : "")]}
-    //             isClearable
-    //         />
-    //     </div>
-    // );
 }
