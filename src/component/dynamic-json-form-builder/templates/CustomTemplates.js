@@ -5,6 +5,8 @@ import Modal from 'react-modal';
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
 import {useTranslation} from 'react-i18next';
+import ModalRegular from "../widgets/ModalWidgets";
+
 
 Modal.setAppElement("#root");
 
@@ -177,7 +179,7 @@ export function CustomArrayFieldTemplate(props) {
                     </ul>
                 </div>
                 <div id={`${title}_modal`}>
-                    {isOpen ? <ModalArrayFieldContent/> : null}
+                    {isOpen ? <ModalRegular/> : null}
                 </div>
             </div>
         </div>

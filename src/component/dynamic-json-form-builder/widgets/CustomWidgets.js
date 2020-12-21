@@ -159,7 +159,6 @@ export function MultiColSelectorWidget(props) {
                         <td className={"w-25 p-2"} key={index}>{val}</td>
                     )
                 })}
-
             </tr>
             </tbody>
         </table>
