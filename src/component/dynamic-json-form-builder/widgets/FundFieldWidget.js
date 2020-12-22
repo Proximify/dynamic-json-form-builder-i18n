@@ -45,7 +45,7 @@ export function FundFieldWidget(props) {
  * @constructor
  */
 export function CurrencyFieldWidget(props) {
-    console.log("CurrencyFieldWidget", props);
+    // console.log("CurrencyFieldWidget", props);
 
     const {options, value} = props;
 

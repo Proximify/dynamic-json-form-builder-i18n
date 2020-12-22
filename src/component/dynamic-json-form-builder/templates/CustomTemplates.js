@@ -47,7 +47,7 @@ export function CustomArrayFieldTemplate(props) {
     const [isAddNew, setIsAddNew] = useState(false);
     const [currentData, setCurrentData] = useState(null);
     const {t, i18n} = useTranslation();
-
+    console.log(formData);
     // This function read the formData parsed in and extract the data and create HTML elements for each record
     const getItemList = () => {
         const listItem = []
@@ -167,19 +167,20 @@ export function CustomArrayFieldTemplate(props) {
             <label className="col-lg-4 col-md-3 col-sm-3 col-10 col-form-label">{title}{required ? "*" : null}</label>
             <div className="col-lg-8 col-md-9 col-sm-9 col-10">
                 {canAdd &&
-                <button type="button" className={"btn btn-light btn-link my-1"} onClick={() => {
+                <a type="button" className={"btn btn-light btn-link my-1"} onClick={() => {
                     setItemIndex(-1);
                     setIsAddNew(true);
                     return onAddClick();
                 }}>< PlusCircleIcon
-                    size={16}/></button>}
+                    size={16}/></a>}
                 <div>
                     <ul className={"list-group"}>
                         {getItemList()}
                     </ul>
                 </div>
                 <div id={`${title}_modal`}>
-                    {isOpen ? <ModalRegular/> : null}
+                    {isOpen ?
+                        <ModalArrayFieldContent/> : null}
                 </div>
             </div>
         </div>

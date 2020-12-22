@@ -37,7 +37,7 @@ export default function GenerateUISchema(schema) {
 }
 
 /**
- * A helper function that extract the passed in json schema object's properties and assign it the UISchema
+ * A service function that extract the passed in json schema object's properties and assign it the UISchema
  * For 'ui:widget' properties, assign string directly,
  * For 'ui:FieldTemplate' properties, temporarily assign it a string that can map to the function
  *

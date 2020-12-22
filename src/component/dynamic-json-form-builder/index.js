@@ -19,12 +19,13 @@ import {
     CustomUploadFieldTemplate,
     BundleFieldTemplate
 } from "./templates/CustomTemplates";
-import generateUISchema from "./helper/UISchemaGenerator";
-import formValidatorGenerator from './helper/formValidatorGenerator';
+import generateUISchema from "./service/UISchemaGenerator";
+import formValidatorGenerator from './service/formValidatorGenerator';
 import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget'
 import {MultiLangRichTextAreaWidget} from "./widgets/MultiLangRichTextAreaWidget";
 import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./templates/FundFieldTemplate";
 import {FundFieldWidget, CurrencyFieldWidget} from "./widgets/FundFieldWidget";
+import {ModalFieldTemplate} from "./templates/ModalFieldTemplate";
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
@@ -88,7 +89,7 @@ const uiSchema = {
         "ui:widget": "textWidget"
     },
     "education": {
-        "ui:ArrayFieldTemplate": customTemplates["arrayFieldTemplate"],
+        "ui:ArrayFieldTemplate": ModalFieldTemplate,
         "items": {
             "degree": {
                 "ui:FieldTemplate": customTemplates["fieldTemplate"],
@@ -251,8 +252,8 @@ class Index extends Component {
                 <Form
                     id={FormID}
                     schema={FormSchema}
-                    uiSchema={generateUISchema(FormSchema)}
-                    // uiSchema={uiSchema}
+                    // uiSchema={generateUISchema(FormSchema)}
+                    uiSchema={uiSchema}
                     formData={FormData}
                     formContext={
                         this.props.formContext ?? null

@@ -50,7 +50,7 @@ export function MultiLangRichTextAreaWidget(props) {
                 const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
                 const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : null;
                 const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ? valueObj[secondaryLanguage] : null;
-                console.log(primaryLanguage, primaryContent, secondaryLanguage, secondaryContent);
+                // console.log(primaryLanguage, primaryContent, secondaryLanguage, secondaryContent);
                 setState({
                     ...state,
                     isBilingual: true,
