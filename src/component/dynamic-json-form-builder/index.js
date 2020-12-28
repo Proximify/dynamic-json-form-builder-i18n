@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import Form from "@rjsf/core";
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
 import _ from 'lodash';
 import './i18n';
+import './index.css';
 import {withTranslation} from 'react-i18next';
 
 import {
     MultiColSelectorWidget,
     PhoneNumInputWidget,
     SingleSelectWidget,
-    TextInputWidget,
+    // TextInputWidget,
     WindowedSelectorWidget,
     FileInputWidget
 } from "./widgets/CustomWidgets";
@@ -27,17 +28,23 @@ import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from ".
 import {FundFieldWidget, CurrencyFieldWidget} from "./widgets/FundFieldWidget";
 import {ModalFieldTemplate} from "./templates/ModalFieldTemplate";
 
+import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
+import SingleFieldWidget from "./components/SingleField";
+import SelectionFieldWidget from "./components/SelectionField";
+
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
     windowedSelectorWidget: WindowedSelectorWidget,
-    textWidget: TextInputWidget,
     multiLangTextInputWidget: MultiLangTextInputWidget,
     multiLangRichTextAreaWidget: MultiLangRichTextAreaWidget,
     singleSelectWidget: SingleSelectWidget,
     fileInputWidget: FileInputWidget,
     phoneNumInputWidget:PhoneNumInputWidget,
     fundFieldWidget:FundFieldWidget,
-    currencyFieldWidget:CurrencyFieldWidget
+    currencyFieldWidget:CurrencyFieldWidget,
+
+    singleFieldWidget: SingleFieldWidget,
+    selectionFieldWidget:SelectionFieldWidget
 };
 
 const customTemplates = {
@@ -48,6 +55,8 @@ const customTemplates = {
     fundBundleFieldTemplate: FundBundleFieldTemplate,
     fundFieldTemplate:FundFieldTemplate,
     currencyFieldTemplate:CurrencyFieldTemplate,
+
+    genericFieldTemplate:GenericFieldTemplate
 }
 
 /**
@@ -55,29 +64,29 @@ const customTemplates = {
  */
 const uiSchema = {
     "name": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "textWidget"
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        "ui:widget": "singleFieldWidget"
     },
     "email": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "textWidget"
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        "ui:widget": "singleFieldWidget"
     },
     "age": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "textWidget"
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        "ui:widget": "singleFieldWidget"
     },
     "gender": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "singleSelectWidget",
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        "ui:widget": "selectionFieldWidget",
         "ui:emptyValue": ""
     },
     "phone": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "phoneNumInputWidget"
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        "ui:widget": "singleFieldWidget"
     },
     "hobby": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "windowedSelectorWidget",
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        "ui:widget": "selectionFieldWidget",
         "ui:emptyValue": ""
     },
     "comment": {
@@ -85,20 +94,20 @@ const uiSchema = {
         "ui:widget": "multiLangTextInputWidget"
     },
     "signature": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": "textWidget"
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        "ui:widget": "singleFieldWidget"
     },
     "education": {
         "ui:ArrayFieldTemplate": ModalFieldTemplate,
         "items": {
             "degree": {
-                "ui:FieldTemplate": customTemplates["fieldTemplate"],
-                "ui:widget": "singleSelectWidget",
+                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                "ui:widget": "selectionFieldWidget",
                 "ui:emptyValue": ""
             },
             "institution": {
-                "ui:FieldTemplate": customTemplates["fieldTemplate"],
-                "ui:widget": "multiColSelectorWidget",
+                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                "ui:widget": "selectionFieldWidget",
                 "ui:emptyValue": ""
             }
         }
@@ -108,14 +117,14 @@ const uiSchema = {
         "ui:widget": "fileInputWidget"
     },
     "work-experience": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
         "ui:widget": "multiLangRichTextAreaWidget"
     },
     "bundle-field": {
         "ui:ObjectFieldTemplate": customTemplates["bundleFieldTemplate"],
         "BDL-field1":{
             "ui:FieldTemplate": customTemplates["fieldTemplate"],
-            "ui:widget": "textWidget"
+            "ui:widget": "singleFieldWidget"
         },
         "BDL-field2":{
             "ui:FieldTemplate": customTemplates["fieldTemplate"],
@@ -124,7 +133,7 @@ const uiSchema = {
         },
         "BDL-field3":{
             "ui:FieldTemplate": customTemplates["fieldTemplate"],
-            "ui:widget": "textWidget"
+            "ui:widget": "singleFieldWidget"
         }
     },
     "funding-bundle": {

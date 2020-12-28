@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .rdw-option-wrapper {
     background-color: #f0f0ee;
 }

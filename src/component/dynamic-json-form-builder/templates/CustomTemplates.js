@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
 import {PlusCircleIcon, PencilIcon, XIcon} from '@primer/octicons-react'
 import Modal from 'react-modal';
 import FileViewer from 'react-file-viewer';

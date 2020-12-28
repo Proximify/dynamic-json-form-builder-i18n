@@ -23,7 +23,7 @@ function useTraceUpdate(props) {
 }
 
 export function ModalFieldTemplate(props) {
-    console.log("ModalFieldTemplate", props);
+    // console.log("ModalFieldTemplate", props);
     //useTraceUpdate(props);
     const {title, items, canAdd, onAddClick, help, required, formData} = props;
 
@@ -44,7 +44,7 @@ export function ModalFieldTemplate(props) {
         console.log("2")
 
         formData.forEach((element, index) => {
-            console.log(element)
+            // console.log(element)
             data.push(
                 <li className={`list-group-item ${(state.index === index && !state.edit) ? "d-none" : ""}`} key={index}>
                     <div className={"col-8"} onClick={()=>{
