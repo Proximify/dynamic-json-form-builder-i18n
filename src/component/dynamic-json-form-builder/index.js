@@ -24,13 +24,14 @@ import generateUISchema from "./service/UISchemaGenerator";
 import formValidatorGenerator from './service/formValidatorGenerator';
 import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget'
 import {MultiLangRichTextAreaWidget} from "./widgets/MultiLangRichTextAreaWidget";
-import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./templates/FundFieldTemplate";
-import {FundFieldWidget, CurrencyFieldWidget} from "./widgets/FundFieldWidget";
+
 import {ModalFieldTemplate} from "./templates/ModalFieldTemplate";
 
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
 import SingleFieldWidget from "./components/SingleField";
 import SelectionFieldWidget from "./components/SelectionField";
+import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./components/FundField/template";
+import {FundFieldWidget, CurrencyFieldWidget} from "./components/FundField/widget";
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
@@ -90,7 +91,7 @@ const uiSchema = {
         "ui:emptyValue": ""
     },
     "comment": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
+        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
         "ui:widget": "multiLangTextInputWidget"
     },
     "signature": {
@@ -121,20 +122,20 @@ const uiSchema = {
         "ui:widget": "multiLangRichTextAreaWidget"
     },
     "bundle-field": {
-        "ui:ObjectFieldTemplate": customTemplates["bundleFieldTemplate"],
-        "BDL-field1":{
-            "ui:FieldTemplate": customTemplates["fieldTemplate"],
-            "ui:widget": "singleFieldWidget"
-        },
-        "BDL-field2":{
-            "ui:FieldTemplate": customTemplates["fieldTemplate"],
-            "ui:widget": "singleSelectWidget",
-            "ui:emptyValue": ""
-        },
-        "BDL-field3":{
-            "ui:FieldTemplate": customTemplates["fieldTemplate"],
-            "ui:widget": "singleFieldWidget"
-        }
+        "ui:ObjectFieldTemplate": customTemplates["bundleFieldTemplate"]
+        // "BDL-field1":{
+        //     "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        //     "ui:widget": "singleFieldWidget"
+        // },
+        // "BDL-field2":{
+        //     "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        //     "ui:widget": "singleSelectWidget",
+        //     "ui:emptyValue": ""
+        // },
+        // "BDL-field3":{
+        //     "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+        //     "ui:widget": "singleFieldWidget"
+        // }
     },
     "funding-bundle": {
         "ui:ObjectFieldTemplate": customTemplates["fundBundleFieldTemplate"],

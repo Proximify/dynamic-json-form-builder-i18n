@@ -80,12 +80,12 @@
 
 .fundBundleFund {
     padding: 0;
-    width: calc(100% - 130px);
+    width: calc(90% - 100px);
 }
 
 .fundBundleCurrency {
     padding: 0;
-    width: 130px;
+    width: 100px;
 }
 
 .fundFieldFund {

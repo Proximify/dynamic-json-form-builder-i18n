@@ -19,10 +19,9 @@ const SelectionFieldWidget = (props) => {
 
         } else {
             return (
-                <div className="max-w-lg flex rounded-md shadow-sm">
                     <WindowedSelect
                         id={props.schema.id}
-                        className={"max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full md:max-w-lg shadow-sm sm:max-w-xs border-gray-300 rounded-md"}
+                        className={"singleFieldInput"}
                         options={options.enumOptions}
                         isClearable={true}
                         onChange={handleChange}
@@ -30,7 +29,6 @@ const SelectionFieldWidget = (props) => {
                             return e.value;
                         }).indexOf(value)]}
                     />
-                </div>
             );
         }
     } else if (schema.hasOwnProperty("multiCol") && schema.multiCol) {
@@ -49,9 +47,8 @@ const SelectionFieldWidget = (props) => {
         );
 
         return (
-            <div className="max-w-lg flex rounded-md shadow-sm">
                 <Select
-                    className={"max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full md:max-w-lg shadow-sm sm:max-w-xs border-gray-300 rounded-md"}
+                    className={"singleFieldInput"}
                     id={props.schema.id}
                     options={options.enumOptions}
                     onChange={handleChange}
@@ -61,14 +58,12 @@ const SelectionFieldWidget = (props) => {
                     }).indexOf((value) ? value.join('') : "")]}
                     isClearable
                 />
-            </div>
         );
     } else {
         return (
-            <div className="max-w-lg flex rounded-md shadow-sm">
                 <Select
                     id={props.schema.id}
-                    className={"max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full md:max-w-lg shadow-sm sm:max-w-xs border-gray-300 rounded-md"}
+                    className={"singleFieldInput"}
                     options={options.enumOptions}
                     defaultValue={options.enumOptions[options.enumOptions.map(function (e) {
                         return e.value;
@@ -76,7 +71,6 @@ const SelectionFieldWidget = (props) => {
                     onChange={handleChange}
                     isClearable={true}
                 />
-            </div>
         );
     }
 

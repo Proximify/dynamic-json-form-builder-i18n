@@ -1,0 +1,13 @@
+.fundField {
+    min-width: 16rem;
+    @apply shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300
+}
+
+.fundFieldInput {
+    @apply w-2/3 inline-block focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-l-md
+}
+
+.fundFieldSelect {
+    @apply w-1/3 inline-block focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300
+
+}

@@ -33,8 +33,6 @@ const SingleFieldWidget = (props) => {
     if (schema.hasOwnProperty("type") && schema.type === "integer") {
         if (schema.hasOwnProperty("style") && schema.style === "phoneNumField") {
             return (
-                <div className="max-w-lg flex rounded-md shadow-sm">
-
                     <NumberFormat
                         className={"singleFieldInput"}
                         type="text"
@@ -45,12 +43,9 @@ const SingleFieldWidget = (props) => {
                         onValueChange={handleNumChange}
                         onBlur={handleBlur}
                     />
-                </div>
             );
         } else {
             return (
-                <div className="max-w-lg flex rounded-md shadow-sm">
-
                     <NumberFormat
                         className={"singleFieldInput"}
                         type="text"
@@ -60,12 +55,10 @@ const SingleFieldWidget = (props) => {
                         onValueChange={handleNumChange}
                         onBlur={handleBlur}
                     />
-                </div>
             );
         }
     } else {
         return (
-            <div className="max-w-lg flex rounded-md shadow-sm">
                 <input
                     className={"singleFieldInput"}
                     type={"text"}
@@ -75,7 +68,6 @@ const SingleFieldWidget = (props) => {
                     onChange={handleTextChange}
                     onBlur={handleBlur}
                 />
-            </div>
         );
     }
 }

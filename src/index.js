@@ -58,7 +58,7 @@ class App extends Component {
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
                     <div className={"container"}>
                         <div className={"row d-flex justify-content-center"}>
-                            <div className={"col-xl-8 col-lg-6 col-md-7 col-sm-10 col-12"}>
+                            <div className="col-xl-4 col-lg-6 col-md-8 col-sm-10 col-12 px-5">
                         <Form
                             formID={"user-profile-form"}
                             resourceURL={"form/"}
