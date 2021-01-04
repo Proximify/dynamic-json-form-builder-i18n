@@ -22,7 +22,8 @@ import {
 } from "./templates/CustomTemplates";
 import generateUISchema from "./service/UISchemaGenerator";
 import formValidatorGenerator from './service/formValidatorGenerator';
-import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget'
+import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget';
+
 import {MultiLangRichTextAreaWidget} from "./widgets/MultiLangRichTextAreaWidget";
 
 import {ModalFieldTemplate} from "./templates/ModalFieldTemplate";
@@ -32,11 +33,13 @@ import SingleFieldWidget from "./components/SingleField";
 import SelectionFieldWidget from "./components/SelectionField";
 import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./components/FundField/template";
 import {FundFieldWidget, CurrencyFieldWidget} from "./components/FundField/widget";
+import {MultiLangFieldWidget} from './components/MultiLangField'
+import MultiLangFieldTemplate from './components/MultiLangField/template';
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
     windowedSelectorWidget: WindowedSelectorWidget,
-    multiLangTextInputWidget: MultiLangTextInputWidget,
+    multiLangFieldWidget: MultiLangFieldWidget,
     multiLangRichTextAreaWidget: MultiLangRichTextAreaWidget,
     singleSelectWidget: SingleSelectWidget,
     fileInputWidget: FileInputWidget,
@@ -91,8 +94,12 @@ const uiSchema = {
         "ui:emptyValue": ""
     },
     "comment": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "multiLangTextInputWidget"
+        "ui:FieldTemplate": MultiLangFieldTemplate,
+        "ui:widget": "multiLangFieldWidget"
+    },
+    "comment1": {
+        "ui:FieldTemplate": customTemplates["fieldTemplate"],
+        "ui:widget": MultiLangTextInputWidget
     },
     "signature": {
         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],

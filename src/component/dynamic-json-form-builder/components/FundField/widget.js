@@ -62,10 +62,11 @@ export function CurrencyFieldWidget(props) {
             ...base,
             borderTopLeftRadius: '0',
             borderBottomLeftRadius: '0',
-            borderTopRightRadius: '0.375rem',
-            borderBottomRightRadius: '0.375rem',
+            borderTopRightRadius: '0.25rem',
+            borderBottomRightRadius: '0.25rem',
             borderLeft: '0',
-            borderColor: 'rgba(209, 213, 219, var(--tw-border-opacity))'
+            borderColor: '#D1D5DB',
+            boxShadow: 'none !important'
         })
     };
 

@@ -1,0 +1,28 @@
+.multiLangField {
+    min-width: 16rem;
+    @apply shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300  flex
+}
+
+.multiLangFieldInput {
+    width: calc(100% - 2.3rem);
+    @apply focus:ring-indigo-500 focus:border-indigo-500 text-sm border border-gray-300 rounded-l align-middle h-full
+}
+
+.multiLangFieldSelect {
+    width: 2.3rem;
+    @apply focus:ring-indigo-500 focus:border-indigo-500 text-sm border border-l-0 border-gray-300 rounded-r align-middle text-gray-500
+}
+
+.dropdownMenu {
+    min-width: 10rem;
+    transform: translate3d(-126px, 0px, 0px);
+    @apply mt-0 ml-0.5 absolute z-10 float-left py-2 px-0 mt-0.5 text-base text-black text-left list-none bg-white bg-clip-padding border rounded shadow-md
+}
+
+.dropdownItem {
+    @apply block w-full px-6 py-1 clear-both font-normal text-center whitespace-nowrap border-0
+}
+
+.undoBtn {
+    @apply px-1 py-1 leading-normal text-sm text-blue-500 font-medium
+}

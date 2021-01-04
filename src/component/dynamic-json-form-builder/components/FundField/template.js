@@ -14,6 +14,7 @@ export function FundBundleFieldTemplate(props) {
     const isFirstRun = useRef(true);
     const [formData, setFormData] = useState();
 
+    //This can be remove, we can make CAD default currency even no value, let backend to do checking
     useEffect(() => {
         if (isFirstRun.current) {
             setFormData(props.formData);
