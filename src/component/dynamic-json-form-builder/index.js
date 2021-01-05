@@ -33,7 +33,7 @@ import SingleFieldWidget from "./components/SingleField";
 import SelectionFieldWidget from "./components/SelectionField";
 import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./components/FundField/template";
 import {FundFieldWidget, CurrencyFieldWidget} from "./components/FundField/widget";
-import {MultiLangFieldWidget} from './components/MultiLangField'
+import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
 
 const customWidgets = {
@@ -97,10 +97,6 @@ const uiSchema = {
         "ui:FieldTemplate": MultiLangFieldTemplate,
         "ui:widget": "multiLangFieldWidget"
     },
-    "comment1": {
-        "ui:FieldTemplate": customTemplates["fieldTemplate"],
-        "ui:widget": MultiLangTextInputWidget
-    },
     "signature": {
         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
         "ui:widget": "singleFieldWidget"
@@ -125,8 +121,8 @@ const uiSchema = {
         "ui:widget": "fileInputWidget"
     },
     "work-experience": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "multiLangRichTextAreaWidget"
+        "ui:FieldTemplate": MultiLangFieldTemplate,
+        "ui:widget": MultiLangTextAreaFieldWidget
     },
     "bundle-field": {
         "ui:ObjectFieldTemplate": customTemplates["bundleFieldTemplate"]
