@@ -1,5 +1,3 @@
-import style from "./style.module.scss";
-
 export const ToolbarStyleDefault = {
     options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'],
     inline: {

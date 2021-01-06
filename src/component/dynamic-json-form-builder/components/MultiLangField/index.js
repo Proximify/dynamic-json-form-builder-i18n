@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
-import {BsX, BsCaretRightFill, BsCaretDownFill, BsTrashFill} from 'react-icons/bs';
+import {BsX, BsCaretDownFill, BsTrashFill} from 'react-icons/bs';
 import './MultiLangField.css';
 import {useTranslation} from 'react-i18next';
-import ClickAwayListener from 'react-click-away-listener';
 import {Menu, Transition} from "@headlessui/react";
 import {ContentState, convertToRaw, EditorState} from "draft-js";
 import htmlToDraft from "html-to-draftjs";
@@ -551,20 +550,20 @@ export function MultiLangTextAreaFieldWidget(props) {
                                                                            setState({
                                                                                ...state,
                                                                                isBilingual: false,
-                                                                               primaryContent: state.primaryContent !== "" ? state.primaryContent : state.secondaryContent,
+                                                                               primaryContent: state.primaryContent !== null ? state.primaryContent : state.secondaryContent,
                                                                                secondaryLanguage: "",
-                                                                               secondaryContent: "",
-                                                                               discardedContent: (state.primaryContent !== "" && state.secondaryContent !== "") ? state.secondaryContent : ""
+                                                                               secondaryContent: null,
+                                                                               discardedContent: (state.primaryContent !== null && state.secondaryContent !== null) ? state.secondaryContent : null
                                                                            })
                                                                        } else {
                                                                            setState({
                                                                                ...state,
                                                                                isBilingual: false,
                                                                                primaryLanguage: state.secondaryLanguage,
-                                                                               primaryContent: state.secondaryContent !== "" ? state.secondaryContent : state.primaryContent,
+                                                                               primaryContent: state.secondaryContent !== null ? state.secondaryContent : state.primaryContent,
                                                                                secondaryLanguage: "",
-                                                                               secondaryContent: "",
-                                                                               discardedContent: (state.primaryContent !== "" && state.secondaryContent !== "") ? state.primaryContent : ""
+                                                                               secondaryContent: null,
+                                                                               discardedContent: (state.primaryContent !== null && state.secondaryContent !== null) ? state.primaryContent : null
                                                                            })
                                                                        }
                                                                    } else {

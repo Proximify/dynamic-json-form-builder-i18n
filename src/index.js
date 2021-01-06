@@ -1,8 +1,8 @@
-import React, {Component, Suspense } from 'react';
+import React, {Component, Suspense} from 'react';
 import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
 import Form from './component/dynamic-json-form-builder/index';
 import ModalStyle from './ModalStyles.json';
 import api from "./api";
@@ -56,21 +56,23 @@ class App extends Component {
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
-                    <div className={"container"}>
-                        <div className={"row d-flex justify-content-center"}>
-                            <div className="col-xl-4 col-lg-6 col-md-8 col-sm-10 col-12 px-5">
-                        <Form
-                            formID={"user-profile-form"}
-                            resourceURL={"form/"}
-                            validationDeclaration={this.validationDeclaration}
-                            HTTPMethod={"PATCH"}
-                            language={ this.state.language.language}
-                            formContext={{
-                                api: api,
-                                style: style,
-                                modalStyle: ModalStyle
-                            }}
-                        />
+                    <div className="container mx-auto">
+                        <div className="grid grid-cols-12 justify-center">
+                            <div className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
+                                <Form
+                                    formID={"user-profile-form"}
+                                    resourceURL={"form/"}
+                                    validationDeclaration={this.validationDeclaration}
+                                    HTTPMethod={"PATCH"}
+                                    language={this.state.language.language}
+                                    formContext={{
+                                        api: api,
+                                        style: style,
+                                        modalStyle: ModalStyle,
+                                        app: "CV",
+                                        form: "UserProfile"
+                                    }}
+                                />
                             </div>
                         </div>
                     </div>

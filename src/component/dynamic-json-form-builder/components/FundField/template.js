@@ -8,8 +8,7 @@ import '../../style/style.css'
  * @constructor
  */
 export function FundBundleFieldTemplate(props) {
-    const {id, label, title, required, rawErrors} = props;
-    const style = props.formContext.style;
+    const {id, label, title, required} = props;
     const properties = props.properties;
     const isFirstRun = useRef(true);
     const [formData, setFormData] = useState();
@@ -37,7 +36,6 @@ export function FundBundleFieldTemplate(props) {
                     <React.Fragment>{properties[0].content}</React.Fragment>
                     <React.Fragment>{properties[1].content}</React.Fragment>
                 </div>
-
                 {(props.formData["funding"] && formData === props.formData && props.formData["currency"][0] !== "CAD") ?
                     <li>Convert to CAD: xxx</li> : null}
             </div>
@@ -52,7 +50,7 @@ export function FundBundleFieldTemplate(props) {
  * @constructor
  */
 export function FundFieldTemplate(props) {
-    const {id, label, children, description, errors, help, required, rawErrors} = props;
+    const {children, rawErrors} = props;
     const style = props.formContext.style;
     // console.log("MoneyFieldTemplate", props.children);
     return (
@@ -72,8 +70,7 @@ export function FundFieldTemplate(props) {
  * @constructor
  */
 export function CurrencyFieldTemplate(props) {
-    const {id, label, children, description, errors, help, required, rawErrors} = props;
-    const style = props.formContext.style;
+    const {children} = props;
     // console.log("CurrencyFieldTemplate", props);
     return (
         <React.Fragment>

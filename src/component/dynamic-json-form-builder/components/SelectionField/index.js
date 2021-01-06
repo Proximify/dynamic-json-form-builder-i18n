@@ -4,7 +4,7 @@ import WindowedSelect from "react-windowed-select";
 
 const SelectionFieldWidget = (props) => {
     const {options, value, schema} = props;
-    console.log("SelectionFieldWidget", schema)
+    // console.log("SelectionFieldWidget", schema)
     const handleChange = (value) => {
         console.log("Selected!!", value);
         if (value === null) {

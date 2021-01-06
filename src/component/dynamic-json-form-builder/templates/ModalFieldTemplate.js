@@ -1,35 +1,11 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {PlusCircleIcon} from "@primer/octicons-react";
 import ModalRegular from "../widgets/ModalWidgets";
-import Modal from "react-modal";
-
-Modal.setAppElement("#root");
-
-function useTraceUpdate(props) {
-    const prev = useRef(props);
-    useEffect(() => {
-        const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
-            if (prev.current[k] !== v) {
-                ps[k] = [prev.current[k], v];
-            }
-            return ps;
-        }, {});
-        if (Object.keys(changedProps).length > 0) {
-            console.log('Changed props:', changedProps);
-        }
-        prev.current = props;
-    });
-}
 
 export function ModalFieldTemplate(props) {
     // console.log("ModalFieldTemplate", props);
-    //useTraceUpdate(props);
-    const {title, items, canAdd, onAddClick, help, required, formData} = props;
-
-    // useEffect(()=>{
-    //     items[0].onDropIndexClick(0);
-    // })
+    const {title, items, canAdd, onAddClick, required, formData} = props;
 
     const [state, setState] = useState({
         open: false,
@@ -41,7 +17,7 @@ export function ModalFieldTemplate(props) {
 
     const formDataInit = () => {
         const data = [];
-        console.log("2")
+        // console.log("2")
 
         formData.forEach((element, index) => {
             // console.log(element)

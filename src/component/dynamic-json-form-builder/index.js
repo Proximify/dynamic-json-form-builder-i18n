@@ -35,6 +35,7 @@ import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from ".
 import {FundFieldWidget, CurrencyFieldWidget} from "./components/FundField/widget";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
+import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
@@ -124,21 +125,20 @@ const uiSchema = {
         "ui:FieldTemplate": MultiLangFieldTemplate,
         "ui:widget": MultiLangTextAreaFieldWidget
     },
-    "bundle-field": {
-        "ui:ObjectFieldTemplate": customTemplates["bundleFieldTemplate"]
-        // "BDL-field1":{
-        //     "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        //     "ui:widget": "singleFieldWidget"
-        // },
-        // "BDL-field2":{
-        //     "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        //     "ui:widget": "singleSelectWidget",
-        //     "ui:emptyValue": ""
-        // },
-        // "BDL-field3":{
-        //     "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        //     "ui:widget": "singleFieldWidget"
-        // }
+    "address": {
+        "ui:ObjectFieldTemplate": ObjectFieldTemplate,
+        "street-number":{
+            "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+            "ui:widget": "singleFieldWidget"
+        },
+        "street-name":{
+            "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+            "ui:widget": "singleFieldWidget"
+        },
+        "country":{
+            "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+            "ui:widget": "singleFieldWidget"
+        }
     },
     "funding-bundle": {
         "ui:ObjectFieldTemplate": customTemplates["fundBundleFieldTemplate"],
@@ -282,15 +282,15 @@ class Index extends Component {
                         this.onErrorMsgChange(errors);
                     }}
                     onSubmit={({formData}) => this.onFormSubmit(formData)}>
-                    <div className={"container"}>
+                    <div className="flex">
                         <div id={`${FormID}-errorMsg`}>
                         </div>
                         <div>
-                            <button className={"btn btn-info"}
+                            <button className="border bg-green-400 w-20 h-9 rounded mr-3"
                                     type="submit">
                                 {t('btn-submit')}
                             </button>
-                            <button className={"btn btn-secondary ml-3"}
+                            <button className="border bg-gray-600 w-20 h-9 rounded text-white"
                                     type="button">
                                 {t('btn-cancel')}
                             </button>

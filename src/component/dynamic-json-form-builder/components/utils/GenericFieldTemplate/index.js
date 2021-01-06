@@ -24,11 +24,11 @@ const GenericFieldTemplate = (props) => {
             </label>
             <div className="flex-grow" style={{maxWidth: "25rem"}}>
                 {children}
-                <div className={`${rawErrors} ? 'hidden' : ''`}>
-                    {rawErrors ? rawErrors.map((error, index) => {
-                        return (<li className="text-red-600" key={index}>{error}</li>)
-                    }) : null}
-                </div>
+            </div>
+            <div className={`${!rawErrors ? 'hidden' : ''}`}>
+                {rawErrors ? rawErrors.map((error, index) => {
+                    return (<li className="text-red-600" key={index}>{error}</li>)
+                }) : null}
             </div>
         </div>
     );

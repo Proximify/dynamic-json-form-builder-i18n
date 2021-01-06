@@ -12,11 +12,11 @@ const MultiLangFieldTemplate = (props) => {
                 <React.Fragment>
                     {children}
                 </React.Fragment>
-                <div className={`${rawErrors} ? 'hidden' : ''`}>
-                    {rawErrors ? rawErrors.map((error, index) => {
-                        return (<li className="text-red-600" key={index}>{error}</li>)
-                    }) : null}
-                </div>
+            </div>
+            <div className={`${rawErrors} ? 'hidden' : ''`}>
+                {rawErrors ? rawErrors.map((error, index) => {
+                    return (<li className="text-red-600" key={index}>{error}</li>)
+                }) : null}
             </div>
         </div>
     );

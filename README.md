@@ -233,7 +233,7 @@ Form Schema Example
     },
     "education": {
       "type": "array",
-      "title": "Education",
+      "title": "Address",
       "id": "education",
       "items": {
         "type": "object",
