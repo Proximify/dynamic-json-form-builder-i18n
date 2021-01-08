@@ -9,8 +9,8 @@ export default function CVFormatters(props) {
     }
 
     return (
-        <div>
+        <React.Fragment>
             {forms[props.form]}
-        </div>
+        </React.Fragment>
     )
 }

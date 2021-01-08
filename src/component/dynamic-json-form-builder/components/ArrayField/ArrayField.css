@@ -1,0 +1,4 @@
+.sectionData {
+    min-width: 16rem;
+    @apply max-w-lg block w-full focus:ring-indigo-500 focus:border-indigo-500 h-full
+}

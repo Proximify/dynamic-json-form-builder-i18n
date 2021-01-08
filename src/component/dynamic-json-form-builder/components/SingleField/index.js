@@ -4,7 +4,7 @@ import NumberFormat from "react-number-format";
 
 const SingleFieldWidget = (props) => {
     const {schema} = props;
-    const [value, setValue] = useState(props.value);
+    const [value, setValue] = useState(props.value ?? "");
     // console.log("TextInputWidget", props);
 
     const handleTextChange = (event) => {

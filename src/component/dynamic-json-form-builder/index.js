@@ -31,11 +31,12 @@ import {ModalFieldTemplate} from "./templates/ModalFieldTemplate";
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
 import SingleFieldWidget from "./components/SingleField";
 import SelectionFieldWidget from "./components/SelectionField";
-import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./components/FundField/template";
-import {FundFieldWidget, CurrencyFieldWidget} from "./components/FundField/widget";
+import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./components/FundField/templates";
+import {FundFieldWidget, CurrencyFieldWidget} from "./components/FundField/widgets";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
-import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
+// import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
+import ArrayFieldTemplate from './components/ArrayField/ArrayFieldTemplate';
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
@@ -126,18 +127,20 @@ const uiSchema = {
         "ui:widget": MultiLangTextAreaFieldWidget
     },
     "address": {
-        "ui:ObjectFieldTemplate": ObjectFieldTemplate,
-        "street-number":{
-            "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-            "ui:widget": "singleFieldWidget"
-        },
-        "street-name":{
-            "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-            "ui:widget": "singleFieldWidget"
-        },
-        "country":{
-            "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-            "ui:widget": "singleFieldWidget"
+        "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+        "items": {
+            "street-number":{
+                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                "ui:widget": "singleFieldWidget"
+            },
+            "street-name":{
+                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                "ui:widget": "singleFieldWidget"
+            },
+            "country":{
+                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                "ui:widget": "selectionFieldWidget"
+            }
         }
     },
     "funding-bundle": {

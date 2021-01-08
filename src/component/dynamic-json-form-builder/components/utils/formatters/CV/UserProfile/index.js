@@ -11,8 +11,8 @@ export default function UserProfile(props) {
     }
 
     return (
-        <div>
+        <React.Fragment>
             {sections[props.section]}
-        </div>
+        </React.Fragment>
     )
 }

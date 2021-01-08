@@ -4,7 +4,7 @@ import {PlusCircleIcon} from "@primer/octicons-react";
 import ModalRegular from "../widgets/ModalWidgets";
 
 export function ModalFieldTemplate(props) {
-    // console.log("ModalFieldTemplate", props);
+    console.log("ModalFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData} = props;
 
     const [state, setState] = useState({
