@@ -31,7 +31,7 @@ export function FundBundleFieldTemplate(props) {
         <div className="flex flex-wrap justify-center pt-3">
             <label htmlFor={id}
                    className="w-1/4 flex-grow text-sm font-medium text-gray-700 pt-2 pl-2">{title}{required ? "*" : null}</label>
-            <div className="flex-grow" style={{maxWidth: "25rem"}}>
+            <div className="flex-grow" style={{maxWidth: "20rem"}}>
                 <div className="fundField">
                     <React.Fragment>{properties[0].content}</React.Fragment>
                     <React.Fragment>{properties[1].content}</React.Fragment>

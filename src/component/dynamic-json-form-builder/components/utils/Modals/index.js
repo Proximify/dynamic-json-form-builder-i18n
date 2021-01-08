@@ -1,27 +1,28 @@
 import React from "react";
 
 export default function ModalRegular(props) {
-    // console.log(props);
-    const {state, setState, items, context, title} = props;
+    console.log("ModalRegular",props);
+    const {state, setState, items, context, title, fullScreen} = props;
 
     return (
         <>
             <div
                 // className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-gray-300 bg-opacity-70"
-                className="pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-10"
+                // className="fixed w-full h-full top-0 left-0 flex items-center justify-center z-50 overflow-y-auto overflow-x-hidden"
+                className={`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed z-50 ${fullScreen ? "w-full h-full top-0 left-0 " : "inset-0 outline-none focus:outline-none bg-gray-300 bg-opacity-70"}`}
             >
                 <div
                     // className="relative w-full my-6 mx-auto max-w-2xl"
-                    className="absolute w-full h-full bg-white opacity-100"
+                    className={`${fullScreen ? "absolute w-full h-full bg-white opacity-100" : "relative w-full my-6 mx-auto max-w-2xl"}`}
                 >
                     <div
-                        className="fixed w-full h-full z-50 overflow-y-auto p-10"
+                        className={`${fullScreen ? "max-w-2xl h-full mx-auto" : "border rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none"}`}
                         // className="border rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none"
                     >
                         <div
                             className="flex items-start justify-between p-4 border-b border-solid border-gray-300 rounded-t h-16 align-items-center">
                             <h1 className="text-2xl font-semibold">
-                                Modal Title
+                                {title}
                             </h1>
                             <button
                                 className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"

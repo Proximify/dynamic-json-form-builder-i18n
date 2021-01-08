@@ -104,7 +104,7 @@ const uiSchema = {
         "ui:widget": "singleFieldWidget"
     },
     "education": {
-        "ui:ArrayFieldTemplate": ModalFieldTemplate,
+        "ui:ArrayFieldTemplate": ArrayFieldTemplate,
         "items": {
             "degree": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],

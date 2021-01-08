@@ -8,7 +8,7 @@ const MultiLangFieldTemplate = (props) => {
             <label htmlFor={id} className="w-1/4 flex-grow text-sm font-medium text-gray-700 pt-2 pl-2">
                 {label}{required ? "*" : null}
             </label>
-            <div className="flex-grow" style={{maxWidth: "25rem"}}>
+            <div className="flex-grow" style={{maxWidth: "20rem"}}>
                 <React.Fragment>
                     {children}
                 </React.Fragment>

@@ -65,7 +65,7 @@ export default function ArrayFieldTemplate(props) {
             <label
                 className="w-1/4 flex-grow text-sm font-medium text-gray-700 pt-2 pl-2">
                 {title}{required ? "*" : null}</label>
-            <div className="flex-grow" style={{maxWidth: "25rem"}}>
+            <div className="flex-grow" style={{maxWidth: "20rem"}}>
                 <div className="sectionData">
                     {canAdd &&
                     <a type="button" className="text-blue-600" onClick={() => {
@@ -80,7 +80,7 @@ export default function ArrayFieldTemplate(props) {
                         size={16}/></a>}
                     <div className={`${formData && formData.length > 0 ? "border border-gray-300 rounded" : "hidden"}`}>
                         <ul>
-                            <p className="border-b px-2 border-gray-300">Address:</p>
+                            <p className="border-b px-2 border-gray-300">{title}:</p>
                             {formDataInit()}
                         </ul>
                     </div>
@@ -88,7 +88,7 @@ export default function ArrayFieldTemplate(props) {
                 <div id={`${title}_modal`}>
                     {state.open ?
                         <ModalRegular state={state} setState={setState} items={items} context={formContext}
-                                      title={title}/> : null}
+                                      title={title} fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}
                 </div>
             </div>
         </div>

@@ -9,7 +9,7 @@ import RMFormatters from "./RM";
  * @constructor
  */
 export default function Formatters(props) {
-    console.log("Formatters", props)
+    // console.log("Formatters", props)
     const apps = {
         "CV": <CVFormatters form={props.form} section={props.section} fields={props.fields} values={props.values}/>,
         "RM": <RMFormatters/>
