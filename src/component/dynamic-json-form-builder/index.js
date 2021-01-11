@@ -6,28 +6,11 @@ import './i18n';
 import './index.css';
 import {withTranslation} from 'react-i18next';
 
-// import {
-//     MultiColSelectorWidget,
-//     PhoneNumInputWidget,
-//     SingleSelectWidget,
-//     // TextInputWidget,
-//     WindowedSelectorWidget,
-//     FileInputWidget
-// } from "./widgets/CustomWidgets";
-// import {
-//     CustomFieldTemplate,
-//     CustomArrayFieldTemplate,
-//     CustomUploadFieldTemplate,
-//     BundleFieldTemplate
-// } from "./templates/CustomTemplates";
-
 import generateUISchema from "./service/UISchemaGenerator";
 import formValidatorGenerator from './service/formValidatorGenerator';
-import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget';
+// import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget';
 
 import {MultiLangRichTextAreaWidget} from "./widgets/MultiLangRichTextAreaWidget";
-
-import {ModalFieldTemplate} from "./templates/ModalFieldTemplate";
 
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
 import SingleFieldWidget from "./components/SingleField";
@@ -42,13 +25,6 @@ import FileFieldTemplate from "./components/FileField/FileFieldTemplate";
 import FileFieldWidget from "./components/FileField";
 
 const customWidgets = {
-    // multiColSelectorWidget: MultiColSelectorWidget,
-    // windowedSelectorWidget: WindowedSelectorWidget,
-    // multiLangRichTextAreaWidget: MultiLangRichTextAreaWidget,
-    // singleSelectWidget: SingleSelectWidget,
-    // fileInputWidget: FileInputWidget,
-    // phoneNumInputWidget:PhoneNumInputWidget,
-
     fundFieldWidget:FundFieldWidget,
     currencyFieldWidget:CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -57,11 +33,6 @@ const customWidgets = {
 };
 
 const customTemplates = {
-    // fieldTemplate: CustomFieldTemplate,
-    // arrayFieldTemplate: CustomArrayFieldTemplate,
-    // uploadFieldTemplate: CustomUploadFieldTemplate,
-    // bundleFieldTemplate: BundleFieldTemplate,
-
     fundBundleFieldTemplate: FundBundleFieldTemplate,
     fundFieldTemplate:FundFieldTemplate,
     currencyFieldTemplate:CurrencyFieldTemplate,
