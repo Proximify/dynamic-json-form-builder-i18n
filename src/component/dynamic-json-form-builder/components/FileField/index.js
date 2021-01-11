@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import {toast, ToastContainer} from "react-toastify";
+import {BsCloudUpload} from "react-icons/bs";
+import './FileField.css'
 
 export default function FileFieldWidget(props) {
     // console.log("FileInputWidget", props);
@@ -83,13 +85,19 @@ export default function FileFieldWidget(props) {
     }
 
     return (
-        <div className={"container p-2"}>
-            <div className={"row"}>
-                <input className={"py-1"} type="file" name="file" id={`${props.id}_input`}
-                       accept={types} onChange={onChangeHandler} multiple/>
-                <a className={"btn btn-primary"} onClick={onClickHandler}>UPLOAD</a>
+        <div className="p-2">
+            <div className="flex justify-between">
+            <input className={"py-1"} type="file" name="file" id={`${props.id}_input`}
+                   accept={types} onChange={onChangeHandler} multiple/>
+
+            <a href="#"
+               className="bg-indigo-500 text-white text-sm font-bold py-2 px-2 rounded inline-flex items-center mr-3"
+               onClick={onClickHandler}
+            >
+                <BsCloudUpload size={"1rem"}/>
+                <span className="ml-1">Upload</span></a>
             </div>
-            <div className={"row mt-1"}>
+            <div className={"my-2"}>
                 <ToastContainer/>
                 <div className={`progress ${selectedFiles ? "visible" : "invisible"}`}
                      style={{width: '26%', height: '10px'}}>

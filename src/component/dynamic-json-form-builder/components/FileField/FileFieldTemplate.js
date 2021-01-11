@@ -4,11 +4,12 @@ import {PlusCircleIcon, XIcon} from "@primer/octicons-react";
 import Modal from "react-modal";
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
-import {BsTrashFill} from "react-icons/bs";
+import {BsTrashFill, BsDownload, BsCloudDownload} from "react-icons/bs";
 import Formatter from "../utils/formatter";
+import {ModalFileField} from "../utils/Modals";
 
 export default function FileFieldTemplate(props) {
-    const {id, label, children, required, formContext,title,schema} = props;
+    const {id, label, children, required, formContext, schema} = props;
     const {t, i18n} = useTranslation();
     const [state, setState] = useState({
         isLoading: true,
@@ -54,64 +55,91 @@ export default function FileFieldTemplate(props) {
         );
     }
 
-    const ModalFileUpload = () => {
+    // const ModalFileUpload = () => {
+    //     return (
+    //         <Modal
+    //             isOpen={state.isUploadModalOpen}
+    //             contentLabel="File Add Modal"
+    //             id={`${label}_add_modal`}
+    //             style={props.formContext.modalStyle.modalFileUpload ?? undefined}
+    //         >
+    //             <div className={"container"}>
+    //                 {children}
+    //                 <div className={"d-flex justify-content-end"}>
+    //                     <button className={"btn btn-outline-secondary mt-3"}
+    //                             onClick={() => {
+    //                                 setState({...state, isLoading: true, fileList: null, isUploadModalOpen: false});
+    //                             }}>
+    //                         {t('btn-close')}
+    //                     </button>
+    //                 </div>
+    //             </div>
+    //         </Modal>
+    //     )
+    // }
+
+    const previewContent = () => {
         return (
-            <Modal
-                isOpen={state.isUploadModalOpen}
-                contentLabel="File Add Modal"
-                id={`${title}_add_modal`}
-                style={props.formContext.modalStyle.modalFileUpload ?? undefined}
-            >
-                <div className={"container"}>
-                    {children}
-                    <div className={"d-flex justify-content-end"}>
-                        <button className={"btn btn-outline-secondary mt-3"}
-                                onClick={() => {
-                                    setState({...state, isLoading: true, fileList: null, isUploadModalOpen: false});
-                                }}>
-                            {t('btn-close')}
-                        </button>
+            <React.Fragment>
+                <div className="w-full h-full">
+                    <h2 className="text-xl my-1">File Content</h2>
+                    <div className="bg-gray-200" style={{height: '100%'}}>
+                        <FileViewer
+                            fileType={state.fileList[state.selectFileIndex].split('.').pop()}
+                            filePath={`${props.formContext.api.defaults.baseURL}file/${state.fileList[state.selectFileIndex]}`}
+                        />
                     </div>
                 </div>
-            </Modal>
+                <div className="mt-3">
+                    <a href="#"
+                       className="bg-indigo-500 text-white text-sm font-bold py-2 px-2 rounded inline-flex items-center"
+                       onClick={() => {
+                           handleFileDownload(state.selectFileIndex);
+                       }}
+                    >
+                        <BsCloudDownload size={"1rem"}/>
+                        <span className="ml-1">Download</span>
+                    </a>
+                </div>
+            </React.Fragment>
         )
     }
 
-    const ModalFilePreview = () => {
-        return (
-            <Modal
-                isOpen={state.isPreviewModalOpen}
-                contentLabel="File Edit Modal"
-                id={`${label}_edit_modal`}
-                closeOnEscape={true}
-                style={props.formContext.modalStyle.ModalFilePreview ?? undefined}
-            >
-                <div className={"row h-100"}>
-                    <div className={"col col-2"}>
-                        <button className={"btn btn-outline-primary mt-2 mr-2"} onClick={() => {
-                            setState({...state, selectFileIndex: null, isPreviewModalOpen: false});
-                        }}>Close
-                        </button>
-                        <a href="#"
-                           className={"btn btn-outline-success mt-2 mr-2"}
-                           onClick={() => {
-                               handleFileDownload(state.selectFileIndex);
-                           }}
-                        >Download</a>
-                    </div>
-                    <div className={"col col-10"}>
-                        <h2>File Content</h2>
-                        <div className={"border border-secondary h-75 p-2 py-2"}>
-                            <FileViewer
-                                fileType={state.fileList[state.selectFileIndex].split('.').pop()}
-                                filePath={`${props.formContext.api.defaults.baseURL}file/${state.fileList[state.selectFileIndex]}`}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </Modal>
-        )
-    }
+    // const ModalFilePreview = () => {
+    //     return (
+    //         <Modal
+    //             isOpen={state.isPreviewModalOpen}
+    //             contentLabel="File Edit Modal"
+    //             id={`${label}_edit_modal`}
+    //             closeOnEscape={true}
+    //             style={props.formContext.modalStyle.ModalFilePreview ?? undefined}
+    //         >
+    //             <div className={"row h-100"}>
+    //                 <div className={"col col-2"}>
+    //                     <button className={"btn btn-outline-primary mt-2 mr-2"} onClick={() => {
+    //                         setState({...state, selectFileIndex: null, isPreviewModalOpen: false});
+    //                     }}>Close
+    //                     </button>
+    //                     <a href="#"
+    //                        className={"btn btn-outline-success mt-2 mr-2"}
+    //                        onClick={() => {
+    //                            handleFileDownload(state.selectFileIndex);
+    //                        }}
+    //                     >Download</a>
+    //                 </div>
+    //                 <div className={"col col-10"}>
+    //                     <h2>File Content</h2>
+    //                     <div className={"border border-secondary h-75 p-2 py-2"}>
+    //                         <FileViewer
+    //                             fileType={state.fileList[state.selectFileIndex].split('.').pop()}
+    //                             filePath={`${props.formContext.api.defaults.baseURL}file/${state.fileList[state.selectFileIndex]}`}
+    //                         />
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </Modal>
+    //     )
+    // }
 
     const handleFileDownload = (index) => {
         let fileName = state.fileList[index];
@@ -144,7 +172,7 @@ export default function FileFieldTemplate(props) {
                     }}>< PlusCircleIcon
                         size={16}/>
                     </a>
-                    <div className={`${state.fileList ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
+                    <div className={`${state.fileList && state.fileList.length >0  ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
                         <ul>
                             <p className="border-b px-2 border-gray-300">{label}:</p>
                             {state.fileList ? state.fileList.map((element, index) => {
@@ -177,11 +205,25 @@ export default function FileFieldTemplate(props) {
                         </ul>
                     </div>
                 </div>
+                {/*state, setState, children, title, fullScreen, isUpload*/}
+
                 <div id={`${label}_add_modal`}>
-                    {state.isUploadModalOpen ? <ModalFileUpload/> : null}
+                    {state.isUploadModalOpen ?
+                        // <ModalFileUpload />
+                        <ModalFileField state={state} setState={setState} children={children} title={label}
+                                        fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}
+                                        isUpload={true}/>
+                        : null}
                 </div>
                 <div id={`${label}_edit_modal`}>
-                    {state.isPreviewModalOpen ? <ModalFilePreview/> : null}
+                    {state.isPreviewModalOpen ?
+                        // <ModalFilePreview/>
+                        <ModalFileField state={state} setState={setState} children={
+                            previewContent()
+                        } title={label}
+                                        fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}
+                                        isUpload={false}/>
+                        : null}
                 </div>
             </div>
         </div>

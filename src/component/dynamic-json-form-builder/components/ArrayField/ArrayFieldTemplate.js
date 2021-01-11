@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {PlusCircleIcon} from "@primer/octicons-react";
-import ModalRegular from "../utils/Modals";
+import ModalArrayItem from "../utils/Modals";
 import Formatter from "../utils/formatter";
 import './ArrayField.css'
 import {BsTrashFill} from "react-icons/bs";
@@ -91,8 +91,8 @@ export default function ArrayFieldTemplate(props) {
                 </div>
                 <div id={`${title}_modal`}>
                     {state.open ?
-                        <ModalRegular state={state} setState={setState} items={items} context={formContext}
-                                      title={title} fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}
+                        <ModalArrayItem state={state} setState={setState} items={items} context={formContext}
+                                        title={title} fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}
                 </div>
             </div>
         </div>

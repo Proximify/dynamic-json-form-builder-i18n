@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import Formatter from '../utils/formatter';
 import './ObjectField.css'
 import {PlusCircleIcon} from "@primer/octicons-react";
-import ModalRegular from "../utils/Modals";
+import ModalArrayItem from "../utils/Modals";
 
 export default function ObjectFieldTemplate(props) {
     const {id, schema, title, required, rawErrors, properties, formData, formContext} = props;
@@ -78,7 +78,7 @@ export default function ObjectFieldTemplate(props) {
                 </div>
                 <div id={`${title}_modal`}>
                     {state.open ?
-                        <ModalRegular state={state} setState={setState} restoreData={restoreData} content={properties} title={title}/> : null}
+                        <ModalArrayItem state={state} setState={setState} restoreData={restoreData} content={properties} title={title}/> : null}
                 </div>
             </div>
             <div className={`${rawErrors} ? 'hidden' : ''`}>
