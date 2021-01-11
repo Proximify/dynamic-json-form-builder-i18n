@@ -1,7 +1,7 @@
 import React from "react";
 import AllReference from './AllReference';
 
-export default function RMFormatters(props) {
+export default function RMFormatter(props) {
     const forms = {
         "AllReference": <AllReference/>
     }
@@ -9,7 +9,7 @@ export default function RMFormatters(props) {
     return (
         <div>
             This is All Reference Form belongs to RM app
-            {forms[props.subSectionID]}
+            {forms[props.form]}
         </div>
     )
 }

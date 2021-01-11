@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Formatters from '../utils/formatters';
+import Formatter from '../utils/formatter';
 import './ObjectField.css'
 import {PlusCircleIcon} from "@primer/octicons-react";
 import ModalRegular from "../utils/Modals";
@@ -60,8 +60,8 @@ export default function ObjectFieldTemplate(props) {
                                     dataPrevious: isFormDataEmpty() ? null : formData
                                 })
                             }}>
-                                <Formatters app={formContext.app} form={formContext.form} section={schema.id}
-                                            fields={properties} values={formData}/>
+                                <Formatter app={formContext.app} form={formContext.form} section={schema.id}
+                                           fields={properties} values={formData}/>
                             </div>
                         </div>
                         :

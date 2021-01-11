@@ -37,6 +37,8 @@ import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/M
 import MultiLangFieldTemplate from './components/MultiLangField/template';
 // import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
 import ArrayFieldTemplate from './components/ArrayField/ArrayFieldTemplate';
+import FileFieldTemplate from "./components/FileField/FileFieldTemplate";
+import FileFieldWidget from "./components/FileField";
 
 const customWidgets = {
     multiColSelectorWidget: MultiColSelectorWidget,
@@ -119,8 +121,8 @@ const uiSchema = {
         }
     },
     "resume": {
-        "ui:FieldTemplate": customTemplates["uploadFieldTemplate"],
-        "ui:widget": "fileInputWidget"
+        "ui:FieldTemplate": FileFieldTemplate,
+        "ui:widget": FileFieldWidget
     },
     "work-experience": {
         "ui:FieldTemplate": MultiLangFieldTemplate,

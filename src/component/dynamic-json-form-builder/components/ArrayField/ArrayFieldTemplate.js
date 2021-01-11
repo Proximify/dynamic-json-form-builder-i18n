@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {PlusCircleIcon} from "@primer/octicons-react";
 import ModalRegular from "../utils/Modals";
-import Formatters from "../utils/formatters";
+import Formatter from "../utils/formatter";
 import './ArrayField.css'
 import {BsTrashFill} from "react-icons/bs";
 
@@ -37,8 +37,12 @@ export default function ArrayFieldTemplate(props) {
                                 dataPrevious: items[index].children.props.formData
                             })
                         }}>
-                        <Formatters app={formContext.app} form={formContext.form} section={schema.id}
-                                    fields={items[0].children.props.schema.properties} values={formData[index]}/>
+                        <Formatter app={formContext.app}
+                                   form={formContext.form}
+                                   section={schema.id}
+                                   fields={items[0].children.props.schema.properties}
+                                   values={formData[index]}
+                        />
                     </div>
                     <div>
                         <a type="button"
@@ -78,7 +82,7 @@ export default function ArrayFieldTemplate(props) {
                         return onAddClick();
                     }}>< PlusCircleIcon
                         size={16}/></a>}
-                    <div className={`${formData && formData.length > 0 ? "border border-gray-300 rounded" : "hidden"}`}>
+                    <div className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
                         <ul>
                             <p className="border-b px-2 border-gray-300">{title}:</p>
                             {formDataInit()}

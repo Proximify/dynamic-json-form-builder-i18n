@@ -1,7 +1,7 @@
 import React from "react";
 import UserProfile from './UserProfile';
 
-export default function CVFormatters(props) {
+export default function CVFormatter(props) {
     // console.log("CVFormatters",props);
 
     const forms = {
