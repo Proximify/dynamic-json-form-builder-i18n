@@ -1,22 +1,15 @@
 import React, {Component} from 'react';
 import Form from "@rjsf/core";
-// import 'bootstrap/dist/css/bootstrap.css';
-import _ from 'lodash';
 import './i18n';
 import './index.css';
 import {withTranslation} from 'react-i18next';
-
-import generateUISchema from "./service/UISchemaGenerator";
 import formValidatorGenerator from './service/formValidatorGenerator';
-// import {MultiLangTextInputWidget} from './widgets/MultiLangTextInputWidget';
-
-import {MultiLangRichTextAreaWidget} from "./widgets/MultiLangRichTextAreaWidget";
 
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
 import SingleFieldWidget from "./components/SingleField";
 import SelectionFieldWidget from "./components/SelectionField";
-import {FundBundleFieldTemplate,FundFieldTemplate,CurrencyFieldTemplate} from "./components/FundField/templates";
-import {FundFieldWidget, CurrencyFieldWidget} from "./components/FundField/widgets";
+import {CurrencyFieldTemplate, FundBundleFieldTemplate, FundFieldTemplate} from "./components/FundField/templates";
+import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField/widgets";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
 // import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
@@ -133,6 +126,90 @@ const uiSchema = {
     }
 };
 
+
+const UISchema = {
+    "personal_information": {
+        "identification":{
+            "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+            "items":{
+                "title":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "selectionFieldWidget",
+                    "ui:emptyValue": ""
+                },
+                "family_name":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "singleFieldWidget"
+                },
+                "first_name":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "singleFieldWidget"
+                },
+                "middle_name":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "singleFieldWidget"
+                },
+                "previous_family_name":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "singleFieldWidget"
+                },
+                "previous_first_name":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "singleFieldWidget"
+                },
+                "date_of_birth":{
+
+                },
+                "sex":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "selectionFieldWidget",
+                    "ui:emptyValue": ""
+                },
+                "designated_group":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "selectionFieldWidget",
+                    "ui:emptyValue": ""
+                },
+                "correspondence_language":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "selectionFieldWidget",
+                    "ui:emptyValue": ""
+                },
+                "canadian_residency_status":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "selectionFieldWidget",
+                    "ui:emptyValue": ""
+                },
+                "applied_for_permanent_residency":{
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "selectionFieldWidget",
+                    "ui:emptyValue": ""
+                },
+                "permanent_residency_start_date": {
+                    "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                    "ui:widget": "singleFieldWidget"
+                },
+                "country_of_citizenship":{
+                    "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+                    "items":{
+                        "country_of_citizenship":{
+                            "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                            "ui:widget": "selectionFieldWidget",
+                            "ui:emptyValue": ""
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
 class Index extends Component {
     constructor(props) {
         super(props);
@@ -203,6 +280,7 @@ class Index extends Component {
             }).catch(err => {
             console.log(err);
         })
+        this.forceUpdate();
     }
 
     onErrorMsgChange = (errors) => {
@@ -243,18 +321,18 @@ class Index extends Component {
                     id={FormID}
                     schema={FormSchema}
                     // uiSchema={generateUISchema(FormSchema)}
-                    uiSchema={uiSchema}
+                    uiSchema={UISchema}
                     formData={FormData}
                     formContext={
-                        this.props.formContext ?? null
+                        {...this.props.formContext, submitAction:this.onSubmit} ?? null
                     }
                     widgets={customWidgets}
                     showErrorList={false}
-                    liveValidate
+                    // liveValidate
                     onChange={() => {
                         console.log("data changed")
                     }}
-                    validate={validation}
+                    // validate={validation}
                     onError={(errors) => {
                         this.onErrorMsgChange(errors);
                     }}

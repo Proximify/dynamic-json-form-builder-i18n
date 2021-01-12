@@ -1,14 +1,15 @@
 import React, {useEffect, useRef, useState} from "react";
-import {BsX, BsCaretDownFill, BsTrashFill} from 'react-icons/bs';
+import {BsCaretDownFill, BsTrashFill, BsX} from 'react-icons/bs';
 import './MultiLangField.css';
 import {useTranslation} from 'react-i18next';
 import {Menu, Transition} from "@headlessui/react";
 import {ContentState, convertToRaw, EditorState} from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import htmlToDraft from "html-to-draftjs";
 import draftToHtml from "draftjs-to-html";
 import {Editor} from "react-draft-wysiwyg";
 import {ToolbarStyleCompact} from "../../../../RichTextToolBarStyle";
-
+import '../../style/style.css'
 
 /**
  * This is the custom widget for multiple languages input field

@@ -29,6 +29,7 @@ export default function ArrayFieldTemplate(props) {
                     <div
                         className="hover:text-gray-600"
                         onClick={() => {
+                            console.log("click")
                             setState({
                                 ...state,
                                 open: true,
@@ -84,7 +85,7 @@ export default function ArrayFieldTemplate(props) {
                         size={16}/></a>}
                     <div className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
                         <ul>
-                            <p className="border-b px-2 border-gray-300">{title}:</p>
+                            <p className="border-b px-2 border-gray-300 text-base">{title}:</p>
                             {formDataInit()}
                         </ul>
                     </div>

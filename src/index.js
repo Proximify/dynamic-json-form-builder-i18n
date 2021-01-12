@@ -70,7 +70,7 @@ class App extends Component {
                                         style: style,
                                         modalStyle: ModalStyle,
                                         app: "CV",
-                                        form: "UserProfile"
+                                        form: "PersonalInformation"
                                     }}
                                 />
                             </div>
