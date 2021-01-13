@@ -2,15 +2,19 @@ import React, {Component, Suspense} from 'react';
 import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
-// import 'bootstrap/dist/css/bootstrap.css';
+import {SchemaParser} from "./utils/SchemaParser";
 import Form from './component/dynamic-json-form-builder/index';
 import ModalStyle from './ModalStyles.json';
 import api from "./api";
 import style from "./style.module.scss";
+import {ModalFullScreen} from "./component/dynamic-json-form-builder/components/utils/Modals/index";
+import Formatter from "./component/dynamic-json-form-builder/components/utils/formatter";
+
 
 class App extends Component {
     constructor(props) {
         super(props);
+        this.rerenderParentCallback = this.rerenderParentCallback.bind(this);
 
         this.toggleLanguage = (value) => {
             console.log(language[value]);
@@ -24,8 +28,43 @@ class App extends Component {
         this.state = {
             language: language.EN,
             pageLanguages: ["EN", "FR", "SP"],
-            toggleLanguage: this.toggleLanguage
+            toggleLanguage: this.toggleLanguage,
+            isReady: false,
+
+            schema: null,
+            data: null,
+            childComponentOpen: {identification: false, profile: false}
         };
+    }
+
+    componentDidMount() {
+        console.log("refetch")
+        api.get("form/").then(res => {
+            this.setState({
+                    schema: res.data.formSchema,
+                    data: res.data.formData ?? undefined,
+                    isReady: true
+                }, () => console.log("load success", this.state.schema, this.state.data)
+            )
+        }).catch(err => {
+            console.log("loading err", err);
+        })
+    }
+
+    rerenderParentCallback() {
+        api.get("form/").then(res => {
+            this.setState({
+                    schema: res.data.formSchema,
+                    data: res.data.formData ?? undefined,
+                    childComponentOpen: {
+                        ...this.state.childComponentOpen,
+                        identification: false
+                    }
+                }, () => console.log("load success", this.state.schema, this.state.data)
+            )
+        }).catch(err => {
+            console.log("loading err", err);
+        })
     }
 
     validationMethods = {
@@ -52,29 +91,65 @@ class App extends Component {
     }
 
     render() {
+        console.log("parent render")
         return (
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
                     <div className="container mx-auto">
                         <div className="grid grid-cols-12 justify-center">
-                            <div className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
-                                <Form
-                                    formID={"user-profile-form"}
-                                    resourceURL={"form/"}
-                                    validationDeclaration={this.validationDeclaration}
-                                    HTTPMethod={"PATCH"}
-                                    language={this.state.language.language}
-                                    formContext={{
-                                        api: api,
-                                        style: style,
-                                        modalStyle: ModalStyle,
-                                        app: "CV",
-                                        form: "PersonalInformation"
-                                    }}
-                                />
+                            <div
+                                className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
+
+
+                                {this.state.isReady &&
+                                <SchemaParser schema={this.state.schema} data={this.state.data} language={this.state.language.language}/>}
+                                {/*<button className="border bg-blue-200 p-2 rounded"*/}
+                                {/*        onClick={() => {*/}
+                                {/*            this.setState({*/}
+                                {/*                ...this.state,*/}
+                                {/*                childComponentOpen: {*/}
+                                {/*                    ...this.state.childComponentOpen,*/}
+                                {/*                    identification: !this.state.childComponentOpen["identification"]*/}
+                                {/*                }*/}
+                                {/*            })*/}
+                                {/*        }}>*/}
+                                {/*    Identification*/}
+                                {/*</button>*/}
+                                {/*{*/}
+                                {/*    this.state.childComponentOpen["identification"] &&*/}
+                                {/*    <ModalFullScreen*/}
+                                {/*        content={*/}
+                                {/*            <Form*/}
+                                {/*                formID={"user-profile-form"}*/}
+                                {/*                resourceURL={"form/"}*/}
+                                {/*                validationDeclaration={this.validationDeclaration}*/}
+                                {/*                HTTPMethod={"PATCH"}*/}
+                                {/*                language={this.state.language.language}*/}
+                                {/*                formSchema={this.state.schema}*/}
+                                {/*                formData={this.state.data}*/}
+                                {/*                rerenderParentCallback={this.rerenderParentCallback}*/}
+                                {/*                formContext={{*/}
+                                {/*                    api: api,*/}
+                                {/*                    style: style,*/}
+                                {/*                    modalStyle: ModalStyle,*/}
+                                {/*                    app: "CV",*/}
+                                {/*                    form: "PersonalInformation"*/}
+                                {/*                }}*/}
+                                {/*            />*/}
+                                {/*        } title={"title"} fullScreen={true}/>*/}
+                                {/*}*/}
+
+                                {/*{this.state.isReady && <Formatter app={"CV"}*/}
+                                {/*                                  form={"PersonalInformation"}*/}
+                                {/*                                  section={"identification"}*/}
+                                {/*                                  fields={this.state.schema.properties}*/}
+                                {/*                                  values={this.state.data}/>}*/}
+
+
                             </div>
                         </div>
+
                     </div>
                 </LanguageContext.Provider>
             </Suspense>
