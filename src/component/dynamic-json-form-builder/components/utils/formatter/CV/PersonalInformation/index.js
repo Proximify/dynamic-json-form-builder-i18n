@@ -4,7 +4,6 @@ import CountryOfCitizenship from "./CountryOfCitizenship";
 
 
 export default function PersonalInformation(props) {
-    // sub
     console.log("PersonalInformation",props);
 
     const sections = {

@@ -9,7 +9,6 @@ import htmlToDraft from "html-to-draftjs";
 import draftToHtml from "draftjs-to-html";
 import {Editor} from "react-draft-wysiwyg";
 import {ToolbarStyleCompact} from "../../../../RichTextToolBarStyle";
-import '../../style/style.css'
 
 /**
  * This is the custom widget for multiple languages input field

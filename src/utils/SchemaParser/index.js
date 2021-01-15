@@ -1,8 +1,11 @@
 import React, {useState} from 'react';
-import Form from '../../component/dynamic-json-form-builder/index';
+import FormBuilder from '../../component/dynamic-json-form-builder';
 import api from "../../api";
 import style from "../../style.module.scss";
 import ModalStyle from "../../ModalStyles.json";
+import {FiEdit} from 'react-icons/fi';
+import {AiOutlineFileAdd} from 'react-icons/ai'
+import {ModalFullScreen} from "../../component/dynamic-json-form-builder/components/utils/Modals";
 
 export function SchemaParser(props) {
     // console.log("SchemaParser", props)
@@ -11,9 +14,14 @@ export function SchemaParser(props) {
     const data = props.data;
 
     const [state, setState] = useState({
+        data: {
+            personal_information: {identification: {}, language_skill: []},
+            recognitions: [],
+            user_profile: {}
+        },
         sectionControl: {
-            personal_information: {identification: false, language_skill: false},
-            recognitions: false,
+            personal_information: {identification: false, language_skill: []},
+            recognitions: [],
             user_profile: false
         }
     })
@@ -30,141 +38,422 @@ export function SchemaParser(props) {
 
     const isForm = (obj) => {
         return obj.hasOwnProperty("type") && obj.type === "form" && obj.hasOwnProperty("schema") && Object.keys(obj.schema).length > 0;
+    }
 
+    const isSingle = (obj) => {
+        return obj.hasOwnProperty("multiplicity") && obj.multiplicity === "single";
+    }
+
+    const isEmptyObject = (obj) => {
+        if (!obj) {
+            return true;
+        } else if (obj && Object.keys(obj).length === 0) {
+            return true;
+        } else {
+            let noValue = true
+            Object.values(obj).forEach(value => {
+                if (value && value !== "" && value !== undefined) {
+                    noValue = false;
+                }
+            })
+            return noValue
+        }
+    }
+
+    const handleFormEditSubmit = (formData, formDependent) => {
+        console.log("received form data", formData, formDependent);
+        console.log("should fetch data");
+        if (formDependent.form === null) {
+            if (isNaN(formDependent.index)) {
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: formData
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: false
+                    }
+                })
+            } else {
+                const dataArray = state.data[formDependent.section];
+                dataArray[formDependent.index] = formData;
+                const controlArray = state.sectionControl[formDependent.section];
+                controlArray[formDependent.index] = false;
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: dataArray
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: controlArray
+                    }
+                })
+            }
+        } else {
+            if (isNaN(formDependent.index)) {
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: {
+                            ...state.data[formDependent.section],
+                            [formDependent.form]: formData
+                        }
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: {
+                            ...state.sectionControl[formDependent.section],
+                            [formDependent.form]: false
+                        }
+                    }
+                })
+            } else {
+                const dataArray = state.data[formDependent.section][formDependent.form];
+                dataArray[formDependent.index] = formData;
+                const controlArray = state.sectionControl[formDependent.section][formDependent.form];
+                controlArray[formDependent.index] = false;
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: {
+                            ...state.data[formDependent.section],
+                            [formDependent.form]: dataArray
+                        }
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: {
+                            ...state.sectionControl[formDependent.section],
+                            [formDependent.form]: controlArray
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    const handleFormEditCancel = () => {
+        setState({
+            ...state,
+            sectionControl: {
+                personal_information: {identification: false, language_skill: []},
+                recognitions: [],
+                user_profile: false
+            }
+        })
     }
 
     return (
         <>
             {Object.keys(schema).map((key, index) => {
-                // return (key === "personal_information" ?
-                //         (
-                //             Object.keys(schema["personal_information"]["subSection"]).map((subKey, subIndex) => {
-                //                     return (subKey === "identification" ?
-                //                         (
-                //                             <div>
-                //
-                //
-                //                                 {/*<button className="border bg-blue-200 p-2 rounded"*/}
-                //                                 {/*        onClick={() => {*/}
-                //                                 {/*            this.setState({*/}
-                //                                 {/*                ...this.state,*/}
-                //                                 {/*                childComponentOpen: {*/}
-                //                                 {/*                    ...this.state.childComponentOpen,*/}
-                //                                 {/*                    identification: !this.state.childComponentOpen["identification"]*/}
-                //                                 {/*                }*/}
-                //                                 {/*            })*/}
-                //                                 {/*        }}>*/}
-                //                                 {/*    Identification*/}
-                //                                 {/*</button>*/}
-                //
-                //
-                //                             </div>
-                //
-                //                         ) : null)
-                //                 }
-                //             )
-                //
-                //         )
-                //         : null
-                // )
-
                 return (
                     <div key={index}>
-                        <p className=" text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
+                        <p className="inline-block text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
                         {
-                            ((isSection(schema[key]) && hasSubSection(schema[key])) ?
+                            (
                                 (
-                                    // console.log("---", schema[key]["subSection"])
-                                    Object.keys(schema[key]["subSection"]).map((subKey, subIndex) => {
-                                        // console.log("sss", schema[key]["subSection"][subKey]["title"])
-                                        return (
-                                            <div className="ml-5">
-                                                <p className="text-lg text-yellow-700 font-bold"
-                                                   onClick={() => {
-                                                       console.log("sss", key, subKey)
-                                                       setState({
-                                                           ...state,
-                                                           sectionControl: {
-                                                               ...state.sectionControl,
-                                                               [key]: {
-                                                                   ...state.sectionControl[key],
-                                                                   [subKey]: !state.sectionControl[key][subKey]
-                                                               }
-                                                           }
-                                                       })
-                                                   }}
-                                                >
-                                                    {schema[key]["subSection"][subKey]["title"]}
-                                                </p>
-                                                {isForm(schema[key]["subSection"][subKey]) ?
-                                                    // <div>{JSON.stringify(schema[key]["subSection"][subKey]["schema"])}</div>
-                                                    (
-                                                        // console.log(state.sectionControl[key][subKey])
-                                                        state.sectionControl[key][subKey] &&
-                                                        <Form
-                                                            formID={"user-profile-form"}
-                                                            resourceURL={"form/"}
-                                                            // validationDeclaration={this.validationDeclaration}
-                                                            HTTPMethod={"PATCH"}
-                                                            language={props.language}
-                                                            formSchema={schema[key]["subSection"][subKey]["schema"]}
-                                                            formData={null}
-                                                            // rerenderParentCallback={this.rerenderParentCallback}
-                                                            formContext={{
-                                                                api: api,
-                                                                style: style,
-                                                                modalStyle: ModalStyle,
-                                                                app: "CV",
-                                                                form: "PersonalInformation"
-                                                            }}
-                                                        />
-                                                    )
-                                                    : null}
-                                            </div>
-                                        )
-                                    })
-                                )
-
-                                : (isForm(schema[key]) ?
+                                    isSection(schema[key]) && hasSubSection(schema[key])) ?
                                     (
-                                        <div className="ml-5">
-                                            <p className="text-lg text-yellow-700 font-bold"
-                                               onClick={() => {
-                                                   console.log("sss", key)
-                                                   setState({
-                                                       ...state,
-                                                       sectionControl: {
-                                                           ...state.sectionControl,
-                                                           [key]: !state.sectionControl[key]
-                                                       }
-                                                   })
-                                               }}
-                                            >
-                                                {schema[key]["title"]}
-                                            </p>
-                                            {state.sectionControl[key] &&
-                                            <Form
-                                                formID={"user-profile-form"}
-                                                resourceURL={"form/"}
-                                                // validationDeclaration={this.validationDeclaration}
-                                                HTTPMethod={"PATCH"}
-                                                // language={this.state.language.language}
-                                                formSchema={schema[key]["schema"]}
-                                                formData={null}
-                                                // rerenderParentCallback={this.rerenderParentCallback}
-                                                formContext={{
-                                                    api: api,
-                                                    style: style,
-                                                    modalStyle: ModalStyle,
-                                                    app: "CV",
-                                                    form: "PersonalInformation"
-                                                }}
-                                            />
-                                            }
-                                        </div>
-                                    ) : null))
-                        }
+                                        // console.log("---", schema[key]["subSection"])
+                                        Object.keys(schema[key]["subSection"]).map((subKey, subIndex) => {
+                                            // console.log("sss", schema[key]["subSection"][subKey]["title"])
+                                            return (
+                                                <div className="ml-5">
+                                                    <div className="flex items-stretch space-x-2">
+                                                        <p className="text-lg font-bold">
+                                                            {schema[key]["subSection"][subKey]["title"]}
+                                                        </p>
+                                                        {
+                                                            isSingle(schema[key]["subSection"][subKey]) ?
+                                                                <div>
+                                                                    <div className="self-center"
+                                                                         onClick={() => {
+                                                                             // console.log("sss", key, subKey)
+                                                                             setState({
+                                                                                 ...state,
+                                                                                 sectionControl: {
+                                                                                     ...state.sectionControl,
+                                                                                     [key]: {
+                                                                                         ...state.sectionControl[key],
+                                                                                         [subKey]: true
+                                                                                     }
+                                                                                 }
+                                                                             })
+                                                                         }}
+                                                                    ><FiEdit size={"1.1rem"}/>
+                                                                        {/*{JSON.stringify(state.data[key][subKey])}*/}
+                                                                    </div>
+                                                                    {!isEmptyObject(state.data[key][subKey]) ? (
+                                                                        <div
+                                                                            onClick={() => {
+                                                                                setState({
+                                                                                    ...state,
+                                                                                    sectionControl: {
+                                                                                        ...state.sectionControl,
+                                                                                        [key]: {
+                                                                                            ...state.sectionControl[key],
+                                                                                            [subKey]: true
+                                                                                        }
+                                                                                    }
+                                                                                })
+                                                                            }}>
+                                                                            {JSON.stringify(state.data[key][subKey])}
+                                                                        </div>) : null
+                                                                    }
+                                                                </div>
+                                                                :
+                                                                <div>
+                                                                    <div className="self-center"
+                                                                         onClick={() => {
+                                                                             console.log(state.sectionControl[key][subKey]);
+                                                                             const array = state.sectionControl[key][subKey];
+                                                                             array.push(true);
+                                                                             setState({
+                                                                                 ...state,
+                                                                                 sectionControl: {
+                                                                                     ...state.sectionControl,
+                                                                                     [key]: {
+                                                                                         ...state.sectionControl[key],
+                                                                                         [subKey]: array
+                                                                                     }
+                                                                                 }
+                                                                             })
+                                                                         }}
+                                                                    ><AiOutlineFileAdd size={"1.1rem"}/>
+                                                                        {/*{JSON.stringify(state.data[key][subKey])}*/}
+                                                                    </div>
+                                                                    {!isEmptyObject(state.data[key][subKey]) ? (
+                                                                        state.data[key][subKey].map((element, index) => {
+                                                                                return (
+                                                                                    <div key={index}
+                                                                                        onClick={() => {
+                                                                                            const array = state.sectionControl[key][subKey];
+                                                                                            array[index] = true;
+                                                                                            setState({
+                                                                                                ...state,
+                                                                                                sectionControl: {
+                                                                                                    ...state.sectionControl,
+                                                                                                    [key]: {
+                                                                                                        ...state.sectionControl[key],
+                                                                                                        [subKey]: array
+                                                                                                    }
+                                                                                                }
+                                                                                            })
+                                                                                        }}>
+                                                                                        {JSON.stringify(state.data[key][subKey][index])}
+                                                                                    </div>
+                                                                                )
+                                                                            }
+                                                                        )
+                                                                    ) : null
+                                                                    }
+                                                                </div>
+                                                        }
+                                                    </div>
+                                                    {isForm(schema[key]["subSection"][subKey]) ?
+                                                        (
+                                                            (Array.isArray(state.sectionControl[key][subKey]) ?
+                                                                    state.sectionControl[key][subKey].map((element, index) => {
+                                                                        // console.log(key, "--", schema[key], subKey, schema[key]["subSection"][subKey])
+                                                                        return (
+                                                                            element &&
+                                                                            <div key={index}>
+                                                                                <ModalFullScreen content={<FormBuilder
+                                                                                    formID={"user-profile-form"}
+                                                                                    resourceURL={"form/"}
+                                                                                    // validationDeclaration={this.validationDeclaration}
+                                                                                    HTTPMethod={"PATCH"}
+                                                                                    language={props.language}
+                                                                                    formSchema={schema[key]["subSection"][subKey]["schema"]}
+                                                                                    formData={state.data[key][subKey][index]}
+                                                                                    onFormEditSubmit={handleFormEditSubmit}
+                                                                                    onFormEditCancel={handleFormEditCancel}
+                                                                                    formDependent={{
+                                                                                        section: key,
+                                                                                        form: subKey,
+                                                                                        index: index
+                                                                                    }}
+                                                                                    formContext={{
+                                                                                        api: api,
+                                                                                        app: "CV",
+                                                                                        form: "PersonalInformation"
+                                                                                    }}
+                                                                                />} title={""} fullScreen={true}/>
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                    :
+                                                                    state.sectionControl[key][subKey] &&
+                                                                    <ModalFullScreen content={<FormBuilder
+                                                                        formID={"user-profile-form"}
+                                                                        resourceURL={"form/"}
+                                                                        // validationDeclaration={this.validationDeclaration}
+                                                                        HTTPMethod={"PATCH"}
+                                                                        language={props.language}
+                                                                        formSchema={schema[key]["subSection"][subKey]["schema"]}
+                                                                        formData={state.data[key][subKey]}
+                                                                        onFormEditSubmit={handleFormEditSubmit}
+                                                                        onFormEditCancel={handleFormEditCancel}
+                                                                        formDependent={{
+                                                                            section: key,
+                                                                            form: subKey,
+                                                                            index: NaN
+                                                                        }}
+                                                                        formContext={{
+                                                                            api: api,
+                                                                            app: "CV",
+                                                                            form: "PersonalInformation"
+                                                                        }}
+                                                                    />} title={""} fullScreen={true}/>
+                                                            )
+                                                        )
+                                                        : null}
+                                                </div>
+                                            )
+                                        })
+                                    ) : (
+                                        isForm(schema[key]) ? (
+                                            <div className="inline-block">
+                                                {
+                                                    isSingle(schema[key]) ?
+                                                        <div>
+                                                            <div className="self-center"
+                                                                 onClick={() => {
+                                                                     // console.log("sss", key, subKey)
+                                                                     setState({
+                                                                         ...state,
+                                                                         sectionControl: {
+                                                                             ...state.sectionControl,
+                                                                             [key]: true
+                                                                         }
+                                                                     })
+                                                                 }}
+                                                            ><FiEdit size={"1.1rem"}/>
+                                                            </div>
+                                                            {!isEmptyObject(state.data[key]) ? (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        setState({
+                                                                            ...state,
+                                                                            sectionControl: {
+                                                                                ...state.sectionControl,
+                                                                                [key]: true
+                                                                            }
+                                                                        })
+                                                                    }}>
+                                                                    {JSON.stringify(state.data[key])}
+                                                                </div>) : null
+                                                            }
+                                                        </div>
+                                                        :
+                                                        <div>
+                                                            <div className="self-center"
+                                                                 onClick={() => {
+                                                                     console.log(state.sectionControl[key]);
+                                                                     const array = state.sectionControl[key];
+                                                                     array.push(true);
+                                                                     setState({
+                                                                         ...state,
+                                                                         sectionControl: {
+                                                                             ...state.sectionControl,
+                                                                             [key]: array
+                                                                         }
+                                                                     })
+                                                                 }}
+                                                            ><AiOutlineFileAdd size={"1.1rem"}/>
+                                                            </div>
+                                                            {!isEmptyObject(state.data[key]) ? (
+                                                                state.data[key].map((element, index) => {
+                                                                        return (
+                                                                            <div key={index}
+                                                                                 onClick={() => {
+                                                                                     console.log(state.sectionControl[key]);
+                                                                                     const array = state.sectionControl[key];
+                                                                                     array[index] = true;
+                                                                                     setState({
+                                                                                         ...state,
+                                                                                         sectionControl: {
+                                                                                             ...state.sectionControl,
+                                                                                             [key]: array
+                                                                                         }
+                                                                                     })
+                                                                                 }}>
+                                                                                {JSON.stringify(state.data[key][index])}
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                )
+                                                            ) : null}
+                                                        </div>
 
+                                                }
+                                                {
+                                                    (Array.isArray(state.sectionControl[key]) ?
+                                                            state.sectionControl[key].map((element, index) => {
+                                                                // console.log(element, index)
+                                                                return (
+                                                                    element &&
+                                                                    <div key={index}>
+                                                                        <ModalFullScreen content={<FormBuilder
+                                                                            formID={"user-profile-form"}
+                                                                            resourceURL={"form/"}
+                                                                            // validationDeclaration={this.validationDeclaration}
+                                                                            HTTPMethod={"PATCH"}
+                                                                            language={props.language}
+                                                                            formSchema={schema[key]["schema"]}
+                                                                            formData={state.data[key][index]}
+                                                                            onFormEditSubmit={handleFormEditSubmit}
+                                                                            onFormEditCancel={handleFormEditCancel}
+                                                                            formDependent={{
+                                                                                section: key,
+                                                                                form: null,
+                                                                                index: index
+                                                                            }}
+                                                                            formContext={{
+                                                                                api: api,
+                                                                                app: "CV",
+                                                                                form: "PersonalInformation"
+                                                                            }}
+                                                                        />} title={""} fullScreen={true}/>
+                                                                    </div>
+                                                                )
+                                                            })
+                                                            :
+                                                            state.sectionControl[key] &&
+                                                            <ModalFullScreen content={<FormBuilder
+                                                                formID={"user-profile-form"}
+                                                                resourceURL={"form/"}
+                                                                // validationDeclaration={this.validationDeclaration}
+                                                                HTTPMethod={"PATCH"}
+                                                                language={props.language}
+                                                                formSchema={schema[key]["schema"]}
+                                                                formData={state.data[key]}
+                                                                onFormEditSubmit={handleFormEditSubmit}
+                                                                onFormEditCancel={handleFormEditCancel}
+                                                                formDependent={{
+                                                                    section: key,
+                                                                    form: null,
+                                                                    index: NaN
+                                                                }}
+                                                                formContext={{
+                                                                    api: api,
+                                                                    app: "CV",
+                                                                    form: "PersonalInformation"
+                                                                }}
+                                                            />} title={""} fullScreen={true}/>
+                                                    )
+                                                }
+                                            </div>
+                                        ) : null
+                                    )
+                            )
+                        }
                     </div>
                 )
 

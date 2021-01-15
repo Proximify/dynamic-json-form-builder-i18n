@@ -197,7 +197,7 @@ const UISchema = {
 }
 
 
-class Index extends Component {
+class FormBuilder extends Component {
     constructor(props) {
         super(props);
         // this.state = {
@@ -256,19 +256,8 @@ class Index extends Component {
      * @param data
      */
     onFormSubmit = (data) => {
-        console.log(data);
         this.onErrorMsgChange(null);
-
-        console.log("submitting", data);
-
-        // this.state.FormContext.api[this.state.HTTPMethod.toLowerCase()](this.props.resourceURL + 'submit', data)
-        //     .then(res => {
-        //         console.log(res);
-        //         // this.props.rerenderParentCallback();
-        //     }).catch(err => {
-        //     console.log(err);
-        // })
-
+        this.props.onFormEditSubmit(data, this.props.formDependent);
     }
 
     onErrorMsgChange = (errors) => {
@@ -321,18 +310,18 @@ class Index extends Component {
                     this.onErrorMsgChange(errors);
                 }}
                 onSubmit={({formData}) => this.onFormSubmit(formData)}>
-                <div className="flex">
+                <div className="flex mt-5">
                     <div id={`${this.props.formID}-errorMsg`}>
                     </div>
                     <div>
-                        <button className="border bg-green-400 w-20 h-9 rounded mr-3"
+                        <button className="border bg-green-400 px-1 py-1 rounded mr-3"
                                 type="submit">
-                            {t('btn-submit')}
+                            {t('btn-save')}
                         </button>
-                        <button className="border bg-gray-600 w-20 h-9 rounded text-white"
+                        <button className="border bg-gray-600 px-1 py-1 rounded text-white"
                                 type="button"
                                 onClick={() => {
-                                    this.props.rerenderParentCallback();
+                                    this.props.onFormEditCancel();
                                 }}>
                             {t('btn-cancel')}
                         </button>
@@ -344,4 +333,4 @@ class Index extends Component {
 
 }
 
-export default withTranslation()(Index);
+export default withTranslation()(FormBuilder);

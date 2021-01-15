@@ -3,19 +3,12 @@ import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
 import {SchemaParser} from "./utils/SchemaParser";
-import Form from './component/dynamic-json-form-builder/index';
-import ModalStyle from './ModalStyles.json';
 import api from "./api";
-import style from "./style.module.scss";
-import {ModalFullScreen} from "./component/dynamic-json-form-builder/components/utils/Modals/index";
-import Formatter from "./component/dynamic-json-form-builder/components/utils/formatter";
 
 
 class App extends Component {
     constructor(props) {
         super(props);
-        this.rerenderParentCallback = this.rerenderParentCallback.bind(this);
-
         this.toggleLanguage = (value) => {
             console.log(language[value]);
 
@@ -44,22 +37,6 @@ class App extends Component {
                     schema: res.data.formSchema,
                     data: res.data.formData ?? undefined,
                     isReady: true
-                }, () => console.log("load success", this.state.schema, this.state.data)
-            )
-        }).catch(err => {
-            console.log("loading err", err);
-        })
-    }
-
-    rerenderParentCallback() {
-        api.get("form/").then(res => {
-            this.setState({
-                    schema: res.data.formSchema,
-                    data: res.data.formData ?? undefined,
-                    childComponentOpen: {
-                        ...this.state.childComponentOpen,
-                        identification: false
-                    }
                 }, () => console.log("load success", this.state.schema, this.state.data)
             )
         }).catch(err => {
