@@ -8,11 +8,10 @@ import RMFormatter from "./RM";
  * @returns {JSX.Element}
  * @constructor
  */
-// TODO: remove s of TAGS
 export default function Formatter(props) {
-    // console.log("Formatter", props)
+    console.log("Formatter", props)
     const apps = {
-        "CV": <CVFormatter form={props.form} section={props.section} fields={props.fields} values={props.values}/>,
+        "CV": <CVFormatter section={props.section} form={props.form} rawData={props.rawData} isFullScreenViewMode={props.isFullScreenViewMode} fields={props.fields} values={props.values} />,
         "RM": <RMFormatter/>
     }
 

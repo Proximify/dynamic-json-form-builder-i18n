@@ -1,21 +1,21 @@
 import React from "react";
 
-export default function UserProfile(props) {
-    console.log("UserProfile", props);
+
+export default function Recognitions(props) {
+    console.log("Recognitions", props);
     const rawData = props.rawData;
 
     const sections = {}
 
     const formatter = {
-        "researcher_status": <p>{rawData["researcher_status"]}</p>
+        "recognition_type": <p>Recognition Type: {rawData["recognition_type"]}</p>
     }
-    const order = ["researcher_status"]
+    const order = ["recognition_type"]
 
     if (props.isFullScreenViewMode === true) {
         return (
             order.map(orderKey => {
                 return (Object.keys(props.rawData).map((key,index)=>{
-                    console.log(key,orderKey)
                     return key === orderKey ?
                         <div key={index}>{formatter[key] ?? null}</div>
                         : null

@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import FormBuilder from '../../component/dynamic-json-form-builder';
 import api from "../../api";
-import style from "../../style.module.scss";
-import ModalStyle from "../../ModalStyles.json";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
+import {MdDeleteForever} from 'react-icons/md'
 import {ModalFullScreen} from "../../component/dynamic-json-form-builder/components/utils/Modals";
+import Formatter from "../../component/dynamic-json-form-builder/components/utils/formatter";
 
 export function SchemaParser(props) {
     // console.log("SchemaParser", props)
@@ -171,82 +171,128 @@ export function SchemaParser(props) {
                                                         </p>
                                                         {
                                                             isSingle(schema[key]["subSection"][subKey]) ?
-                                                                <div>
-                                                                    <div className="self-center"
-                                                                         onClick={() => {
-                                                                             // console.log("sss", key, subKey)
-                                                                             setState({
-                                                                                 ...state,
-                                                                                 sectionControl: {
-                                                                                     ...state.sectionControl,
-                                                                                     [key]: {
-                                                                                         ...state.sectionControl[key],
-                                                                                         [subKey]: true
-                                                                                     }
-                                                                                 }
-                                                                             })
-                                                                         }}
+                                                                <div className="pt-1">
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            // console.log("sss", key, subKey)
+                                                                            setState({
+                                                                                ...state,
+                                                                                sectionControl: {
+                                                                                    ...state.sectionControl,
+                                                                                    [key]: {
+                                                                                        ...state.sectionControl[key],
+                                                                                        [subKey]: true
+                                                                                    }
+                                                                                }
+                                                                            })
+                                                                        }}
                                                                     ><FiEdit size={"1.1rem"}/>
-                                                                        {/*{JSON.stringify(state.data[key][subKey])}*/}
                                                                     </div>
                                                                     {!isEmptyObject(state.data[key][subKey]) ? (
                                                                         <div
-                                                                            onClick={() => {
-                                                                                setState({
-                                                                                    ...state,
-                                                                                    sectionControl: {
-                                                                                        ...state.sectionControl,
-                                                                                        [key]: {
-                                                                                            ...state.sectionControl[key],
-                                                                                            [subKey]: true
+                                                                            className="flex justify-between items-center">
+                                                                            <div
+                                                                                onClick={() => {
+                                                                                    setState({
+                                                                                        ...state,
+                                                                                        sectionControl: {
+                                                                                            ...state.sectionControl,
+                                                                                            [key]: {
+                                                                                                ...state.sectionControl[key],
+                                                                                                [subKey]: true
+                                                                                            }
                                                                                         }
-                                                                                    }
-                                                                                })
-                                                                            }}>
-                                                                            {JSON.stringify(state.data[key][subKey])}
-                                                                        </div>) : null
+                                                                                    })
+                                                                                }}>
+                                                                                <Formatter app={"CV"} section={key}
+                                                                                           form={subKey}
+                                                                                           rawData={state.data[key][subKey]}
+                                                                                           isFullScreenViewMode={true}/>
+                                                                            </div>
+                                                                            <div className="ml-5"
+                                                                                 onClick={() => {
+                                                                                     // console.log(state.data[key], key)
+                                                                                     setState({
+                                                                                         ...state,
+                                                                                         data: {
+                                                                                             ...state.data,
+                                                                                             [key]: {
+                                                                                                 ...state.data[key],
+                                                                                                 [subKey]: {}
+                                                                                             }
+                                                                                         }
+                                                                                     })
+                                                                                 }}>
+                                                                                <MdDeleteForever/>
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : null
                                                                     }
                                                                 </div>
                                                                 :
-                                                                <div>
-                                                                    <div className="self-center"
-                                                                         onClick={() => {
-                                                                             console.log(state.sectionControl[key][subKey]);
-                                                                             const array = state.sectionControl[key][subKey];
-                                                                             array.push(true);
-                                                                             setState({
-                                                                                 ...state,
-                                                                                 sectionControl: {
-                                                                                     ...state.sectionControl,
-                                                                                     [key]: {
-                                                                                         ...state.sectionControl[key],
-                                                                                         [subKey]: array
-                                                                                     }
-                                                                                 }
-                                                                             })
-                                                                         }}
+                                                                <div className="pt-1">
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            console.log(state.sectionControl[key][subKey]);
+                                                                            const array = state.sectionControl[key][subKey];
+                                                                            array.push(true);
+                                                                            setState({
+                                                                                ...state,
+                                                                                sectionControl: {
+                                                                                    ...state.sectionControl,
+                                                                                    [key]: {
+                                                                                        ...state.sectionControl[key],
+                                                                                        [subKey]: array
+                                                                                    }
+                                                                                }
+                                                                            })
+                                                                        }}
                                                                     ><AiOutlineFileAdd size={"1.1rem"}/>
                                                                         {/*{JSON.stringify(state.data[key][subKey])}*/}
                                                                     </div>
                                                                     {!isEmptyObject(state.data[key][subKey]) ? (
                                                                         state.data[key][subKey].map((element, index) => {
                                                                                 return (
-                                                                                    <div key={index}
-                                                                                        onClick={() => {
-                                                                                            const array = state.sectionControl[key][subKey];
-                                                                                            array[index] = true;
-                                                                                            setState({
-                                                                                                ...state,
-                                                                                                sectionControl: {
-                                                                                                    ...state.sectionControl,
-                                                                                                    [key]: {
-                                                                                                        ...state.sectionControl[key],
-                                                                                                        [subKey]: array
-                                                                                                    }
-                                                                                                }
-                                                                                            })
-                                                                                        }}>
-                                                                                        {JSON.stringify(state.data[key][subKey][index])}
+                                                                                    <div
+                                                                                        className="flex justify-between items-center">
+                                                                                        <div key={index}
+                                                                                             onClick={() => {
+                                                                                                 const array = state.sectionControl[key][subKey];
+                                                                                                 array[index] = true;
+                                                                                                 setState({
+                                                                                                     ...state,
+                                                                                                     sectionControl: {
+                                                                                                         ...state.sectionControl,
+                                                                                                         [key]: {
+                                                                                                             ...state.sectionControl[key],
+                                                                                                             [subKey]: array
+                                                                                                         }
+                                                                                                     }
+                                                                                                 })
+                                                                                             }}>
+                                                                                            <Formatter app={"CV"}
+                                                                                                       section={key}
+                                                                                                       form={subKey}
+                                                                                                       rawData={state.data[key][subKey][index]}
+                                                                                                       isFullScreenViewMode={true}/>
+                                                                                        </div>
+                                                                                        <div className="ml-5"
+                                                                                             onClick={() => {
+                                                                                                 const array = state.data[key][subKey];
+                                                                                                 array.splice(index, 1)
+                                                                                                 setState({
+                                                                                                     ...state,
+                                                                                                     data: {
+                                                                                                         ...state.data,
+                                                                                                         [key]: {
+                                                                                                             ...state.data[key],
+                                                                                                             [subKey]: array
+                                                                                                         }
+                                                                                                     }
+                                                                                                 })
+                                                                                             }}>
+                                                                                            <MdDeleteForever/>
+                                                                                        </div>
                                                                                     </div>
                                                                                 )
                                                                             }
@@ -323,75 +369,108 @@ export function SchemaParser(props) {
                                                 {
                                                     isSingle(schema[key]) ?
                                                         <div>
-                                                            <div className="self-center"
-                                                                 onClick={() => {
-                                                                     // console.log("sss", key, subKey)
-                                                                     setState({
-                                                                         ...state,
-                                                                         sectionControl: {
-                                                                             ...state.sectionControl,
-                                                                             [key]: true
-                                                                         }
-                                                                     })
-                                                                 }}
+                                                            <div
+                                                                onClick={() => {
+                                                                    // console.log("sss", key, subKey)
+                                                                    setState({
+                                                                        ...state,
+                                                                        sectionControl: {
+                                                                            ...state.sectionControl,
+                                                                            [key]: true
+                                                                        }
+                                                                    })
+                                                                }}
                                                             ><FiEdit size={"1.1rem"}/>
                                                             </div>
                                                             {!isEmptyObject(state.data[key]) ? (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        setState({
-                                                                            ...state,
-                                                                            sectionControl: {
-                                                                                ...state.sectionControl,
-                                                                                [key]: true
-                                                                            }
-                                                                        })
-                                                                    }}>
-                                                                    {JSON.stringify(state.data[key])}
-                                                                </div>) : null
+                                                                <div className="flex justify-between items-center">
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            setState({
+                                                                                ...state,
+                                                                                sectionControl: {
+                                                                                    ...state.sectionControl,
+                                                                                    [key]: true
+                                                                                }
+                                                                            })
+                                                                        }}>
+                                                                        <Formatter app={"CV"} section={key}
+                                                                                   rawData={state.data[key]}
+                                                                                   isFullScreenViewMode={true}/>
+                                                                    </div>
+                                                                    <div className="ml-5"
+                                                                         onClick={() => {
+                                                                             // console.log(state.data[key], key)
+                                                                             setState({
+                                                                                 ...state,
+                                                                                 data: {
+                                                                                     ...state.data,
+                                                                                     [key]: {}
+                                                                                 }
+                                                                             })
+                                                                         }}>
+                                                                        <MdDeleteForever/>
+                                                                    </div>
+                                                                </div>
+                                                            ) : null
                                                             }
                                                         </div>
                                                         :
                                                         <div>
-                                                            <div className="self-center"
-                                                                 onClick={() => {
-                                                                     console.log(state.sectionControl[key]);
-                                                                     const array = state.sectionControl[key];
-                                                                     array.push(true);
-                                                                     setState({
-                                                                         ...state,
-                                                                         sectionControl: {
-                                                                             ...state.sectionControl,
-                                                                             [key]: array
-                                                                         }
-                                                                     })
-                                                                 }}
+                                                            <div
+                                                                onClick={() => {
+                                                                    const array = state.sectionControl[key];
+                                                                    array.push(true);
+                                                                    setState({
+                                                                        ...state,
+                                                                        sectionControl: {
+                                                                            ...state.sectionControl,
+                                                                            [key]: array
+                                                                        }
+                                                                    })
+                                                                }}
                                                             ><AiOutlineFileAdd size={"1.1rem"}/>
                                                             </div>
                                                             {!isEmptyObject(state.data[key]) ? (
                                                                 state.data[key].map((element, index) => {
                                                                         return (
-                                                                            <div key={index}
-                                                                                 onClick={() => {
-                                                                                     console.log(state.sectionControl[key]);
-                                                                                     const array = state.sectionControl[key];
-                                                                                     array[index] = true;
-                                                                                     setState({
-                                                                                         ...state,
-                                                                                         sectionControl: {
-                                                                                             ...state.sectionControl,
-                                                                                             [key]: array
-                                                                                         }
-                                                                                     })
-                                                                                 }}>
-                                                                                {JSON.stringify(state.data[key][index])}
+                                                                            <div className="flex justify-between items-center">
+                                                                                <div key={index}
+                                                                                     onClick={() => {
+                                                                                         const array = state.sectionControl[key];
+                                                                                         array[index] = true;
+                                                                                         setState({
+                                                                                             ...state,
+                                                                                             sectionControl: {
+                                                                                                 ...state.sectionControl,
+                                                                                                 [key]: array
+                                                                                             }
+                                                                                         })
+                                                                                     }}>
+                                                                                    <Formatter app={"CV"} section={key}
+                                                                                               rawData={state.data[key][index]}
+                                                                                               isFullScreenViewMode={true}/>
+                                                                                </div>
+                                                                                <div className="ml-5"
+                                                                                     onClick={() => {
+                                                                                         const array = state.data[key];
+                                                                                         array.splice(index, 1)
+                                                                                         setState({
+                                                                                             ...state,
+                                                                                             data: {
+                                                                                                 ...state.data,
+                                                                                                 [key]: array
+                                                                                             }
+                                                                                         })
+                                                                                     }}>
+                                                                                    <MdDeleteForever/>
+                                                                                </div>
                                                                             </div>
                                                                         )
                                                                     }
                                                                 )
                                                             ) : null}
                                                         </div>
-
                                                 }
                                                 {
                                                     (Array.isArray(state.sectionControl[key]) ?

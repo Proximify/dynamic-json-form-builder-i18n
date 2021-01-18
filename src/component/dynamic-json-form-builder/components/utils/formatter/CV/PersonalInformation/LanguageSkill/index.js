@@ -1,21 +1,22 @@
 import React from "react";
 
-export default function UserProfile(props) {
-    console.log("UserProfile", props);
+export default function LanguageSkill(props) {
+    console.log("LanguageSkill", props);
     const rawData = props.rawData;
 
+    //field??
     const sections = {}
 
     const formatter = {
-        "researcher_status": <p>{rawData["researcher_status"]}</p>
+        "language": <p>{rawData["language"]}</p>
     }
-    const order = ["researcher_status"]
+    const order = ["language"]
 
     if (props.isFullScreenViewMode === true) {
         return (
             order.map(orderKey => {
-                return (Object.keys(props.rawData).map((key,index)=>{
-                    console.log(key,orderKey)
+                return (Object.keys(rawData).map((key,index)=>{
+                    // console.log(key,orderKey)
                     return key === orderKey ?
                         <div key={index}>{formatter[key] ?? null}</div>
                         : null

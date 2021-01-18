@@ -26,10 +26,14 @@ const customWidgets = {
 };
 
 const customTemplates = {
-    fundBundleFieldTemplate: FundBundleFieldTemplate,
-    fundFieldTemplate: FundFieldTemplate,
-    currencyFieldTemplate: CurrencyFieldTemplate,
+    // fundBundleFieldTemplate: FundBundleFieldTemplate,
+    // fundFieldTemplate: FundFieldTemplate,
+    // currencyFieldTemplate: CurrencyFieldTemplate,
     genericFieldTemplate: GenericFieldTemplate
+}
+
+const customArrayTemplate = {
+    arrayFieldTemplate: ArrayFieldTemplate
 }
 
 /**
@@ -300,6 +304,7 @@ class FormBuilder extends Component {
                     {...this.props.formContext, submitAction: this.onSubmit} ?? null
                 }
                 widgets={customWidgets}
+
                 showErrorList={false}
                 // liveValidate
                 onChange={() => {
