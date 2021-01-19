@@ -2,7 +2,11 @@ import GenericFieldTemplate from '../../../component/dynamic-json-form-builder/c
 import {
     StringInputWidget, NumberInputWidget, PhoneInputWidget
 } from "../../../component/dynamic-json-form-builder/components/SingleField";
-import SelectionFieldWidget from "../../../component/dynamic-json-form-builder/components/SelectionField";
+import {
+    MultiColSelectionWidget,
+    SingleSelectionWidget,
+    SingleLargeSelectionWidget, MultiColLargeSelectionWidget
+} from "../../../component/dynamic-json-form-builder/components/SelectionField";
 import {
     CurrencyFieldTemplate,
     FundBundleFieldTemplate,
@@ -37,12 +41,15 @@ const customWidgets = {
     fundFieldWidget: FundFieldWidget,
     currencyFieldWidget: CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
-    selectionFieldWidget: SelectionFieldWidget,
 
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
-    phoneInputWidget: PhoneInputWidget
+    phoneInputWidget: PhoneInputWidget,
 
+    singleSelectionWidget: SingleSelectionWidget,
+    multiColSelectionWidget: MultiColSelectionWidget,
+    singleLargeSelectionWidget: SingleLargeSelectionWidget,
+    multiColLargeSelectionWidget: MultiColLargeSelectionWidget
 };
 
 const schemas = {
@@ -50,7 +57,7 @@ const schemas = {
         "identification": {
             "title": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "family_name": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
@@ -83,23 +90,23 @@ const schemas = {
             },
             "sex": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "designated_group": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "correspondence_language": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "canadian_residency_status": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "applied_for_permanent_residency": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "permanent_residency_start_date": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
@@ -110,7 +117,7 @@ const schemas = {
                 "items": {
                     "country_of_citizenship": {
                         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                        "ui:widget": "selectionFieldWidget"
+                        "ui:widget": "singleSelectionWidget"
                     }
                 }
             }
@@ -118,52 +125,52 @@ const schemas = {
         "language_skill": {
             "language": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "read": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "write": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "speak": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "understand": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             },
             "peer_review": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             }
         },
         "address": {
             "address_type": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             }
         },
         "telephone": {
             "phone_type": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
+                "ui:widget": "singleSelectionWidget"
             }
         }
     },
     "recognitions": {
         "recognition_type": {
             "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-            "ui:widget": "selectionFieldWidget"
+            "ui:widget": "singleSelectionWidget"
         }
     },
     "user_profile": {
         "researcher_status": {
             "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-            "ui:widget": "selectionFieldWidget"
+            "ui:widget": "singleSelectionWidget"
         }
     }
 }

@@ -7,7 +7,12 @@ import formValidatorGenerator from './service/formValidatorGenerator';
 
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
 import {NumberInputWidget, StringInputWidget, PhoneInputWidget} from "./components/SingleField";
-import SelectionFieldWidget from "./components/SelectionField";
+import {
+    SingleSelectionWidget,
+    MultiColSelectionWidget,
+    SingleLargeSelectionWidget,
+    MultiColLargeSelectionWidget
+} from "./components/SelectionField";
 import {CurrencyFieldTemplate, FundBundleFieldTemplate, FundFieldTemplate} from "./components/FundField/templates";
 import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
@@ -21,11 +26,16 @@ const customWidgets = {
     fundFieldWidget: FundFieldWidget,
     currencyFieldWidget: CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
-    selectionFieldWidget: SelectionFieldWidget,
+
 
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
-    phoneInputWidget: PhoneInputWidget
+    phoneInputWidget: PhoneInputWidget,
+
+    singleSelectionWidget:SingleSelectionWidget,
+    multiColSelectionWidget:MultiColSelectionWidget,
+    singleLargeSelectionWidget: SingleLargeSelectionWidget,
+    multiColLargeSelectionWidget:MultiColLargeSelectionWidget
 };
 
 const customTemplates = {
