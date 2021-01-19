@@ -4,7 +4,7 @@ import './ObjectField.css'
 import {PlusCircleIcon} from "@primer/octicons-react";
 import ModalArrayItem from "../utils/Modals";
 
-export default function ObjectFieldTemplate(props) {
+export function ObjectFieldTemplate(props) {
     const {id, schema, title, required, rawErrors, properties, formData, formContext} = props;
     console.log("ObjectFieldTemplate", props)
     const [state, setState] = useState({
@@ -29,56 +29,16 @@ export default function ObjectFieldTemplate(props) {
         }
     }
 
-    const restoreData = () => {
-        console.log(state.dataPrevious, formData)
-        if (state.dataPrevious === null) {
-            properties.forEach(element => {
-                element.content.props.onChange(undefined);
-            })
-            console.log(formData)
-        }
-    }
-
     return (
         <div className="flex flex-wrap justify-center pt-3">
             <label htmlFor={id}
                    className="w-1/4 flex-grow text-sm font-medium text-gray-700 pt-2 pl-2">
                 {title}{required ? "*" : null}
             </label>
-            <div className="flex-grow" style={{maxWidth: "25rem"}}>
-                <div className="sectionData">
-                    {!isFormDataEmpty() ?
-                        <div>
-                            <div>
-                                <strong>Address: </strong>
-                            </div>
-                            <div onClick={() => {
-                                setState({
-                                    ...state,
-                                    open: true,
-                                    edit: true,
-                                    dataPrevious: isFormDataEmpty() ? null : formData
-                                })
-                            }}>
-                                <Formatter app={formContext.app} form={formContext.form} section={schema.id}
-                                           fields={properties} values={formData}/>
-                            </div>
-                        </div>
-                        :
-                        <a type="button" className="text-blue-600" onClick={() => {
-                            setState({
-                                ...state,
-                                open: true,
-                                edit: false
-                            })
-                        }}>< PlusCircleIcon
-                            size={16}/>
-                        </a>
-                    }
-                </div>
-                <div id={`${title}_modal`}>
-                    {state.open ?
-                        <ModalArrayItem state={state} setState={setState} restoreData={restoreData} content={properties} title={title}/> : null}
+            <div className="flex-grow" style={{maxWidth: "20rem"}}>
+                <div className="flex space-x-2">
+                    <div className="w-1/2">{properties[0].content}</div>
+                    <div className="w-1/2">{properties[1].content}</div>
                 </div>
             </div>
             <div className={`${rawErrors} ? 'hidden' : ''`}>
@@ -88,4 +48,12 @@ export default function ObjectFieldTemplate(props) {
             </div>
         </div>
     )
+}
+
+export function ObjectItemTemplate(props) {
+    return (
+        <React.Fragment>
+            {props.children}
+        </React.Fragment>
+    );
 }

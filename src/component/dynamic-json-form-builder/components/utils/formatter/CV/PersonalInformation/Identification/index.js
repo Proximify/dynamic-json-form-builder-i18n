@@ -67,9 +67,9 @@ export default function Identification(props) {
         return (
             order.map(orderKey => {
                 return (Object.keys(rawData).map((key,index)=>{
-                    console.log(key,orderKey)
+                    // console.log(key,orderKey)
                     return key === orderKey ?
-                        <div key={index}>{formatter[key] ?? null}</div>
+                        <div className="inline text-sm" key={index}>{formatter[key] ?? null}</div>
                         : null
                 }))
             })

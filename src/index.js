@@ -2,7 +2,7 @@ import React, {Component, Suspense} from 'react';
 import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
-import {SchemaParser} from "./utils/SchemaParser";
+import {SectionPageBuilder} from "./utils/CV/SectionPageBuilder";
 import api from "./api";
 
 
@@ -25,8 +25,7 @@ class App extends Component {
             isReady: false,
 
             schema: null,
-            data: null,
-            childComponentOpen: {identification: false, profile: false}
+            data: null
         };
     }
 
@@ -43,7 +42,7 @@ class App extends Component {
             console.log("loading err", err);
         })
     }
-
+    
     validationMethods = {
         requiredField: (value) => {
             return value ? null : "is a required property";
@@ -77,53 +76,8 @@ class App extends Component {
                         <div className="grid grid-cols-12 justify-center">
                             <div
                                 className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
-
-
                                 {this.state.isReady &&
-                                <SchemaParser schema={this.state.schema} data={this.state.data} language={this.state.language.language}/>}
-                                {/*<button className="border bg-blue-200 p-2 rounded"*/}
-                                {/*        onClick={() => {*/}
-                                {/*            this.setState({*/}
-                                {/*                ...this.state,*/}
-                                {/*                childComponentOpen: {*/}
-                                {/*                    ...this.state.childComponentOpen,*/}
-                                {/*                    identification: !this.state.childComponentOpen["identification"]*/}
-                                {/*                }*/}
-                                {/*            })*/}
-                                {/*        }}>*/}
-                                {/*    Identification*/}
-                                {/*</button>*/}
-                                {/*{*/}
-                                {/*    this.state.childComponentOpen["identification"] &&*/}
-                                {/*    <ModalFullScreen*/}
-                                {/*        content={*/}
-                                {/*            <Form*/}
-                                {/*                formID={"user-profile-form"}*/}
-                                {/*                resourceURL={"form/"}*/}
-                                {/*                validationDeclaration={this.validationDeclaration}*/}
-                                {/*                HTTPMethod={"PATCH"}*/}
-                                {/*                language={this.state.language.language}*/}
-                                {/*                formSchema={this.state.schema}*/}
-                                {/*                formData={this.state.data}*/}
-                                {/*                rerenderParentCallback={this.rerenderParentCallback}*/}
-                                {/*                formContext={{*/}
-                                {/*                    api: api,*/}
-                                {/*                    style: style,*/}
-                                {/*                    modalStyle: ModalStyle,*/}
-                                {/*                    app: "CV",*/}
-                                {/*                    form: "PersonalInformation"*/}
-                                {/*                }}*/}
-                                {/*            />*/}
-                                {/*        } title={"title"} fullScreen={true}/>*/}
-                                {/*}*/}
-
-                                {/*{this.state.isReady && <Formatter app={"CV"}*/}
-                                {/*                                  form={"PersonalInformation"}*/}
-                                {/*                                  section={"identification"}*/}
-                                {/*                                  fields={this.state.schema.properties}*/}
-                                {/*                                  values={this.state.data}/>}*/}
-
-
+                                <SectionPageBuilder schema={this.state.schema} data={this.state.data} language={this.state.language.language}/>}
                             </div>
                         </div>
 

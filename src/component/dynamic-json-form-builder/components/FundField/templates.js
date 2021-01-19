@@ -50,13 +50,12 @@ export function FundBundleFieldTemplate(props) {
  */
 export function FundFieldTemplate(props) {
     const {children, rawErrors} = props;
-    const style = props.formContext.style;
     // console.log("MoneyFieldTemplate", props.children);
     return (
         <React.Fragment>
             {children}
             {rawErrors ? rawErrors.map((error, index) => {
-                return (<li className={style.msgError} key={index}>{error}</li>)
+                return (<li key={index}>{error}</li>)
             }) : null}
         </React.Fragment>
     );
@@ -70,7 +69,6 @@ export function FundFieldTemplate(props) {
  */
 export function CurrencyFieldTemplate(props) {
     const {children} = props;
-    // console.log("CurrencyFieldTemplate", props);
     return (
         <React.Fragment>
             {children}

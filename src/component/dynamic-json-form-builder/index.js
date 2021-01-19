@@ -6,10 +6,10 @@ import {withTranslation} from 'react-i18next';
 import formValidatorGenerator from './service/formValidatorGenerator';
 
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
-import SingleFieldWidget from "./components/SingleField";
+import {NumberInputWidget, StringInputWidget, PhoneInputWidget} from "./components/SingleField";
 import SelectionFieldWidget from "./components/SelectionField";
 import {CurrencyFieldTemplate, FundBundleFieldTemplate, FundFieldTemplate} from "./components/FundField/templates";
-import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField/widgets";
+import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
 // import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
@@ -21,14 +21,14 @@ const customWidgets = {
     fundFieldWidget: FundFieldWidget,
     currencyFieldWidget: CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
-    singleFieldWidget: SingleFieldWidget,
-    selectionFieldWidget: SelectionFieldWidget
+    selectionFieldWidget: SelectionFieldWidget,
+
+    stringInputWidget: StringInputWidget,
+    numberInputWidget: NumberInputWidget,
+    phoneInputWidget: PhoneInputWidget
 };
 
 const customTemplates = {
-    // fundBundleFieldTemplate: FundBundleFieldTemplate,
-    // fundFieldTemplate: FundFieldTemplate,
-    // currencyFieldTemplate: CurrencyFieldTemplate,
     genericFieldTemplate: GenericFieldTemplate
 }
 
@@ -39,166 +39,158 @@ const customArrayTemplate = {
 /**
  * This is a sample UI schema
  */
-const uiSchema = {
-    "name": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "email": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "age": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "gender": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "phone": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "hobby": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "comment": {
-        "ui:FieldTemplate": MultiLangFieldTemplate,
-        "ui:widget": "multiLangFieldWidget"
-    },
-    "signature": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "education": {
-        "ui:ArrayFieldTemplate": ArrayFieldTemplate,
-        "items": {
-            "degree": {
-                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget",
-                "ui:emptyValue": ""
-            },
-            "institution": {
-                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget",
-                "ui:emptyValue": ""
-            }
-        }
-    },
-    "resume": {
-        "ui:FieldTemplate": FileFieldTemplate,
-        "ui:widget": FileFieldWidget
-    },
-    "work-experience": {
-        "ui:FieldTemplate": MultiLangFieldTemplate,
-        "ui:widget": MultiLangTextAreaFieldWidget
-    },
-    "address": {
-        "ui:ArrayFieldTemplate": ArrayFieldTemplate,
-        "items": {
-            "street-number": {
-                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "singleFieldWidget"
-            },
-            "street-name": {
-                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "singleFieldWidget"
-            },
-            "country": {
-                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget"
-            }
-        }
-    },
-    "funding-bundle": {
-        "ui:ObjectFieldTemplate": customTemplates["fundBundleFieldTemplate"],
-        "converted-funding": {
-            "ui:widget": "hidden"
-        },
-        "funding": {
-            "ui:FieldTemplate": customTemplates["fundFieldTemplate"],
-            "ui:widget": "fundFieldWidget"
-        },
-        "currency": {
-            "ui:FieldTemplate": customTemplates["currencyFieldTemplate"],
-            "ui:widget": "currencyFieldWidget"
-        }
-    }
-};
-
-
-const UISchema = {
-
-    "title": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "family_name": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "first_name": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "middle_name": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "previous_family_name": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "previous_first_name": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "date_of_birth": {},
-    "sex": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "designated_group": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "correspondence_language": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "canadian_residency_status": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "applied_for_permanent_residency": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "selectionFieldWidget",
-        "ui:emptyValue": ""
-    },
-    "permanent_residency_start_date": {
-        "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-        "ui:widget": "singleFieldWidget"
-    },
-    "country_of_citizenship": {
-        "ui:ArrayFieldTemplate": ArrayFieldTemplate,
-        "items": {
-            "country_of_citizenship": {
-                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "selectionFieldWidget",
-                "ui:emptyValue": ""
-            }
-        }
-    }
-}
+// const uiSchema = {
+//     "name": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "email": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "age": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "gender": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget",
+//         "ui:emptyValue": ""
+//     },
+//     "phone": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "hobby": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget",
+//         "ui:emptyValue": ""
+//     },
+//     "comment": {
+//         "ui:FieldTemplate": MultiLangFieldTemplate,
+//         "ui:widget": "multiLangFieldWidget"
+//     },
+//     "signature": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "education": {
+//         "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+//         "items": {
+//             "degree": {
+//                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//                 "ui:widget": "selectionFieldWidget",
+//                 "ui:emptyValue": ""
+//             },
+//             "institution": {
+//                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//                 "ui:widget": "selectionFieldWidget",
+//                 "ui:emptyValue": ""
+//             }
+//         }
+//     },
+//     "resume": {
+//         "ui:FieldTemplate": FileFieldTemplate,
+//         "ui:widget": FileFieldWidget
+//     },
+//     "work-experience": {
+//         "ui:FieldTemplate": MultiLangFieldTemplate,
+//         "ui:widget": MultiLangTextAreaFieldWidget
+//     },
+//     "address": {
+//         "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+//         "items": {
+//             "street-number": {
+//                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//                 "ui:widget": "singleFieldWidget"
+//             },
+//             "street-name": {
+//                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//                 "ui:widget": "singleFieldWidget"
+//             },
+//             "country": {
+//                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//                 "ui:widget": "selectionFieldWidget"
+//             }
+//         }
+//     },
+//     "funding-bundle": {
+//         "ui:ObjectFieldTemplate": customTemplates["fundBundleFieldTemplate"],
+//         "converted-funding": {
+//             "ui:widget": "hidden"
+//         },
+//         "funding": {
+//             "ui:FieldTemplate": customTemplates["fundFieldTemplate"],
+//             "ui:widget": "fundFieldWidget"
+//         },
+//         "currency": {
+//             "ui:FieldTemplate": customTemplates["currencyFieldTemplate"],
+//             "ui:widget": "currencyFieldWidget"
+//         }
+//     }
+// };
+//
+//
+// const UISchema = {
+//     "title": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget"
+//     },
+//     "family_name": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "first_name": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "middle_name": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "previous_family_name": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "previous_first_name": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "date_of_birth": {},
+//     "sex": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget"
+//     },
+//     "designated_group": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget"
+//     },
+//     "correspondence_language": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget"
+//     },
+//     "canadian_residency_status": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget"
+//     },
+//     "applied_for_permanent_residency": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "selectionFieldWidget"
+//     },
+//     "permanent_residency_start_date": {
+//         "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//         "ui:widget": "singleFieldWidget"
+//     },
+//     "country_of_citizenship": {
+//         "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+//         "items": {
+//             "country_of_citizenship": {
+//                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+//                 "ui:widget": "selectionFieldWidget"
+//             }
+//         }
+//     }
+// }
 
 
 class FormBuilder extends Component {
@@ -290,8 +282,6 @@ class FormBuilder extends Component {
         if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
             i18n.changeLanguage(this.props.language.toLowerCase());
         }
-        // console.log((uiSchema));
-        // console.log((generateUISchema(FormSchema)))
         // console.log(_.isEqual(uiSchema,generateUISchema(FormSchema)))
         return (
             <Form
@@ -299,6 +289,7 @@ class FormBuilder extends Component {
                 schema={this.props.formSchema}
                 // uiSchema={generateUISchema(FormSchema)}
                 // uiSchema={UISchema}
+                uiSchema={this.props.uiSchema}
                 formData={this.props.formData}
                 formContext={
                     {...this.props.formContext, submitAction: this.onSubmit} ?? null
