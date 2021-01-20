@@ -36,9 +36,9 @@ export function ObjectFieldTemplate(props) {
                 {title}{required ? "*" : null}
             </label>
             <div className="flex-grow" style={{maxWidth: "20rem"}}>
-                <div className="flex space-x-2">
-                    <div className="w-1/2">{properties[0].content}</div>
-                    <div className="w-1/2">{properties[1].content}</div>
+                <div className="objectField space-x-2">
+                    <>{properties[0].content}</>
+                    <>{properties[1].content}</>
                 </div>
             </div>
             <div className={`${rawErrors} ? 'hidden' : ''`}>

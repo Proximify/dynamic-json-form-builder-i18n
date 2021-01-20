@@ -42,7 +42,8 @@ export function MultiLangFieldWidget(props) {
     useEffect(() => {
         if (value) {
             let valueObj = JSON.parse(props.value);
-            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            const languageList = ["EN","FR"];
             if (valueObj.language === "Bilingual" && languageList.length === 2) {
                 const htmlPageLang = i18n.language;
                 const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
@@ -67,7 +68,8 @@ export function MultiLangFieldWidget(props) {
                 })
             }
         } else {
-            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            const languageList = ["EN","FR"];
             setState({
                 ...state,
                 primaryLanguage: i18n.language.toUpperCase(),
@@ -212,7 +214,7 @@ export function MultiLangFieldWidget(props) {
                                 >
                                     <Menu.Items
                                         static
-                                        className="absolute right-12 w-30 mt-1 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10"
+                                        className="absolute right-10 w-30 mt-1 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10"
                                     >
                                         <div className="py-1">
                                             {state.languageList.map((lang, index) => {
@@ -361,7 +363,8 @@ export function MultiLangTextAreaFieldWidget(props) {
     useEffect(() => {
         if (value) {
             let valueObj = JSON.parse(props.value);
-            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            const languageList = ["EN","FR"];
             if (valueObj.language === "Bilingual" && languageList.length === 2) {
                 const htmlPageLang = i18n.language;
                 const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
@@ -390,7 +393,8 @@ export function MultiLangTextAreaFieldWidget(props) {
                 })
             }
         } else {
-            const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
+            const languageList = ["EN","FR"];
             setState({
                 ...state,
                 primaryLanguage: i18n.language.toUpperCase(),
@@ -530,7 +534,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                                 >
                                     <Menu.Items
                                         static
-                                        className="absolute right-14 w-30 mt-0 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10"
+                                        className="absolute right-10 w-30 mt-0 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10"
                                     >
                                         <div className="py-1">
                                             {state.languageList.map((lang, index) => {
@@ -677,7 +681,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                 </div>
             </div>
             <div>
-                <a className={`undoBtn ${style.btnUndo} ${(!state.discardedContent || !state.discardedContent.getCurrentContent().hasText()) ? "hidden" : ""}`}
+                <a className={`undoBtn undoBtn ${(!state.discardedContent || !state.discardedContent.getCurrentContent().hasText()) ? "hidden" : ""}`}
                    onClick={() => {
                        handleLangChange()
                    }}>{t('btn-undo')}
