@@ -324,12 +324,19 @@ class FormBuilder extends Component {
                                 type="submit">
                             {t('btn-save')}
                         </button>
-                        <button className="border bg-gray-600 px-1 py-1 rounded text-white"
+                        <button className="border bg-gray-600 px-1 py-1 rounded text-white mr-20"
                                 type="button"
                                 onClick={() => {
                                     this.props.onFormEditCancel();
                                 }}>
                             {t('btn-cancel')}
+                        </button>
+                        <button className="border bg-gray-300 px-1 py-1 rounded text-black"
+                                type="button"
+                                onClick={()=>{
+                                    this.props.onFormEditDelete(this.props.formDependent);
+                                }}
+                        >Delete
                         </button>
                     </div>
                 </div>

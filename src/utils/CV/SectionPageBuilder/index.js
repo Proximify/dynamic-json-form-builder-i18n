@@ -214,6 +214,83 @@ export function SectionPageBuilder(props) {
         })
     }
 
+    const handleFormEditDelete = (formDependent) => {
+        console.log("on form delete", formDependent);
+        if (formDependent.form === null) {
+            if (isNaN(formDependent.index)) {
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: {}
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: false
+                    }
+                })
+            } else {
+                const dataArray = state.data[formDependent.section];
+                dataArray[formDependent.index] = {};
+                const controlArray = state.sectionControl[formDependent.section];
+                controlArray[formDependent.index] = false;
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: dataArray
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: controlArray
+                    }
+                })
+            }
+        } else {
+            if (isNaN(formDependent.index)) {
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: {
+                            ...state.data[formDependent.section],
+                            [formDependent.form]: {}
+                        }
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: {
+                            ...state.sectionControl[formDependent.section],
+                            [formDependent.form]: false
+                        }
+                    }
+                })
+            } else {
+                const dataArray = state.data[formDependent.section][formDependent.form];
+                dataArray[formDependent.index] = {};
+                const controlArray = state.sectionControl[formDependent.section][formDependent.form];
+                controlArray[formDependent.index] = false;
+                setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        [formDependent.section]: {
+                            ...state.data[formDependent.section],
+                            [formDependent.form]: dataArray
+                        }
+                    },
+                    sectionControl: {
+                        ...state.sectionControl,
+                        [formDependent.section]: {
+                            ...state.sectionControl[formDependent.section],
+                            [formDependent.form]: controlArray
+                        }
+                    }
+                })
+            }
+        }
+    }
+
     return (
         <>
             {state.ready && Object.keys(schema).map((key, index) => {
@@ -302,21 +379,21 @@ export function SectionPageBuilder(props) {
                                                                                        rawData={state.data[key][subKey]}
                                                                                        isFullScreenViewMode={true}/>
                                                                         </div>
-                                                                        <div className="ml-5"
-                                                                             onClick={() => {
-                                                                                 setState({
-                                                                                     ...state,
-                                                                                     data: {
-                                                                                         ...state.data,
-                                                                                         [key]: {
-                                                                                             ...state.data[key],
-                                                                                             [subKey]: {}
-                                                                                         }
-                                                                                     }
-                                                                                 })
-                                                                             }}>
-                                                                            <MdDeleteForever/>
-                                                                        </div>
+                                                                        {/*<div className="ml-5"*/}
+                                                                        {/*     onClick={() => {*/}
+                                                                        {/*         setState({*/}
+                                                                        {/*             ...state,*/}
+                                                                        {/*             data: {*/}
+                                                                        {/*                 ...state.data,*/}
+                                                                        {/*                 [key]: {*/}
+                                                                        {/*                     ...state.data[key],*/}
+                                                                        {/*                     [subKey]: {}*/}
+                                                                        {/*                 }*/}
+                                                                        {/*             }*/}
+                                                                        {/*         })*/}
+                                                                        {/*     }}>*/}
+                                                                        {/*    <MdDeleteForever/>*/}
+                                                                        {/*</div>*/}
                                                                     </div>
                                                                     : null
                                                                 :
@@ -346,23 +423,23 @@ export function SectionPageBuilder(props) {
                                                                                                rawData={state.data[key][subKey][index]}
                                                                                                isFullScreenViewMode={true}/>
                                                                                 </div>
-                                                                                <div className="ml-5"
-                                                                                     onClick={() => {
-                                                                                         const array = state.data[key][subKey];
-                                                                                         array.splice(index, 1)
-                                                                                         setState({
-                                                                                             ...state,
-                                                                                             data: {
-                                                                                                 ...state.data,
-                                                                                                 [key]: {
-                                                                                                     ...state.data[key],
-                                                                                                     [subKey]: array
-                                                                                                 }
-                                                                                             }
-                                                                                         })
-                                                                                     }}>
-                                                                                    <MdDeleteForever/>
-                                                                                </div>
+                                                                                {/*<div className="ml-5"*/}
+                                                                                {/*     onClick={() => {*/}
+                                                                                {/*         const array = state.data[key][subKey];*/}
+                                                                                {/*         array.splice(index, 1)*/}
+                                                                                {/*         setState({*/}
+                                                                                {/*             ...state,*/}
+                                                                                {/*             data: {*/}
+                                                                                {/*                 ...state.data,*/}
+                                                                                {/*                 [key]: {*/}
+                                                                                {/*                     ...state.data[key],*/}
+                                                                                {/*                     [subKey]: array*/}
+                                                                                {/*                 }*/}
+                                                                                {/*             }*/}
+                                                                                {/*         })*/}
+                                                                                {/*     }}>*/}
+                                                                                {/*    <MdDeleteForever/>*/}
+                                                                                {/*</div>*/}
                                                                             </div>
                                                                         )
                                                                     })
@@ -388,6 +465,7 @@ export function SectionPageBuilder(props) {
                                                                                     formData={state.data[key][subKey][index]}
                                                                                     onFormEditSubmit={handleFormEditSubmit}
                                                                                     onFormEditCancel={handleFormEditCancel}
+                                                                                    onFormEditDelete={handleFormEditDelete}
                                                                                     formDependent={{
                                                                                         section: key,
                                                                                         form: subKey,
@@ -417,6 +495,7 @@ export function SectionPageBuilder(props) {
                                                                         formData={state.data[key][subKey]}
                                                                         onFormEditSubmit={handleFormEditSubmit}
                                                                         onFormEditCancel={handleFormEditCancel}
+                                                                        onFormEditDelete={handleFormEditDelete}
                                                                         formDependent={{
                                                                             section: key,
                                                                             form: subKey,
@@ -497,19 +576,19 @@ export function SectionPageBuilder(props) {
                                                                                    rawData={state.data[key]}
                                                                                    isFullScreenViewMode={true}/>
                                                                     </div>
-                                                                    <div
-                                                                        onClick={() => {
-                                                                            // console.log(state.data[key], key)
-                                                                            setState({
-                                                                                ...state,
-                                                                                data: {
-                                                                                    ...state.data,
-                                                                                    [key]: {}
-                                                                                }
-                                                                            })
-                                                                        }}>
-                                                                        <MdDeleteForever/>
-                                                                    </div>
+                                                                    {/*<div*/}
+                                                                    {/*    onClick={() => {*/}
+                                                                    {/*        // console.log(state.data[key], key)*/}
+                                                                    {/*        setState({*/}
+                                                                    {/*            ...state,*/}
+                                                                    {/*            data: {*/}
+                                                                    {/*                ...state.data,*/}
+                                                                    {/*                [key]: {}*/}
+                                                                    {/*            }*/}
+                                                                    {/*        })*/}
+                                                                    {/*    }}>*/}
+                                                                    {/*    <MdDeleteForever/>*/}
+                                                                    {/*</div>*/}
                                                                 </div>
                                                                 : null
                                                         }
@@ -538,20 +617,20 @@ export function SectionPageBuilder(props) {
                                                                                            rawData={state.data[key][index]}
                                                                                            isFullScreenViewMode={true}/>
                                                                             </div>
-                                                                            <div className="ml-5"
-                                                                                 onClick={() => {
-                                                                                     const array = state.data[key];
-                                                                                     array.splice(index, 1)
-                                                                                     setState({
-                                                                                         ...state,
-                                                                                         data: {
-                                                                                             ...state.data,
-                                                                                             [key]: array
-                                                                                         }
-                                                                                     })
-                                                                                 }}>
-                                                                                <MdDeleteForever/>
-                                                                            </div>
+                                                                            {/*<div className="ml-5"*/}
+                                                                            {/*     onClick={() => {*/}
+                                                                            {/*         const array = state.data[key];*/}
+                                                                            {/*         array.splice(index, 1)*/}
+                                                                            {/*         setState({*/}
+                                                                            {/*             ...state,*/}
+                                                                            {/*             data: {*/}
+                                                                            {/*                 ...state.data,*/}
+                                                                            {/*                 [key]: array*/}
+                                                                            {/*             }*/}
+                                                                            {/*         })*/}
+                                                                            {/*     }}>*/}
+                                                                            {/*    <MdDeleteForever/>*/}
+                                                                            {/*</div>*/}
                                                                         </div>
                                                                     )
                                                                 })
@@ -579,6 +658,7 @@ export function SectionPageBuilder(props) {
                                                                             formData={state.data[key][index]}
                                                                             onFormEditSubmit={handleFormEditSubmit}
                                                                             onFormEditCancel={handleFormEditCancel}
+                                                                            onFormEditDelete={handleFormEditDelete}
                                                                             formDependent={{
                                                                                 section: key,
                                                                                 form: null,
@@ -611,6 +691,7 @@ export function SectionPageBuilder(props) {
                                                                 formData={state.data[key]}
                                                                 onFormEditSubmit={handleFormEditSubmit}
                                                                 onFormEditCancel={handleFormEditCancel}
+                                                                onFormEditDelete={handleFormEditDelete}
                                                                 formDependent={{
                                                                     section: key,
                                                                     form: null,
