@@ -38,7 +38,12 @@
     "react-toastify": "^6.2.0",
     "react-windowed-select": "^2.0.4",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "workbox-core": "^6.0.2",
+    "workbox-expiration": "^6.0.2",
+    "workbox-precaching": "^6.0.2",
+    "workbox-routing": "^6.0.2",
+    "workbox-strategies": "^6.0.2"
   },
   "scripts": {
     "start": "craco start",

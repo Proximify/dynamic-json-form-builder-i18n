@@ -28,8 +28,7 @@ export function SectionPageBuilder(props) {
         ready: false
     })
 
-    console.log(state)
-
+    // console.log(state)
 
     useEffect(() => {
         if (state.ready)
@@ -212,6 +211,7 @@ export function SectionPageBuilder(props) {
             ...state,
             ready: false
         })
+        props.rerenderParentCallback();
     }
 
     const handleFormEditDelete = (formDependent) => {
@@ -421,7 +421,8 @@ export function SectionPageBuilder(props) {
                                                                                                section={key}
                                                                                                form={subKey}
                                                                                                rawData={state.data[key][subKey][index]}
-                                                                                               isFullScreenViewMode={true}/>
+                                                                                               isFullScreenViewMode={true}
+                                                                                    />
                                                                                 </div>
                                                                                 {/*<div className="ml-5"*/}
                                                                                 {/*     onClick={() => {*/}
