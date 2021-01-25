@@ -12,7 +12,7 @@ export function SectionPageBuilder(props) {
     // console.log("SchemaParser", props)
 
     const schema = props.schema;
-    const data = props.data;
+    const data = {};
 
     const [state, setState] = useState({
         data: {
@@ -29,64 +29,73 @@ export function SectionPageBuilder(props) {
     })
 
     // console.log(state)
+    console.log(schema)
+
+    const builder = (sections) => {
+        const result = {}
+        
+    }
 
     useEffect(() => {
         if (state.ready)
             return;
         const sectionControl = {};
         const formData = {};
-        const noFormData = isEmptyObject(data) && isEmptyObject(state.data);
-        if (!isEmptyObject(schema)) {
-            Object.keys(schema).forEach(key => {
-                const section = schema[key]
-                // console.log(key, section)
-                if (section.hasOwnProperty("type")) {
-                    if (section.type === "form") {
-                        if (section.hasOwnProperty("multiplicity")) {
-                            if (section.multiplicity === "single") {
-                                sectionControl[key] = null;
-                                if (noFormData) {
-                                    formData[key] = {};
-                                }
-                            } else if (section.multiplicity === "multiple") {
-                                sectionControl[key] = [];
-                                if (noFormData) {
-                                    formData[key] = [];
-                                }
-                            }
-                        }
-                    } else if (section.type === "section") {
-                        if (section.hasOwnProperty("subSection")) {
-                            sectionControl[key] = {};
-                            if (noFormData) {
-                                formData[key] = {};
-                            }
-                            Object.keys(section.subSection).forEach(subKey => {
-                                const subSection = section.subSection[subKey];
-                                // console.log("+", subSection)
-                                if (subSection.hasOwnProperty("type")) {
-                                    if (subSection.type === "form") {
-                                        if (subSection.hasOwnProperty("multiplicity")) {
-                                            if (subSection.multiplicity === "single") {
-                                                sectionControl[key][subKey] = null;
-                                                if (noFormData) {
-                                                    formData[key][subKey] = {};
-                                                }
-                                            } else if (subSection.multiplicity === "multiple") {
-                                                sectionControl[key][subKey] = [];
-                                                if (noFormData) {
-                                                    formData[key][subKey] = [];
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                    }
-                }
-            })
-        }
+        const noFormData = {}
+
+        const sections = [];
+
+        // if (!isEmptyObject(schema)) {
+        //     Object.keys(schema).forEach(key => {
+        //         const section = schema[key]
+        //         // console.log(key, section)
+        //         if (section.hasOwnProperty("type")) {
+        //             if (section.type === "form") {
+        //                 if (section.hasOwnProperty("multiplicity")) {
+        //                     if (section.multiplicity === "single") {
+        //                         sectionControl[key] = null;
+        //                         if (noFormData) {
+        //                             formData[key] = {};
+        //                         }
+        //                     } else if (section.multiplicity === "multiple") {
+        //                         sectionControl[key] = [];
+        //                         if (noFormData) {
+        //                             formData[key] = [];
+        //                         }
+        //                     }
+        //                 }
+        //             } else if (section.type === "section") {
+        //                 if (section.hasOwnProperty("subSection")) {
+        //                     sectionControl[key] = {};
+        //                     if (noFormData) {
+        //                         formData[key] = {};
+        //                     }
+        //                     Object.keys(section.subSection).forEach(subKey => {
+        //                         const subSection = section.subSection[subKey];
+        //                         // console.log("+", subSection)
+        //                         if (subSection.hasOwnProperty("type")) {
+        //                             if (subSection.type === "form") {
+        //                                 if (subSection.hasOwnProperty("multiplicity")) {
+        //                                     if (subSection.multiplicity === "single") {
+        //                                         sectionControl[key][subKey] = null;
+        //                                         if (noFormData) {
+        //                                             formData[key][subKey] = {};
+        //                                         }
+        //                                     } else if (subSection.multiplicity === "multiple") {
+        //                                         sectionControl[key][subKey] = [];
+        //                                         if (noFormData) {
+        //                                             formData[key][subKey] = [];
+        //                                         }
+        //                                     }
+        //                                 }
+        //                             }
+        //                         }
+        //                     })
+        //                 }
+        //             }
+        //         }
+        //     })
+        //}
         // console.log({data:data, sectionControl: sectionControl});
         setState({
             ...state,
@@ -105,7 +114,7 @@ export function SectionPageBuilder(props) {
     }
 
     const isForm = (obj) => {
-        return obj.hasOwnProperty("type") && obj.type === "form" && obj.hasOwnProperty("schema") && Object.keys(obj.schema).length > 0;
+        return obj.hasOwnProperty("type") && obj.type === "form";
     }
 
     const isSingle = (obj) => {
@@ -356,6 +365,7 @@ export function SectionPageBuilder(props) {
                                                         </div>
                                                     </div>
                                                     <div className="mx-5">
+                                                        {/*{console.log("+",key,subKey, state.data[key][subKey])}*/}
                                                         {
                                                             isSingle(subSection) ?
                                                                 !isEmptyObject(state.data[key][subKey]) ?
@@ -374,6 +384,7 @@ export function SectionPageBuilder(props) {
                                                                                     }
                                                                                 })
                                                                             }}>
+                                                                            {/*{console.log("---",key,subKey)}*/}
                                                                             <Formatter app={"CV"} section={key}
                                                                                        form={subKey}
                                                                                        rawData={state.data[key][subKey]}

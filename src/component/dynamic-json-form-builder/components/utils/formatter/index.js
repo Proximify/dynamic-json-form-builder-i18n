@@ -8,6 +8,8 @@ import RMFormatter from "./RM";
  * @returns {JSX.Element}
  * @constructor
  */
+// app, section key, subsection key => full screen
+// app section name, sub section name => per form
 export default function Formatter(props) {
     console.log("Formatter", props)
     const apps = {

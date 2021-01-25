@@ -161,10 +161,10 @@ export function ModalFullScreen(props) {
     return (
         <>
             <div
-                className={`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed z-50 ${fullScreen ? "w-full h-full top-0 left-0 " : "inset-0 outline-none focus:outline-none bg-gray-300 bg-opacity-70"}`}
+                className={`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed z-50 ${fullScreen ? "w-full h-full top-0 left-0 bg-white" : "inset-0 outline-none focus:outline-none bg-gray-300 bg-opacity-70"}`}
             >
                 <div
-                    className={`${fullScreen ? "absolute w-full h-full bg-white opacity-100" : "relative w-full my-6 mx-auto max-w-2xl"}`}
+                    className={`${fullScreen ? "absolute w-full h-full" : "relative w-full my-6 mx-auto max-w-2xl"}`}
                 >
                     <div
                         className={`${fullScreen ? "max-w-2xl h-full mx-auto" : "border rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none"}`}

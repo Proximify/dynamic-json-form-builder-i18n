@@ -5,12 +5,14 @@ import LanguageTogglerButton from './language-toggle-btn';
 import {SectionPageBuilder} from "./utils/CV/SectionPageBuilder";
 import api from "./api";
 
-if (navigator.serviceWorker) {
-    console.log("service worker supported");
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw_cv_schemaParser.js').then(reg => console.log("Registered")).catch(err => console.log("Register Error", err))
-    })
-}
+import SchemaParser from "./utils/CV/SchemaParser/FullScreen";
+
+// if (navigator.serviceWorker) {
+//     console.log("service worker supported");
+//     window.addEventListener('load', () => {
+//         navigator.serviceWorker.register('sw_cv_schemaParser.js').then(reg => console.log("Registered")).catch(err => console.log("Register Error", err));
+//     })
+// }
 class App extends Component {
     constructor(props) {
         super(props);
@@ -93,6 +95,7 @@ class App extends Component {
 
     render() {
         console.log("parent render")
+        // SchemaParser();
         return (
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
@@ -102,7 +105,7 @@ class App extends Component {
                             <div
                                 className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
                                 {this.state.isReady &&
-                                <SectionPageBuilder schema={this.state.schema} data={this.state.data}
+                                <SectionPageBuilder schema={SchemaParser()} data={this.state.data}
                                                     language={this.state.language.language}
                                                     rerenderParentCallback={this.rerenderParentCallback}/>}
                             </div>
