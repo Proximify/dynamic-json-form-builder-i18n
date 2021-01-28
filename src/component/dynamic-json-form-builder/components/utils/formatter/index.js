@@ -13,7 +13,7 @@ import RMFormatter from "./RM";
 export default function Formatter(props) {
     console.log("Formatter", props)
     const apps = {
-        "CV": <CVFormatter section={props.section} form={props.form} rawData={props.rawData} isFullScreenViewMode={props.isFullScreenViewMode} fields={props.fields} values={props.values} />,
+        "CV": <CVFormatter structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
         "RM": <RMFormatter/>
     }
 

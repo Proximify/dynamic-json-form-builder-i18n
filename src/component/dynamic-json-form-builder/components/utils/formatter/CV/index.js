@@ -1,23 +1,21 @@
 import React from "react";
-import Section0 from './0';
 
 import UserProfile from './UserProfile';
 import PersonalInformation from './PersonalInformation'
 import Recognitions from "./Recognitions";
 
 export default function CVFormatter(props) {
-    console.log("CVFormatters",props);
+    console.log("CVFormatters", props);
 
-    const section = {
-        "user_profile": <UserProfile rawData={props.rawData} isFullScreenViewMode={props.isFullScreenViewMode} fields={props.fields} values={props.values}/>,
-        "personal_information": <PersonalInformation form={props.form} rawData={props.rawData} isFullScreenViewMode={props.isFullScreenViewMode} fields={props.fields} values={props.values}/>,
-        "recognitions": <Recognitions rawData={props.rawData} isFullScreenViewMode={props.isFullScreenViewMode} fields={props.fields} values={props.values}/>,
-        0:<Section0 />
+    const subsections = {
+        "user_profile": <UserProfile/>,
+        "personal_information": <PersonalInformation structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
+        "recognitions": <Recognitions/>
     }
 
     return (
         <React.Fragment>
-            {section[props.section]}
+            {subsections[props.structureChain.shift()]}
         </React.Fragment>
     )
 }

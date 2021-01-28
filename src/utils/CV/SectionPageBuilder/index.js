@@ -1,49 +1,62 @@
 import React, {useState, useEffect} from 'react';
-import FormBuilder from '../../../component/dynamic-json-form-builder';
 import api from "../../../api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
-import {MdDeleteForever} from 'react-icons/md'
-import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
 import Formatter from "../../../component/dynamic-json-form-builder/components/utils/formatter";
-import {UISchema} from "../UISchema";
+import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
+import {FormSchemaParser} from "../SchemaParser/FullScreen";
+
 
 export function SectionPageBuilder(props) {
     // console.log("SchemaParser", props)
 
     const schema = props.schema;
-    const data = {};
 
     const [state, setState] = useState({
-        data: {
-            // personal_information: {identification: {}, language_skill: [], address: []},
-            // recognitions: [],
-            // user_profile: {}
-        },
-        sectionControl: {
-            // personal_information: {identification: null, language_skill: [], address: []},
-            // recognitions: [],
-            // user_profile: null
-        },
+        sections: [],
         ready: false
     })
 
     // console.log(state)
-    console.log(schema)
+    // console.log(schema)
 
-    const builder = (sections) => {
-        const result = {}
-        
+    // has subsection, use field to create subtitle, no subsection, use field to call formatter
+    const sectionSchemaBuilder = (section, section_data, fields) => {
+        if (section["type"] === "form") {
+            section["open"] = false;
+        } else if (section["type"] === "section") {
+            // console.log(section)
+            Object.keys(section["subsections"]).forEach(key => {
+                const subsection = section["subsections"][key];
+                const dataArray = [];
+                section_data.forEach(data => dataArray.push(data.values))
+                Object.keys(fields).forEach(key => {
+                    const field = fields[key];
+                    if (field["subsection_id"] === subsection["section_id"]) {
+                        const field_id = field["field_id"];
+                        subsection["section_data"] = []
+
+                        dataArray.forEach(data => {
+                            Object.keys(data).forEach(dataKey => {
+                                if (dataKey === field_id) {
+                                    // console.log(data[dataKey])
+                                    subsection["section_data"] = data[dataKey]
+                                }
+                            })
+                        })
+                    }
+                })
+                sectionSchemaBuilder(subsection, subsection["section_data"], subsection.fields);
+            })
+        }
     }
 
     useEffect(() => {
         if (state.ready)
             return;
-        const sectionControl = {};
-        const formData = {};
-        const noFormData = {}
 
-        const sections = [];
+        schema.forEach(section => sectionSchemaBuilder(section, section.section_data, section.fields))
+        // console.log(schema)
 
         // if (!isEmptyObject(schema)) {
         //     Object.keys(schema).forEach(key => {
@@ -99,8 +112,7 @@ export function SectionPageBuilder(props) {
         // console.log({data:data, sectionControl: sectionControl});
         setState({
             ...state,
-            data: noFormData ? formData : state.data,
-            sectionControl: sectionControl,
+            sections: schema,
             ready: true
         })
     }, [state.ready])
@@ -300,432 +312,474 @@ export function SectionPageBuilder(props) {
         }
     }
 
+    const pageBuilder = (section, index, fontSize, structureChain) => {
+        // console.log(structureChain)
+        const size = {
+            3: "text-2xl font-bold my-3 border border-yellow-500 bg-yellow-500 rounded inline-block p-1",
+            2: "text-xl font-semibold my-2 text-yellow-600",
+            1: "text-lg font-normal my-1 text-black",
+            0: "text-sm"
+        }
+        if (section.type === "form") {
+            return (
+                <div key={index} className="pl-4 border border-black p-3 rounded">
+                    <div className={`flex items-center`}><p
+                        className={`${size[fontSize]}`}>{section.title}</p>
+                        <p className="ml-3">{section.multiplicity === "multiple" ? <AiOutlineFileAdd size={"1.1rem"}/> :
+                            <FiEdit size={"1.1rem"}/>}
+                        </p>
+                    </div>
+                    {section.section_data.length > 0 ? (
+                        <div className={"font-extralight"}>
+                            <div className="font-medium text-red-400">
+                                <Formatter app={"CV"}
+                                           structureChain={structureChain}
+                                           isFullScreenViewMode={true}
+                                           schema={section}
+                                           rawData={section.section_data}
+                                />
+                            </div>
+                        </div>
+                    ) : null}
+                </div>
+            )
+        } else if (section.type === "section") {
+            return (<div key={index}
+                         className="pl-4 border border-green-400 p-3 m-2 rounded shadow-xl"><p
+                className={`${size[fontSize]}`}>{section.title}</p>{Object.keys(section.subsections).map((key, index) => pageBuilder(section.subsections[key], index, fontSize - 1, structureChain.concat(section.subsections[key].name)))}
+            </div>)
+        }
+    }
+
     return (
         <>
-            {state.ready && Object.keys(schema).map((key, index) => {
-                const section = schema[key];
-                return (
-                    <div key={index} id={"section"}
-                         className="border border-gray-200 bg-red-50 rounded-lg px-2 py-3 mb-5">
-                        {
-                            isSection(section) && hasSubSection(section) ?
-                                <>
-                                    <div id={"section header"}>
-                                        <p className="inline-block text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
-                                    </div>
-                                    <div id={"section content"}>{
-                                        Object.keys(section["subSection"]).map((subKey, subIndex) => {
-                                            const subSection = section["subSection"][subKey];
-                                            return (
-                                                <div
-                                                    className="mx-5 border border-gray-400 border-l-0 border-r-0 border-t-0 my-1 pb-2"
-                                                    id="subSection">
-                                                    <div className="flex items-center">
-                                                        <div className="text-lg font-bold">{subSection.title}</div>
-                                                        <div className="ml-3">{
-                                                            isSingle(subSection) ?
-                                                                <div
-                                                                    onClick={() => {
-                                                                        // console.log("sss", key, subKey)
-                                                                        setState({
-                                                                            ...state,
-                                                                            sectionControl: {
-                                                                                ...state.sectionControl,
-                                                                                [key]: {
-                                                                                    ...state.sectionControl[key],
-                                                                                    [subKey]: true
-                                                                                }
-                                                                            }
-                                                                        })
-                                                                    }}
-                                                                >
-                                                                    <FiEdit size={"1.1rem"}/>
-                                                                </div>
-                                                                :
-                                                                <div
-                                                                    onClick={() => {
-                                                                        // console.log(state.sectionControl[key][subKey]);
-                                                                        const array = state.sectionControl[key][subKey];
-                                                                        array.push(true);
-                                                                        setState({
-                                                                            ...state,
-                                                                            sectionControl: {
-                                                                                ...state.sectionControl,
-                                                                                [key]: {
-                                                                                    ...state.sectionControl[key],
-                                                                                    [subKey]: array
-                                                                                }
-                                                                            }
-                                                                        })
-                                                                    }}
-                                                                >
-                                                                    <AiOutlineFileAdd size={"1.1rem"}/>
-                                                                </div>
-                                                        }
-                                                        </div>
-                                                    </div>
-                                                    <div className="mx-5">
-                                                        {/*{console.log("+",key,subKey, state.data[key][subKey])}*/}
-                                                        {
-                                                            isSingle(subSection) ?
-                                                                !isEmptyObject(state.data[key][subKey]) ?
-                                                                    <div
-                                                                        className="flex justify-between items-center">
-                                                                        <div
-                                                                            onClick={() => {
-                                                                                setState({
-                                                                                    ...state,
-                                                                                    sectionControl: {
-                                                                                        ...state.sectionControl,
-                                                                                        [key]: {
-                                                                                            ...state.sectionControl[key],
-                                                                                            [subKey]: true
-                                                                                        }
-                                                                                    }
-                                                                                })
-                                                                            }}>
-                                                                            {/*{console.log("---",key,subKey)}*/}
-                                                                            <Formatter app={"CV"} section={key}
-                                                                                       form={subKey}
-                                                                                       rawData={state.data[key][subKey]}
-                                                                                       isFullScreenViewMode={true}/>
-                                                                        </div>
-                                                                        {/*<div className="ml-5"*/}
-                                                                        {/*     onClick={() => {*/}
-                                                                        {/*         setState({*/}
-                                                                        {/*             ...state,*/}
-                                                                        {/*             data: {*/}
-                                                                        {/*                 ...state.data,*/}
-                                                                        {/*                 [key]: {*/}
-                                                                        {/*                     ...state.data[key],*/}
-                                                                        {/*                     [subKey]: {}*/}
-                                                                        {/*                 }*/}
-                                                                        {/*             }*/}
-                                                                        {/*         })*/}
-                                                                        {/*     }}>*/}
-                                                                        {/*    <MdDeleteForever/>*/}
-                                                                        {/*</div>*/}
-                                                                    </div>
-                                                                    : null
-                                                                :
-                                                                !isEmptyObject(state.data[key][subKey]) ?
-                                                                    state.data[key][subKey].map((element, index) => {
-                                                                        return (
-                                                                            <div
-                                                                                className="flex justify-between items-center">
-                                                                                <div key={index}
-                                                                                     onClick={() => {
-                                                                                         const array = state.sectionControl[key][subKey];
-                                                                                         array[index] = true;
-                                                                                         setState({
-                                                                                             ...state,
-                                                                                             sectionControl: {
-                                                                                                 ...state.sectionControl,
-                                                                                                 [key]: {
-                                                                                                     ...state.sectionControl[key],
-                                                                                                     [subKey]: array
-                                                                                                 }
-                                                                                             }
-                                                                                         })
-                                                                                     }}>
-                                                                                    <Formatter app={"CV"}
-                                                                                               section={key}
-                                                                                               form={subKey}
-                                                                                               rawData={state.data[key][subKey][index]}
-                                                                                               isFullScreenViewMode={true}
-                                                                                    />
-                                                                                </div>
-                                                                                {/*<div className="ml-5"*/}
-                                                                                {/*     onClick={() => {*/}
-                                                                                {/*         const array = state.data[key][subKey];*/}
-                                                                                {/*         array.splice(index, 1)*/}
-                                                                                {/*         setState({*/}
-                                                                                {/*             ...state,*/}
-                                                                                {/*             data: {*/}
-                                                                                {/*                 ...state.data,*/}
-                                                                                {/*                 [key]: {*/}
-                                                                                {/*                     ...state.data[key],*/}
-                                                                                {/*                     [subKey]: array*/}
-                                                                                {/*                 }*/}
-                                                                                {/*             }*/}
-                                                                                {/*         })*/}
-                                                                                {/*     }}>*/}
-                                                                                {/*    <MdDeleteForever/>*/}
-                                                                                {/*</div>*/}
-                                                                            </div>
-                                                                        )
-                                                                    })
-                                                                    : null
+            {state.ready && state.sections.map((section, index) => {
+                console.log(section)
+                return pageBuilder(section, index, 3, [section.name])
 
-                                                        }
-                                                    </div>
-                                                    {
-                                                        isForm(subSection) ?
-                                                            Array.isArray(state.sectionControl[key][subKey]) ?
-                                                                state.sectionControl[key][subKey].map((element, index) => {
-                                                                    return (
-                                                                        element && <div key={index}>
-                                                                            <ModalFullScreen content={
-                                                                                <FormBuilder
-                                                                                    formID={"user-profile-form"}
-                                                                                    resourceURL={"form/"}
-                                                                                    // validationDeclaration={this.validationDeclaration}
-                                                                                    HTTPMethod={"PATCH"}
-                                                                                    language={props.language}
-                                                                                    formSchema={subSection.schema}
-                                                                                    uiSchema={UISchema(key, subKey, null)}
-                                                                                    formData={state.data[key][subKey][index]}
-                                                                                    onFormEditSubmit={handleFormEditSubmit}
-                                                                                    onFormEditCancel={handleFormEditCancel}
-                                                                                    onFormEditDelete={handleFormEditDelete}
-                                                                                    formDependent={{
-                                                                                        section: key,
-                                                                                        form: subKey,
-                                                                                        index: index
-                                                                                    }}
-                                                                                    formContext={{
-                                                                                        api: api,
-                                                                                        app: "CV",
-                                                                                        form: "PersonalInformation"
-                                                                                    }}
-                                                                                />} title={subSection.title}
-                                                                                             fullScreen={true}/>
-                                                                        </div>
-                                                                    )
-                                                                })
-                                                                :
-                                                                state.sectionControl[key][subKey] &&
-                                                                <ModalFullScreen content={
-                                                                    <FormBuilder
-                                                                        formID={"user-profile-form"}
-                                                                        resourceURL={"form/"}
-                                                                        // validationDeclaration={this.validationDeclaration}
-                                                                        HTTPMethod={"PATCH"}
-                                                                        language={props.language}
-                                                                        formSchema={subSection.schema}
-                                                                        uiSchema={UISchema(key, subKey, null)}
-                                                                        formData={state.data[key][subKey]}
-                                                                        onFormEditSubmit={handleFormEditSubmit}
-                                                                        onFormEditCancel={handleFormEditCancel}
-                                                                        onFormEditDelete={handleFormEditDelete}
-                                                                        formDependent={{
-                                                                            section: key,
-                                                                            form: subKey,
-                                                                            index: NaN
-                                                                        }}
-                                                                        formContext={{
-                                                                            api: api,
-                                                                            app: "CV",
-                                                                            form: "PersonalInformation"
-                                                                        }}
-                                                                    />
-                                                                } title={subSection.title} fullScreen={true}/>
-                                                            : null
-                                                    }
-                                                </div>
-                                            )
-                                        })}</div>
-                                </>
-                                :
-                                isForm(section) ?
-                                    <>
-                                        <div id={"section header"}>
-                                            <p className="inline-block text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
-                                            <div className="inline-block ml-2">
-                                                {
-                                                    isSingle(section) ?
-                                                        <div
-                                                            onClick={() => {
-                                                                // console.log("sss", key, subKey)
-                                                                setState({
-                                                                    ...state,
-                                                                    sectionControl: {
-                                                                        ...state.sectionControl,
-                                                                        [key]: true
-                                                                    }
-                                                                })
-                                                            }}
-                                                        >
-                                                            <FiEdit size={"1.1rem"}/>
-                                                        </div>
-                                                        :
-                                                        <div
-                                                            onClick={() => {
-                                                                const array = state.sectionControl[key];
-                                                                array.push(true);
-                                                                setState({
-                                                                    ...state,
-                                                                    sectionControl: {
-                                                                        ...state.sectionControl,
-                                                                        [key]: array
-                                                                    }
-                                                                })
-                                                            }}
-                                                        >
-                                                            <AiOutlineFileAdd size={"1.1rem"}/>
-                                                        </div>
-                                                }
-                                            </div>
-                                        </div>
-                                        <div id="section content">
-                                            {
-                                                isSingle(section) ?
-                                                    <>
-                                                        {
-                                                            !isEmptyObject(state.data[key]) ?
-                                                                <div className="mx-5 flex justify-between items-center">
-                                                                    <div
-                                                                        onClick={() => {
-                                                                            setState({
-                                                                                ...state,
-                                                                                sectionControl: {
-                                                                                    ...state.sectionControl,
-                                                                                    [key]: true
-                                                                                }
-                                                                            })
-                                                                        }}>
-                                                                        <Formatter app={"CV"} section={key}
-                                                                                   rawData={state.data[key]}
-                                                                                   isFullScreenViewMode={true}/>
-                                                                    </div>
-                                                                    {/*<div*/}
-                                                                    {/*    onClick={() => {*/}
-                                                                    {/*        // console.log(state.data[key], key)*/}
-                                                                    {/*        setState({*/}
-                                                                    {/*            ...state,*/}
-                                                                    {/*            data: {*/}
-                                                                    {/*                ...state.data,*/}
-                                                                    {/*                [key]: {}*/}
-                                                                    {/*            }*/}
-                                                                    {/*        })*/}
-                                                                    {/*    }}>*/}
-                                                                    {/*    <MdDeleteForever/>*/}
-                                                                    {/*</div>*/}
-                                                                </div>
-                                                                : null
-                                                        }
-                                                    </>
-                                                    :
-                                                    <>
-                                                        {
-                                                            !isEmptyObject(state.data[key]) ?
-                                                                state.data[key].map((element, index) => {
-                                                                    return (
-                                                                        <div
-                                                                            className="mx-5 flex justify-between items-center">
-                                                                            <div key={index}
-                                                                                 onClick={() => {
-                                                                                     const array = state.sectionControl[key];
-                                                                                     array[index] = true;
-                                                                                     setState({
-                                                                                         ...state,
-                                                                                         sectionControl: {
-                                                                                             ...state.sectionControl,
-                                                                                             [key]: array
-                                                                                         }
-                                                                                     })
-                                                                                 }}>
-                                                                                <Formatter app={"CV"} section={key}
-                                                                                           rawData={state.data[key][index]}
-                                                                                           isFullScreenViewMode={true}/>
-                                                                            </div>
-                                                                            {/*<div className="ml-5"*/}
-                                                                            {/*     onClick={() => {*/}
-                                                                            {/*         const array = state.data[key];*/}
-                                                                            {/*         array.splice(index, 1)*/}
-                                                                            {/*         setState({*/}
-                                                                            {/*             ...state,*/}
-                                                                            {/*             data: {*/}
-                                                                            {/*                 ...state.data,*/}
-                                                                            {/*                 [key]: array*/}
-                                                                            {/*             }*/}
-                                                                            {/*         })*/}
-                                                                            {/*     }}>*/}
-                                                                            {/*    <MdDeleteForever/>*/}
-                                                                            {/*</div>*/}
-                                                                        </div>
-                                                                    )
-                                                                })
-                                                                : null
-                                                        }
-                                                    </>
-                                            }
-                                            {
-                                                Array.isArray(state.sectionControl[key]) ?
-                                                    state.sectionControl[key].map((element, index) => {
-                                                        // console.log(element, index)
-                                                        return (
-                                                            element &&
-                                                            <div key={index}>
-                                                                <ModalFullScreen
-                                                                    content={
-                                                                        <FormBuilder
-                                                                            formID={"user-profile-form"}
-                                                                            resourceURL={"form/"}
-                                                                            // validationDeclaration={this.validationDeclaration}
-                                                                            HTTPMethod={"PATCH"}
-                                                                            language={props.language}
-                                                                            uiSchema={UISchema(key, null, null)}
-                                                                            formSchema={section.schema}
-                                                                            formData={state.data[key][index]}
-                                                                            onFormEditSubmit={handleFormEditSubmit}
-                                                                            onFormEditCancel={handleFormEditCancel}
-                                                                            onFormEditDelete={handleFormEditDelete}
-                                                                            formDependent={{
-                                                                                section: key,
-                                                                                form: null,
-                                                                                index: index
-                                                                            }}
-                                                                            formContext={{
-                                                                                api: api,
-                                                                                app: "CV",
-                                                                                form: "PersonalInformation"
-                                                                            }}
-                                                                        />
-                                                                    }
-                                                                    title={section.title}
-                                                                    fullScreen={true}/>
-                                                            </div>
-                                                        )
-                                                    })
-                                                    :
-                                                    state.sectionControl[key] &&
-                                                    <ModalFullScreen
-                                                        content={
-                                                            <FormBuilder
-                                                                formID={"user-profile-form"}
-                                                                resourceURL={"form/"}
-                                                                // validationDeclaration={this.validationDeclaration}
-                                                                HTTPMethod={"PATCH"}
-                                                                language={props.language}
-                                                                uiSchema={UISchema(key, null, null)}
-                                                                formSchema={section.schema}
-                                                                formData={state.data[key]}
-                                                                onFormEditSubmit={handleFormEditSubmit}
-                                                                onFormEditCancel={handleFormEditCancel}
-                                                                onFormEditDelete={handleFormEditDelete}
-                                                                formDependent={{
-                                                                    section: key,
-                                                                    form: null,
-                                                                    index: NaN
-                                                                }}
-                                                                formContext={{
-                                                                    api: api,
-                                                                    app: "CV",
-                                                                    form: "PersonalInformation"
-                                                                }}
-                                                            />
-                                                        }
-                                                        title={section.title}
-                                                        fullScreen={true}
-                                                    />
-                                            }
-                                        </div>
-                                    </>
-                                    : null
-                        }
-                    </div>
-                )
+                // console.log(section)
+                // return (
+                //     <div key={index} id={"section"}
+                //          className="border border-gray-200 bg-red-50 rounded-lg px-2 py-3 mb-5">
+                //         {
+                //             isSection(section) && hasSubSection(section) ?
+                //                 <>
+                //                     <div id={"section header"}>
+                //                         <p className="inline-block text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
+                //                     </div>
+                //                     <div id={"section content"}>{
+                //                         Object.keys(section["subSection"]).map((subKey, subIndex) => {
+                //                             const subSection = section["subSection"][subKey];
+                //                             return (
+                //                                 <div
+                //                                     className="mx-5 border border-gray-400 border-l-0 border-r-0 border-t-0 my-1 pb-2"
+                //                                     id="subSection">
+                //                                     <div className="flex items-center">
+                //                                         <div className="text-lg font-bold">{subSection.title}</div>
+                //                                         <div className="ml-3">{
+                //                                             isSingle(subSection) ?
+                //                                                 <div
+                //                                                     onClick={() => {
+                //                                                         // console.log("sss", key, subKey)
+                //                                                         setState({
+                //                                                             ...state,
+                //                                                             sectionControl: {
+                //                                                                 ...state.sectionControl,
+                //                                                                 [key]: {
+                //                                                                     ...state.sectionControl[key],
+                //                                                                     [subKey]: true
+                //                                                                 }
+                //                                                             }
+                //                                                         })
+                //                                                     }}
+                //                                                 >
+                //                                                     <FiEdit size={"1.1rem"}/>
+                //                                                 </div>
+                //                                                 :
+                //                                                 <div
+                //                                                     onClick={() => {
+                //                                                         // console.log(state.sectionControl[key][subKey]);
+                //                                                         const array = state.sectionControl[key][subKey];
+                //                                                         array.push(true);
+                //                                                         setState({
+                //                                                             ...state,
+                //                                                             sectionControl: {
+                //                                                                 ...state.sectionControl,
+                //                                                                 [key]: {
+                //                                                                     ...state.sectionControl[key],
+                //                                                                     [subKey]: array
+                //                                                                 }
+                //                                                             }
+                //                                                         })
+                //                                                     }}
+                //                                                 >
+                //                                                     <AiOutlineFileAdd size={"1.1rem"}/>
+                //                                                 </div>
+                //                                         }
+                //                                         </div>
+                //                                     </div>
+                //                                     <div className="mx-5">
+                //                                         {/*{console.log("+",key,subKey, state.data[key][subKey])}*/}
+                //                                         {
+                //                                             isSingle(subSection) ?
+                //                                                 !isEmptyObject(state.data[key][subKey]) ?
+                //                                                     <div
+                //                                                         className="flex justify-between items-center">
+                //                                                         <div
+                //                                                             onClick={() => {
+                //                                                                 setState({
+                //                                                                     ...state,
+                //                                                                     sectionControl: {
+                //                                                                         ...state.sectionControl,
+                //                                                                         [key]: {
+                //                                                                             ...state.sectionControl[key],
+                //                                                                             [subKey]: true
+                //                                                                         }
+                //                                                                     }
+                //                                                                 })
+                //                                                             }}>
+                //                                                             {/*{console.log("---",key,subKey)}*/}
+                //                                                             <Formatter app={"CV"} section={key}
+                //                                                                        form={subKey}
+                //                                                                        rawData={state.data[key][subKey]}
+                //                                                                        isFullScreenViewMode={true}/>
+                //                                                         </div>
+                //                                                         {/*<div className="ml-5"*/}
+                //                                                         {/*     onClick={() => {*/}
+                //                                                         {/*         setState({*/}
+                //                                                         {/*             ...state,*/}
+                //                                                         {/*             data: {*/}
+                //                                                         {/*                 ...state.data,*/}
+                //                                                         {/*                 [key]: {*/}
+                //                                                         {/*                     ...state.data[key],*/}
+                //                                                         {/*                     [subKey]: {}*/}
+                //                                                         {/*                 }*/}
+                //                                                         {/*             }*/}
+                //                                                         {/*         })*/}
+                //                                                         {/*     }}>*/}
+                //                                                         {/*    <MdDeleteForever/>*/}
+                //                                                         {/*</div>*/}
+                //                                                     </div>
+                //                                                     : null
+                //                                                 :
+                //                                                 !isEmptyObject(state.data[key][subKey]) ?
+                //                                                     state.data[key][subKey].map((element, index) => {
+                //                                                         return (
+                //                                                             <div
+                //                                                                 className="flex justify-between items-center">
+                //                                                                 <div key={index}
+                //                                                                      onClick={() => {
+                //                                                                          const array = state.sectionControl[key][subKey];
+                //                                                                          array[index] = true;
+                //                                                                          setState({
+                //                                                                              ...state,
+                //                                                                              sectionControl: {
+                //                                                                                  ...state.sectionControl,
+                //                                                                                  [key]: {
+                //                                                                                      ...state.sectionControl[key],
+                //                                                                                      [subKey]: array
+                //                                                                                  }
+                //                                                                              }
+                //                                                                          })
+                //                                                                      }}>
+                //                                                                     <Formatter app={"CV"}
+                //                                                                                section={key}
+                //                                                                                form={subKey}
+                //                                                                                rawData={state.data[key][subKey][index]}
+                //                                                                                isFullScreenViewMode={true}
+                //                                                                     />
+                //                                                                 </div>
+                //                                                                 {/*<div className="ml-5"*/}
+                //                                                                 {/*     onClick={() => {*/}
+                //                                                                 {/*         const array = state.data[key][subKey];*/}
+                //                                                                 {/*         array.splice(index, 1)*/}
+                //                                                                 {/*         setState({*/}
+                //                                                                 {/*             ...state,*/}
+                //                                                                 {/*             data: {*/}
+                //                                                                 {/*                 ...state.data,*/}
+                //                                                                 {/*                 [key]: {*/}
+                //                                                                 {/*                     ...state.data[key],*/}
+                //                                                                 {/*                     [subKey]: array*/}
+                //                                                                 {/*                 }*/}
+                //                                                                 {/*             }*/}
+                //                                                                 {/*         })*/}
+                //                                                                 {/*     }}>*/}
+                //                                                                 {/*    <MdDeleteForever/>*/}
+                //                                                                 {/*</div>*/}
+                //                                                             </div>
+                //                                                         )
+                //                                                     })
+                //                                                     : null
+                //
+                //                                         }
+                //                                     </div>
+                //                                     {
+                //                                         isForm(subSection) ?
+                //                                             Array.isArray(state.sectionControl[key][subKey]) ?
+                //                                                 state.sectionControl[key][subKey].map((element, index) => {
+                //                                                     return (
+                //                                                         element && <div key={index}>
+                //                                                             <ModalFullScreen content={
+                //                                                                 <FormBuilder
+                //                                                                     formID={"user-profile-form"}
+                //                                                                     resourceURL={"form/"}
+                //                                                                     // validationDeclaration={this.validationDeclaration}
+                //                                                                     HTTPMethod={"PATCH"}
+                //                                                                     language={props.language}
+                //                                                                     formSchema={subSection.schema}
+                //                                                                     uiSchema={UISchema(key, subKey, null)}
+                //                                                                     formData={state.data[key][subKey][index]}
+                //                                                                     onFormEditSubmit={handleFormEditSubmit}
+                //                                                                     onFormEditCancel={handleFormEditCancel}
+                //                                                                     onFormEditDelete={handleFormEditDelete}
+                //                                                                     formDependent={{
+                //                                                                         section: key,
+                //                                                                         form: subKey,
+                //                                                                         index: index
+                //                                                                     }}
+                //                                                                     formContext={{
+                //                                                                         api: api,
+                //                                                                         app: "CV",
+                //                                                                         form: "PersonalInformation"
+                //                                                                     }}
+                //                                                                 />} title={subSection.title}
+                //                                                                              fullScreen={true}/>
+                //                                                         </div>
+                //                                                     )
+                //                                                 })
+                //                                                 :
+                //                                                 state.sectionControl[key][subKey] &&
+                //                                                 <ModalFullScreen content={
+                //                                                     <FormBuilder
+                //                                                         formID={"user-profile-form"}
+                //                                                         resourceURL={"form/"}
+                //                                                         // validationDeclaration={this.validationDeclaration}
+                //                                                         HTTPMethod={"PATCH"}
+                //                                                         language={props.language}
+                //                                                         formSchema={subSection.schema}
+                //                                                         uiSchema={UISchema(key, subKey, null)}
+                //                                                         formData={state.data[key][subKey]}
+                //                                                         onFormEditSubmit={handleFormEditSubmit}
+                //                                                         onFormEditCancel={handleFormEditCancel}
+                //                                                         onFormEditDelete={handleFormEditDelete}
+                //                                                         formDependent={{
+                //                                                             section: key,
+                //                                                             form: subKey,
+                //                                                             index: NaN
+                //                                                         }}
+                //                                                         formContext={{
+                //                                                             api: api,
+                //                                                             app: "CV",
+                //                                                             form: "PersonalInformation"
+                //                                                         }}
+                //                                                     />
+                //                                                 } title={subSection.title} fullScreen={true}/>
+                //                                             : null
+                //                                     }
+                //                                 </div>
+                //                             )
+                //                         })}</div>
+                //                 </>
+                //                 :
+                //                 isForm(section) ?
+                //                     <>
+                //                         <div id={"section header"}>
+                //                             <p className="inline-block text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
+                //                             <div className="inline-block ml-2">
+                //                                 {
+                //                                     isSingle(section) ?
+                //                                         <div
+                //                                             onClick={() => {
+                //                                                 // console.log("sss", key, subKey)
+                //                                                 setState({
+                //                                                     ...state,
+                //                                                     sectionControl: {
+                //                                                         ...state.sectionControl,
+                //                                                         [key]: true
+                //                                                     }
+                //                                                 })
+                //                                             }}
+                //                                         >
+                //                                             <FiEdit size={"1.1rem"}/>
+                //                                         </div>
+                //                                         :
+                //                                         <div
+                //                                             onClick={() => {
+                //                                                 const array = state.sectionControl[key];
+                //                                                 array.push(true);
+                //                                                 setState({
+                //                                                     ...state,
+                //                                                     sectionControl: {
+                //                                                         ...state.sectionControl,
+                //                                                         [key]: array
+                //                                                     }
+                //                                                 })
+                //                                             }}
+                //                                         >
+                //                                             <AiOutlineFileAdd size={"1.1rem"}/>
+                //                                         </div>
+                //                                 }
+                //                             </div>
+                //                         </div>
+                //                         <div id="section content">
+                //                             {
+                //                                 isSingle(section) ?
+                //                                     <>
+                //                                         {
+                //                                             !isEmptyObject(state.data[key]) ?
+                //                                                 <div className="mx-5 flex justify-between items-center">
+                //                                                     <div
+                //                                                         onClick={() => {
+                //                                                             setState({
+                //                                                                 ...state,
+                //                                                                 sectionControl: {
+                //                                                                     ...state.sectionControl,
+                //                                                                     [key]: true
+                //                                                                 }
+                //                                                             })
+                //                                                         }}>
+                //                                                         <Formatter app={"CV"} section={key}
+                //                                                                    rawData={state.data[key]}
+                //                                                                    isFullScreenViewMode={true}/>
+                //                                                     </div>
+                //                                                     {/*<div*/}
+                //                                                     {/*    onClick={() => {*/}
+                //                                                     {/*        // console.log(state.data[key], key)*/}
+                //                                                     {/*        setState({*/}
+                //                                                     {/*            ...state,*/}
+                //                                                     {/*            data: {*/}
+                //                                                     {/*                ...state.data,*/}
+                //                                                     {/*                [key]: {}*/}
+                //                                                     {/*            }*/}
+                //                                                     {/*        })*/}
+                //                                                     {/*    }}>*/}
+                //                                                     {/*    <MdDeleteForever/>*/}
+                //                                                     {/*</div>*/}
+                //                                                 </div>
+                //                                                 : null
+                //                                         }
+                //                                     </>
+                //                                     :
+                //                                     <>
+                //                                         {
+                //                                             !isEmptyObject(state.data[key]) ?
+                //                                                 state.data[key].map((element, index) => {
+                //                                                     return (
+                //                                                         <div
+                //                                                             className="mx-5 flex justify-between items-center">
+                //                                                             <div key={index}
+                //                                                                  onClick={() => {
+                //                                                                      const array = state.sectionControl[key];
+                //                                                                      array[index] = true;
+                //                                                                      setState({
+                //                                                                          ...state,
+                //                                                                          sectionControl: {
+                //                                                                              ...state.sectionControl,
+                //                                                                              [key]: array
+                //                                                                          }
+                //                                                                      })
+                //                                                                  }}>
+                //                                                                 <Formatter app={"CV"} section={key}
+                //                                                                            rawData={state.data[key][index]}
+                //                                                                            isFullScreenViewMode={true}/>
+                //                                                             </div>
+                //                                                             {/*<div className="ml-5"*/}
+                //                                                             {/*     onClick={() => {*/}
+                //                                                             {/*         const array = state.data[key];*/}
+                //                                                             {/*         array.splice(index, 1)*/}
+                //                                                             {/*         setState({*/}
+                //                                                             {/*             ...state,*/}
+                //                                                             {/*             data: {*/}
+                //                                                             {/*                 ...state.data,*/}
+                //                                                             {/*                 [key]: array*/}
+                //                                                             {/*             }*/}
+                //                                                             {/*         })*/}
+                //                                                             {/*     }}>*/}
+                //                                                             {/*    <MdDeleteForever/>*/}
+                //                                                             {/*</div>*/}
+                //                                                         </div>
+                //                                                     )
+                //                                                 })
+                //                                                 : null
+                //                                         }
+                //                                     </>
+                //                             }
+                //                             {
+                //                                 Array.isArray(state.sectionControl[key]) ?
+                //                                     state.sectionControl[key].map((element, index) => {
+                //                                         // console.log(element, index)
+                //                                         return (
+                //                                             element &&
+                //                                             <div key={index}>
+                //                                                 <ModalFullScreen
+                //                                                     content={
+                //                                                         <FormBuilder
+                //                                                             formID={"user-profile-form"}
+                //                                                             resourceURL={"form/"}
+                //                                                             // validationDeclaration={this.validationDeclaration}
+                //                                                             HTTPMethod={"PATCH"}
+                //                                                             language={props.language}
+                //                                                             uiSchema={UISchema(key, null, null)}
+                //                                                             formSchema={section.schema}
+                //                                                             formData={state.data[key][index]}
+                //                                                             onFormEditSubmit={handleFormEditSubmit}
+                //                                                             onFormEditCancel={handleFormEditCancel}
+                //                                                             onFormEditDelete={handleFormEditDelete}
+                //                                                             formDependent={{
+                //                                                                 section: key,
+                //                                                                 form: null,
+                //                                                                 index: index
+                //                                                             }}
+                //                                                             formContext={{
+                //                                                                 api: api,
+                //                                                                 app: "CV",
+                //                                                                 form: "PersonalInformation"
+                //                                                             }}
+                //                                                         />
+                //                                                     }
+                //                                                     title={section.title}
+                //                                                     fullScreen={true}/>
+                //                                             </div>
+                //                                         )
+                //                                     })
+                //                                     :
+                //                                     state.sectionControl[key] &&
+                //                                     <ModalFullScreen
+                //                                         content={
+                //                                             <FormBuilder
+                //                                                 formID={"user-profile-form"}
+                //                                                 resourceURL={"form/"}
+                //                                                 // validationDeclaration={this.validationDeclaration}
+                //                                                 HTTPMethod={"PATCH"}
+                //                                                 language={props.language}
+                //                                                 uiSchema={UISchema(key, null, null)}
+                //                                                 formSchema={section.schema}
+                //                                                 formData={state.data[key]}
+                //                                                 onFormEditSubmit={handleFormEditSubmit}
+                //                                                 onFormEditCancel={handleFormEditCancel}
+                //                                                 onFormEditDelete={handleFormEditDelete}
+                //                                                 formDependent={{
+                //                                                     section: key,
+                //                                                     form: null,
+                //                                                     index: NaN
+                //                                                 }}
+                //                                                 formContext={{
+                //                                                     api: api,
+                //                                                     app: "CV",
+                //                                                     form: "PersonalInformation"
+                //                                                 }}
+                //                                             />
+                //                                         }
+                //                                         title={section.title}
+                //                                         fullScreen={true}
+                //                                     />
+                //                             }
+                //                         </div>
+                //                     </>
+                //                     : null
+                //         }
+                //     </div>
+                // )
             })}
         </>
     )

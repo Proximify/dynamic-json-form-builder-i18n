@@ -4,7 +4,6 @@ export default function LanguageSkill(props) {
     console.log("LanguageSkill", props);
     const rawData = props.rawData;
 
-    //field??
     const sections = {}
 
     const formatter = {
@@ -27,6 +26,7 @@ export default function LanguageSkill(props) {
         return (
             <React.Fragment>
                 {sections[props.section]}
+                255555
             </React.Fragment>
         )
     }
