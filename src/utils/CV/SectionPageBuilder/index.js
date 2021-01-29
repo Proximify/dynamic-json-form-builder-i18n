@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import FormBuilder from '../../../component/dynamic-json-form-builder';
 import api from "../../../api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
-import Formatter from "../../../component/dynamic-json-form-builder/components/utils/formatter";
+import {MdDeleteForever} from 'react-icons/md'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
-import {FormSchemaParser} from "../SchemaParser/FullScreen";
+import Formatter from "../../../component/dynamic-json-form-builder/components/utils/formatter";
 
 
 export function SectionPageBuilder(props) {
@@ -23,7 +24,15 @@ export function SectionPageBuilder(props) {
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
         if (section["type"] === "form") {
-            section["open"] = false;
+            if (section.section_data.length > 0) {
+                let opens = [];
+                for (let i = 0; i < section.section_data.length; i++) {
+                    opens.push(false)
+                }
+                section["open"] = opens;
+            } else {
+                section["open"] = []
+            }
         } else if (section["type"] === "section") {
             // console.log(section)
             Object.keys(section["subsections"]).forEach(key => {
@@ -54,62 +63,7 @@ export function SectionPageBuilder(props) {
     useEffect(() => {
         if (state.ready)
             return;
-
-        schema.forEach(section => sectionSchemaBuilder(section, section.section_data, section.fields))
-        // console.log(schema)
-
-        // if (!isEmptyObject(schema)) {
-        //     Object.keys(schema).forEach(key => {
-        //         const section = schema[key]
-        //         // console.log(key, section)
-        //         if (section.hasOwnProperty("type")) {
-        //             if (section.type === "form") {
-        //                 if (section.hasOwnProperty("multiplicity")) {
-        //                     if (section.multiplicity === "single") {
-        //                         sectionControl[key] = null;
-        //                         if (noFormData) {
-        //                             formData[key] = {};
-        //                         }
-        //                     } else if (section.multiplicity === "multiple") {
-        //                         sectionControl[key] = [];
-        //                         if (noFormData) {
-        //                             formData[key] = [];
-        //                         }
-        //                     }
-        //                 }
-        //             } else if (section.type === "section") {
-        //                 if (section.hasOwnProperty("subSection")) {
-        //                     sectionControl[key] = {};
-        //                     if (noFormData) {
-        //                         formData[key] = {};
-        //                     }
-        //                     Object.keys(section.subSection).forEach(subKey => {
-        //                         const subSection = section.subSection[subKey];
-        //                         // console.log("+", subSection)
-        //                         if (subSection.hasOwnProperty("type")) {
-        //                             if (subSection.type === "form") {
-        //                                 if (subSection.hasOwnProperty("multiplicity")) {
-        //                                     if (subSection.multiplicity === "single") {
-        //                                         sectionControl[key][subKey] = null;
-        //                                         if (noFormData) {
-        //                                             formData[key][subKey] = {};
-        //                                         }
-        //                                     } else if (subSection.multiplicity === "multiple") {
-        //                                         sectionControl[key][subKey] = [];
-        //                                         if (noFormData) {
-        //                                             formData[key][subKey] = [];
-        //                                         }
-        //                                     }
-        //                                 }
-        //                             }
-        //                         }
-        //                     })
-        //                 }
-        //             }
-        //         }
-        //     })
-        //}
-        // console.log({data:data, sectionControl: sectionControl});
+        schema.forEach(section => sectionSchemaBuilder(section, section.section_data, section.fields));
         setState({
             ...state,
             sections: schema,
@@ -232,7 +186,7 @@ export function SectionPageBuilder(props) {
             ...state,
             ready: false
         })
-        props.rerenderParentCallback();
+        // props.rerenderParentCallback();
     }
 
     const handleFormEditDelete = (formDependent) => {
@@ -312,8 +266,45 @@ export function SectionPageBuilder(props) {
         }
     }
 
+    const handleOnItemClick = (clickedSectionIndex, structureChain, itemIndex) => {
+        const sections = [...state.sections];
+        // console.log(tempSections, structureChain);
+        //sections[clickedSectionIndex].subsections["10"].open = true;
+
+        const form = structureChain.length > 0 ? getFormRecur(sections[clickedSectionIndex].subsections, structureChain) : sections[clickedSectionIndex];
+        if (form !== null) {
+            form.open[itemIndex] = true;
+        }
+        return sections;
+    }
+
+
+    const getFormRecur = (sections, structureChain) => {
+        if (structureChain.length === 1) {
+            // console.log(sections, structureChain)
+
+            let section = null;
+            Object.keys(sections).forEach(key => {
+                if (sections[key].name === structureChain[0]) {
+                    section = sections[key]
+                }
+            })
+            return section;
+        } else {
+            // console.log(sections, structureChain)
+            let subSections = null;
+            Object.keys(sections).forEach(key => {
+                if (sections[key].name === structureChain[0]) {
+                    subSections = sections[key]
+                    console.log("found", subSections)
+                }
+            })
+            // console.log("+", subSections)
+            return subSections === null ? null : getFormRecur(subSections.subsections, structureChain.slice(1))
+        }
+    }
+
     const pageBuilder = (section, index, fontSize, structureChain) => {
-        // console.log(structureChain)
         const size = {
             3: "text-2xl font-bold my-3 border border-yellow-500 bg-yellow-500 rounded inline-block p-1",
             2: "text-xl font-semibold my-2 text-yellow-600",
@@ -329,18 +320,38 @@ export function SectionPageBuilder(props) {
                             <FiEdit size={"1.1rem"}/>}
                         </p>
                     </div>
-                    {section.section_data.length > 0 ? (
-                        <div className={"font-extralight"}>
-                            <div className="font-medium text-red-400">
-                                <Formatter app={"CV"}
-                                           structureChain={structureChain}
-                                           isFullScreenViewMode={true}
-                                           schema={section}
-                                           rawData={section.section_data}
-                                />
-                            </div>
-                        </div>
-                    ) : null}
+                    {section.section_data.length > 0 ?
+                        section.section_data.map((data, index) => {
+                            return (
+                                <div className={"font-extralight"} key={index}>
+                                    <div className="font-medium text-black"
+                                         onClick={() => {
+                                             const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
+                                             if (clickedSectionIndex !== -1) {
+                                                 const newSections = handleOnItemClick(clickedSectionIndex, structureChain.slice(1), index);
+                                                 setState({
+                                                     ...state,
+                                                     sections: newSections
+                                                 })
+                                             }
+                                         }}>
+                                        {section.open[index] === true ?
+                                            <ModalFullScreen
+                                                content={<div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[index])}</div>}
+                                                title={section.title}
+                                                fullScreen={true}/> :
+                                            <div>{
+                                                <Formatter app={"CV"}
+                                                           structureChain={[...structureChain]}
+                                                           isFullScreenViewMode={true}
+                                                           schema={section}
+                                                           rawData={section.section_data[index]}
+                                                />
+                                            }</div>}
+                                    </div>
+                                </div>
+                            )
+                        }) : null}
                 </div>
             )
         } else if (section.type === "section") {

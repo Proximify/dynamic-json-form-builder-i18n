@@ -1,49 +1,50 @@
 import React from "react";
+import {Months, FieldValueMapper, FormatterTracker} from "../../../utils/helper";
 
 export default function Identification(props) {
-    console.log("Identification", props)
+    // console.log("Identification", props)
     const rawData = props.rawData;
-    const formData = rawData[0].values;
+    const formData = rawData.values;
     const schema = props.schema;
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
-
-
-    const fieldValueMapper = (value, schema) => {
-        const fields = schema.fields
-        const result = {}
-        Object.keys(fields).forEach(fieldKey => {
-            Object.keys(value).forEach(valueKey => {
-                if (fieldKey === valueKey) {
-                    result[fields[fieldKey].name] = {value: value[valueKey], type: fields[fieldKey]["type"], label:fields[fieldKey]["label"]}
-                    if (Array.isArray(value[valueKey]) && fields[fieldKey]["type"] === "section") {
-                        result[fields[fieldKey].name]["value"] = []
-                        value[valueKey].forEach(val => {
-                            if (val.values) {
-                                // result[fields[fieldKey].name]["value"] = []
-                                Object.keys(schema.subsections).forEach(key => {
-                                    result[fields[fieldKey].name]["value"].push(fieldValueMapper(val.values, schema.subsections[key]))
-                                })
-                            }
-                        })
-                    }
-                }
-            })
-        })
-        return result
-    }
+    // const months = [
+    //     'January',
+    //     'February',
+    //     'March',
+    //     'April',
+    //     'May',
+    //     'June',
+    //     'July',
+    //     'August',
+    //     'September',
+    //     'October',
+    //     'November',
+    //     'December'
+    // ];
+    //
+    //
+    // const fieldValueMapper = (value, schema) => {
+    //     const fields = schema.fields
+    //     const result = {}
+    //     Object.keys(fields).forEach(fieldKey => {
+    //         Object.keys(value).forEach(valueKey => {
+    //             if (fieldKey === valueKey) {
+    //                 result[fields[fieldKey].name] = {value: value[valueKey], type: fields[fieldKey]["type"], label:fields[fieldKey]["label"]}
+    //                 if (Array.isArray(value[valueKey]) && fields[fieldKey]["type"] === "section") {
+    //                     result[fields[fieldKey].name]["value"] = []
+    //                     value[valueKey].forEach(val => {
+    //                         if (val.values) {
+    //                             // result[fields[fieldKey].name]["value"] = []
+    //                             Object.keys(schema.subsections).forEach(key => {
+    //                                 result[fields[fieldKey].name]["value"].push(fieldValueMapper(val.values, schema.subsections[key]))
+    //                             })
+    //                         }
+    //                     })
+    //                 }
+    //             }
+    //         })
+    //     })
+    //     return result
+    // }
 
 
     // console.log(fieldValueMapper(formData, schema))
@@ -86,90 +87,98 @@ export default function Identification(props) {
     // const order = ["title", "first_name", "middle_name", "family_name", "previous_family_name", "previous_first_name", "date_of_birth", "sex",
     //     "designated_group", "canadian_residency_status", "correspondence_language", "applied_for_permanent_residency", "permanent_residency_start_date", "country_of_citizenship"]
 
-    class FormatterTracker {
-        #allValue = {}
-        #formattedValue = {}
-        #unFormattedValue = {}
-
-        constructor(value) {
-            this.#allValue = {...value};
-            this.#unFormattedValue = {...value}
-        }
-
-        getAllValue() {
-            return this.#allValue
-        }
-
-        getUnFormattedValue() {
-            return this.#unFormattedValue
-        }
-
-        getFormattedValue() {
-            return this.#formattedValue
-        }
-
-        get(name) {
-            const value = this.#allValue[name];
-            if (value !== undefined) {
-                delete this.#unFormattedValue[name];
-                this.#formattedValue[name] = value;
-                return value
-            } else {
-                return null
-            }
-        }
-
-        getValue(name) {
-            const value = this.get(name);
-            console.log(name, value)
-            if (value) {
-                return this.formatter(value)
-            }
-        }
-
-        //rename format
-        formatter(value) {
-            if (value.type) {
-                switch (value.type) {
-                    case 'lov':
-                        return value.label + ": " +value.value[1];
-                    case "string":
-                        return value.value;
-                    case "monthday":
-                        return months[value.value.split("/")[0]] + " " + value.value.split("/")[1];
-                    case "date":
-                        return months[value.value.split("-")[1] - 1] + " " + value.value.split("-")[2] + ", " + value.value.split("-")[0];
-                    case "section":
-                        let string = ""
-                        value.value.forEach((val, i) => {
-                            if (i < value.value.length - 1)
-                                string += Object.keys(val).map(key => this.formatter(val[key])) + ", ";
-                            else
-                                string += Object.keys(val).map(key => this.formatter(val[key]));
-                        })
-                        return string
-                    default:
-                        return JSON.stringify(value.value)
-                }
-            }
-        }
-
-
-        contains(...names) {
-            let contain = false;
-            names.forEach(name => {
-                if (this.#allValue[name] !== undefined) {
-                    contain = true;
-                }
-            })
-            return contain
-        }
-    }
+    // class FormatterTracker {
+    //     #allValue = {}
+    //     #formattedValue = {}
+    //     #unFormattedValue = {}
+    //
+    //     constructor(value) {
+    //         this.#allValue = {...value};
+    //         this.#unFormattedValue = {...value}
+    //     }
+    //
+    //     getAllValue() {
+    //         return this.#allValue
+    //     }
+    //
+    //     getUnFormattedValue() {
+    //         return this.#unFormattedValue
+    //     }
+    //
+    //     getFormattedValue() {
+    //         return this.#formattedValue
+    //     }
+    //
+    //     get(name) {
+    //         const value = this.#allValue[name];
+    //         if (value !== undefined) {
+    //             delete this.#unFormattedValue[name];
+    //             this.#formattedValue[name] = value;
+    //             return value
+    //         } else {
+    //             return null
+    //         }
+    //     }
+    //
+    //     getValue(name) {
+    //         const value = this.get(name);
+    //         // console.log(name, value)
+    //         if (value) {
+    //             return this.format(value)
+    //         }else {
+    //             return null;
+    //         }
+    //     }
+    //
+    //     getLabel(name){
+    //         const value = this.get(name);
+    //         if (value){
+    //             return <span className={"text-black"}>{value.label}: </span> ?? null
+    //         }
+    //         return null
+    //     }
+    //
+    //     format(value) {
+    //         if (value.type) {
+    //             switch (value.type) {
+    //                 case 'lov':
+    //                     return value.value[1];
+    //                 case "string":
+    //                     return value.value;
+    //                 case "monthday":
+    //                     return months[value.value.split("/")[0]] + " " + value.value.split("/")[1];
+    //                 case "date":
+    //                     return months[value.value.split("-")[1] - 1] + " " + value.value.split("-")[2] + ", " + value.value.split("-")[0];
+    //                 case "section":
+    //                     let string = ""
+    //                     value.value.forEach((val, i) => {
+    //                         if (i < value.value.length - 1)
+    //                             string += Object.keys(val).map(key => this.format(val[key])) + ", ";
+    //                         else
+    //                             string += Object.keys(val).map(key => this.format(val[key]));
+    //                     })
+    //                     return string
+    //                 default:
+    //                     return JSON.stringify(value.value)
+    //             }
+    //         }
+    //     }
+    //
+    //     contains(...names) {
+    //         let contain = false;
+    //         names.forEach(name => {
+    //             if (this.#allValue[name] !== undefined) {
+    //                 contain = true;
+    //             }
+    //         })
+    //         return contain
+    //     }
+    // }
 
 
     if (props.isFullScreenViewMode === true) {
 
-        const mappedValue = fieldValueMapper(formData, schema);
+        const mappedValue = FieldValueMapper(formData, schema);
 
         console.log(mappedValue)
         // console.log("--------")
@@ -193,32 +202,24 @@ export default function Identification(props) {
                     </p> :
                     null}
                 {ft.contains("previous_family_name") ?
-                    <p>Previous Family Name: {ft.getValue("previous_family_name")}</p> : null}
+                    <p>{ft.getLabel("previous_family_name")}{ft.getValue("previous_family_name")}</p> : null}
                 {ft.contains("previous_first_name") ?
-                    <p>Previous First Name: {ft.getValue("previous_first_name")}</p> : null}
-                {ft.contains("date_of_birth") ? <p>Date of Birth: {ft.getValue("date_of_birth")}</p> : null}
-                {ft.contains("sex") ? <p>Sex: {ft.getValue("sex")}</p> : null}
-                {ft.contains("designated_group") ? <p>Designated Group: {ft.getValue("designated_group")}</p> : null}
+                    <p>{ft.getLabel("previous_first_name")}{ft.getValue("previous_first_name")}</p> : null}
+                {ft.contains("date_of_birth") ? <p>{ft.getLabel("date_of_birth")}: {ft.getValue("date_of_birth")}</p> : null}
+                {ft.contains("sex") ? <p>{ft.getLabel("sex")}{ft.getValue("sex")}</p> : null}
+                {ft.contains("designated_group") ? <p>{ft.getLabel("designated_group")}: {ft.getValue("designated_group")}</p> : null}
                 {ft.contains("correspondence_language") ?
-                    <p>Correspondence language: {ft.getValue("correspondence_language")}</p> : null}
+                    <p>{ft.getLabel("correspondence_language")}{ft.getValue("correspondence_language")}</p> : null}
                 {ft.contains("canadian_residency_status") ?
-                    <p>Canadian Residency Status: {ft.getValue("canadian_residency_status")}</p> : null}
+                    <p>{ft.getLabel("canadian_residency_status")}{ft.getValue("canadian_residency_status")}</p> : null}
                 {ft.contains("permanent_residency_start_date") ?
-                    <p>Permanent Residency Start Date: {ft.getValue("permanent_residency_start_date")}</p> : null}
+                    <p>{ft.getLabel("permanent_residency_start_date")}{ft.getValue("permanent_residency_start_date")}</p> : null}
                 {ft.contains("country_of_citizenship") ?
-                    <p>Country of Citizenship: {ft.getValue("country_of_citizenship")}</p> : null}
+                    <p>{ft.getLabel("country_of_citizenship")}{ft.getValue("country_of_citizenship")}</p> : null}
                 {Object.keys(ft.getUnFormattedValue()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedValue())}</p> : null
                 }
             </div>
-            // Object.keys(mappedValue).map((key, index) => {
-            //     return (
-            //         <div key={index}>
-            //             {key} : {JSON.stringify(mappedValue[key])}
-            //         </div>
-            //     )
-            // })
-            // // <div>{JSON.stringify(mappedValue)}</div>
         )
     } else {
         // return (
