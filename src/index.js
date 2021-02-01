@@ -4,8 +4,11 @@ import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
 import {SectionPageBuilder} from "./utils/CV/SectionPageBuilder";
 import api from "./api";
+import * as Identification
+    from "../src/utils/CV/SchemaParser/identification.json";
+import * as CVSchema from "../src/utils/CV/SchemaParser/cvSchema.json";
 
-import SchemaParser from "./utils/CV/SchemaParser/FullScreen";
+import SchemaParserFullScreen, {SchemaParserPerForm} from "./utils/CV/SchemaParser";
 
 // if (navigator.serviceWorker) {
 //     console.log("service worker supported");
@@ -34,36 +37,43 @@ class App extends Component {
             schema: null,
             data: null
         };
-        this.rerenderParentCallback = this.rerenderParentCallback.bind(this);
-
+        this.fetchFormSchema = this.fetchFormSchema.bind(this);
     }
 
     componentDidMount() {
-        api.get("form/").then(res => {
-            this.setState({
-                    schema: res.data.formSchema,
-                    data: res.data.formData ?? undefined,
-                    isReady: true
-                }, () => console.log("load success", this.state.schema, this.state.data)
-            )
-        }).catch(err => {
-            console.log("loading err", err);
+        //TODO fork api request
+
+        // api.get("form/").then(res => {
+        //     this.setState({
+        //             schema: res.data.formSchema,
+        //             data: res.data.formData ?? undefined,
+        //             isReady: true
+        //         }, () => console.log("load success", this.state.schema, this.state.data)
+        //     )
+        // }).catch(err => {
+        //     console.log("loading err", err);
+        // })
+
+        this.setState({
+            isReady: true
         })
+
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("force update")
-        api.get("form/").then(res => {
-            console.log("update load success", res)
-            // this.setState({
-            //         schema: res.data.formSchema,
-            //         data: res.data.formData ?? undefined,
-            //         isReady: true
-            //     }, () => console.log("update load success", this.state.schema, this.state.data)
-            // )
-        }).catch(err => {
-            console.log("loading err", err);
-        })
+        // console.log("force update")
+        // api.get("form/").then(res => {
+        //     console.log("update load success", res)
+        // }).catch(err => {
+        //     console.log("loading err", err);
+        // })
+    }
+
+    fetchFormSchema(formName){
+        const forms = {
+            "identification": Identification
+        }
+        return formName in forms ? SchemaParserPerForm(forms[formName]) : null
     }
 
     validationMethods = {
@@ -89,9 +99,6 @@ class App extends Component {
         age: this.validationMethods["fileFieldSizeLimit"]
     }
 
-    rerenderParentCallback() {
-        this.forceUpdate();
-    }
 
     render() {
         console.log("parent render")
@@ -105,9 +112,10 @@ class App extends Component {
                             <div
                                 className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
                                 {this.state.isReady &&
-                                <SectionPageBuilder schema={SchemaParser()} data={this.state.data}
+                                <SectionPageBuilder schema={SchemaParserFullScreen(CVSchema)} data={this.state.data}
                                                     language={this.state.language.language}
-                                                    rerenderParentCallback={this.rerenderParentCallback}/>}
+                                                    fetchFormSchema={(formName) => this.fetchFormSchema(formName)}
+                                                    />}
                             </div>
                         </div>
 

@@ -1,6 +1,6 @@
 import React from "react";
 import {stringify} from "postcss";
-import {FieldValueMapper, FormatterTracker} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any} from "../../../utils/helper";
 
 export default function LanguageSkills(props) {
     // console.log("LanguageSkill", props);
@@ -12,15 +12,18 @@ export default function LanguageSkills(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         // console.log(mappedValue)
         const ft = new FormatterTracker(mappedValue);
+        const it = ft.getFields();
+        const val = ft.getValue();
+        const lbl = ft.getLabel();
         return (
             <div className="border border-red-300 m-2 rounded">
-                {ft.contains("language") ?
-                    <p>{ft.getLabel("language")}{ft.getValue("language")}</p> : null}
-                {ft.contains("speak") ?
-                    <p>{ft.getLabel("speak")}{ft.getValue("speak")}</p> : null}
-                {ft.contains("write") ? <p>{ft.getLabel("write")}: {ft.getValue("write")}</p> : null}
-                {Object.keys(ft.getUnFormattedValue()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedValue())}</p> : null
+                {any(it.language) ?
+                    <p>{lbl.language}{val.language}</p> : null}
+                {any(it.speak) ?
+                    <p>{lbl.speak}{val.speak}</p> : null}
+                {any(it.write) ? <p>{lbl.write}: {val.write}</p> : null}
+                {Object.keys(ft.getUnFormattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
             </div>
         )

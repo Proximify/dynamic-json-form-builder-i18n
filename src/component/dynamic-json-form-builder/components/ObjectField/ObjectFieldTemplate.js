@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Formatter from '../utils/formatter';
+import Formatter from '../../../../utils/formatter';
 import './ObjectField.css'
 import {PlusCircleIcon} from "@primer/octicons-react";
 import ModalArrayItem from "../utils/Modals";

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {PlusCircleIcon} from "@primer/octicons-react";
 import ModalArrayItem from "../utils/Modals";
-import Formatter from "../utils/formatter";
+import Formatter from "../../../../utils/formatter";
 import './ArrayField.css'
 import {BsTrashFill} from "react-icons/bs";
 

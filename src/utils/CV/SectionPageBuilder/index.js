@@ -5,8 +5,7 @@ import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
 import {MdDeleteForever} from 'react-icons/md'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
-import Formatter from "../../../component/dynamic-json-form-builder/components/utils/formatter";
-
+import Formatter from "../../formatter";
 
 export function SectionPageBuilder(props) {
     // console.log("SchemaParser", props)
@@ -15,11 +14,10 @@ export function SectionPageBuilder(props) {
 
     const [state, setState] = useState({
         sections: [],
+        schema: null,
+        fff: "--",
         ready: false
     })
-
-    // console.log(state)
-    // console.log(schema)
 
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
@@ -71,114 +69,86 @@ export function SectionPageBuilder(props) {
         })
     }, [state.ready])
 
-    const isSection = (obj) => {
-        return obj.hasOwnProperty("type") && obj.type === "section";
-    }
-
-    const hasSubSection = (obj) => {
-        return obj.hasOwnProperty("subSection") && Object.keys(obj.subSection).length > 0
-    }
-
-    const isForm = (obj) => {
-        return obj.hasOwnProperty("type") && obj.type === "form";
-    }
-
-    const isSingle = (obj) => {
-        return obj.hasOwnProperty("multiplicity") && obj.multiplicity === "single";
-    }
-
-    const isEmptyObject = (obj) => {
-        if (!obj) {
-            return true;
-        } else if (obj && Object.keys(obj).length === 0) {
-            return true;
-        } else {
-            let noValue = true
-            Object.values(obj).forEach(value => {
-                if (value && value !== "" && value !== undefined) {
-                    noValue = false;
-                }
-            })
-            return noValue
-        }
-    }
-
     const handleFormEditSubmit = (formData, formDependent) => {
         console.log("received form data", formData, formDependent);
         console.log("should fetch data");
-        if (formDependent.form === null) {
-            if (isNaN(formDependent.index)) {
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: formData
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: false
-                    }
-                })
-            } else {
-                const dataArray = state.data[formDependent.section];
-                dataArray[formDependent.index] = formData;
-                const controlArray = state.sectionControl[formDependent.section];
-                controlArray[formDependent.index] = false;
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: dataArray
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: controlArray
-                    }
-                })
-            }
-        } else {
-            if (isNaN(formDependent.index)) {
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: {
-                            ...state.data[formDependent.section],
-                            [formDependent.form]: formData
-                        }
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: {
-                            ...state.sectionControl[formDependent.section],
-                            [formDependent.form]: false
-                        }
-                    }
-                })
-            } else {
-                const dataArray = state.data[formDependent.section][formDependent.form];
-                dataArray[formDependent.index] = formData;
-                const controlArray = state.sectionControl[formDependent.section][formDependent.form];
-                controlArray[formDependent.index] = false;
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: {
-                            ...state.data[formDependent.section],
-                            [formDependent.form]: dataArray
-                        }
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: {
-                            ...state.sectionControl[formDependent.section],
-                            [formDependent.form]: controlArray
-                        }
-                    }
-                })
-            }
-        }
+        setState({
+            ...state,
+            ready: false
+        })
+        // if (formDependent.form === null) {
+        //     if (isNaN(formDependent.index)) {
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: formData
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: false
+        //             }
+        //         })
+        //     } else {
+        //         const dataArray = state.data[formDependent.section];
+        //         dataArray[formDependent.index] = formData;
+        //         const controlArray = state.sectionControl[formDependent.section];
+        //         controlArray[formDependent.index] = false;
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: dataArray
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: controlArray
+        //             }
+        //         })
+        //     }
+        // } else {
+        //     if (isNaN(formDependent.index)) {
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: {
+        //                     ...state.data[formDependent.section],
+        //                     [formDependent.form]: formData
+        //                 }
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: {
+        //                     ...state.sectionControl[formDependent.section],
+        //                     [formDependent.form]: false
+        //                 }
+        //             }
+        //         })
+        //     } else {
+        //         const dataArray = state.data[formDependent.section][formDependent.form];
+        //         dataArray[formDependent.index] = formData;
+        //         const controlArray = state.sectionControl[formDependent.section][formDependent.form];
+        //         controlArray[formDependent.index] = false;
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: {
+        //                     ...state.data[formDependent.section],
+        //                     [formDependent.form]: dataArray
+        //                 }
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: {
+        //                     ...state.sectionControl[formDependent.section],
+        //                     [formDependent.form]: controlArray
+        //                 }
+        //             }
+        //         })
+        //     }
+        // }
     }
 
     const handleFormEditCancel = () => {
@@ -187,102 +157,117 @@ export function SectionPageBuilder(props) {
             ready: false
         })
         // props.rerenderParentCallback();
+
     }
 
     const handleFormEditDelete = (formDependent) => {
         console.log("on form delete", formDependent);
-        if (formDependent.form === null) {
-            if (isNaN(formDependent.index)) {
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: {}
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: false
-                    }
-                })
-            } else {
-                const dataArray = state.data[formDependent.section];
-                dataArray[formDependent.index] = {};
-                const controlArray = state.sectionControl[formDependent.section];
-                controlArray[formDependent.index] = false;
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: dataArray
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: controlArray
-                    }
-                })
-            }
-        } else {
-            if (isNaN(formDependent.index)) {
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: {
-                            ...state.data[formDependent.section],
-                            [formDependent.form]: {}
-                        }
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: {
-                            ...state.sectionControl[formDependent.section],
-                            [formDependent.form]: false
-                        }
-                    }
-                })
-            } else {
-                const dataArray = state.data[formDependent.section][formDependent.form];
-                dataArray[formDependent.index] = {};
-                const controlArray = state.sectionControl[formDependent.section][formDependent.form];
-                controlArray[formDependent.index] = false;
-                setState({
-                    ...state,
-                    data: {
-                        ...state.data,
-                        [formDependent.section]: {
-                            ...state.data[formDependent.section],
-                            [formDependent.form]: dataArray
-                        }
-                    },
-                    sectionControl: {
-                        ...state.sectionControl,
-                        [formDependent.section]: {
-                            ...state.sectionControl[formDependent.section],
-                            [formDependent.form]: controlArray
-                        }
-                    }
-                })
+        setState({
+            ...state,
+            ready: false
+        })
+        // if (formDependent.form === null) {
+        //     if (isNaN(formDependent.index)) {
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: {}
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: false
+        //             }
+        //         })
+        //     } else {
+        //         const dataArray = state.data[formDependent.section];
+        //         dataArray[formDependent.index] = {};
+        //         const controlArray = state.sectionControl[formDependent.section];
+        //         controlArray[formDependent.index] = false;
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: dataArray
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: controlArray
+        //             }
+        //         })
+        //     }
+        // } else {
+        //     if (isNaN(formDependent.index)) {
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: {
+        //                     ...state.data[formDependent.section],
+        //                     [formDependent.form]: {}
+        //                 }
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: {
+        //                     ...state.sectionControl[formDependent.section],
+        //                     [formDependent.form]: false
+        //                 }
+        //             }
+        //         })
+        //     } else {
+        //         const dataArray = state.data[formDependent.section][formDependent.form];
+        //         dataArray[formDependent.index] = {};
+        //         const controlArray = state.sectionControl[formDependent.section][formDependent.form];
+        //         controlArray[formDependent.index] = false;
+        //         setState({
+        //             ...state,
+        //             data: {
+        //                 ...state.data,
+        //                 [formDependent.section]: {
+        //                     ...state.data[formDependent.section],
+        //                     [formDependent.form]: dataArray
+        //                 }
+        //             },
+        //             sectionControl: {
+        //                 ...state.sectionControl,
+        //                 [formDependent.section]: {
+        //                     ...state.sectionControl[formDependent.section],
+        //                     [formDependent.form]: controlArray
+        //                 }
+        //             }
+        //         })
+        //     }
+        // }
+    }
+
+    const handleOnItemClick = (structureChain, itemIndex) => {
+        const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
+        structureChain.shift();
+        if (clickedSectionIndex !== -1) {
+            // handleOnItemClick(clickedSectionIndex, [...structureChain].slice(1), index);
+            const sections = [...state.sections];
+            const form = structureChain.length > 0 ? getFormRecur(sections[clickedSectionIndex].subsections, structureChain) : sections[clickedSectionIndex];
+            let formSchema = null;
+            if (form !== null) {
+                formSchema = props.fetchFormSchema(form.name);
+                // if (formSchema !== null) {
+                    form.open[itemIndex] = true;
+                    setState({
+                        ...state,
+                        sections: sections,
+                        schema: formSchema,
+                    })
+                console.log(formSchema)
+                // } else {
+                //     console.warn("Warning, not form schema found")
+                // }
             }
         }
     }
-
-    const handleOnItemClick = (clickedSectionIndex, structureChain, itemIndex) => {
-        const sections = [...state.sections];
-        // console.log(tempSections, structureChain);
-        //sections[clickedSectionIndex].subsections["10"].open = true;
-
-        const form = structureChain.length > 0 ? getFormRecur(sections[clickedSectionIndex].subsections, structureChain) : sections[clickedSectionIndex];
-        if (form !== null) {
-            form.open[itemIndex] = true;
-        }
-        return sections;
-    }
-
 
     const getFormRecur = (sections, structureChain) => {
         if (structureChain.length === 1) {
-            // console.log(sections, structureChain)
-
             let section = null;
             Object.keys(sections).forEach(key => {
                 if (sections[key].name === structureChain[0]) {
@@ -291,7 +276,6 @@ export function SectionPageBuilder(props) {
             })
             return section;
         } else {
-            // console.log(sections, structureChain)
             let subSections = null;
             Object.keys(sections).forEach(key => {
                 if (sections[key].name === structureChain[0]) {
@@ -299,7 +283,6 @@ export function SectionPageBuilder(props) {
                     console.log("found", subSections)
                 }
             })
-            // console.log("+", subSections)
             return subSections === null ? null : getFormRecur(subSections.subsections, structureChain.slice(1))
         }
     }
@@ -326,28 +309,57 @@ export function SectionPageBuilder(props) {
                                 <div className={"font-extralight"} key={index}>
                                     <div className="font-medium text-black"
                                          onClick={() => {
-                                             const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
-                                             if (clickedSectionIndex !== -1) {
-                                                 const newSections = handleOnItemClick(clickedSectionIndex, structureChain.slice(1), index);
-                                                 setState({
-                                                     ...state,
-                                                     sections: newSections
-                                                 })
-                                             }
+                                             console.log("onClick")
+                                             // TODO merge everything in handleOnItemClick()
+                                             // const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
+                                             // if (clickedSectionIndex !== -1) {
+                                             //     handleOnItemClick(clickedSectionIndex, [...structureChain].slice(1), index);
+                                             // }
+                                             handleOnItemClick([...structureChain], index);
+
                                          }}>
+                                        {<Formatter app={"CV"}
+                                                    structureChain={[...structureChain]}
+                                                    isFullScreenViewMode={true}
+                                                    schema={section}
+                                                    rawData={section.section_data[index]}
+                                        />
+                                        }
+                                    </div>
+                                    <div>
                                         {section.open[index] === true ?
                                             <ModalFullScreen
-                                                content={<div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[index])}</div>}
+                                                content={
+                                                    state.schema ? (
+                                                            <FormBuilder
+                                                                formID={"user-profile-form"}
+                                                                resourceURL={"form/"}
+                                                                // validationDeclaration={this.validationDeclaration}
+                                                                HTTPMethod={"PATCH"}
+                                                                language={props.language}
+                                                                formSchema={state.schema.formSchema}
+                                                                uiSchema={null}
+                                                                formData={null}
+                                                                onFormEditSubmit={handleFormEditSubmit}
+                                                                onFormEditCancel={handleFormEditCancel}
+                                                                onFormEditDelete={handleFormEditDelete}
+                                                                formDependent={{
+                                                                    section: null,
+                                                                    form: null,
+                                                                    index: NaN
+                                                                }}
+                                                                formContext={{
+                                                                    api: api,
+                                                                    app: "CV",
+                                                                    form: "PersonalInformation"
+                                                                }}
+                                                            />
+                                                        ) :
+                                                        <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[index])}</div>
+                                                }
                                                 title={section.title}
-                                                fullScreen={true}/> :
-                                            <div>{
-                                                <Formatter app={"CV"}
-                                                           structureChain={[...structureChain]}
-                                                           isFullScreenViewMode={true}
-                                                           schema={section}
-                                                           rawData={section.section_data[index]}
-                                                />
-                                            }</div>}
+                                                fullScreen={true}/> : null
+                                        }
                                     </div>
                                 </div>
                             )
@@ -365,432 +377,8 @@ export function SectionPageBuilder(props) {
     return (
         <>
             {state.ready && state.sections.map((section, index) => {
-                console.log(section)
-                return pageBuilder(section, index, 3, [section.name])
-
                 // console.log(section)
-                // return (
-                //     <div key={index} id={"section"}
-                //          className="border border-gray-200 bg-red-50 rounded-lg px-2 py-3 mb-5">
-                //         {
-                //             isSection(section) && hasSubSection(section) ?
-                //                 <>
-                //                     <div id={"section header"}>
-                //                         <p className="inline-block text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
-                //                     </div>
-                //                     <div id={"section content"}>{
-                //                         Object.keys(section["subSection"]).map((subKey, subIndex) => {
-                //                             const subSection = section["subSection"][subKey];
-                //                             return (
-                //                                 <div
-                //                                     className="mx-5 border border-gray-400 border-l-0 border-r-0 border-t-0 my-1 pb-2"
-                //                                     id="subSection">
-                //                                     <div className="flex items-center">
-                //                                         <div className="text-lg font-bold">{subSection.title}</div>
-                //                                         <div className="ml-3">{
-                //                                             isSingle(subSection) ?
-                //                                                 <div
-                //                                                     onClick={() => {
-                //                                                         // console.log("sss", key, subKey)
-                //                                                         setState({
-                //                                                             ...state,
-                //                                                             sectionControl: {
-                //                                                                 ...state.sectionControl,
-                //                                                                 [key]: {
-                //                                                                     ...state.sectionControl[key],
-                //                                                                     [subKey]: true
-                //                                                                 }
-                //                                                             }
-                //                                                         })
-                //                                                     }}
-                //                                                 >
-                //                                                     <FiEdit size={"1.1rem"}/>
-                //                                                 </div>
-                //                                                 :
-                //                                                 <div
-                //                                                     onClick={() => {
-                //                                                         // console.log(state.sectionControl[key][subKey]);
-                //                                                         const array = state.sectionControl[key][subKey];
-                //                                                         array.push(true);
-                //                                                         setState({
-                //                                                             ...state,
-                //                                                             sectionControl: {
-                //                                                                 ...state.sectionControl,
-                //                                                                 [key]: {
-                //                                                                     ...state.sectionControl[key],
-                //                                                                     [subKey]: array
-                //                                                                 }
-                //                                                             }
-                //                                                         })
-                //                                                     }}
-                //                                                 >
-                //                                                     <AiOutlineFileAdd size={"1.1rem"}/>
-                //                                                 </div>
-                //                                         }
-                //                                         </div>
-                //                                     </div>
-                //                                     <div className="mx-5">
-                //                                         {/*{console.log("+",key,subKey, state.data[key][subKey])}*/}
-                //                                         {
-                //                                             isSingle(subSection) ?
-                //                                                 !isEmptyObject(state.data[key][subKey]) ?
-                //                                                     <div
-                //                                                         className="flex justify-between items-center">
-                //                                                         <div
-                //                                                             onClick={() => {
-                //                                                                 setState({
-                //                                                                     ...state,
-                //                                                                     sectionControl: {
-                //                                                                         ...state.sectionControl,
-                //                                                                         [key]: {
-                //                                                                             ...state.sectionControl[key],
-                //                                                                             [subKey]: true
-                //                                                                         }
-                //                                                                     }
-                //                                                                 })
-                //                                                             }}>
-                //                                                             {/*{console.log("---",key,subKey)}*/}
-                //                                                             <Formatter app={"CV"} section={key}
-                //                                                                        form={subKey}
-                //                                                                        rawData={state.data[key][subKey]}
-                //                                                                        isFullScreenViewMode={true}/>
-                //                                                         </div>
-                //                                                         {/*<div className="ml-5"*/}
-                //                                                         {/*     onClick={() => {*/}
-                //                                                         {/*         setState({*/}
-                //                                                         {/*             ...state,*/}
-                //                                                         {/*             data: {*/}
-                //                                                         {/*                 ...state.data,*/}
-                //                                                         {/*                 [key]: {*/}
-                //                                                         {/*                     ...state.data[key],*/}
-                //                                                         {/*                     [subKey]: {}*/}
-                //                                                         {/*                 }*/}
-                //                                                         {/*             }*/}
-                //                                                         {/*         })*/}
-                //                                                         {/*     }}>*/}
-                //                                                         {/*    <MdDeleteForever/>*/}
-                //                                                         {/*</div>*/}
-                //                                                     </div>
-                //                                                     : null
-                //                                                 :
-                //                                                 !isEmptyObject(state.data[key][subKey]) ?
-                //                                                     state.data[key][subKey].map((element, index) => {
-                //                                                         return (
-                //                                                             <div
-                //                                                                 className="flex justify-between items-center">
-                //                                                                 <div key={index}
-                //                                                                      onClick={() => {
-                //                                                                          const array = state.sectionControl[key][subKey];
-                //                                                                          array[index] = true;
-                //                                                                          setState({
-                //                                                                              ...state,
-                //                                                                              sectionControl: {
-                //                                                                                  ...state.sectionControl,
-                //                                                                                  [key]: {
-                //                                                                                      ...state.sectionControl[key],
-                //                                                                                      [subKey]: array
-                //                                                                                  }
-                //                                                                              }
-                //                                                                          })
-                //                                                                      }}>
-                //                                                                     <Formatter app={"CV"}
-                //                                                                                section={key}
-                //                                                                                form={subKey}
-                //                                                                                rawData={state.data[key][subKey][index]}
-                //                                                                                isFullScreenViewMode={true}
-                //                                                                     />
-                //                                                                 </div>
-                //                                                                 {/*<div className="ml-5"*/}
-                //                                                                 {/*     onClick={() => {*/}
-                //                                                                 {/*         const array = state.data[key][subKey];*/}
-                //                                                                 {/*         array.splice(index, 1)*/}
-                //                                                                 {/*         setState({*/}
-                //                                                                 {/*             ...state,*/}
-                //                                                                 {/*             data: {*/}
-                //                                                                 {/*                 ...state.data,*/}
-                //                                                                 {/*                 [key]: {*/}
-                //                                                                 {/*                     ...state.data[key],*/}
-                //                                                                 {/*                     [subKey]: array*/}
-                //                                                                 {/*                 }*/}
-                //                                                                 {/*             }*/}
-                //                                                                 {/*         })*/}
-                //                                                                 {/*     }}>*/}
-                //                                                                 {/*    <MdDeleteForever/>*/}
-                //                                                                 {/*</div>*/}
-                //                                                             </div>
-                //                                                         )
-                //                                                     })
-                //                                                     : null
-                //
-                //                                         }
-                //                                     </div>
-                //                                     {
-                //                                         isForm(subSection) ?
-                //                                             Array.isArray(state.sectionControl[key][subKey]) ?
-                //                                                 state.sectionControl[key][subKey].map((element, index) => {
-                //                                                     return (
-                //                                                         element && <div key={index}>
-                //                                                             <ModalFullScreen content={
-                //                                                                 <FormBuilder
-                //                                                                     formID={"user-profile-form"}
-                //                                                                     resourceURL={"form/"}
-                //                                                                     // validationDeclaration={this.validationDeclaration}
-                //                                                                     HTTPMethod={"PATCH"}
-                //                                                                     language={props.language}
-                //                                                                     formSchema={subSection.schema}
-                //                                                                     uiSchema={UISchema(key, subKey, null)}
-                //                                                                     formData={state.data[key][subKey][index]}
-                //                                                                     onFormEditSubmit={handleFormEditSubmit}
-                //                                                                     onFormEditCancel={handleFormEditCancel}
-                //                                                                     onFormEditDelete={handleFormEditDelete}
-                //                                                                     formDependent={{
-                //                                                                         section: key,
-                //                                                                         form: subKey,
-                //                                                                         index: index
-                //                                                                     }}
-                //                                                                     formContext={{
-                //                                                                         api: api,
-                //                                                                         app: "CV",
-                //                                                                         form: "PersonalInformation"
-                //                                                                     }}
-                //                                                                 />} title={subSection.title}
-                //                                                                              fullScreen={true}/>
-                //                                                         </div>
-                //                                                     )
-                //                                                 })
-                //                                                 :
-                //                                                 state.sectionControl[key][subKey] &&
-                //                                                 <ModalFullScreen content={
-                //                                                     <FormBuilder
-                //                                                         formID={"user-profile-form"}
-                //                                                         resourceURL={"form/"}
-                //                                                         // validationDeclaration={this.validationDeclaration}
-                //                                                         HTTPMethod={"PATCH"}
-                //                                                         language={props.language}
-                //                                                         formSchema={subSection.schema}
-                //                                                         uiSchema={UISchema(key, subKey, null)}
-                //                                                         formData={state.data[key][subKey]}
-                //                                                         onFormEditSubmit={handleFormEditSubmit}
-                //                                                         onFormEditCancel={handleFormEditCancel}
-                //                                                         onFormEditDelete={handleFormEditDelete}
-                //                                                         formDependent={{
-                //                                                             section: key,
-                //                                                             form: subKey,
-                //                                                             index: NaN
-                //                                                         }}
-                //                                                         formContext={{
-                //                                                             api: api,
-                //                                                             app: "CV",
-                //                                                             form: "PersonalInformation"
-                //                                                         }}
-                //                                                     />
-                //                                                 } title={subSection.title} fullScreen={true}/>
-                //                                             : null
-                //                                     }
-                //                                 </div>
-                //                             )
-                //                         })}</div>
-                //                 </>
-                //                 :
-                //                 isForm(section) ?
-                //                     <>
-                //                         <div id={"section header"}>
-                //                             <p className="inline-block text-xl text-white border border-yellow-700 bg-yellow-700 rounded m-1 p-1">{schema[key].title}</p>
-                //                             <div className="inline-block ml-2">
-                //                                 {
-                //                                     isSingle(section) ?
-                //                                         <div
-                //                                             onClick={() => {
-                //                                                 // console.log("sss", key, subKey)
-                //                                                 setState({
-                //                                                     ...state,
-                //                                                     sectionControl: {
-                //                                                         ...state.sectionControl,
-                //                                                         [key]: true
-                //                                                     }
-                //                                                 })
-                //                                             }}
-                //                                         >
-                //                                             <FiEdit size={"1.1rem"}/>
-                //                                         </div>
-                //                                         :
-                //                                         <div
-                //                                             onClick={() => {
-                //                                                 const array = state.sectionControl[key];
-                //                                                 array.push(true);
-                //                                                 setState({
-                //                                                     ...state,
-                //                                                     sectionControl: {
-                //                                                         ...state.sectionControl,
-                //                                                         [key]: array
-                //                                                     }
-                //                                                 })
-                //                                             }}
-                //                                         >
-                //                                             <AiOutlineFileAdd size={"1.1rem"}/>
-                //                                         </div>
-                //                                 }
-                //                             </div>
-                //                         </div>
-                //                         <div id="section content">
-                //                             {
-                //                                 isSingle(section) ?
-                //                                     <>
-                //                                         {
-                //                                             !isEmptyObject(state.data[key]) ?
-                //                                                 <div className="mx-5 flex justify-between items-center">
-                //                                                     <div
-                //                                                         onClick={() => {
-                //                                                             setState({
-                //                                                                 ...state,
-                //                                                                 sectionControl: {
-                //                                                                     ...state.sectionControl,
-                //                                                                     [key]: true
-                //                                                                 }
-                //                                                             })
-                //                                                         }}>
-                //                                                         <Formatter app={"CV"} section={key}
-                //                                                                    rawData={state.data[key]}
-                //                                                                    isFullScreenViewMode={true}/>
-                //                                                     </div>
-                //                                                     {/*<div*/}
-                //                                                     {/*    onClick={() => {*/}
-                //                                                     {/*        // console.log(state.data[key], key)*/}
-                //                                                     {/*        setState({*/}
-                //                                                     {/*            ...state,*/}
-                //                                                     {/*            data: {*/}
-                //                                                     {/*                ...state.data,*/}
-                //                                                     {/*                [key]: {}*/}
-                //                                                     {/*            }*/}
-                //                                                     {/*        })*/}
-                //                                                     {/*    }}>*/}
-                //                                                     {/*    <MdDeleteForever/>*/}
-                //                                                     {/*</div>*/}
-                //                                                 </div>
-                //                                                 : null
-                //                                         }
-                //                                     </>
-                //                                     :
-                //                                     <>
-                //                                         {
-                //                                             !isEmptyObject(state.data[key]) ?
-                //                                                 state.data[key].map((element, index) => {
-                //                                                     return (
-                //                                                         <div
-                //                                                             className="mx-5 flex justify-between items-center">
-                //                                                             <div key={index}
-                //                                                                  onClick={() => {
-                //                                                                      const array = state.sectionControl[key];
-                //                                                                      array[index] = true;
-                //                                                                      setState({
-                //                                                                          ...state,
-                //                                                                          sectionControl: {
-                //                                                                              ...state.sectionControl,
-                //                                                                              [key]: array
-                //                                                                          }
-                //                                                                      })
-                //                                                                  }}>
-                //                                                                 <Formatter app={"CV"} section={key}
-                //                                                                            rawData={state.data[key][index]}
-                //                                                                            isFullScreenViewMode={true}/>
-                //                                                             </div>
-                //                                                             {/*<div className="ml-5"*/}
-                //                                                             {/*     onClick={() => {*/}
-                //                                                             {/*         const array = state.data[key];*/}
-                //                                                             {/*         array.splice(index, 1)*/}
-                //                                                             {/*         setState({*/}
-                //                                                             {/*             ...state,*/}
-                //                                                             {/*             data: {*/}
-                //                                                             {/*                 ...state.data,*/}
-                //                                                             {/*                 [key]: array*/}
-                //                                                             {/*             }*/}
-                //                                                             {/*         })*/}
-                //                                                             {/*     }}>*/}
-                //                                                             {/*    <MdDeleteForever/>*/}
-                //                                                             {/*</div>*/}
-                //                                                         </div>
-                //                                                     )
-                //                                                 })
-                //                                                 : null
-                //                                         }
-                //                                     </>
-                //                             }
-                //                             {
-                //                                 Array.isArray(state.sectionControl[key]) ?
-                //                                     state.sectionControl[key].map((element, index) => {
-                //                                         // console.log(element, index)
-                //                                         return (
-                //                                             element &&
-                //                                             <div key={index}>
-                //                                                 <ModalFullScreen
-                //                                                     content={
-                //                                                         <FormBuilder
-                //                                                             formID={"user-profile-form"}
-                //                                                             resourceURL={"form/"}
-                //                                                             // validationDeclaration={this.validationDeclaration}
-                //                                                             HTTPMethod={"PATCH"}
-                //                                                             language={props.language}
-                //                                                             uiSchema={UISchema(key, null, null)}
-                //                                                             formSchema={section.schema}
-                //                                                             formData={state.data[key][index]}
-                //                                                             onFormEditSubmit={handleFormEditSubmit}
-                //                                                             onFormEditCancel={handleFormEditCancel}
-                //                                                             onFormEditDelete={handleFormEditDelete}
-                //                                                             formDependent={{
-                //                                                                 section: key,
-                //                                                                 form: null,
-                //                                                                 index: index
-                //                                                             }}
-                //                                                             formContext={{
-                //                                                                 api: api,
-                //                                                                 app: "CV",
-                //                                                                 form: "PersonalInformation"
-                //                                                             }}
-                //                                                         />
-                //                                                     }
-                //                                                     title={section.title}
-                //                                                     fullScreen={true}/>
-                //                                             </div>
-                //                                         )
-                //                                     })
-                //                                     :
-                //                                     state.sectionControl[key] &&
-                //                                     <ModalFullScreen
-                //                                         content={
-                //                                             <FormBuilder
-                //                                                 formID={"user-profile-form"}
-                //                                                 resourceURL={"form/"}
-                //                                                 // validationDeclaration={this.validationDeclaration}
-                //                                                 HTTPMethod={"PATCH"}
-                //                                                 language={props.language}
-                //                                                 uiSchema={UISchema(key, null, null)}
-                //                                                 formSchema={section.schema}
-                //                                                 formData={state.data[key]}
-                //                                                 onFormEditSubmit={handleFormEditSubmit}
-                //                                                 onFormEditCancel={handleFormEditCancel}
-                //                                                 onFormEditDelete={handleFormEditDelete}
-                //                                                 formDependent={{
-                //                                                     section: key,
-                //                                                     form: null,
-                //                                                     index: NaN
-                //                                                 }}
-                //                                                 formContext={{
-                //                                                     api: api,
-                //                                                     app: "CV",
-                //                                                     form: "PersonalInformation"
-                //                                                 }}
-                //                                             />
-                //                                         }
-                //                                         title={section.title}
-                //                                         fullScreen={true}
-                //                                     />
-                //                             }
-                //                         </div>
-                //                     </>
-                //                     : null
-                //         }
-                //     </div>
-                // )
+                return pageBuilder(section, index, 3, [section.name])
             })}
         </>
     )

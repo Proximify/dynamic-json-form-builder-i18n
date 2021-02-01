@@ -32,10 +32,10 @@ const customWidgets = {
     numberInputWidget: NumberInputWidget,
     phoneInputWidget: PhoneInputWidget,
 
-    singleSelectionWidget:SingleSelectionWidget,
-    multiColSelectionWidget:MultiColSelectionWidget,
+    singleSelectionWidget: SingleSelectionWidget,
+    multiColSelectionWidget: MultiColSelectionWidget,
     singleLargeSelectionWidget: SingleLargeSelectionWidget,
-    multiColLargeSelectionWidget:MultiColLargeSelectionWidget
+    multiColLargeSelectionWidget: MultiColLargeSelectionWidget
 };
 
 const customTemplates = {
@@ -295,12 +295,12 @@ class FormBuilder extends Component {
         // console.log(_.isEqual(uiSchema,generateUISchema(FormSchema)))
         return (
             <Form
-                id={this.props.formID}
-                schema={this.props.formSchema}
+                id={this.props.formID ?? null}
+                schema={this.props.formSchema ?? null}
                 // uiSchema={generateUISchema(FormSchema)}
                 // uiSchema={UISchema}
-                uiSchema={this.props.uiSchema}
-                formData={this.props.formData}
+                // uiSchema={this.props.uiSchema ?? null}
+                formData={this.props.formData ?? null}
                 formContext={
                     {...this.props.formContext, submitAction: this.onSubmit} ?? null
                 }
@@ -333,7 +333,7 @@ class FormBuilder extends Component {
                         </button>
                         <button className="border bg-gray-300 px-1 py-1 rounded text-black"
                                 type="button"
-                                onClick={()=>{
+                                onClick={() => {
                                     this.props.onFormEditDelete(this.props.formDependent);
                                 }}
                         >Delete

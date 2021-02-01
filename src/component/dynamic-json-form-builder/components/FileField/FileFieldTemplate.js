@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
 import {BsTrashFill, BsDownload, BsCloudDownload} from "react-icons/bs";
-import Formatter from "../utils/formatter";
+import Formatter from "../../../../utils/formatter";
 import {ModalFileField} from "../utils/Modals";
 
 export default function FileFieldTemplate(props) {
