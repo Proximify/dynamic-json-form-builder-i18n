@@ -11,7 +11,7 @@ import {
     SingleSelectionWidget,
     MultiColSelectionWidget,
     SingleLargeSelectionWidget,
-    MultiColLargeSelectionWidget
+    MultiColLargeSelectionWidget, DOBSelectionWidget
 } from "./components/SelectionField";
 import {CurrencyFieldTemplate, FundBundleFieldTemplate, FundFieldTemplate} from "./components/FundField/templates";
 import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
@@ -35,7 +35,8 @@ const customWidgets = {
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
     singleLargeSelectionWidget: SingleLargeSelectionWidget,
-    multiColLargeSelectionWidget: MultiColLargeSelectionWidget
+    multiColLargeSelectionWidget: MultiColLargeSelectionWidget,
+    dobSelectionWidget: DOBSelectionWidget
 };
 
 const customTemplates = {
@@ -292,14 +293,14 @@ class FormBuilder extends Component {
         if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
             i18n.changeLanguage(this.props.language.toLowerCase());
         }
-        // console.log(_.isEqual(uiSchema,generateUISchema(FormSchema)))
+        console.log(this.props.formSchema, this.props.formData)
         return (
             <Form
                 id={this.props.formID ?? null}
                 schema={this.props.formSchema ?? null}
                 // uiSchema={generateUISchema(FormSchema)}
                 // uiSchema={UISchema}
-                // uiSchema={this.props.uiSchema ?? null}
+                uiSchema={this.props.uiSchema ?? null}
                 formData={this.props.formData ?? null}
                 formContext={
                     {...this.props.formContext, submitAction: this.onSubmit} ?? null
@@ -308,8 +309,8 @@ class FormBuilder extends Component {
 
                 showErrorList={false}
                 // liveValidate
-                onChange={() => {
-                    console.log("data changed")
+                onChange={({formData}) => {
+                    console.log("data changed",formData)
                 }}
                 // validate={validation}
                 onError={(errors) => {

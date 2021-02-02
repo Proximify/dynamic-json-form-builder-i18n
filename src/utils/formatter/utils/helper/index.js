@@ -53,9 +53,18 @@ export class FormatterTracker {
     #fields = {}
 
     constructor(fields) {
-        this.#fields = {...fields}
-        Object.keys(this.#fields).forEach(key => {
-            this.#fields[key].count = 0;
+        const tempFields = {...fields}
+        Object.keys(tempFields).forEach(key => {
+            const field = tempFields[key];
+            const value = field.value;
+            this.#fields[key] = {
+                val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : null,
+                lbl: field.label ?? null,
+                type: field.type ?? null,
+                rawValue: value ?? null,
+                name: key,
+                count: 0
+            }
         })
     }
 
@@ -74,23 +83,25 @@ export class FormatterTracker {
         return result
     }
 
-    getValue(rawData = false) {
-        const result = {};
-        Object.keys(this.#fields).forEach(key => {
-            result[key] = this.format(this.#fields[key], rawData)
-        })
-        return result
+    getFieldValue(field, rawData = false) {
+        if (!field)
+            return null;
+        if (rawData) {
+            return this.#fields[field.name].rawValue;
+        } else {
+            return this.#fields[field.name].val;
+        }
     }
 
-    getLabel() {
-        const result = {};
-        Object.keys(this.#fields).forEach(key => {
-            result[key] = <span className="font-bold text-black">{this.#fields[key].label}: </span>
-        })
-        return result
-    }
+    // getLabel(field) {
+    //     const result = {};
+    //     Object.keys(this.#fields).forEach(key => {
+    //         result[key] = <span className="font-bold text-black">{this.#fields[key].label}: </span>
+    //     })
+    //     return result
+    // }
 
-    format(field, rawData = false) {
+    format(field) {
         if (!field.value) {
             return null;
         }
@@ -101,42 +112,24 @@ export class FormatterTracker {
                 case "string":
                     return field.value;
                 case "monthday":
-                    if (rawData)
-                        return field.value
                     return Months[field.value.split("/")[0]] + " " + field.value.split("/")[1];
                 case "date":
-                    if (rawData)
-                        return field.value
                     return Months[field.value.split("-")[1] - 1] + " " + field.value.split("-")[2] + ", " + field.value.split("-")[0];
                 case "section":
                     let string = "";
-                    let value = [];
-                    if (rawData) {
-                        value.push(field.value.map(value => {
-                            return (
-                                Object.keys(value).map(key => {
-                                    return this.format(value[key])
-                                })
-                            )
-                        }))
-                        // console.log(value)
-                    }else {
-                        field.value.forEach((val, i) => {
-                            if (i < field.value.length - 1)
-                                string += Object.keys(val).map(key => this.format(val[key])) + ", ";
-                            else
-                                string += Object.keys(val).map(key => this.format(val[key]));
-                        })
-                    }
-                    return rawData ? value : string;
+                    field.value.forEach((val, i) => {
+                        if (i < field.value.length - 1)
+                            string += Object.keys(val).map(key => this.format(val[key])) + ", ";
+                        else
+                            string += Object.keys(val).map(key => this.format(val[key]));
+                    })
+                    return string;
                 case "integer":
                     const integer = Number(field.value);
                     return isNaN(integer) ? field.value : integer
                 case "reftable":
                     return field.value[1];
                 case "bilingual":
-                    if (rawData)
-                        return field.value
                     const eng = field.value["english"] ? "English: " + field.value["english"] : "";
                     const fre = field.value["french"] ? "French: " + field.value["french"] : "";
                     return eng + " " + fre
@@ -145,35 +138,27 @@ export class FormatterTracker {
             }
         }
     }
-
-    // any(...names) {
-    //     let contain = false;
-    //     names.forEach(name => {
-    //         const field = this.#fields[name];
-    //         if (field !== undefined) {
-    //             field.count++;
-    //             contain = true;
-    //         }
-    //     })
-    //     return contain
-    // }
 }
 
 export function any(...fields) {
-    let contain = false;
-
-    for (let field of fields) {
-        if (field.value !== undefined)
-            contain = true;
-    }
-
-    if (!contain)
+    if (fields.length === 0) {
         return false;
-
-    for (let field of fields) {
-        if (field.value !== undefined)
-            field.count++;
+    }else {
+        let contain = false;
+        for (let field of fields) {
+            if (field.rawValue) {
+                contain = true;
+                break;
+            }
+        }
+        if (!contain) {
+            return null;
+        } else {
+            for (let field of fields) {
+                if (field.rawValue)
+                    field.count++;
+            }
+            return true;
+        }
     }
-
-    return true;
 }

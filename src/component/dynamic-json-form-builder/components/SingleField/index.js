@@ -12,7 +12,7 @@ const handleValueChange = (value, rawErrors, setValue, onChange) => {
 }
 
 export function StringInputWidget(props) {
-    const [value, setValue] = useState(props.value ?? undefined);
+    const [value, setValue] = useState(props.value ?? "");
     return (
         <input
             className={"singleFieldInput"}

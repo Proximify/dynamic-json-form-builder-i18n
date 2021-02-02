@@ -3,19 +3,17 @@ import FormBuilder from '../../../component/dynamic-json-form-builder';
 import api from "../../../api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
-import {MdDeleteForever} from 'react-icons/md'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
 import Formatter from "../../formatter";
 
+import {UISchema} from "../UISchema";
+
 export function SectionPageBuilder(props) {
     // console.log("SchemaParser", props)
-
     const schema = props.schema;
-
     const [state, setState] = useState({
         sections: [],
         schema: null,
-        fff: "--",
         ready: false
     })
 
@@ -76,79 +74,6 @@ export function SectionPageBuilder(props) {
             ...state,
             ready: false
         })
-        // if (formDependent.form === null) {
-        //     if (isNaN(formDependent.index)) {
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: formData
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: false
-        //             }
-        //         })
-        //     } else {
-        //         const dataArray = state.data[formDependent.section];
-        //         dataArray[formDependent.index] = formData;
-        //         const controlArray = state.sectionControl[formDependent.section];
-        //         controlArray[formDependent.index] = false;
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: dataArray
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: controlArray
-        //             }
-        //         })
-        //     }
-        // } else {
-        //     if (isNaN(formDependent.index)) {
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: {
-        //                     ...state.data[formDependent.section],
-        //                     [formDependent.form]: formData
-        //                 }
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: {
-        //                     ...state.sectionControl[formDependent.section],
-        //                     [formDependent.form]: false
-        //                 }
-        //             }
-        //         })
-        //     } else {
-        //         const dataArray = state.data[formDependent.section][formDependent.form];
-        //         dataArray[formDependent.index] = formData;
-        //         const controlArray = state.sectionControl[formDependent.section][formDependent.form];
-        //         controlArray[formDependent.index] = false;
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: {
-        //                     ...state.data[formDependent.section],
-        //                     [formDependent.form]: dataArray
-        //                 }
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: {
-        //                     ...state.sectionControl[formDependent.section],
-        //                     [formDependent.form]: controlArray
-        //                 }
-        //             }
-        //         })
-        //     }
-        // }
     }
 
     const handleFormEditCancel = () => {
@@ -156,8 +81,6 @@ export function SectionPageBuilder(props) {
             ...state,
             ready: false
         })
-        // props.rerenderParentCallback();
-
     }
 
     const handleFormEditDelete = (formDependent) => {
@@ -166,79 +89,6 @@ export function SectionPageBuilder(props) {
             ...state,
             ready: false
         })
-        // if (formDependent.form === null) {
-        //     if (isNaN(formDependent.index)) {
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: {}
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: false
-        //             }
-        //         })
-        //     } else {
-        //         const dataArray = state.data[formDependent.section];
-        //         dataArray[formDependent.index] = {};
-        //         const controlArray = state.sectionControl[formDependent.section];
-        //         controlArray[formDependent.index] = false;
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: dataArray
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: controlArray
-        //             }
-        //         })
-        //     }
-        // } else {
-        //     if (isNaN(formDependent.index)) {
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: {
-        //                     ...state.data[formDependent.section],
-        //                     [formDependent.form]: {}
-        //                 }
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: {
-        //                     ...state.sectionControl[formDependent.section],
-        //                     [formDependent.form]: false
-        //                 }
-        //             }
-        //         })
-        //     } else {
-        //         const dataArray = state.data[formDependent.section][formDependent.form];
-        //         dataArray[formDependent.index] = {};
-        //         const controlArray = state.sectionControl[formDependent.section][formDependent.form];
-        //         controlArray[formDependent.index] = false;
-        //         setState({
-        //             ...state,
-        //             data: {
-        //                 ...state.data,
-        //                 [formDependent.section]: {
-        //                     ...state.data[formDependent.section],
-        //                     [formDependent.form]: dataArray
-        //                 }
-        //             },
-        //             sectionControl: {
-        //                 ...state.sectionControl,
-        //                 [formDependent.section]: {
-        //                     ...state.sectionControl[formDependent.section],
-        //                     [formDependent.form]: controlArray
-        //                 }
-        //             }
-        //         })
-        //     }
-        // }
     }
 
     const handleOnItemClick = (structureChain, itemIndex) => {
@@ -258,7 +108,7 @@ export function SectionPageBuilder(props) {
                         sections: sections,
                         schema: formSchema,
                     })
-                console.log(formSchema)
+                // console.log(formSchema)
                 // } else {
                 //     console.warn("Warning, not form schema found")
                 // }
@@ -338,8 +188,8 @@ export function SectionPageBuilder(props) {
                                                                 HTTPMethod={"PATCH"}
                                                                 language={props.language}
                                                                 formSchema={state.schema.formSchema}
-                                                                uiSchema={null}
-                                                                formData={null}
+                                                                uiSchema={UISchema("personal_information","identification")}
+                                                                formData={state.schema.dataSchema}
                                                                 onFormEditSubmit={handleFormEditSubmit}
                                                                 onFormEditCancel={handleFormEditCancel}
                                                                 onFormEditDelete={handleFormEditDelete}

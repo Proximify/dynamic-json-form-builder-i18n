@@ -5,7 +5,7 @@ import {
 import {
     MultiColSelectionWidget,
     SingleSelectionWidget,
-    SingleLargeSelectionWidget, MultiColLargeSelectionWidget
+    SingleLargeSelectionWidget, MultiColLargeSelectionWidget, DOBSelectionWidget
 } from "../../../component/dynamic-json-form-builder/components/SelectionField";
 import {
     CurrencyFieldTemplate,
@@ -49,7 +49,8 @@ const customWidgets = {
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
     singleLargeSelectionWidget: SingleLargeSelectionWidget,
-    multiColLargeSelectionWidget: MultiColLargeSelectionWidget
+    multiColLargeSelectionWidget: MultiColLargeSelectionWidget,
+    dobSelectionWidget: DOBSelectionWidget
 };
 
 const schemas = {
@@ -80,15 +81,18 @@ const schemas = {
                 "ui:widget": "stringInputWidget"
             },
             "date_of_birth": {
-                "ui:ObjectFieldTemplate": ObjectFieldTemplate,
-                "month": {
-                    "ui:FieldTemplate": ObjectItemTemplate,
-                    "ui:widget": "singleLargeSelectionWidget"
-                },
-                "day": {
-                    "ui:FieldTemplate": ObjectItemTemplate,
-                    "ui:widget": "singleLargeSelectionWidget"
-                }
+                "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
+                "ui:widget": "dobSelectionWidget"
+
+                // "ui:ObjectFieldTemplate": ObjectFieldTemplate,
+                // "month": {
+                //     "ui:FieldTemplate": ObjectItemTemplate,
+                //     "ui:widget": "singleLargeSelectionWidget"
+                // },
+                // "day": {
+                //     "ui:FieldTemplate": ObjectItemTemplate,
+                //     "ui:widget": "singleLargeSelectionWidget"
+                // }
             },
             "sex": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],

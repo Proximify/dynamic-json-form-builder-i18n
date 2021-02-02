@@ -8,7 +8,7 @@ import * as Identification
     from "../src/utils/CV/SchemaParser/identification.json";
 import * as CVSchema from "../src/utils/CV/SchemaParser/cvSchema.json";
 
-import SchemaParserFullScreen, {SchemaParserPerForm} from "./utils/CV/SchemaParser";
+import SchemaParser from "./utils/CV/SchemaParser";
 
 // if (navigator.serviceWorker) {
 //     console.log("service worker supported");
@@ -16,6 +16,7 @@ import SchemaParserFullScreen, {SchemaParserPerForm} from "./utils/CV/SchemaPars
 //         navigator.serviceWorker.register('sw_cv_schemaParser.js').then(reg => console.log("Registered")).catch(err => console.log("Register Error", err));
 //     })
 // }
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -60,20 +61,11 @@ class App extends Component {
 
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        // console.log("force update")
-        // api.get("form/").then(res => {
-        //     console.log("update load success", res)
-        // }).catch(err => {
-        //     console.log("loading err", err);
-        // })
-    }
-
     fetchFormSchema(formName){
         const forms = {
             "identification": Identification
         }
-        return formName in forms ? SchemaParserPerForm(forms[formName]) : null
+        return formName in forms ? SchemaParser(forms[formName],true) : null
     }
 
     validationMethods = {
@@ -102,7 +94,6 @@ class App extends Component {
 
     render() {
         console.log("parent render")
-        // SchemaParser();
         return (
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
@@ -112,7 +103,7 @@ class App extends Component {
                             <div
                                 className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
                                 {this.state.isReady &&
-                                <SectionPageBuilder schema={SchemaParserFullScreen(CVSchema)} data={this.state.data}
+                                <SectionPageBuilder schema={SchemaParser(CVSchema)} data={this.state.data}
                                                     language={this.state.language.language}
                                                     fetchFormSchema={(formName) => this.fetchFormSchema(formName)}
                                                     />}

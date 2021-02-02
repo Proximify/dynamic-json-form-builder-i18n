@@ -38,11 +38,12 @@ export default function ArrayFieldTemplate(props) {
                                 dataPrevious: items[index].children.props.formData
                             })
                         }}>
-                        <Formatter app={formContext.app}
-                                   form={formContext.form}
-                                   section={schema.id}
-                                   fields={items[0].children.props.schema.properties}
-                                   values={formData[index]}
+                        {JSON.stringify(formData[index])}
+                        {/*<Formatter app={formContext.app}*/}
+                        {/*           form={formContext.form}*/}
+                        {/*           section={schema.id}*/}
+                        {/*           fields={items[0].children.props.schema.properties}*/}
+                        {/*           values={formData[index]}*/}
                         />
                     </div>
                     <div>
