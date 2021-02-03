@@ -1,18 +1,21 @@
 import React from "react";
+import CountryOfCitizenship from "./CountryOfCitizenship";
 import {FieldValueMapper, FormatterTracker, any} from "../../../utils/helper";
 
 export default function Identification(props) {
     // console.log("Identification", props)
-    const rawData = props.rawData;
+    const {rawData,schema} = props;
     const formData = rawData.values;
-    const schema = props.schema;
+
+    const subsections = {
+        "country_of_citizenship": <CountryOfCitizenship structureChain={props.structureChain}
+                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                        rawData={props.rawData}/>
+    }
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
-        // console.log(mappedValue)
         const ft = new FormatterTracker(mappedValue);
-        // // const it = ft.getFields();
-        // console.log(ft.getFields())
         const {
             applied_for_permanent_residency: afpr,
             canadian_residency_status: crs,
@@ -37,35 +40,32 @@ export default function Identification(props) {
                     {t.val} {fin.val} {mn.val} {fan.val}
                 </p>}
                 {any(pfan) &&
-                    <p>{pfan.lbl}: {pfan.val}</p>}
+                <p>{pfan.lbl}: {pfan.val}</p>}
                 {any(pfin) &&
-                    <p>{pfin.lbl}: {pfin.val}</p>}
+                <p>{pfin.lbl}: {pfin.val}</p>}
                 {any(dob) && <p>{dob.lbl}: {dob.val}</p>}
                 {any(s) && <p>{s.lbl}: {s.val}</p>}
                 {any(dg) &&
-                    <p>{dg.lbl}: {dg.val}</p>}
+                <p>{dg.lbl}: {dg.val}</p>}
                 {any(cl) &&
-                    <p>{cl.lbl}: {cl.val}</p>}
+                <p>{cl.lbl}: {cl.val}</p>}
                 {any(crs) &&
-                    <p>{crs.lbl}: {crs.val}</p>}
+                <p>{crs.lbl}: {crs.val}</p>}
                 {any(prsd) &&
-                    <p>{prsd.lbl}: {prsd.val}</p>}
+                <p>{prsd.lbl}: {prsd.val}</p>}
                 {any(afpr) && <p>{afpr.lbl}</p>}
                 {any(coc) &&
-                    <p>{coc.lbl}: {coc.val}</p>}
+                <p>{coc.lbl}: {coc.val}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
             </div>
         )
-    }
-else
-    {
-        // return (
-        //     <React.Fragment>
-        //         {sections[props.section]}
-        //     </React.Fragment>
-        // )
-        //}
+    } else {
+        return (
+            <React.Fragment>
+                {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            </React.Fragment>
+        )
     }
 }

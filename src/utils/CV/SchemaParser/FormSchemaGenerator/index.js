@@ -8,7 +8,7 @@ import {FieldValueMapper, FormatterTracker} from "../../../formatter/utils/helpe
  * @constructor
  */
 export const SchemaGenerator = (schema, selectionOpts) => {
-    console.log(schema)
+    // console.log(schema)
     const result = {
         formSchema: null,
         uiSchema: null,
@@ -84,36 +84,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             result["type"] = "string";
             break;
         case "monthday":
-            // TODO: combine to single field, extra work inside form component
             result["type"] = "string";
-            // result["type"] = "object";
-            // result["properties"] = {
-            //     month: {
-            //         type: "string",
-            //         id: "month",
-            //         title: "Month",
-            //         enum: [
-            //             "January",
-            //             "February",
-            //             "March",
-            //             "April",
-            //             "May",
-            //             "June",
-            //             "July",
-            //             "August",
-            //             "September",
-            //             "October",
-            //             "November",
-            //             "December"
-            //         ]
-            //     },
-            //     day: {
-            //         type: "integer",
-            //         id: "day",
-            //         title: "Day",
-            //         enum: Array.from({length: 31}, (_, i) => i + 1)
-            //     }
-            // };
             break;
         case "date":
             result["type"] = "string";
@@ -126,7 +97,8 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             const subsectionId = field["subsection_id"];
             const subsections = schema.subsections
             if (subsectionId in subsections) {
-                result["items"] = formStrSchemaGen(subsections[subsectionId],selectionOpts)
+                result["fields"] = subsections[subsectionId].fields;
+                result["items"] = formStrSchemaGen(subsections[subsectionId],selectionOpts);
             }
             break;
         default:
@@ -136,16 +108,26 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
 }
 
 const formDataSchemaGen = (schema) => {
+    // console.log(schema,"++++++=======")
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
-    //console.log("--",mapper)
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
-    // const val = ft.getValue(true);
-    // console.log("fields", fields);
     const dataSchema = {}
     Object.keys(fields).forEach(fieldName => {
-        dataSchema[fieldName] = fields[fieldName].rawValue;
+        const field = fields[fieldName];
+        if (field.type === "section"){
+            const values = [];
+            field.rawValue.forEach(val=>{
+                const subField = {}
+                Object.keys(val).forEach(subFieldName => {
+                    subField[subFieldName] = val[subFieldName].value;
+                })
+                values.push(subField);
+            })
+            dataSchema[fieldName] = values;
+        }else {
+            dataSchema[fieldName] = field.rawValue;
+        }
     })
-    // console.log("dataSchema", dataSchema);
     return dataSchema;
 }

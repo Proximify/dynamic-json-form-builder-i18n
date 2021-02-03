@@ -10,7 +10,7 @@ import {UISchema} from "../UISchema";
 
 export function SectionPageBuilder(props) {
     // console.log("SchemaParser", props)
-    const schema = props.schema;
+    const schema = [...props.schema];
     const [state, setState] = useState({
         sections: [],
         schema: null,
@@ -102,12 +102,12 @@ export function SectionPageBuilder(props) {
             if (form !== null) {
                 formSchema = props.fetchFormSchema(form.name);
                 // if (formSchema !== null) {
-                    form.open[itemIndex] = true;
-                    setState({
-                        ...state,
-                        sections: sections,
-                        schema: formSchema,
-                    })
+                form.open[itemIndex] = true;
+                setState({
+                    ...state,
+                    sections: sections,
+                    schema: formSchema,
+                })
                 // console.log(formSchema)
                 // } else {
                 //     console.warn("Warning, not form schema found")
@@ -159,14 +159,7 @@ export function SectionPageBuilder(props) {
                                 <div className={"font-extralight"} key={index}>
                                     <div className="font-medium text-black"
                                          onClick={() => {
-                                             console.log("onClick")
-                                             // TODO merge everything in handleOnItemClick()
-                                             // const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
-                                             // if (clickedSectionIndex !== -1) {
-                                             //     handleOnItemClick(clickedSectionIndex, [...structureChain].slice(1), index);
-                                             // }
                                              handleOnItemClick([...structureChain], index);
-
                                          }}>
                                         {<Formatter app={"CV"}
                                                     structureChain={[...structureChain]}
@@ -188,7 +181,7 @@ export function SectionPageBuilder(props) {
                                                                 HTTPMethod={"PATCH"}
                                                                 language={props.language}
                                                                 formSchema={state.schema.formSchema}
-                                                                uiSchema={UISchema("personal_information","identification")}
+                                                                uiSchema={UISchema("personal_information", "identification")}
                                                                 formData={state.schema.dataSchema}
                                                                 onFormEditSubmit={handleFormEditSubmit}
                                                                 onFormEditCancel={handleFormEditCancel}
@@ -201,7 +194,7 @@ export function SectionPageBuilder(props) {
                                                                 formContext={{
                                                                     api: api,
                                                                     app: "CV",
-                                                                    form: "PersonalInformation"
+                                                                    structureChain: structureChain
                                                                 }}
                                                             />
                                                         ) :

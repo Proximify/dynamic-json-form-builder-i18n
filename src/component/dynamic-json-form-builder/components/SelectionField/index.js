@@ -39,7 +39,7 @@ export function SingleSelectionWidget(props) {
         <Select
             id={props.schema.id}
             getOptionLabel={option => option.value[1] ?? option.label}
-            className={"singleFieldInput"}
+            className={"singleFieldSelect"}
             options={options.enumOptions}
             defaultValue={value ? options.enumOptions[options.enumOptions.map(function (e) {
                 return e.value[1];
@@ -68,7 +68,7 @@ export function MultiColSelectionWidget(props) {
 
     return (
         <Select
-            className={"singleFieldInput"}
+            className={"singleFieldSelect"}
             id={props.schema.id}
             options={options.enumOptions}
             onChange={value => handleChange(value, props.onChange)}
@@ -86,7 +86,7 @@ export function SingleLargeSelectionWidget(props) {
     return (
         <WindowedSelect
             id={props.schema.id}
-            className={"singleFieldInput"}
+            className={"singleFieldSelect"}
             options={options.enumOptions}
             isClearable={true}
             onChange={value => handleChange(value, props.onChange)}
@@ -115,7 +115,7 @@ export function MultiColLargeSelectionWidget(props) {
     return (
         <WindowedSelect
             id={props.schema.id}
-            className={"singleFieldInput"}
+            className={"singleFieldSelect"}
             options={options.enumOptions}
             onChange={value => handleChange(value, props.onChange)}
             defaultValue={options.enumOptions[options.enumOptions.map(function (e) {

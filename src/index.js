@@ -33,7 +33,7 @@ class App extends Component {
             language: language.EN,
             pageLanguages: ["EN", "FR", "SP"],
             toggleLanguage: this.toggleLanguage,
-            isReady: false,
+            isReady: true,
 
             schema: null,
             data: null
@@ -41,25 +41,25 @@ class App extends Component {
         this.fetchFormSchema = this.fetchFormSchema.bind(this);
     }
 
-    componentDidMount() {
-        //TODO fork api request
-
-        // api.get("form/").then(res => {
-        //     this.setState({
-        //             schema: res.data.formSchema,
-        //             data: res.data.formData ?? undefined,
-        //             isReady: true
-        //         }, () => console.log("load success", this.state.schema, this.state.data)
-        //     )
-        // }).catch(err => {
-        //     console.log("loading err", err);
-        // })
-
-        this.setState({
-            isReady: true
-        })
-
-    }
+    // componentDidMount() {
+    //     //TODO fork api request
+    //
+    //     // api.get("form/").then(res => {
+    //     //     this.setState({
+    //     //             schema: res.data.formSchema,
+    //     //             data: res.data.formData ?? undefined,
+    //     //             isReady: true
+    //     //         }, () => console.log("load success", this.state.schema, this.state.data)
+    //     //     )
+    //     // }).catch(err => {
+    //     //     console.log("loading err", err);
+    //     // })
+    //
+    //     this.setState({
+    //         isReady: true
+    //     })
+    //
+    // }
 
     fetchFormSchema(formName){
         const forms = {
@@ -93,7 +93,7 @@ class App extends Component {
 
 
     render() {
-        console.log("parent render")
+        // console.log("parent render")
         return (
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>

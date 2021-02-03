@@ -1,6 +1,6 @@
 import GenericFieldTemplate from '../../../component/dynamic-json-form-builder/components/utils/GenericFieldTemplate';
 import {
-    StringInputWidget, NumberInputWidget, PhoneInputWidget
+    StringInputWidget, NumberInputWidget, PhoneInputWidget,DateInputWidget,MonthDayInputWidget
 } from "../../../component/dynamic-json-form-builder/components/SingleField";
 import {
     MultiColSelectionWidget,
@@ -45,6 +45,8 @@ const customWidgets = {
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
     phoneInputWidget: PhoneInputWidget,
+    dateInputWidget:DateInputWidget,
+    monthDayInputWidget:MonthDayInputWidget,
 
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
@@ -82,7 +84,7 @@ const schemas = {
             },
             "date_of_birth": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "dobSelectionWidget"
+                "ui:widget": "monthDayInputWidget"
 
                 // "ui:ObjectFieldTemplate": ObjectFieldTemplate,
                 // "month": {
@@ -116,7 +118,7 @@ const schemas = {
             },
             "permanent_residency_start_date": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
-                "ui:widget": "numberInputWidget"
+                "ui:widget": "dateInputWidget"
             },
             "country_of_citizenship": {
                 "ui:ArrayFieldTemplate": customArrayTemplate["arrayFieldTemplate"],

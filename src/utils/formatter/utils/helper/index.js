@@ -13,38 +13,38 @@ export const Months = [
     'December'
 ];
 
-export const FieldValueMapper = (value, schema) => {
+export const FieldValueMapper = (value, schema, isSubsection = false) => {
     const fields = schema.fields
     const result = {}
+    // console.log(value, schema)
     Object.keys(fields).forEach(fieldKey => {
-        let hasValue = false;
+        const field = fields[fieldKey];
+        result[field.name] = {}
+        result[field.name]["type"] = field["type"];
+        result[field.name]["label"] = field["label"];
         Object.keys(value).forEach(valueKey => {
-            if (fieldKey === valueKey) {
-                result[fields[fieldKey].name] = {
-                    value: value[valueKey],
-                    type: fields[fieldKey]["type"],
-                    label: fields[fieldKey]["label"]
+            if (!isSubsection){
+                if (fieldKey === valueKey) {
+                    if (Array.isArray(value[valueKey]) && field["type"] === "section") {
+                        result[field.name]["value"] = []
+                        value[valueKey].forEach(val => {
+                            if (val.values) {
+                                // result[fields[fieldKey].name]["value"] = []
+                                Object.keys(schema.subsections).forEach(key => {
+                                    result[field.name]["value"].push(FieldValueMapper(val.values, schema.subsections[key]))
+                                })
+                            }
+                        })
+                    } else {
+                        result[fields[fieldKey].name]["value"] = value[valueKey];
+                    }
                 }
-                if (Array.isArray(value[valueKey]) && fields[fieldKey]["type"] === "section") {
-                    result[fields[fieldKey].name]["value"] = []
-                    value[valueKey].forEach(val => {
-                        if (val.values) {
-                            // result[fields[fieldKey].name]["value"] = []
-                            Object.keys(schema.subsections).forEach(key => {
-                                result[fields[fieldKey].name]["value"].push(FieldValueMapper(val.values, schema.subsections[key]))
-                            })
-                        }
-                    })
+            }else {
+                if (valueKey === field.name){
+                    result[fields[fieldKey].name]["value"] = value[valueKey];
                 }
-                hasValue = true;
             }
         })
-        if (!hasValue) {
-            result[fields[fieldKey].name] = {
-                type: fields[fieldKey]["type"],
-                label: fields[fieldKey]["label"]
-            }
-        }
     })
     return result
 }
@@ -58,10 +58,10 @@ export class FormatterTracker {
             const field = tempFields[key];
             const value = field.value;
             this.#fields[key] = {
-                val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : null,
-                lbl: field.label ?? null,
-                type: field.type ?? null,
-                rawValue: value ?? null,
+                val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
+                lbl: field.label ?? undefined,
+                type: field.type ?? undefined,
+                rawValue: value ?? undefined,
                 name: key,
                 count: 0
             }
@@ -143,7 +143,7 @@ export class FormatterTracker {
 export function any(...fields) {
     if (fields.length === 0) {
         return false;
-    }else {
+    } else {
         let contain = false;
         for (let field of fields) {
             if (field.rawValue) {

@@ -43,7 +43,6 @@ export default function SchemaParser(schema, singleForm = false) {
     const result = []
     sections.forEach(section => result.push(sectionParser(section, null)))
     if (singleForm) {
-        console.log(SchemaGenerator(result[0], selectionOptions))
         return SchemaGenerator(result[0], selectionOptions);
     } else
         return result;

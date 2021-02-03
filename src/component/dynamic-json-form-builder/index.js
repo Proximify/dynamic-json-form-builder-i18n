@@ -6,7 +6,13 @@ import {withTranslation} from 'react-i18next';
 import formValidatorGenerator from './service/formValidatorGenerator';
 
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
-import {NumberInputWidget, StringInputWidget, PhoneInputWidget} from "./components/SingleField";
+import {
+    NumberInputWidget,
+    StringInputWidget,
+    PhoneInputWidget,
+    DateInputWidget,
+    MonthDayInputWidget
+} from "./components/SingleField";
 import {
     SingleSelectionWidget,
     MultiColSelectionWidget,
@@ -31,6 +37,9 @@ const customWidgets = {
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
     phoneInputWidget: PhoneInputWidget,
+    dateInputWidget:DateInputWidget,
+    monthDayInputWidget:MonthDayInputWidget,
+
 
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
