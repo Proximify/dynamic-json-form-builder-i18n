@@ -29,11 +29,12 @@ export const SchemaGenerator = (schema, selectionOpts) => {
  */
 const formStrSchemaGen = (schema, selectionOpts) => {
     const type = "object";
-    const title = schema.title ?? schema.label;
+    // const title = schema.title ?? schema.label;
     const id = schema.name;
     //const fieldLanguages = ["en", "fr"]
     const required = [];
     const properties = {};
+    const description = schema.description;
     const fields = schema.fields;
     Object.keys(fields).forEach(fieldKey => {
         const field = fields[fieldKey]
@@ -45,7 +46,8 @@ const formStrSchemaGen = (schema, selectionOpts) => {
     return {
         type: type,
         id: id,
-        title: title,
+        // title: title,
+        form_description: description,
         required: required,
         properties: properties
     }
@@ -61,16 +63,17 @@ const formStrSchemaGen = (schema, selectionOpts) => {
 const fieldStrSchemaGen = (field, schema, selectionOpts) => {
     const result = {}
     result["id"] = field.name ?? null;
+    result["description"] = field.description ?? null;
     result["title"] = field.label;
     result["subtype_id"] = schema.subtype_id;
-
+    result["field_type"] = field.type;
     switch (field.type) {
         case "lov":
             const selectionOptions = [];
-            if (selectionOpts){
+            if (selectionOpts) {
                 const subtype_id = field.subtype_id;
                 Object.keys(selectionOpts).forEach(id => {
-                    if (subtype_id === id){
+                    if (subtype_id === id) {
                         selectionOpts[id].forEach(option => {
                             selectionOptions.push(option)
                         })
@@ -98,7 +101,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             const subsections = schema.subsections
             if (subsectionId in subsections) {
                 result["fields"] = subsections[subsectionId].fields;
-                result["items"] = formStrSchemaGen(subsections[subsectionId],selectionOpts);
+                result["items"] = formStrSchemaGen(subsections[subsectionId], selectionOpts);
             }
             break;
         default:
@@ -115,9 +118,9 @@ const formDataSchemaGen = (schema) => {
     const dataSchema = {}
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
-        if (field.type === "section"){
+        if (field.type === "section") {
             const values = [];
-            field.rawValue.forEach(val=>{
+            field.rawValue.forEach(val => {
                 const subField = {}
                 Object.keys(val).forEach(subFieldName => {
                     subField[subFieldName] = val[subFieldName].value;
@@ -125,9 +128,13 @@ const formDataSchemaGen = (schema) => {
                 values.push(subField);
             })
             dataSchema[fieldName] = values;
-        }else {
+        } else {
             dataSchema[fieldName] = field.rawValue;
         }
     })
     return dataSchema;
+}
+
+const formUISchemaGen = (schema) => {
+
 }

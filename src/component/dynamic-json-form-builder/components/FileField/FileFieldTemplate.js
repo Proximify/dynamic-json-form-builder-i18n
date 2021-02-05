@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from "react";
 import {useTranslation} from "react-i18next";
-import {PlusCircleIcon, XIcon} from "@primer/octicons-react";
+import {AiOutlinePlusCircle} from "react-icons/ai";
 import Modal from "react-modal";
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
@@ -44,8 +44,7 @@ export default function FileFieldTemplate(props) {
                     <div className="sectionData">
                         <a type="button" className="text-blue-600" onClick={() => {
                             setState({...state, isUploadModalOpen: true});
-                        }}>< PlusCircleIcon
-                            size={16}/>
+                        }}>< AiOutlinePlusCircle />
                         </a>
                         <div>Loading...</div>
                     </div>
@@ -169,8 +168,7 @@ export default function FileFieldTemplate(props) {
                 <div className="sectionData">
                     <a type="button" className="text-blue-600" onClick={() => {
                         setState({...state, isUploadModalOpen: true});
-                    }}>< PlusCircleIcon
-                        size={16}/>
+                    }}>< AiOutlinePlusCircle />
                     </a>
                     <div className={`${state.fileList && state.fileList.length >0  ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
                         <ul>

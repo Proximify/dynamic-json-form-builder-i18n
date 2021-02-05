@@ -1,6 +1,6 @@
 .singleFieldSelect {
     min-width: 16rem;
-    @apply max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm h-full
+    @apply max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm
 }
 
 .DOBField {

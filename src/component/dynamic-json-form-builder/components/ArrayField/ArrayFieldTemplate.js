@@ -1,14 +1,36 @@
 import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
-import {PlusCircleIcon} from "@primer/octicons-react";
+import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import ModalArrayItem from "../utils/Modals";
 import Formatter from "../../../../utils/formatter";
 import './ArrayField.css'
 import {BsTrashFill} from "react-icons/bs";
+import {usePopperTooltip} from "react-popper-tooltip";
+
+const descriptions = {
+    "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
+    "year": <p><br/>The month is optional: <strong>yyyy</strong>/m. Or both month and day can be
+        included: <strong>yyyy</strong>/m/d.</p>
+}
 
 export default function ArrayFieldTemplate(props) {
     console.log("ArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
+
+    const {
+        getArrowProps,
+        getTooltipProps,
+        setTooltipRef,
+        setTriggerRef,
+        visible
+    } = usePopperTooltip(
+        {
+            trigger: 'hover',
+            interactive: true,
+            delayHide: 200,
+            placement: 'right'
+        }
+    );
 
     const [state, setState] = useState({
         open: false,
@@ -39,7 +61,7 @@ export default function ArrayFieldTemplate(props) {
                             })
                         }}>
                         <Formatter app={"CV"}
-                                   structureChain={[...formContext.structureChain,schema.id]}
+                                   structureChain={[...formContext.structureChain, schema.id]}
                                    isFullScreenViewMode={false}
                                    schema={schema}
                                    rawData={formData[index]}
@@ -66,10 +88,25 @@ export default function ArrayFieldTemplate(props) {
     }
 
     return (
-        <div className="flex flex-wrap justify-center pt-3">
-            <label
-                className="w-1/4 flex-grow text-sm font-medium text-gray-700 pt-2 pl-2">
-                {title}{required ? "*" : null}</label>
+        <div className="flex flex-wrap justify-center my-3">
+            <div className="w-1/4 flex-grow text-base font-medium text-gray-700">
+                <div className="flex items-center">
+                    <label className="mr-2">{title}</label>
+                    <p className="text-red-700">{required && "*"}</p>
+                    <div ref={setTriggerRef}>
+                        <AiOutlineQuestionCircle/>
+                    </div>
+                    {visible && (
+                        <div
+                            ref={setTooltipRef}
+                            {...getTooltipProps({className: 'tooltip-container'})}
+                        >
+                            {schema.description && <p>{schema.description}</p>}
+                            {descriptions[schema.field_type] ?? null}
+                        </div>
+                    )}
+                </div>
+            </div>
             <div className="flex-grow" style={{maxWidth: "20rem"}}>
                 <div className="sectionData">
                     {canAdd &&
@@ -81,9 +118,9 @@ export default function ArrayFieldTemplate(props) {
                             edit: false
                         })
                         return onAddClick();
-                    }}>< PlusCircleIcon
-                        size={16}/></a>}
-                    <div className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
+                    }}>< AiOutlinePlusCircle/></a>}
+                    <div
+                        className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
                         <ul>
                             <p className="border-b px-2 border-gray-300 text-base">{title}:</p>
                             {formDataInit()}
@@ -93,7 +130,8 @@ export default function ArrayFieldTemplate(props) {
                 <div id={`${title}_modal`}>
                     {state.open ?
                         <ModalArrayItem state={state} setState={setState} items={items} context={formContext}
-                                        title={title} fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}
+                                        title={title}
+                                        fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}
                 </div>
             </div>
         </div>

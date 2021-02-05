@@ -307,15 +307,12 @@ class FormBuilder extends Component {
             <Form
                 id={this.props.formID ?? null}
                 schema={this.props.formSchema ?? null}
-                // uiSchema={generateUISchema(FormSchema)}
-                // uiSchema={UISchema}
                 uiSchema={this.props.uiSchema ?? null}
                 formData={this.props.formData ?? null}
                 formContext={
                     {...this.props.formContext, submitAction: this.onSubmit} ?? null
                 }
                 widgets={customWidgets}
-
                 showErrorList={false}
                 // liveValidate
                 onChange={({formData}) => {

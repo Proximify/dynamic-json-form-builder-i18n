@@ -7,7 +7,6 @@ import api from "./api";
 import * as Identification
     from "../src/utils/CV/SchemaParser/identification.json";
 import * as CVSchema from "../src/utils/CV/SchemaParser/cvSchema.json";
-
 import SchemaParser from "./utils/CV/SchemaParser";
 
 // if (navigator.serviceWorker) {

@@ -106,7 +106,7 @@ export function SectionPageBuilder(props) {
                 setState({
                     ...state,
                     sections: sections,
-                    schema: formSchema,
+                    schema: formSchema
                 })
                 // console.log(formSchema)
                 // } else {
@@ -156,7 +156,7 @@ export function SectionPageBuilder(props) {
                     {section.section_data.length > 0 ?
                         section.section_data.map((data, index) => {
                             return (
-                                <div className={"font-extralight"} key={index}>
+                                <div key={index}>
                                     <div className="font-medium text-black"
                                          onClick={() => {
                                              handleOnItemClick([...structureChain], index);

@@ -152,17 +152,20 @@ export function DateInputWidget(props) {
                     onChange={date => setState({date: date})}
                     dateFormat="yyyy/MM/dd"
                     locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    minDate={new Date(1000, 1, 1)}
-                    maxDate={new Date(3000, 12, 31)}
                     placeholderText={i18n.language === "fr" ? "aaaa/m/j" : "yyyy/mm/dd"}
                     onBlur={handleOnBlur}
+                    dropdownMode="scroll"
+                    showMonthDropdown={true}
+                    showYearDropdown={true}
+                    scrollableYearDropdown={true}
+                    todayButton="Today"
         />
     );
 }
 
 export function MonthDayInputWidget(props) {
     const date = props.value ? props.value.split("/") : null;
-    const [state, setState] = useState(date ? {date: new Date(1000, date[0], date[1])} : {date: new Date()});
+    const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: new Date()});
     const {t, i18n} = useTranslation();
 
     const handleOnBlur = () => {
@@ -179,9 +182,8 @@ export function MonthDayInputWidget(props) {
         <DatePicker selected={state.date ?? null}
                     onChange={date => setState({date: date})}
                     dateFormat="MM/dd"
+                    dateFormatCalendar="MMM"
                     locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    minDate={new Date(1000, 1, 1)}
-                    maxDate={new Date(3000, 12, 31)}
                     placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
                     onBlur={handleOnBlur}
         />

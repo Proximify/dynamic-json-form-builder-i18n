@@ -15,6 +15,7 @@ const sectionParser = (section, parent_id) => {
     result["view_type"] = section.view_type;
     result["fields"] = section.fields;
     result["name"] = section.name;
+    result["description"] = section.description;
     if (section.has_fields) {
         if (section.has_fields === "0") {
             result["type"] = "section";

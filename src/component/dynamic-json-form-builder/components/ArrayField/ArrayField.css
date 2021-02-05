@@ -2,3 +2,7 @@
     min-width: 16rem;
     @apply max-w-lg block w-full focus:ring-indigo-500 focus:border-indigo-500 h-full
 }
+
+.tooltip-container {
+    @apply max-w-xs text-sm rounded-md
+}
