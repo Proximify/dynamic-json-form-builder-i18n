@@ -42,7 +42,6 @@ export default function ArrayFieldTemplate(props) {
 
     const formDataInit = () => {
         const data = [];
-
         formData.forEach((element, index) => {
             // console.log(element)
             data.push(

@@ -41,9 +41,11 @@ export function SingleSelectionWidget(props) {
             getOptionLabel={option => option.value[1] ?? option.label}
             className={"singleFieldSelect"}
             options={options.enumOptions}
-            defaultValue={value ? options.enumOptions[options.enumOptions.map(function (e) {
-                return e.value[1];
-            }).indexOf(value[1])] : null}
+            defaultValue={value ?
+                options.enumOptions[options.enumOptions.map(element =>
+                    element.value.toString()
+                ).indexOf(value.toString())]
+                : null}
             onChange={value => handleChange(value, props.onChange)}
             isClearable={true}
         />
@@ -56,11 +58,13 @@ export function MultiColSelectionWidget(props) {
         <table className={"table"}>
             <tbody>
             <tr>
-                {value.map((val, index) => {
-                    return (
-                        <td className={"w-25 p-1"} key={index}>{val}</td>
-                    )
-                })}
+                {
+                    value.map((val, index) => {
+                        return index > 0 ?
+                            <td className="w-40 p-1" key={index}>{val}</td>
+                            : null
+                    })
+                }
             </tr>
             </tbody>
         </table>
@@ -73,9 +77,15 @@ export function MultiColSelectionWidget(props) {
             options={options.enumOptions}
             onChange={value => handleChange(value, props.onChange)}
             formatOptionLabel={formatOptionLabel}
-            defaultValue={options.enumOptions[options.enumOptions.map(function (e) {
-                return e.value.join('');
-            }).indexOf((value) ? value.join('') : "")]}
+            defaultValue={value ?
+                options.enumOptions[options.enumOptions.map(element => {
+                        const tempEle = [...element.value];
+                        const option_id = tempEle.shift();
+                        const option_content = tempEle.join('|');
+                        return [option_id, option_content, null].toString();
+                    }
+                ).indexOf(value.toString())]
+                : null}
             isClearable
         />
     );
@@ -103,11 +113,13 @@ export function MultiColLargeSelectionWidget(props) {
         <table className={"table"}>
             <tbody>
             <tr>
-                {value.map((val, index) => {
-                    return (
-                        <td className={"w-25 p-1"} key={index}>{val}</td>
-                    )
-                })}
+                {
+                    value.map((val, index) => {
+                        return index > 0 ?
+                            <td className="w-40 p-1" key={index}>{val}</td>
+                            : null
+                    })
+                }
             </tr>
             </tbody>
         </table>
@@ -118,9 +130,15 @@ export function MultiColLargeSelectionWidget(props) {
             className={"singleFieldSelect"}
             options={options.enumOptions}
             onChange={value => handleChange(value, props.onChange)}
-            defaultValue={options.enumOptions[options.enumOptions.map(function (e) {
-                return e.value.join('');
-            }).indexOf((value) ? value.join('') : "")]}
+            defaultValue={value ?
+                options.enumOptions[options.enumOptions.map(element => {
+                        const tempEle = [...element.value];
+                        const option_id = tempEle.shift();
+                        const option_content = tempEle.join('|');
+                        return [option_id, option_content, null].toString();
+                    }
+                ).indexOf(value.toString())]
+                : null}
             formatOptionLabel={formatOptionLabel}
             isClearable={true}
         />

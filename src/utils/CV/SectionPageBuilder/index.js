@@ -6,8 +6,6 @@ import {AiOutlineFileAdd} from 'react-icons/ai'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
 import Formatter from "../../formatter";
 
-import {UISchema} from "../UISchema";
-
 export function SectionPageBuilder(props) {
     // console.log("SchemaParser", props)
     const schema = [...props.schema];

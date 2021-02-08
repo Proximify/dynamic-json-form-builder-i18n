@@ -71,11 +71,12 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
     result["id"] = field.name ?? null;
     result["description"] = field.description ?? null;
     result["title"] = field.label;
-    result["subtype_id"] = schema.subtype_id;
+    result["subtype_id"] = field.subtype_id;
     result["field_type"] = field.type;
+    const selectionOptions = [];
     switch (field.type) {
         case "lov":
-            const selectionOptions = [];
+            // const selectionOptions = [];
             if (selectionOpts) {
                 const subtype_id = field.subtype_id;
                 Object.keys(selectionOpts).forEach(id => {
@@ -109,6 +110,20 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
                 result["fields"] = subsections[subsectionId].fields;
                 result["items"] = formStrSchemaGen(subsections[subsectionId], selectionOpts);
             }
+            break;
+        case "reftable":
+            console.log(selectionOpts,field.subtype_id);
+            if (selectionOpts) {
+                const subtype_id = field.subtype_id;
+                Object.keys(selectionOpts).forEach(id => {
+                    if (subtype_id === id) {
+                        selectionOpts[id].forEach(option => {
+                            selectionOptions.push(option)
+                        })
+                    }
+                })
+            }
+            result["enum"] = selectionOptions;
             break;
         default:
             break;
@@ -165,6 +180,10 @@ const fieldTypeWidgetMapper = {
     "date": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "dateInputWidget"
+    },
+    "reftable":{
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "multiColLargeSelectionWidget"
     }
 }
 
@@ -179,7 +198,7 @@ const formUISchemaGen = (schema) => {
     const fields = schema.fields;
     Object.keys(fields).forEach(fieldKey => {
         const field = fields[fieldKey];
-        console.log(field)
+        // console.log(field)
         const fieldName = field.name;
         if (field.type === 'section'){
             const subsectionId = field["subsection_id"];
