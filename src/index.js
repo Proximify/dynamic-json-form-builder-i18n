@@ -6,6 +6,7 @@ import {SectionPageBuilder} from "./utils/CV/SectionPageBuilder";
 import api from "./api";
 import * as Identification
     from "../src/utils/CV/SchemaParser/identification.json";
+import * as Address from "../src/utils/CV/SchemaParser/address.json";
 import * as CVSchema from "../src/utils/CV/SchemaParser/cvSchema.json";
 import SchemaParser from "./utils/CV/SchemaParser";
 
@@ -62,7 +63,8 @@ class App extends Component {
 
     fetchFormSchema(formName){
         const forms = {
-            "identification": Identification
+            "identification": Identification,
+            "address": Address,
         }
         return formName in forms ? SchemaParser(forms[formName],true) : null
     }

@@ -14,7 +14,7 @@ const descriptions = {
 }
 
 export default function ArrayFieldTemplate(props) {
-    console.log("ArrayFieldTemplate", props);
+    // console.log("ArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
     const {

@@ -181,7 +181,7 @@ export function SectionPageBuilder(props) {
                                                                 HTTPMethod={"PATCH"}
                                                                 language={props.language}
                                                                 formSchema={state.schema.formSchema}
-                                                                uiSchema={UISchema("personal_information", "identification")}
+                                                                uiSchema={state.schema.uiSchema}
                                                                 formData={state.schema.dataSchema}
                                                                 onFormEditSubmit={handleFormEditSubmit}
                                                                 onFormEditCancel={handleFormEditCancel}

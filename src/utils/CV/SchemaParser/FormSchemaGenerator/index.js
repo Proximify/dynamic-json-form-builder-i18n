@@ -1,4 +1,8 @@
 import {FieldValueMapper, FormatterTracker} from "../../../formatter/utils/helper";
+import GenericFieldTemplate
+    from "../../../../component/dynamic-json-form-builder/components/utils/GenericFieldTemplate";
+import ArrayFieldTemplate
+    from "../../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate";
 
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
@@ -17,7 +21,9 @@ export const SchemaGenerator = (schema, selectionOpts) => {
     if (schema !== null) {
         result.formSchema = formStrSchemaGen(schema, selectionOpts);
         result.dataSchema = formDataSchemaGen(schema);
+        result.uiSchema = formUISchemaGen(schema);
     }
+    console.log(formUISchemaGen(schema));
     return result;
 }
 
@@ -135,6 +141,58 @@ const formDataSchemaGen = (schema) => {
     return dataSchema;
 }
 
-const formUISchemaGen = (schema) => {
+const customTemplates = {
+    genericFieldTemplate: GenericFieldTemplate
+}
 
+const customArrayTemplate = {
+    arrayFieldTemplate: ArrayFieldTemplate
+}
+
+const fieldTypeWidgetMapper = {
+    "lov": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "singleSelectionWidget"
+    },
+    "string": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "stringInputWidget"
+    },
+    "monthday":{
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "monthDayInputWidget"
+    },
+    "date": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "dateInputWidget"
+    }
+}
+
+
+
+const formUISchemaGen = (schema) => {
+    // const title = schema.title ?? schema.label;
+    //const fieldLanguages = ["en", "fr"]
+    // TODO: check enums size, use windowed select
+    console.log(schema)
+    const result = {}
+    const fields = schema.fields;
+    Object.keys(fields).forEach(fieldKey => {
+        const field = fields[fieldKey];
+        console.log(field)
+        const fieldName = field.name;
+        if (field.type === 'section'){
+            const subsectionId = field["subsection_id"];
+            const subsections = schema.subsections;
+            if (subsectionId in subsections) {
+                result[fieldName] = {
+                    "ui:ArrayFieldTemplate":customArrayTemplate.arrayFieldTemplate,
+                    "items": formUISchemaGen(subsections[subsectionId])
+                }
+            }
+        }else {
+            result[fieldName] = fieldTypeWidgetMapper[field.type]
+        }
+    })
+    return result;
 }

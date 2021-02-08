@@ -85,16 +85,6 @@ const schemas = {
             "date_of_birth": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
                 "ui:widget": "monthDayInputWidget"
-
-                // "ui:ObjectFieldTemplate": ObjectFieldTemplate,
-                // "month": {
-                //     "ui:FieldTemplate": ObjectItemTemplate,
-                //     "ui:widget": "singleLargeSelectionWidget"
-                // },
-                // "day": {
-                //     "ui:FieldTemplate": ObjectItemTemplate,
-                //     "ui:widget": "singleLargeSelectionWidget"
-                // }
             },
             "sex": {
                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
