@@ -19,13 +19,13 @@ export default function ArrayFieldTemplate(props) {
     const {t, i18n} = useTranslation();
 
     const [fieldItems, setFieldItems] = useState(
-        ()=>{
+        () => {
             const array = [];
-            formData.forEach((data,index) => {
+            formData.forEach((data, index) => {
                 array.push({
                     open: false,
                     index: index,
-                    edit: true,
+                    edit: false,
                     data: items[index].children.props.formData
                 })
             });
@@ -33,68 +33,28 @@ export default function ArrayFieldTemplate(props) {
         }
     );
 
-    // useEffect(()=>{
-    //     const array = [];
-    //     formData.forEach((data,index) => {
-    //         array.push({
-    //             open: false,
-    //             index: index,
-    //             edit: true,
-    //             data: items[index].children.props.formData
-    //         })
-    //     });
-    //     setState(array);
-    // },[])
-
-
-
     const formDataInit = () => {
         const data = [];
         console.log(fieldItems);
-        
-        
-        
-        // formData.forEach((element, index) => {
-        //     // console.log(element)
-        //     data.push(
-        //         <li className={`flex justify-between py-1 mx-2 ${index < formData.length - 1 ? "border-b border-gray-300" : ""}`}
-        //             key={index}>
-        //             <div
-        //                 className="hover:text-gray-600"
-        //                 onClick={() => {
-        //                     console.log("click")
-        //                     setState({
-        //                         ...state,
-        //                         open: true,
-        //                         index: index,
-        //                         edit: true,
-        //                         dataPrevious: items[index].children.props.formData
-        //                     })
-        //                 }}>
-        //                 <Formatter app={"CV"}
-        //                            structureChain={[...formContext.structureChain, schema.id]}
-        //                            isFullScreenViewMode={false}
-        //                            schema={schema}
-        //                            rawData={formData[index]}
-        //                 />
-        //             </div>
-        //             <div>
-        //                 <a type="button"
-        //                    className="text-gray-500"
-        //                    data-toggle={"tooltip"}
-        //                    data-placement={"left"}
-        //                    title={"Delete this content"}
-        //                    id={`${formContext.app}_${formContext.form}_${title}_modal_item_cancel_btn_${index}`}
-        //                    onClick={
-        //                        items[index].onDropIndexClick(index)
-        //                    }
-        //                 > <BsTrashFill size={"0.8em"}/>
-        //                 </a>
-        //             </div>
-        //         </li>
-        //     )
-        // })
-
+        fieldItems.forEach((item, index) => {
+            data.push(
+                <li key={index}
+                    onClick={() => {
+                        const fi = [...fieldItems];
+                        fi[index].open = true;
+                        fi[index].edit = true;
+                        fi[index].data = items[index].children.props.formData;
+                        setFieldItems(fi);
+                    }}>
+                    <Formatter app={"CV"}
+                               structureChain={[...formContext.structureChain, schema.id]}
+                               isFullScreenViewMode={false}
+                               schema={schema}
+                               rawData={formData[index]}
+                    />
+                </li>
+            )
+        })
         return data;
     }
 
@@ -131,15 +91,19 @@ export default function ArrayFieldTemplate(props) {
             <div className="flex-grow" style={{maxWidth: "20rem"}}>
                 <div className="sectionData">
                     {canAdd &&
-                    <a type="button" className="text-blue-600" onClick={() => {
-                        // setState({
-                        //     ...state,
-                        //     open: true,
-                        //     index: items.length,
-                        //     edit: false
-                        // })
-                        return onAddClick();
-                    }}>< AiOutlinePlusCircle/></a>}
+                    <a type="button" className="text-blue-600"
+                       onClick={() => {
+                           const fi = [...fieldItems];
+                           fi.push({
+                               open: true,
+                               index: items.length,
+                               edit: false,
+                               data: undefined
+                           })
+                           setFieldItems(fi);
+                           return onAddClick();
+                       }}
+                    >< AiOutlinePlusCircle/></a>}
                     <div
                         className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1" : "hidden"}`}>
                         <ul>
@@ -148,12 +112,18 @@ export default function ArrayFieldTemplate(props) {
                         </ul>
                     </div>
                 </div>
-                {/*<div id={`${title}_modal`}>*/}
-                {/*    {state.open ?*/}
-                {/*        <ModalArrayItem state={state} setState={setState} items={items} context={formContext}*/}
-                {/*                        title={title}*/}
-                {/*                        fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}*/}
-                {/*</div>*/}
+                {
+                    fieldItems.length > 0 &&
+                    fieldItems.map((item, index) => {
+                        return item.open &&
+                            <ModalArrayItem key={index} fieldItems={fieldItems} setFieldItems={setFieldItems}
+                                            index={index}
+                                            items={items} context={formContext}
+                                            dropItem={items[index].onDropIndexClick(index)}
+                                            title={title}
+                                            fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/>
+                    })
+                }
             </div>
         </div>
     )
