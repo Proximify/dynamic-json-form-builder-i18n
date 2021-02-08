@@ -1,8 +1,7 @@
 import React from 'react';
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
-import {usePopperTooltip} from 'react-popper-tooltip';
-import 'react-popper-tooltip/dist/styles.css';
 import './GenericFieldTemplate.css'
+import Tooltip from "../../../../Tooltip";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -13,20 +12,7 @@ const descriptions = {
 const GenericFieldTemplate = (props) => {
     const {id, label, children, required, rawErrors, schema} = props;
     // console.log("GenericFieldTemplate", props);
-    const {
-        getArrowProps,
-        getTooltipProps,
-        setTooltipRef,
-        setTriggerRef,
-        visible
-    } = usePopperTooltip(
-        {
-            trigger: 'hover',
-            interactive: true,
-            delayHide: 200,
-            placement: 'right'
-        }
-    );
+
 
     return (
         <div className="flex flex-wrap justify-center my-3">
@@ -34,20 +20,28 @@ const GenericFieldTemplate = (props) => {
                 <div className="flex items-center">
                     <label className="mr-2">{label}</label>
                     <p className="text-red-700">{required && "*"}</p>
-                    <div ref={setTriggerRef}>
+                    <Tooltip
+                        placement="right"
+                        trigger="hover"
+                        delayHide={200}
+                        tooltip={
+                            <>
+                                <p>{schema.description}</p>
+                                <p>{descriptions[schema.field_type]}</p>
+                            </>
+                        }
+                        modifiers={[
+                            {
+                                name: "offset",
+                                enabled: true,
+                                options: {
+                                    offset: [0, 10]
+                                }
+                            }
+                        ]}
+                    >
                         <AiOutlineQuestionCircle/>
-                    </div>
-                    {visible && (
-                        <div
-                            ref={setTooltipRef}
-                            {...getTooltipProps({className: 'tooltip-container'})}
-                        >
-                            {/*<div {...getArrowProps({ className: 'tooltip-arrow' })} />*/}
-                            {schema.description && <p>{schema.description}</p>}
-                            {descriptions[schema.field_type] ?? null}
-
-                        </div>
-                    )}
+                    </Tooltip>
                 </div>
             </div>
             <div className="flex-grow" style={{maxWidth: "20rem"}}>

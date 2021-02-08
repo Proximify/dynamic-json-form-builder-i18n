@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useTranslation} from "react-i18next";
 import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import ModalArrayItem from "../utils/Modals";
 import Formatter from "../../../../utils/formatter";
 import './ArrayField.css'
 import {BsTrashFill} from "react-icons/bs";
-import {usePopperTooltip} from "react-popper-tooltip";
+import Tooltip from "../../../Tooltip";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -14,74 +14,86 @@ const descriptions = {
 }
 
 export default function ArrayFieldTemplate(props) {
-    // console.log("ArrayFieldTemplate", props);
+    console.log("ArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
+    const {t, i18n} = useTranslation();
 
-    const {
-        getArrowProps,
-        getTooltipProps,
-        setTooltipRef,
-        setTriggerRef,
-        visible
-    } = usePopperTooltip(
-        {
-            trigger: 'hover',
-            interactive: true,
-            delayHide: 200,
-            placement: 'right'
+    const [fieldItems, setFieldItems] = useState(
+        ()=>{
+            const array = [];
+            formData.forEach((data,index) => {
+                array.push({
+                    open: false,
+                    index: index,
+                    edit: true,
+                    data: items[index].children.props.formData
+                })
+            });
+            return array;
         }
     );
 
-    const [state, setState] = useState({
-        open: false,
-        index: NaN,
-        edit: false,
-        dataPrevious: null
-    });
-    const {t, i18n} = useTranslation();
+    // useEffect(()=>{
+    //     const array = [];
+    //     formData.forEach((data,index) => {
+    //         array.push({
+    //             open: false,
+    //             index: index,
+    //             edit: true,
+    //             data: items[index].children.props.formData
+    //         })
+    //     });
+    //     setState(array);
+    // },[])
+
+
 
     const formDataInit = () => {
         const data = [];
-        formData.forEach((element, index) => {
-            // console.log(element)
-            data.push(
-                <li className={`flex justify-between py-1 mx-2 ${index < formData.length - 1 ? "border-b border-gray-300" : ""}`}
-                    key={index}>
-                    <div
-                        className="hover:text-gray-600"
-                        onClick={() => {
-                            console.log("click")
-                            setState({
-                                ...state,
-                                open: true,
-                                index: index,
-                                edit: true,
-                                dataPrevious: items[index].children.props.formData
-                            })
-                        }}>
-                        <Formatter app={"CV"}
-                                   structureChain={[...formContext.structureChain, schema.id]}
-                                   isFullScreenViewMode={false}
-                                   schema={schema}
-                                   rawData={formData[index]}
-                        />
-                    </div>
-                    <div>
-                        <a type="button"
-                           className="text-gray-500"
-                           data-toggle={"tooltip"}
-                           data-placement={"left"}
-                           title={"Delete this content"}
-                           id={`${formContext.app}_${formContext.form}_${title}_modal_item_cancel_btn_${index}`}
-                           onClick={
-                               items[index].onDropIndexClick(index)
-                           }
-                        > <BsTrashFill size={"0.8em"}/>
-                        </a>
-                    </div>
-                </li>
-            )
-        })
+        console.log(fieldItems);
+        
+        
+        
+        // formData.forEach((element, index) => {
+        //     // console.log(element)
+        //     data.push(
+        //         <li className={`flex justify-between py-1 mx-2 ${index < formData.length - 1 ? "border-b border-gray-300" : ""}`}
+        //             key={index}>
+        //             <div
+        //                 className="hover:text-gray-600"
+        //                 onClick={() => {
+        //                     console.log("click")
+        //                     setState({
+        //                         ...state,
+        //                         open: true,
+        //                         index: index,
+        //                         edit: true,
+        //                         dataPrevious: items[index].children.props.formData
+        //                     })
+        //                 }}>
+        //                 <Formatter app={"CV"}
+        //                            structureChain={[...formContext.structureChain, schema.id]}
+        //                            isFullScreenViewMode={false}
+        //                            schema={schema}
+        //                            rawData={formData[index]}
+        //                 />
+        //             </div>
+        //             <div>
+        //                 <a type="button"
+        //                    className="text-gray-500"
+        //                    data-toggle={"tooltip"}
+        //                    data-placement={"left"}
+        //                    title={"Delete this content"}
+        //                    id={`${formContext.app}_${formContext.form}_${title}_modal_item_cancel_btn_${index}`}
+        //                    onClick={
+        //                        items[index].onDropIndexClick(index)
+        //                    }
+        //                 > <BsTrashFill size={"0.8em"}/>
+        //                 </a>
+        //             </div>
+        //         </li>
+        //     )
+        // })
 
         return data;
     }
@@ -92,30 +104,40 @@ export default function ArrayFieldTemplate(props) {
                 <div className="flex items-center">
                     <label className="mr-2">{title}</label>
                     <p className="text-red-700">{required && "*"}</p>
-                    <div ref={setTriggerRef}>
+                    <Tooltip
+                        placement="right"
+                        trigger="hover"
+                        delayHide={150}
+                        tooltip={
+                            <>
+                                <p>{schema.description}</p>
+                                <p>{descriptions[schema.field_type]}</p>
+                            </>
+                        }
+                        modifiers={[
+                            {
+                                name: "offset",
+                                enabled: true,
+                                options: {
+                                    offset: [0, 10]
+                                }
+                            }
+                        ]}
+                    >
                         <AiOutlineQuestionCircle/>
-                    </div>
-                    {visible && (
-                        <div
-                            ref={setTooltipRef}
-                            {...getTooltipProps({className: 'tooltip-container'})}
-                        >
-                            {schema.description && <p>{schema.description}</p>}
-                            {descriptions[schema.field_type] ?? null}
-                        </div>
-                    )}
+                    </Tooltip>
                 </div>
             </div>
             <div className="flex-grow" style={{maxWidth: "20rem"}}>
                 <div className="sectionData">
                     {canAdd &&
                     <a type="button" className="text-blue-600" onClick={() => {
-                        setState({
-                            ...state,
-                            open: true,
-                            index: items.length,
-                            edit: false
-                        })
+                        // setState({
+                        //     ...state,
+                        //     open: true,
+                        //     index: items.length,
+                        //     edit: false
+                        // })
                         return onAddClick();
                     }}>< AiOutlinePlusCircle/></a>}
                     <div
@@ -126,12 +148,12 @@ export default function ArrayFieldTemplate(props) {
                         </ul>
                     </div>
                 </div>
-                <div id={`${title}_modal`}>
-                    {state.open ?
-                        <ModalArrayItem state={state} setState={setState} items={items} context={formContext}
-                                        title={title}
-                                        fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}
-                </div>
+                {/*<div id={`${title}_modal`}>*/}
+                {/*    {state.open ?*/}
+                {/*        <ModalArrayItem state={state} setState={setState} items={items} context={formContext}*/}
+                {/*                        title={title}*/}
+                {/*                        fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/> : null}*/}
+                {/*</div>*/}
             </div>
         </div>
     )

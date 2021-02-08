@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
-import {usePopperTooltip} from "react-popper-tooltip";
+import TooltipTrigger from "react-popper-tooltip";
+import Tooltip from "../../../../Tooltip";
+
 
 export function ModalArrayItem(props) {
     console.log("ModalRegular", props);
@@ -158,22 +160,60 @@ export function ModalFileField(props) {
 
 export function ModalFullScreen(props) {
     console.log("ModalFullScreen", props);
+
     const {content, title} = props;
 
-    const {
-        getArrowProps,
-        getTooltipProps,
-        setTooltipRef,
-        setTriggerRef,
-        visible
-    } = usePopperTooltip(
-        {
-            trigger: 'hover',
-            interactive: true,
-            delayHide: 200,
-            placement: 'right'
-        }
-    );
+    // const modifiers = [
+    //     {
+    //         name: "offset",
+    //         enabled: true,
+    //         options: {
+    //             offset: [0, 4]
+    //         }
+    //     }
+    // ];
+    //
+    // function Trigger({getTriggerProps, triggerRef}) {
+    //     return (
+    //         <span
+    //             {...getTriggerProps({
+    //                 ref: triggerRef,
+    //                 className: "trigger"
+    //             })}
+    //         >
+    //   <AiOutlineQuestionCircle/>
+    // </span>
+    //     );
+    // }
+    //
+    // function Tooltip({
+    //                      getTooltipProps,
+    //                      getArrowProps,
+    //                      tooltipRef,
+    //                      arrowRef,
+    //                      placement
+    //                  }) {
+    //     return (
+    //         <div
+    //             {...getTooltipProps({
+    //                 ref: tooltipRef,
+    //                 className: "tooltip-container"
+    //             })}
+    //         >
+    //             <div
+    //                 {...getArrowProps({
+    //                     ref: arrowRef,
+    //                     "data-placement": placement,
+    //                     className: "tooltip-arrow"
+    //                 })}
+    //             />
+    //             <div className="tooltip-body">
+    //                 <p><strong>{title}</strong></p>
+    //                 {content.props.formSchema.form_description && <p>{content.props.formSchema.form_description}</p>}
+    //             </div>
+    //         </div>
+    //     );
+    // }
 
     return (
         <>
@@ -181,19 +221,29 @@ export function ModalFullScreen(props) {
                 <div className="max-w-2xl h-full w-full mx-auto py-5">
                     <h1 className="text-2xl flex font-semibold text-black border-b-2 border-gray-200 py-3 items-center justify-between">
                         {title}
-                        <div ref={setTriggerRef}>
+                        <Tooltip
+                            placement="left"
+                            trigger="hover"
+                            delayHide={200}
+                            tooltip={
+                                <>
+                                    <p><strong>{title}</strong></p>
+                                    <p>{content.props.formSchema.form_description}</p>
+                                </>
+                            }
+                            hideArrow={true}
+                            modifiers={[
+                                {
+                                    name: "offset",
+                                    enabled: true,
+                                    options: {
+                                        offset: [0, 10]
+                                    }
+                                }
+                            ]}
+                        >
                             <AiOutlineQuestionCircle/>
-                        </div>
-                        {visible && (
-                            <div
-                                ref={setTooltipRef}
-                                {...getTooltipProps({className: 'tooltip-container'})}
-                            >
-                                {/*<div {...getArrowProps({ className: 'tooltip-arrow' })} />*/}
-                                {<strong>{title}</strong>}
-                                {content.props.formSchema.form_description ?? null}
-                            </div>
-                        )}
+                        </Tooltip>
                     </h1>
                     <div className="pt-2 pb-5 my-4">
                         {content}

@@ -302,7 +302,7 @@ class FormBuilder extends Component {
         if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
             i18n.changeLanguage(this.props.language.toLowerCase());
         }
-        console.log(this.props.formSchema, this.props.formData)
+        // console.log(this.props.formSchema, this.props.formData)
         return (
             <Form
                 id={this.props.formID ?? null}

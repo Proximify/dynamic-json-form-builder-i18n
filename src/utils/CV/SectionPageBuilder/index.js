@@ -7,13 +7,14 @@ import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/comp
 import Formatter from "../../formatter";
 
 export function SectionPageBuilder(props) {
-    // console.log("SchemaParser", props)
+
     const schema = [...props.schema];
     const [state, setState] = useState({
         sections: [],
         schema: null,
         ready: false
     })
+    console.log("SchemaParser", state)
 
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
@@ -153,6 +154,7 @@ export function SectionPageBuilder(props) {
                     </div>
                     {section.section_data.length > 0 ?
                         section.section_data.map((data, index) => {
+                            // console.log(section)
                             return (
                                 <div key={index}>
                                     <div className="font-medium text-black"
@@ -168,7 +170,8 @@ export function SectionPageBuilder(props) {
                                         }
                                     </div>
                                     <div>
-                                        {section.open[index] === true ?
+                                        {section.open[index] === true &&
+                                            // console.log(section)
                                             <ModalFullScreen
                                                 content={
                                                     state.schema ? (
@@ -199,7 +202,7 @@ export function SectionPageBuilder(props) {
                                                         <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[index])}</div>
                                                 }
                                                 title={section.title}
-                                                fullScreen={true}/> : null
+                                                fullScreen={true}/>
                                         }
                                     </div>
                                 </div>

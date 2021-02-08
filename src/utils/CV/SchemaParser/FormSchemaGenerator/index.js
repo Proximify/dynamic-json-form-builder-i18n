@@ -100,8 +100,8 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             result["type"] = "string";
             break;
         case "section":
-            // result["type"] = schema["max_char_count"] === null ? "array" : "object";
             result["type"] = "array";
+            result["maxItems"] = field["max_char_count"] === null ? undefined : Number(schema["max_char_count"]);
             result["fullscreen"] = false;
             result["items"] = {}
             const subsectionId = field["subsection_id"];
@@ -193,7 +193,7 @@ const formUISchemaGen = (schema) => {
     // const title = schema.title ?? schema.label;
     //const fieldLanguages = ["en", "fr"]
     // TODO: check enums size, use windowed select
-    console.log(schema)
+    // console.log(schema)
     const result = {}
     const fields = schema.fields;
     Object.keys(fields).forEach(fieldKey => {

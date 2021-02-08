@@ -33,7 +33,7 @@
     "react-icons": "^4.1.0",
     "react-modal": "^3.12.1",
     "react-number-format": "^4.4.1",
-    "react-popper-tooltip": "^4.0.1",
+    "react-popper-tooltip": "^3.1.1",
     "react-scripts": "4.0.1",
     "react-select": "^3.1.1",
     "react-toastify": "^6.2.0",
