@@ -21,7 +21,7 @@ const GenericFieldTemplate = (props) => {
                     <label className="mr-2">{label}</label>
                     <p className="text-red-700">{required && "*"}</p>
                     <Tooltip
-                        placement="right"
+                        placement="right-start"
                         trigger="hover"
                         delayHide={200}
                         tooltip={
@@ -30,12 +30,13 @@ const GenericFieldTemplate = (props) => {
                                 <p>{descriptions[schema.field_type]}</p>
                             </>
                         }
+                        hideArrow={true}
                         modifiers={[
                             {
                                 name: "offset",
                                 enabled: true,
                                 options: {
-                                    offset: [0, 10]
+                                    offset: [0, 8]
                                 }
                             }
                         ]}

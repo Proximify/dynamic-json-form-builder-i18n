@@ -38,19 +38,23 @@ export function ModalArrayItem(props) {
                         </div>
                         {/*footer*/}
                         <div
-                            className="flex items-center justify-between py-3 px-9 border-t border-solid border-gray-300 rounded-b">
-                            <button
-                                onClick={() => {
-                                    const fi = [...fieldItems];
-                                    fi.splice(index, 1);
-                                    setFieldItems(fi);
-                                    dropItem();
-                                }}>
-                                Delete
-                            </button>
+                            className="flex items-center justify-between py-3 px-9 border-t border-solid border-gray-300">
+                            <div>
+                                {item.edit &&
+                                <button
+                                    className="bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                                    onClick={() => {
+                                        const fi = [...fieldItems];
+                                        fi.splice(index, 1);
+                                        setFieldItems(fi);
+                                        dropItem();
+                                    }}>
+                                    Delete
+                                </button>}
+                            </div>
                             <div>
                                 <button
-                                    className="text-red-500 font-bold uppercase px-5 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+                                    className="text-gray-500 font-bold uppercase px-5 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
                                     type="button"
                                     style={{transition: "all .15s ease"}}
                                     onClick={() => {

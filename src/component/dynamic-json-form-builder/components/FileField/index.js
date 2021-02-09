@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState} from "react";
 import {toast, ToastContainer} from "react-toastify";
 import {BsCloudUpload} from "react-icons/bs";
 import './FileField.css'

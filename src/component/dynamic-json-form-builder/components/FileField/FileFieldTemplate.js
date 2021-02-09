@@ -1,16 +1,13 @@
-import React, {useState, useEffect, useRef} from "react";
-import {useTranslation} from "react-i18next";
+import React, {useState, useEffect} from "react";
 import {AiOutlinePlusCircle} from "react-icons/ai";
-import Modal from "react-modal";
 import FileViewer from 'react-file-viewer';
 import FileDownload from 'js-file-download';
-import {BsTrashFill, BsDownload, BsCloudDownload} from "react-icons/bs";
+import {BsTrashFill, BsCloudDownload} from "react-icons/bs";
 import Formatter from "../../../../utils/formatter";
 import {ModalFileField} from "../utils/Modals";
 
 export default function FileFieldTemplate(props) {
     const {id, label, children, required, formContext, schema} = props;
-    const {t, i18n} = useTranslation();
     const [state, setState] = useState({
         isLoading: true,
         fileList: null,

@@ -14,7 +14,7 @@ export function SectionPageBuilder(props) {
         schema: null,
         ready: false
     })
-    console.log("SchemaParser", state)
+    // console.log("SchemaParser", state)
 
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
