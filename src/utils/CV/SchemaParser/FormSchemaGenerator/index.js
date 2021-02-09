@@ -1,8 +1,8 @@
 import {FieldValueMapper, FormatterTracker} from "../../../formatter/utils/helper";
 import GenericFieldTemplate
     from "../../../../component/dynamic-json-form-builder/components/utils/GenericFieldTemplate";
-import ArrayFieldTemplate
-    from "../../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate";
+import {ReorderableArrayFieldTemplate, ArrayFieldTemplate}
+    from "../../../../component/dynamic-json-form-builder/components/ArrayField/ReorderableArrayFieldTemplate";
 
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
@@ -112,7 +112,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             }
             break;
         case "reftable":
-            console.log(selectionOpts,field.subtype_id);
+            console.log(selectionOpts, field.subtype_id);
             if (selectionOpts) {
                 const subtype_id = field.subtype_id;
                 Object.keys(selectionOpts).forEach(id => {
@@ -140,6 +140,7 @@ const formDataSchemaGen = (schema) => {
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
         if (field.type === "section") {
+            console.log(field)
             const values = [];
             field.rawValue.forEach(val => {
                 const subField = {}
@@ -161,6 +162,7 @@ const customTemplates = {
 }
 
 const customArrayTemplate = {
+    reorderableArrayFieldTemplate: ReorderableArrayFieldTemplate,
     arrayFieldTemplate: ArrayFieldTemplate
 }
 
@@ -173,7 +175,7 @@ const fieldTypeWidgetMapper = {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "stringInputWidget"
     },
-    "monthday":{
+    "monthday": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "monthDayInputWidget"
     },
@@ -181,12 +183,11 @@ const fieldTypeWidgetMapper = {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "dateInputWidget"
     },
-    "reftable":{
+    "reftable": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "multiColLargeSelectionWidget"
     }
 }
-
 
 
 const formUISchemaGen = (schema) => {
@@ -200,16 +201,16 @@ const formUISchemaGen = (schema) => {
         const field = fields[fieldKey];
         // console.log(field)
         const fieldName = field.name;
-        if (field.type === 'section'){
+        if (field.type === 'section') {
             const subsectionId = field["subsection_id"];
             const subsections = schema.subsections;
             if (subsectionId in subsections) {
                 result[fieldName] = {
-                    "ui:ArrayFieldTemplate":customArrayTemplate.arrayFieldTemplate,
+                    "ui:ArrayFieldTemplate": subsections[subsectionId].asc_item_order === "1" ? customArrayTemplate.reorderableArrayFieldTemplate : customArrayTemplate.arrayFieldTemplate,
                     "items": formUISchemaGen(subsections[subsectionId])
                 }
             }
-        }else {
+        } else {
             result[fieldName] = fieldTypeWidgetMapper[field.type]
         }
     })

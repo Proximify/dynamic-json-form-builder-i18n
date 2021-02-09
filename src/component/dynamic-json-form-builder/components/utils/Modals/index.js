@@ -161,61 +161,8 @@ export function ModalFileField(props) {
 }
 
 export function ModalFullScreen(props) {
-    console.log("ModalFullScreen", props);
-
+    // console.log("ModalFullScreen", props);
     const {content, title} = props;
-
-    // const modifiers = [
-    //     {
-    //         name: "offset",
-    //         enabled: true,
-    //         options: {
-    //             offset: [0, 4]
-    //         }
-    //     }
-    // ];
-    //
-    // function Trigger({getTriggerProps, triggerRef}) {
-    //     return (
-    //         <span
-    //             {...getTriggerProps({
-    //                 ref: triggerRef,
-    //                 className: "trigger"
-    //             })}
-    //         >
-    //   <AiOutlineQuestionCircle/>
-    // </span>
-    //     );
-    // }
-    //
-    // function Tooltip({
-    //                      getTooltipProps,
-    //                      getArrowProps,
-    //                      tooltipRef,
-    //                      arrowRef,
-    //                      placement
-    //                  }) {
-    //     return (
-    //         <div
-    //             {...getTooltipProps({
-    //                 ref: tooltipRef,
-    //                 className: "tooltip-container"
-    //             })}
-    //         >
-    //             <div
-    //                 {...getArrowProps({
-    //                     ref: arrowRef,
-    //                     "data-placement": placement,
-    //                     className: "tooltip-arrow"
-    //                 })}
-    //             />
-    //             <div className="tooltip-body">
-    //                 <p><strong>{title}</strong></p>
-    //                 {content.props.formSchema.form_description && <p>{content.props.formSchema.form_description}</p>}
-    //             </div>
-    //         </div>
-    //     );
-    // }
 
     return (
         <>
@@ -223,15 +170,16 @@ export function ModalFullScreen(props) {
                 <div className="max-w-2xl h-full w-full mx-auto py-5">
                     <h1 className="text-2xl flex font-semibold text-black border-b-2 border-gray-200 py-3 items-center justify-between">
                         {title}
-                        <Tooltip
+                        {content.props.formSchema.form_description && <Tooltip
                             placement="left"
                             trigger="hover"
                             delayHide={200}
                             tooltip={
-                                <>
-                                    <p><strong>{title}</strong></p>
-                                    <p>{content.props.formSchema.form_description}</p>
-                                </>
+                                <div className="mx-2 my-1">
+                                    <p className="mb-1"><strong>{title}</strong></p>
+                                    {content.props.formSchema &&
+                                    <p>{content.props.formSchema.form_description ?? null}</p>}
+                                </div>
                             }
                             hideArrow={true}
                             modifiers={[
@@ -244,8 +192,8 @@ export function ModalFullScreen(props) {
                                 }
                             ]}
                         >
-                            <AiOutlineQuestionCircle/>
-                        </Tooltip>
+                            <AiOutlineQuestionCircle className="text-gray-400"/>
+                        </Tooltip>}
                     </h1>
                     <div className="pt-2 pb-5 my-4">
                         {content}

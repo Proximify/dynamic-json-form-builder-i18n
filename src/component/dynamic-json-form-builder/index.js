@@ -24,7 +24,7 @@ import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
 // import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
-import ArrayFieldTemplate from './components/ArrayField/ArrayFieldTemplate';
+import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ReorderableArrayFieldTemplate';
 import FileFieldTemplate from "./components/FileField/FileFieldTemplate";
 import FileFieldWidget from "./components/FileField";
 
@@ -53,7 +53,7 @@ const customTemplates = {
 }
 
 const customArrayTemplate = {
-    arrayFieldTemplate: ArrayFieldTemplate
+    reorderableArrayFieldTemplate: ReorderableArrayFieldTemplate
 }
 
 /**
@@ -95,7 +95,7 @@ const customArrayTemplate = {
 //         "ui:widget": "singleFieldWidget"
 //     },
 //     "education": {
-//         "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+//         "ui:ReorderableArrayFieldTemplate": ReorderableArrayFieldTemplate,
 //         "items": {
 //             "degree": {
 //                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
@@ -118,7 +118,7 @@ const customArrayTemplate = {
 //         "ui:widget": MultiLangTextAreaFieldWidget
 //     },
 //     "address": {
-//         "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+//         "ui:ReorderableArrayFieldTemplate": ReorderableArrayFieldTemplate,
 //         "items": {
 //             "street-number": {
 //                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],
@@ -202,7 +202,7 @@ const customArrayTemplate = {
 //         "ui:widget": "singleFieldWidget"
 //     },
 //     "country_of_citizenship": {
-//         "ui:ArrayFieldTemplate": ArrayFieldTemplate,
+//         "ui:ReorderableArrayFieldTemplate": ReorderableArrayFieldTemplate,
 //         "items": {
 //             "country_of_citizenship": {
 //                 "ui:FieldTemplate": customTemplates["genericFieldTemplate"],

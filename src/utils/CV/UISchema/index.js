@@ -25,7 +25,7 @@ import {
     ObjectFieldTemplate,
     ObjectItemTemplate
 } from '../../../component/dynamic-json-form-builder/components/ObjectField/ObjectFieldTemplate';
-import ArrayFieldTemplate from '../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate';
+import ReorderableArrayFieldTemplate from '../../../component/dynamic-json-form-builder/components/ArrayField/ReorderableArrayFieldTemplate';
 import FileFieldTemplate from "../../../component/dynamic-json-form-builder/components/FileField/FileFieldTemplate";
 import FileFieldWidget from "../../../component/dynamic-json-form-builder/components/FileField";
 
@@ -34,7 +34,7 @@ const customTemplates = {
 }
 
 const customArrayTemplate = {
-    arrayFieldTemplate: ArrayFieldTemplate
+    arrayFieldTemplate: ReorderableArrayFieldTemplate
 }
 
 const customWidgets = {

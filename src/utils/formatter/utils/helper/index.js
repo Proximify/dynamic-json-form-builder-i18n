@@ -14,6 +14,7 @@ export const Months = [
 ];
 
 export const FieldValueMapper = (value, schema, isSubsection = false) => {
+    // console.log(value)
     const fields = schema.fields
     const result = {}
     // console.log(value, schema)
@@ -28,9 +29,12 @@ export const FieldValueMapper = (value, schema, isSubsection = false) => {
                     if (Array.isArray(value[valueKey]) && field["type"] === "section") {
                         result[field.name]["value"] = []
                         value[valueKey].forEach(val => {
+                            console.log(val)
                             if (val.values) {
                                 // result[fields[fieldKey].name]["value"] = []
                                 Object.keys(schema.subsections).forEach(key => {
+                                    // result[field.name]["order"] = val.order;
+
                                     result[field.name]["value"].push(FieldValueMapper(val.values, schema.subsections[key]))
                                 })
                             }

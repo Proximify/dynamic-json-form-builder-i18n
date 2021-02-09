@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Select from "react-select";
-import WindowedSelect from "react-windowed-select";
+import WindowedSelect, {components} from "react-windowed-select";
 import './SelectionField.css'
 
 const monthOpts = [
@@ -109,26 +109,44 @@ export function SingleLargeSelectionWidget(props) {
 
 export function MultiColLargeSelectionWidget(props) {
     const {options, value} = props;
+
     const formatOptionLabel = ({label, value}) => (
-        <table className={"table"}>
+        <table className={"table w-full border-b"}>
             <tbody>
-            <tr>
+            <tr className="flex">
                 {
                     value.map((val, index) => {
-                        return index > 0 ?
-                            <td className="w-40 p-1" key={index}>{val}</td>
-                            : null
+                        return index > 0 &&
+                            <td className={`w-1/${value.length - 1} flex-grow`} key={index}>{val}</td>
                     })
                 }
             </tr>
             </tbody>
         </table>
     );
+
+    const SingleValue = ({children, ...props}) => {
+        // console.log(props,children)
+        const value = [...props.data.value];
+        value.shift();
+        return (<div className="py-5">
+            <components.SingleValue {...props}>
+                {value.map((val, index) => {
+                    return <p key={index}>{val}</p>
+                })}
+            </components.SingleValue>
+        </div>)
+
+    };
+
+
     return (
         <WindowedSelect
             id={props.schema.id}
+            components={{SingleValue}}
             className={"singleFieldSelect"}
             options={options.enumOptions}
+            // styles={customStyles}
             onChange={value => handleChange(value, props.onChange)}
             defaultValue={value ?
                 options.enumOptions[options.enumOptions.map(element => {

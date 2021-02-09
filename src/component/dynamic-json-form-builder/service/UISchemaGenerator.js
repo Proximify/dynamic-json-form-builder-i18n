@@ -121,7 +121,7 @@
 //             json += "},"
 //         } else if (schemaObj.type === "array") {
 //             if (schemaObj.hasOwnProperty("items")) {
-//                 json += `"${schemaObj.id}":{"ui:ArrayFieldTemplate":"arrayFieldTemplate","items":{`;
+//                 json += `"${schemaObj.id}":{"ui:ReorderableArrayFieldTemplate":"arrayFieldTemplate","items":{`;
 //                 if (schemaObj.items.type === "string") {
 //                     json += generateUISchemaRecursively(schemaObj.items);
 //                 } else if (schemaObj.items.type === "object") {
@@ -173,16 +173,16 @@
 //             Object.keys(UISchemaObj[key]["items"]).forEach((subKey) => {
 //                 if (UISchemaObj[key]["items"][subKey].hasOwnProperty("ui:FieldTemplate")) {
 //                     UISchemaObj[key]["items"][subKey]['ui:FieldTemplate'] = customTemplates[UISchemaObj[key]["items"][subKey]['ui:FieldTemplate']];
-//                 } else if (UISchemaObj[key]["items"][subKey].hasOwnProperty("ui:ArrayFieldTemplate")) {
-//                     console.log(customTemplates[UISchemaObj[key]["items"][subKey]['ui:ArrayFieldTemplate']]);
-//                     UISchemaObj[key]["items"][subKey]['ui:ArrayFieldTemplate'] = customTemplates[UISchemaObj[key]["items"][subKey]['ui:ArrayFieldTemplate']];
+//                 } else if (UISchemaObj[key]["items"][subKey].hasOwnProperty("ui:ReorderableArrayFieldTemplate")) {
+//                     console.log(customTemplates[UISchemaObj[key]["items"][subKey]['ui:ReorderableArrayFieldTemplate']]);
+//                     UISchemaObj[key]["items"][subKey]['ui:ReorderableArrayFieldTemplate'] = customTemplates[UISchemaObj[key]["items"][subKey]['ui:ReorderableArrayFieldTemplate']];
 //                 }
 //             })
 //         }
 //         if (UISchemaObj[key].hasOwnProperty("ui:FieldTemplate")) {
 //             UISchemaObj[key]['ui:FieldTemplate'] = customTemplates[UISchemaObj[key]['ui:FieldTemplate']];
-//         } else if (UISchemaObj[key].hasOwnProperty("ui:ArrayFieldTemplate")) {
-//             UISchemaObj[key]['ui:ArrayFieldTemplate'] = customTemplates[UISchemaObj[key]['ui:ArrayFieldTemplate']];
+//         } else if (UISchemaObj[key].hasOwnProperty("ui:ReorderableArrayFieldTemplate")) {
+//             UISchemaObj[key]['ui:ReorderableArrayFieldTemplate'] = customTemplates[UISchemaObj[key]['ui:ReorderableArrayFieldTemplate']];
 //         } else if (UISchemaObj[key].hasOwnProperty("ui:ObjectFieldTemplate")){
 //             // console.log(UISchemaObj[key],customTemplates[UISchemaObj[key]['ui:ObjectFieldTemplate']])
 //             UISchemaObj[key]['ui:ObjectFieldTemplate'] = customTemplates[UISchemaObj[key]['ui:ObjectFieldTemplate']];
