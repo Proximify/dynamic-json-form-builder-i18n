@@ -11,7 +11,7 @@ import {
     CurrencyFieldTemplate,
     FundBundleFieldTemplate,
     FundFieldTemplate
-} from "../../../component/dynamic-json-form-builder/components/FundField/templates";
+} from "../../../component/dynamic-json-form-builder/components/FundField/FundFieldTemplates";
 import {
     CurrencyFieldWidget,
     FundFieldWidget
@@ -25,7 +25,7 @@ import {
     ObjectFieldTemplate,
     ObjectItemTemplate
 } from '../../../component/dynamic-json-form-builder/components/ObjectField/ObjectFieldTemplate';
-import ReorderableArrayFieldTemplate from '../../../component/dynamic-json-form-builder/components/ArrayField/ReorderableArrayFieldTemplate';
+import ReorderableArrayFieldTemplate from '../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate';
 import FileFieldTemplate from "../../../component/dynamic-json-form-builder/components/FileField/FileFieldTemplate";
 import FileFieldWidget from "../../../component/dynamic-json-form-builder/components/FileField";
 

@@ -6,7 +6,7 @@ import Tooltip from "../../../../Tooltip";
 
 export function ModalArrayItem(props) {
     console.log("ModalRegular", props);
-    const {fieldItems, setFieldItems, index, items, dropItem, context, title, fullScreen} = props;
+    const {fieldItems, setFieldItems, index, items, dropItem, context, title, fullScreen, reorder} = props;
     const item = fieldItems[index];
     // const deleteHelper = (index) => {
     //     return items[index].onReorderClick(1,0);
@@ -48,6 +48,9 @@ export function ModalArrayItem(props) {
                                         fi.splice(index, 1);
                                         setFieldItems(fi);
                                         dropItem();
+                                        if (reorder !== undefined) {
+                                            reorder(index);
+                                        }
                                     }}>
                                     Delete
                                 </button>}
@@ -170,7 +173,7 @@ export function ModalFullScreen(props) {
                 <div className="max-w-2xl h-full w-full mx-auto py-5">
                     <h1 className="text-2xl flex font-semibold text-black border-b-2 border-gray-200 py-3 items-center justify-between">
                         {title}
-                        {content.props.formSchema.form_description && <Tooltip
+                        {content.props.formSchema && content.props.formSchema.form_description && <Tooltip
                             placement="left"
                             trigger="hover"
                             delayHide={200}

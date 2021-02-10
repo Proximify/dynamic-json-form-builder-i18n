@@ -2,7 +2,9 @@ import {FieldValueMapper, FormatterTracker} from "../../../formatter/utils/helpe
 import GenericFieldTemplate
     from "../../../../component/dynamic-json-form-builder/components/utils/GenericFieldTemplate";
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate}
-    from "../../../../component/dynamic-json-form-builder/components/ArrayField/ReorderableArrayFieldTemplate";
+    from "../../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate";
+import HiddenFieldTemplate
+    from "../../../../component/dynamic-json-form-builder/components/HiddenField/HiddenFieldTemplate";
 
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
@@ -20,10 +22,10 @@ export const SchemaGenerator = (schema, selectionOpts) => {
     }
     if (schema !== null) {
         result.formSchema = formStrSchemaGen(schema, selectionOpts);
-        result.dataSchema = formDataSchemaGen(schema);
+        //result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
     }
-    console.log(formUISchemaGen(schema));
+    console.log(result.formSchema);
     return result;
 }
 
@@ -31,29 +33,27 @@ export const SchemaGenerator = (schema, selectionOpts) => {
  * This function generate the form structure schema
  * @param schema
  * @param selectionOpts
- * @returns {{id, type: string, title: *, required: [], properties: {}}}
+ * @returns {{id, type: string, required: [], properties: {}}}
  */
 const formStrSchemaGen = (schema, selectionOpts) => {
-    const type = "object";
-    // const title = schema.title ?? schema.label;
-    const id = schema.name;
-    //const fieldLanguages = ["en", "fr"]
     const required = [];
     const properties = {};
-    const description = schema.description;
     const fields = schema.fields;
     Object.keys(fields).forEach(fieldKey => {
         const field = fields[fieldKey]
         if (field["not_null"] === "1") {
             required.push(field.name)
         }
+        // const fieldSchema = fieldStrSchemaGen(field, schema, selectionOpts);
+        // if (fieldSchema){
+        //     properties[field.name] = fieldSchema;
+        // }
         properties[field.name] = fieldStrSchemaGen(field, schema, selectionOpts);
     })
     return {
-        type: type,
-        id: id,
-        // title: title,
-        form_description: description,
+        type: "object",
+        id: schema.name,
+        form_description: schema.description,
         required: required,
         properties: properties
     }
@@ -67,6 +67,10 @@ const formStrSchemaGen = (schema, selectionOpts) => {
  * @returns {{}}
  */
 const fieldStrSchemaGen = (field, schema, selectionOpts) => {
+    // if (field.name === "order" && schema.asc_item_order === "1"){
+    //     return null;
+    // }
+    // console.log(field.name, field, schema)
     const result = {}
     result["id"] = field.name ?? null;
     result["description"] = field.description ?? null;
@@ -93,10 +97,19 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
         case "string":
             result["type"] = "string";
             break;
+        case "integer":
+            result["type"] = "integer";
+            break;
         case "monthday":
             result["type"] = "string";
             break;
+        case "yearmonth":
+            result["type"] = "string";
+            break;
         case "date":
+            result["type"] = "string";
+            break;
+        case "bilingual":
             result["type"] = "string";
             break;
         case "section":
@@ -112,7 +125,6 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             }
             break;
         case "reftable":
-            console.log(selectionOpts, field.subtype_id);
             if (selectionOpts) {
                 const subtype_id = field.subtype_id;
                 Object.keys(selectionOpts).forEach(id => {
@@ -132,7 +144,6 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
 }
 
 const formDataSchemaGen = (schema) => {
-    // console.log(schema,"++++++=======")
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
@@ -158,7 +169,8 @@ const formDataSchemaGen = (schema) => {
 }
 
 const customTemplates = {
-    genericFieldTemplate: GenericFieldTemplate
+    genericFieldTemplate: GenericFieldTemplate,
+    hiddenFieldTemplate:HiddenFieldTemplate
 }
 
 const customArrayTemplate = {
@@ -179,6 +191,10 @@ const fieldTypeWidgetMapper = {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "monthDayInputWidget"
     },
+    "yearmonth":{
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "yearMonthInputWidget"
+    },
     "date": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "dateInputWidget"
@@ -186,6 +202,14 @@ const fieldTypeWidgetMapper = {
     "reftable": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "multiColLargeSelectionWidget"
+    },
+    "bilingual": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "multiLangTextAreaFieldWidget"
+    },
+    "integer": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "numberInputWidget"
     }
 }
 
@@ -211,7 +235,14 @@ const formUISchemaGen = (schema) => {
                 }
             }
         } else {
-            result[fieldName] = fieldTypeWidgetMapper[field.type]
+            if (field.name === "order" && schema.asc_item_order === "1"){
+                result[fieldName] = {
+                    "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
+                    "ui:widget": "hiddenFieldWidget"
+                }
+            }else {
+                result[fieldName] = fieldTypeWidgetMapper[field.type];
+            }
         }
     })
     return result;

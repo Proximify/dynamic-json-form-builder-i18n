@@ -11,7 +11,8 @@ import {
     StringInputWidget,
     PhoneInputWidget,
     DateInputWidget,
-    MonthDayInputWidget
+    MonthDayInputWidget,
+    YearMonthInputWidget
 } from "./components/SingleField";
 import {
     SingleSelectionWidget,
@@ -19,12 +20,15 @@ import {
     SingleLargeSelectionWidget,
     MultiColLargeSelectionWidget, DOBSelectionWidget
 } from "./components/SelectionField";
-import {CurrencyFieldTemplate, FundBundleFieldTemplate, FundFieldTemplate} from "./components/FundField/templates";
+import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
+import HiddenFieldWidget from "./components/HiddenField";
+
+import {CurrencyFieldTemplate, FundBundleFieldTemplate, FundFieldTemplate} from "./components/FundField/FundFieldTemplates";
 import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
 // import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
-import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ReorderableArrayFieldTemplate';
+import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
 import FileFieldTemplate from "./components/FileField/FileFieldTemplate";
 import FileFieldWidget from "./components/FileField";
 
@@ -32,6 +36,7 @@ const customWidgets = {
     fundFieldWidget: FundFieldWidget,
     currencyFieldWidget: CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
+    multiLangTextAreaFieldWidget:MultiLangTextAreaFieldWidget,
 
 
     stringInputWidget: StringInputWidget,
@@ -39,21 +44,26 @@ const customWidgets = {
     phoneInputWidget: PhoneInputWidget,
     dateInputWidget:DateInputWidget,
     monthDayInputWidget:MonthDayInputWidget,
+    yearMonthInputWidget:YearMonthInputWidget,
 
 
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
     singleLargeSelectionWidget: SingleLargeSelectionWidget,
     multiColLargeSelectionWidget: MultiColLargeSelectionWidget,
-    dobSelectionWidget: DOBSelectionWidget
+    dobSelectionWidget: DOBSelectionWidget,
+
+    hiddenFieldWidget:HiddenFieldWidget
 };
 
 const customTemplates = {
-    genericFieldTemplate: GenericFieldTemplate
+    genericFieldTemplate: GenericFieldTemplate,
+    hiddenFieldTemplate:HiddenFieldTemplate
 }
 
 const customArrayTemplate = {
-    reorderableArrayFieldTemplate: ReorderableArrayFieldTemplate
+    reorderableArrayFieldTemplate: ReorderableArrayFieldTemplate,
+    arrayFieldTemplate: ArrayFieldTemplate
 }
 
 /**

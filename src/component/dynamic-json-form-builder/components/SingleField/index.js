@@ -114,28 +114,6 @@ export function DateInputWidget(props) {
     const [state, setState] = useState(date ? {date: new Date(date[0], date[1], date[2])} : {date: new Date()});
     const {t, i18n} = useTranslation();
 
-    // useEffect(() => {
-    //     if (isFirstRun.current) {
-    //         console.log(new Date())
-    //         isFirstRun.current = false;
-    //         return;
-    //     }
-    //     setState({...state, locale: i18n.language})
-    //
-    // }, [i18n.language])
-    // const locale = (local) => {
-    //     return {
-    //         localize: {
-    //             month: n => months[local][n],
-    //             day: n => weekDays[local][n]
-    //         },
-    //         formatLong: {},
-    //         match: () => {
-    //             console.log("match");
-    //         }
-    //     }
-    // }
-
     const handleOnBlur = () => {
         if (!state.date) {
             props.onChange(undefined);
@@ -183,6 +161,32 @@ export function MonthDayInputWidget(props) {
                     onChange={date => setState({date: date})}
                     dateFormat="MM/dd"
                     dateFormatCalendar="MMM"
+                    locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                    placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
+                    onBlur={handleOnBlur}
+        />
+    );
+}
+
+export function YearMonthInputWidget(props) {
+    const date = props.value ? props.value.split("/") : null;
+    const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: new Date()});
+    const {t, i18n} = useTranslation();
+
+    const handleOnBlur = () => {
+        if (!state.date) {
+            props.onChange(undefined);
+        } else {
+            const month = state.date.getMonth() + 1;
+            const date = state.date.getDate();
+            props.onChange(month + '/' + date);
+        }
+    }
+
+    return (
+        <DatePicker selected={state.date ?? null}
+                    onChange={date => setState({date: date})}
+                    dateFormat="yyyy/MM"
                     locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
                     placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
                     onBlur={handleOnBlur}

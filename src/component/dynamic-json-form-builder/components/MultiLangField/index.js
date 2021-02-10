@@ -477,8 +477,8 @@ export function MultiLangTextAreaFieldWidget(props) {
             }
         }
         if (value !== JSON.stringify(newValue)) {
-            console.log("handle change", newValue);
-            console.log(state);
+            // console.log("handle change", newValue);
+            // console.log(state);
             props.onChange(JSON.stringify(newValue));
         }
     }

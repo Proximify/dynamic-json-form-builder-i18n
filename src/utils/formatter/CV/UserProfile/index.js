@@ -9,7 +9,6 @@ export default function UserProfile(props) {
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
-        // console.log(mappedValue)
         const ft = new FormatterTracker(mappedValue);
         return (
             <div className="border border-red-300 m-2 rounded">

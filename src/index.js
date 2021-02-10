@@ -5,9 +5,10 @@ import LanguageTogglerButton from './language-toggle-btn';
 import {SectionPageBuilder} from "./utils/CV/SectionPageBuilder";
 import api from "./api";
 import * as Identification
-    from "../src/utils/CV/SchemaParser/identification.json";
-import * as Address from "../src/utils/CV/SchemaParser/address.json";
-import * as CVSchema from "../src/utils/CV/SchemaParser/cvSchema.json";
+    from "./utils/CV/schemas/identification.json";
+import * as Address from "./utils/CV/schemas/address.json";
+import * as CVSchema from "./utils/CV/schemas/cvSchema.json";
+import * as academic_work_experience from './utils/CV/schemas/academic_work_experience.json'
 import SchemaParser from "./utils/CV/SchemaParser";
 
 // if (navigator.serviceWorker) {
@@ -65,6 +66,7 @@ class App extends Component {
         const forms = {
             "identification": Identification,
             "address": Address,
+            "academic_work_experience" :academic_work_experience
         }
         return formName in forms ? SchemaParser(forms[formName],true) : null
     }

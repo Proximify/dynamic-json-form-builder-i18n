@@ -12,6 +12,7 @@ export function SectionPageBuilder(props) {
     const [state, setState] = useState({
         sections: [],
         schema: null,
+        shouldModalOpen: false,
         ready: false
     })
     // console.log("SchemaParser", state)
@@ -62,6 +63,7 @@ export function SectionPageBuilder(props) {
         setState({
             ...state,
             sections: schema,
+            shouldModalOpen: false,
             ready: true
         })
     }, [state.ready])
@@ -105,12 +107,9 @@ export function SectionPageBuilder(props) {
                 setState({
                     ...state,
                     sections: sections,
-                    schema: formSchema
+                    schema: formSchema,
+                    shouldModalOpen: true
                 })
-                // console.log(formSchema)
-                // } else {
-                //     console.warn("Warning, not form schema found")
-                // }
             }
         }
     }
@@ -129,7 +128,7 @@ export function SectionPageBuilder(props) {
             Object.keys(sections).forEach(key => {
                 if (sections[key].name === structureChain[0]) {
                     subSections = sections[key]
-                    console.log("found", subSections)
+                    // console.log("found", subSections)
                 }
             })
             return subSections === null ? null : getFormRecur(subSections.subsections, structureChain.slice(1))
@@ -154,55 +153,56 @@ export function SectionPageBuilder(props) {
                     </div>
                     {section.section_data.length > 0 ?
                         section.section_data.map((data, index) => {
-                            // console.log(section)
                             return (
                                 <div key={index}>
+                                    {!state.shouldModalOpen &&
                                     <div className="font-medium text-black"
                                          onClick={() => {
                                              handleOnItemClick([...structureChain], index);
                                          }}>
-                                        {<Formatter app={"CV"}
-                                                    structureChain={[...structureChain]}
-                                                    isFullScreenViewMode={true}
-                                                    schema={section}
-                                                    rawData={section.section_data[index]}
-                                        />
+                                        {
+                                            <Formatter app={"CV"}
+                                                       structureChain={[...structureChain]}
+                                                       isFullScreenViewMode={true}
+                                                       schema={section}
+                                                       rawData={section.section_data[index]}
+                                            />
                                         }
-                                    </div>
+                                    </div>}
                                     <div>
                                         {section.open[index] === true &&
-                                            // console.log(section)
-                                            <ModalFullScreen
-                                                content={
-                                                    state.schema ? (
-                                                            <FormBuilder
-                                                                formID={"user-profile-form"}
-                                                                resourceURL={"form/"}
-                                                                // validationDeclaration={this.validationDeclaration}
-                                                                HTTPMethod={"PATCH"}
-                                                                language={props.language}
-                                                                formSchema={state.schema.formSchema}
-                                                                uiSchema={state.schema.uiSchema}
-                                                                formData={state.schema.dataSchema}
-                                                                onFormEditSubmit={handleFormEditSubmit}
-                                                                onFormEditCancel={handleFormEditCancel}
-                                                                onFormEditDelete={handleFormEditDelete}
-                                                                formDependent={{
-                                                                    section: null,
-                                                                    form: null,
-                                                                    index: NaN
-                                                                }}
-                                                                formContext={{
-                                                                    api: api,
-                                                                    app: "CV",
-                                                                    structureChain: structureChain
-                                                                }}
-                                                            />
-                                                        ) :
-                                                        <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[index])}</div>
-                                                }
-                                                title={section.title}
-                                                fullScreen={true}/>
+                                        // console.log(section)
+                                        <ModalFullScreen
+                                            content={
+                                                state.schema ? (
+                                                        <FormBuilder
+                                                            formID={"user-profile-form"}
+                                                            resourceURL={"form/"}
+                                                            // validationDeclaration={this.validationDeclaration}
+                                                            HTTPMethod={"PATCH"}
+                                                            language={props.language}
+                                                            formSchema={state.schema.formSchema}
+                                                            uiSchema={state.schema.uiSchema}
+                                                            formData={state.schema.dataSchema}
+                                                            onFormEditSubmit={handleFormEditSubmit}
+                                                            onFormEditCancel={handleFormEditCancel}
+                                                            onFormEditDelete={handleFormEditDelete}
+                                                            formDependent={{
+                                                                section: null,
+                                                                form: null,
+                                                                index: NaN
+                                                            }}
+                                                            formContext={{
+                                                                api: api,
+                                                                app: "CV",
+                                                                structureChain: structureChain
+                                                            }}
+                                                        />
+                                                    ) :
+                                                    <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[index])}</div>
+                                            }
+                                            title={section.title}
+                                            fullScreen={true}/>
                                         }
                                     </div>
                                 </div>

@@ -14,11 +14,12 @@ const descriptions = {
 }
 
 export function ReorderableArrayFieldTemplate(props) {
-    // console.log("ReorderableArrayFieldTemplate", props);
+    console.log("ReorderableArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
     const [fieldItems, setFieldItems] = useState(
         () => {
+            console.log("on init")
             const array = [];
             formData.forEach((data, index) => {
                 array.push({
@@ -32,6 +33,14 @@ export function ReorderableArrayFieldTemplate(props) {
         }
     );
 
+    const reorderOnItemDelete = (index) => {
+
+        for (let i = index; i<items.length; i++){
+            // console.log("reorder", items)
+            formData[i]["order"]--;
+        }
+    }
+
     const handleOnDragEnd = (result) => {
         if (!result.destination)
             return;
@@ -39,8 +48,19 @@ export function ReorderableArrayFieldTemplate(props) {
         const si = result.source.index;
         const di = result.destination.index;
         [fi[si], fi[di]] = [fi[di], fi[si]];
+        items[si].onReorderClick(si, di)("");
+        if (di < si) {
+            formData[si]["order"] = di + 1;
+            for (let i = di; i < si; i++) {
+                formData[i]["order"]++;
+            }
+        } else if (si < di) {
+            formData[si]["order"] = di + 1;
+            for (let i = si + 1; i <= di; i++) {
+                formData[i]["order"]--;
+            }
+        }
         setFieldItems(fi);
-        items[result.source.index].onReorderClick(result.source.index, result.destination.index)("");
     }
 
     return (
@@ -139,13 +159,20 @@ export function ReorderableArrayFieldTemplate(props) {
                 {
                     fieldItems.length > 0 &&
                     fieldItems.map((item, index) => {
+                        if (item.open) {
+                            if (item.edit === false) {
+                                formData[item.index]["order"] = item.index + 1;
+                            }
+                        }
                         return item.open &&
                             <ModalArrayItem key={index} fieldItems={fieldItems} setFieldItems={setFieldItems}
                                             index={index}
                                             items={items} context={formContext}
                                             dropItem={items[index].onDropIndexClick(index)}
+                                            reorder={reorderOnItemDelete}
                                             title={title}
                                             fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/>
+
                     })
                 }
             </div>

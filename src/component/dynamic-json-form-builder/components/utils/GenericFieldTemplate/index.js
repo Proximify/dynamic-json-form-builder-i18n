@@ -26,8 +26,8 @@ const GenericFieldTemplate = (props) => {
                         delayHide={150}
                         tooltip={
                             <>
-                                <p>{schema.description}</p>
-                                <p>{descriptions[schema.field_type]}</p>
+                                <div>{schema.description}</div>
+                                <div>{descriptions[schema.field_type]}</div>
                             </>
                         }
                         hideArrow={true}

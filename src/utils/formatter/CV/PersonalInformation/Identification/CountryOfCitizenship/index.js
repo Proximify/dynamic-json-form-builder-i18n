@@ -6,6 +6,7 @@ export default function CountryOfCitizenship(props) {
 
     const {rawData, schema} = props;
 
+    console.log(rawData, schema)
     const mappedValue = FieldValueMapper(rawData, schema, true);
     const ft = new FormatterTracker(mappedValue);
 
