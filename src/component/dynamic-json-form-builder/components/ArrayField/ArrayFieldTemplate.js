@@ -14,12 +14,12 @@ const descriptions = {
 }
 
 export function ReorderableArrayFieldTemplate(props) {
-    console.log("ReorderableArrayFieldTemplate", props);
+    // console.log("ReorderableArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
+    // console.log(schema.description)
 
     const [fieldItems, setFieldItems] = useState(
         () => {
-            console.log("on init")
             const array = [];
             formData.forEach((data, index) => {
                 array.push({
@@ -35,7 +35,7 @@ export function ReorderableArrayFieldTemplate(props) {
 
     const reorderOnItemDelete = (index) => {
 
-        for (let i = index; i<items.length; i++){
+        for (let i = index; i < items.length; i++) {
             // console.log("reorder", items)
             formData[i]["order"]--;
         }
@@ -75,7 +75,7 @@ export function ReorderableArrayFieldTemplate(props) {
                         delayHide={150}
                         tooltip={
                             <>
-                                <p>{schema.description}</p>
+                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
                                 <p>{descriptions[schema.field_type]}</p>
                             </>
                         }
@@ -210,7 +210,7 @@ export function ArrayFieldTemplate(props) {
                         delayHide={150}
                         tooltip={
                             <>
-                                <p>{schema.description}</p>
+                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
                                 <p>{descriptions[schema.field_type]}</p>
                             </>
                         }

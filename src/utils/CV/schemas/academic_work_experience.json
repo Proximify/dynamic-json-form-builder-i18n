@@ -647,7 +647,25 @@
           "dependencies": null
         }
       },
-      "level": 1
+      "level": 1,
+      "items": [
+        {
+          "values": {
+            "178": "poti",
+            "181": "2010\/1",
+            "182": "2014\/5",
+            "183": {
+              "english": "english&nbsp;",
+              "french": "french"
+            },
+            "185": "otherori",
+            "188": "dep",
+            "189": "sch"
+          },
+          "id": "61",
+          "order": "1262304000"
+        }
+      ]
     }
   ],
   "contentInfo": {
@@ -658,19 +676,245 @@
     "is_owner": true,
     "rbac_edit_members": false,
     "templateId": null,
-    "last_edit": 1612905860
+    "last_edit": 1613001599
   },
   "selectionOptions": {
-    "48": [["1036","Adjunct"],["1033","Consultation"],["1034","Sessional"],["1035","Term"],["1037","Visiting Professorship"]],
-    "55": [["21081","Full-time"],["21082","Part-time"]],
-    "51": [["1047","Assistant Professor"],["1048","Associate Professor"],["1046","Emeritus"],["1049","Lecturer"],["1050","Professor"]],
-    "107": [[
-      "28817",
-      "Aachen Technical University",
-      "Germany",
-      "Not Required",
-      "Academic"
+    "45": [
+      [
+        "870",
+        "Academic"
+      ],
+      [
+        "864",
+        "Federal Government"
+      ],
+      [
+        "871",
+        "Health"
+      ],
+      [
+        "865",
+        "Municipal Government"
+      ],
+      [
+        "868",
+        "Not for Profit"
+      ],
+      [
+        "869",
+        "Private Sector"
+      ],
+      [
+        "866",
+        "Provincial Government"
+      ],
+      [
+        "872",
+        "Research"
+      ],
+      [
+        "867",
+        "Territorial Government"
+      ]
     ],
+    "54": [
+      [
+        "21080",
+        "Non Tenure Track"
+      ],
+      [
+        "21078",
+        "Tenure"
+      ],
+      [
+        "21079",
+        "Tenure Track"
+      ]
+    ],
+    "106": [
+      [
+        "27797",
+        "Biomedical Aspects of Human Health",
+        "Health"
+      ],
+      [
+        "27796",
+        "Communication and Information Technologies",
+        "Science and Technologies"
+      ],
+      [
+        "27795",
+        "Construction",
+        "Science and Technologies"
+      ],
+      [
+        "27803",
+        "Culture",
+        "Social Relations and Structures"
+      ],
+      [
+        "27811",
+        "Economic Growth",
+        "Economics"
+      ],
+      [
+        "27810",
+        "Economic Policies",
+        "Economics"
+      ],
+      [
+        "27804",
+        "Education",
+        "Social Relations and Structures"
+      ],
+      [
+        "27790",
+        "Energy",
+        "Science and Technologies"
+      ],
+      [
+        "27789",
+        "Environment",
+        "Science and Technologies"
+      ],
+      [
+        "27809",
+        "Foreign Affairs",
+        "Politics"
+      ],
+      [
+        "27812",
+        "Foundations and Knowledge Acquisition",
+        "Science and Technologies"
+      ],
+      [
+        "27800",
+        "Health System Management",
+        "Health"
+      ],
+      [
+        "27794",
+        "Industrial Manufacturing and Production",
+        "Science and Technologies"
+      ],
+      [
+        "27807",
+        "Land Management",
+        "Social Relations and Structures"
+      ],
+      [
+        "27802",
+        "Law and Justice",
+        "Social Relations and Structures"
+      ],
+      [
+        "27791",
+        "Natural Resources",
+        "Science and Technologies"
+      ],
+      [
+        "27806",
+        "Organizational Structures",
+        "Social Relations and Structures"
+      ],
+      [
+        "27798",
+        "Pathogenesis and Treatment of Diseases",
+        "Health"
+      ],
+      [
+        "27805",
+        "Population",
+        "Social Relations and Structures"
+      ],
+      [
+        "27799",
+        "Public Health",
+        "Health"
+      ],
+      [
+        "27793",
+        "Security",
+        "Science and Technologies"
+      ],
+      [
+        "27801",
+        "Social Solidarity",
+        "Social Relations and Structures"
+      ],
+      [
+        "27808",
+        "State Affairs",
+        "Politics"
+      ],
+      [
+        "27792",
+        "Transport",
+        "Science and Technologies"
+      ]
+    ],
+    "48": [
+      [
+        "1036",
+        "Adjunct"
+      ],
+      [
+        "1033",
+        "Consultation"
+      ],
+      [
+        "1034",
+        "Sessional"
+      ],
+      [
+        "1035",
+        "Term"
+      ],
+      [
+        "1037",
+        "Visiting Professorship"
+      ]
+    ],
+    "55": [
+      [
+        "21081",
+        "Full-time"
+      ],
+      [
+        "21082",
+        "Part-time"
+      ]
+    ],
+    "51": [
+      [
+        "1047",
+        "Assistant Professor"
+      ],
+      [
+        "1048",
+        "Associate Professor"
+      ],
+      [
+        "1046",
+        "Emeritus"
+      ],
+      [
+        "1049",
+        "Lecturer"
+      ],
+      [
+        "1050",
+        "Professor"
+      ]
+    ],
+    "107": [
+      [
+        "28817",
+        "Aachen Technical University",
+        "Germany",
+        "Not Required",
+        "Academic"
+      ],
       [
         "28558",
         "Aalborg Universitet",
@@ -715,37 +959,8 @@
       ],
       [
         "30486",
-        "Abilene Christian University",
-        "United States",
-        "Texas",
-        "Academic"
-      ],
-      [
-        "31470",
-        "Abiogen Environmental Laboratories",
-        "Canada",
-        "Prince Edward Island",
-        "Research"
-      ],
-      [
-        "28596",
-        "Abo Akademi University",
-        "Finland",
-        "Not Required",
-        "Academic"
-      ],
-      [
-        "28609",
-        "Académie de Versailles",
-        "France",
-        "Not Required",
-        "Academic"
+        "Abilene Christian"
       ]
-    ],
-    "45": [["870","Academic"],["864","Federal Government"],["871","Health"],["865","Municipal Government"],["868","Not for Profit"],["869","Private Sector"],["866","Provincial Government"],["872","Research"],["867","Territorial Government"]],
-    "54": [["21080","Non Tenure Track"],["21078","Tenure"],["21079","Tenure Track"]],
-    "106": [["27797","Biomedical Aspects of Human Health","Health"],["27796","Communication and Information Technologies","Science and Technologies"],["27795","Construction","Science and Technologies"],["27803","Culture","Social Relations and Structures"],["27811","Economic Growth","Economics"],["27810","Economic Policies","Economics"],["27804","Education","Social Relations and Structures"],["27790","Energy","Science and Technologies"],["27789","Environment","Science and Technologies"],["27809","Foreign Affairs","Politics"],["27812","Foundations and Knowledge Acquisition","Science and Technologies"],["27800","Health System Management","Health"],["27794","Industrial Manufacturing and Production","Science and Technologies"],["27807","Land Management","Social Relations and Structures"],["27802","Law and Justice","Social Relations and Structures"],["27791","Natural Resources","Science and Technologies"],["27806","Organizational Structures","Social Relations and Structures"],["27798","Pathogenesis and Treatment of Diseases","Health"],["27805","Population","Social Relations and Structures"],["27799","Public Health","Health"],["27793","Security","Science and Technologies"],["27801","Social Solidarity","Social Relations and Structures"],["27808","State Affairs","Politics"],["27792","Transport","Science and Technologies"]]
-
-
+    ]
   }
 }

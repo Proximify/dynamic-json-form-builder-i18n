@@ -26,7 +26,7 @@ const GenericFieldTemplate = (props) => {
                         delayHide={150}
                         tooltip={
                             <>
-                                <div>{schema.description}</div>
+                                <div dangerouslySetInnerHTML={{__html:schema.description}} />
                                 <div>{descriptions[schema.field_type]}</div>
                             </>
                         }

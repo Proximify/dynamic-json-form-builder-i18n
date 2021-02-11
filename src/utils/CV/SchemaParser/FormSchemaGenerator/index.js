@@ -22,7 +22,7 @@ export const SchemaGenerator = (schema, selectionOpts) => {
     }
     if (schema !== null) {
         result.formSchema = formStrSchemaGen(schema, selectionOpts);
-        //result.dataSchema = formDataSchemaGen(schema);
+        result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
     }
     console.log(result.formSchema);
@@ -73,14 +73,13 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
     // console.log(field.name, field, schema)
     const result = {}
     result["id"] = field.name ?? null;
-    result["description"] = field.description ?? null;
+    result["description"] = field.description ? field.description.replaceAll('<a/>','</a>') : null;
     result["title"] = field.label;
     result["subtype_id"] = field.subtype_id;
     result["field_type"] = field.type;
     const selectionOptions = [];
     switch (field.type) {
         case "lov":
-            // const selectionOptions = [];
             if (selectionOpts) {
                 const subtype_id = field.subtype_id;
                 Object.keys(selectionOpts).forEach(id => {
@@ -91,8 +90,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
                     }
                 })
             }
-            // result["type"] = "string";
-            result["enum"] = selectionOptions;
+            result["enum"] = selectionOptions.length > 0 ? selectionOptions : ["no option found", "opt 1"];
             break;
         case "string":
             result["type"] = "string";
@@ -135,7 +133,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
                     }
                 })
             }
-            result["enum"] = selectionOptions;
+            result["enum"] = selectionOptions.length > 0 ? selectionOptions : [[1,2],[2,3],[3,4]];
             break;
         default:
             break;
@@ -144,25 +142,37 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
 }
 
 const formDataSchemaGen = (schema) => {
+    if (!schema.section_data){
+        return {}
+    }
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
     const dataSchema = {}
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
+        console.log(field)
         if (field.type === "section") {
-            console.log(field)
-            const values = [];
-            field.rawValue.forEach(val => {
-                const subField = {}
-                Object.keys(val).forEach(subFieldName => {
-                    subField[subFieldName] = val[subFieldName].value;
+            if (field.rawValue){
+                const values = [];
+                field.rawValue.forEach(val => {
+                    const subField = {}
+                    Object.keys(val).forEach(subFieldName => {
+                        subField[subFieldName] = val[subFieldName].value;
+                    })
+                    values.push(subField);
                 })
-                values.push(subField);
-            })
-            dataSchema[fieldName] = values;
+                dataSchema[fieldName] = values;
+            }else {
+                dataSchema[fieldName] = [];
+            }
+
         } else {
-            dataSchema[fieldName] = field.rawValue;
+            if (field.type === "bilingual"){
+                dataSchema[fieldName] = JSON.stringify(field.rawValue);
+            }else {
+                dataSchema[fieldName] = field.rawValue;
+            }
         }
     })
     return dataSchema;

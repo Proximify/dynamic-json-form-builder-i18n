@@ -1,6 +1,7 @@
 import React from 'react';
 import TooltipTrigger from 'react-popper-tooltip';
 import 'react-popper-tooltip/dist/styles.css';
+import './tooltip.css'
 
 const Tooltip = ({children, tooltip, hideArrow, ...props}) => (
     <TooltipTrigger
