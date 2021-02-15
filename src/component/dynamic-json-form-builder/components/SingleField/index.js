@@ -64,11 +64,13 @@ const handleValueChange = (value, rawErrors, setValue, onChange) => {
 }
 
 export function StringInputWidget(props) {
+    console.log(props)
     const [value, setValue] = useState(props.value ?? "");
     return (
         <input
             className={"singleFieldInput"}
             type={"text"}
+            maxLength={props.schema.max_char_count ?? undefined}
             id={props.schema.id}
             value={value}
             required={props.required}

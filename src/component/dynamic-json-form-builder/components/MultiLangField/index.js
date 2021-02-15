@@ -34,22 +34,25 @@ export function MultiLangFieldWidget(props) {
     });
 
     const languageLabel = {
-        EN: "English",
-        FR: "French",
-        SP: "Spanish"
+        english: "English",
+        french: "French"
     }
 
     useEffect(() => {
         if (value) {
             let valueObj = JSON.parse(props.value);
             // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
-            const languageList = ["EN", "FR"];
+            const languageList = ["english", "french"];
             if (valueObj.language === "Bilingual" && languageList.length === 2) {
-                const htmlPageLang = i18n.language;
-                const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
-                const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
-                const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : "";
-                const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ? valueObj[secondaryLanguage] : "";
+                // const htmlPageLang = i18n.language;
+                // const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
+                // const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
+                // const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : "";
+                // const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ? valueObj[secondaryLanguage] : "";
+                const primaryLanguage = "english";
+                const secondaryLanguage = "french";
+                const primaryContent = valueObj[primaryLanguage];
+                const secondaryContent = valueObj[secondaryLanguage];
                 setState({
                     ...state,
                     isBilingual: true,
@@ -69,7 +72,7 @@ export function MultiLangFieldWidget(props) {
             }
         } else {
             // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
-            const languageList = ["EN", "FR"];
+            const languageList = ["english", "french"];
             setState({
                 ...state,
                 primaryLanguage: i18n.language.toUpperCase(),
@@ -78,50 +81,50 @@ export function MultiLangFieldWidget(props) {
         }
     }, [])
 
-    useEffect(() => {
-        if (isLangFirstRun.current) {
-            isLangFirstRun.current = false;
-            return;
-        }
-        if (!value) {
-            if (state.isBilingual) {
-                if (state.languageList.includes(i18n.language.toUpperCase())) {
-                    const primaryLanguage = i18n.language.toUpperCase();
-                    const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
-                    setState({
-                        ...state,
-                        primaryLanguage: primaryLanguage,
-                        secondaryLanguage: secondaryLanguage
-                    })
-                }
-            } else {
-                if (state.languageList.includes(i18n.language.toUpperCase()))
-                    setState({...state, primaryLanguage: i18n.language.toUpperCase()})
-            }
-        } else if (state.languageList.includes(i18n.language.toUpperCase())) {
-            if (state.isBilingual && state.languageList.length === 2) {
-                const primaryLanguage = i18n.language.toUpperCase();
-                const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
-                const primaryContent = state.primaryLanguage !== primaryLanguage ? state.secondaryContent : state.primaryContent;
-                const secondaryContent = state.primaryLanguage !== primaryLanguage ? state.primaryContent : state.secondaryContent;
-                setState({
-                    ...state,
-                    primaryLanguage: primaryLanguage,
-                    primaryContent: primaryContent,
-                    secondaryLanguage: secondaryLanguage,
-                    secondaryContent: secondaryContent
-                })
-            } else {
-                if (!state.isBilingual && (!state.primaryContent || state.primaryContent === "")) {
-                    setState({
-                        ...state,
-                        primaryLanguage: i18n.language.toUpperCase()
-                    })
-                }
-            }
-        }
-        handleChange()
-    }, [i18n.language])
+    // useEffect(() => {
+    //     if (isLangFirstRun.current) {
+    //         isLangFirstRun.current = false;
+    //         return;
+    //     }
+    //     if (!value) {
+    //         if (state.isBilingual) {
+    //             if (state.languageList.includes(i18n.language.toUpperCase())) {
+    //                 const primaryLanguage = i18n.language.toUpperCase();
+    //                 const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
+    //                 setState({
+    //                     ...state,
+    //                     primaryLanguage: primaryLanguage,
+    //                     secondaryLanguage: secondaryLanguage
+    //                 })
+    //             }
+    //         } else {
+    //             if (state.languageList.includes(i18n.language.toUpperCase()))
+    //                 setState({...state, primaryLanguage: i18n.language.toUpperCase()})
+    //         }
+    //     } else if (state.languageList.includes(i18n.language.toUpperCase())) {
+    //         if (state.isBilingual && state.languageList.length === 2) {
+    //             const primaryLanguage = i18n.language.toUpperCase();
+    //             const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
+    //             const primaryContent = state.primaryLanguage !== primaryLanguage ? state.secondaryContent : state.primaryContent;
+    //             const secondaryContent = state.primaryLanguage !== primaryLanguage ? state.primaryContent : state.secondaryContent;
+    //             setState({
+    //                 ...state,
+    //                 primaryLanguage: primaryLanguage,
+    //                 primaryContent: primaryContent,
+    //                 secondaryLanguage: secondaryLanguage,
+    //                 secondaryContent: secondaryContent
+    //             })
+    //         } else {
+    //             if (!state.isBilingual && (!state.primaryContent || state.primaryContent === "")) {
+    //                 setState({
+    //                     ...state,
+    //                     primaryLanguage: i18n.language.toUpperCase()
+    //                 })
+    //             }
+    //         }
+    //     }
+    //     handleChange()
+    // }, [i18n.language])
 
     useEffect(() => {
         if (isFirstRun.current) {
@@ -135,7 +138,6 @@ export function MultiLangFieldWidget(props) {
         let newValue;
         if (state.isBilingual) {
             newValue = {
-                language: "Bilingual",
                 [state.languageList[0]]: state.primaryLanguage === state.languageList[0] ? state.primaryContent : state.secondaryContent,
                 [state.languageList[1]]: state.primaryLanguage === state.languageList[1] ? state.primaryContent : state.secondaryContent,
             }

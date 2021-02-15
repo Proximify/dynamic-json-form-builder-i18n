@@ -1,3 +1,4 @@
+import FormValidationGenerator from "./FormValidationGenerator";
 import {FieldValueMapper, FormatterTracker} from "../../../formatter/utils/helper";
 import GenericFieldTemplate
     from "../../../../component/dynamic-json-form-builder/components/utils/GenericFieldTemplate";
@@ -18,14 +19,16 @@ export const SchemaGenerator = (schema, selectionOpts) => {
     const result = {
         formSchema: null,
         uiSchema: null,
-        dataSchema: null
+        dataSchema: null,
+        dataValidation: null
     }
     if (schema !== null) {
         result.formSchema = formStrSchemaGen(schema, selectionOpts);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
+        result.dataValidation = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
     }
-    console.log(result.formSchema);
+    // console.log(result.formSchema);
     return result;
 }
 
@@ -72,11 +75,13 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
     // }
     // console.log(field.name, field, schema)
     const result = {}
-    result["id"] = field.name ?? null;
-    result["description"] = field.description ? field.description.replaceAll('<a/>','</a>') : null;
+    result["name"] = field.name ?? null;
+    result["id"] = field.field_id ?? null;
+    result["description"] = field.description ? field.description.replaceAll('<a/>', '</a>') : null;
     result["title"] = field.label;
     result["subtype_id"] = field.subtype_id;
     result["field_type"] = field.type;
+    result["constraints"] = field.constraints;
     const selectionOptions = [];
     switch (field.type) {
         case "lov":
@@ -94,6 +99,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             break;
         case "string":
             result["type"] = "string";
+            result["max_char_count"] = field.max_char_count;
             break;
         case "integer":
             result["type"] = "integer";
@@ -133,7 +139,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
                     }
                 })
             }
-            result["enum"] = selectionOptions.length > 0 ? selectionOptions : [[1,2],[2,3],[3,4]];
+            result["enum"] = selectionOptions.length > 0 ? selectionOptions : [[1, 2], [2, 3], [3, 4]];
             break;
         default:
             break;
@@ -142,7 +148,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
 }
 
 const formDataSchemaGen = (schema) => {
-    if (!schema.section_data){
+    if (!schema.section_data) {
         return {}
     }
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
@@ -151,9 +157,9 @@ const formDataSchemaGen = (schema) => {
     const dataSchema = {}
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
-        console.log(field)
+        // console.log(field)
         if (field.type === "section") {
-            if (field.rawValue){
+            if (field.rawValue) {
                 const values = [];
                 field.rawValue.forEach(val => {
                     const subField = {}
@@ -163,14 +169,14 @@ const formDataSchemaGen = (schema) => {
                     values.push(subField);
                 })
                 dataSchema[fieldName] = values;
-            }else {
+            } else {
                 dataSchema[fieldName] = [];
             }
 
         } else {
-            if (field.type === "bilingual"){
+            if (field.type === "bilingual") {
                 dataSchema[fieldName] = JSON.stringify(field.rawValue);
-            }else {
+            } else {
                 dataSchema[fieldName] = field.rawValue;
             }
         }
@@ -180,7 +186,7 @@ const formDataSchemaGen = (schema) => {
 
 const customTemplates = {
     genericFieldTemplate: GenericFieldTemplate,
-    hiddenFieldTemplate:HiddenFieldTemplate
+    hiddenFieldTemplate: HiddenFieldTemplate
 }
 
 const customArrayTemplate = {
@@ -201,7 +207,7 @@ const fieldTypeWidgetMapper = {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "monthDayInputWidget"
     },
-    "yearmonth":{
+    "yearmonth": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "yearMonthInputWidget"
     },
@@ -214,8 +220,13 @@ const fieldTypeWidgetMapper = {
         "ui:widget": "multiColLargeSelectionWidget"
     },
     "bilingual": {
-        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
-        "ui:widget": "multiLangTextAreaFieldWidget"
+        "richText": {
+            "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+            "ui:widget": "multiLangTextAreaFieldWidget"
+        }, "plainText": {
+            "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+            "ui:widget": "multiLangFieldWidget"
+        }
     },
     "integer": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
@@ -245,13 +256,17 @@ const formUISchemaGen = (schema) => {
                 }
             }
         } else {
-            if (field.name === "order" && schema.asc_item_order === "1"){
+            if (field.name === "order" && schema.asc_item_order === "1") {
                 result[fieldName] = {
                     "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
                     "ui:widget": "hiddenFieldWidget"
                 }
-            }else {
-                result[fieldName] = fieldTypeWidgetMapper[field.type];
+            } else {
+                if (field.type === "bilingual") {
+                    result[fieldName] = fieldTypeWidgetMapper["bilingual"][field.constraints.richText ? "richText" : "plainText"];
+                }else {
+                    result[fieldName] = fieldTypeWidgetMapper[field.type];
+                }
             }
         }
     })

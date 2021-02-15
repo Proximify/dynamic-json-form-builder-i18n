@@ -47,7 +47,7 @@ const GenericFieldTemplate = (props) => {
             </div>
             <div className="flex-grow" style={{maxWidth: "20rem"}}>
                 {children}
-                <div className={`${!rawErrors ? 'hidden' : ''}`}>
+                <div className={`${!rawErrors ? 'hidden' : ''} `}>
                     {rawErrors ? rawErrors.map((error, index) => {
                         return (<li className="text-red-600" key={index}>{error}</li>)
                     }) : null}
