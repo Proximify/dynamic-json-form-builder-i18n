@@ -20,13 +20,13 @@ export const SchemaGenerator = (schema, selectionOpts) => {
         formSchema: null,
         uiSchema: null,
         dataSchema: null,
-        dataValidation: null
+        validations: null
     }
     if (schema !== null) {
         result.formSchema = formStrSchemaGen(schema, selectionOpts);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
-        result.dataValidation = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
+        result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
     }
     // console.log(result.formSchema);
     return result;
@@ -82,6 +82,7 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
     result["subtype_id"] = field.subtype_id;
     result["field_type"] = field.type;
     result["constraints"] = field.constraints;
+    result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
     const selectionOptions = [];
     switch (field.type) {
         case "lov":
@@ -176,6 +177,8 @@ const formDataSchemaGen = (schema) => {
         } else {
             if (field.type === "bilingual") {
                 dataSchema[fieldName] = JSON.stringify(field.rawValue);
+            } else if (field.type === "reftable") {
+                dataSchema[fieldName] = field.rawValue && field.rawValue.length ? [field.rawValue[0]].concat(field.rawValue[1].split("|")) : undefined;
             } else {
                 dataSchema[fieldName] = field.rawValue;
             }
@@ -230,7 +233,9 @@ const fieldTypeWidgetMapper = {
     },
     "integer": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
-        "ui:widget": "numberInputWidget"
+        "ui:widget": "numberInputWidget",
+        // "ui:readonly": true
+
     }
 }
 
@@ -264,7 +269,7 @@ const formUISchemaGen = (schema) => {
             } else {
                 if (field.type === "bilingual") {
                     result[fieldName] = fieldTypeWidgetMapper["bilingual"][field.constraints.richText ? "richText" : "plainText"];
-                }else {
+                } else {
                     result[fieldName] = fieldTypeWidgetMapper[field.type];
                 }
             }

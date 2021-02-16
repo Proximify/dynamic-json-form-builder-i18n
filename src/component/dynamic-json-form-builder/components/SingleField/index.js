@@ -64,7 +64,7 @@ const handleValueChange = (value, rawErrors, setValue, onChange) => {
 }
 
 export function StringInputWidget(props) {
-    console.log(props)
+    // console.log(props)
     const [value, setValue] = useState(props.value ?? "");
     return (
         <input
@@ -129,6 +129,7 @@ export function DateInputWidget(props) {
 
     return (
         <DatePicker selected={state.date ?? null}
+                    onSelect={handleOnBlur()}
                     onChange={date => setState({date: date})}
                     dateFormat="yyyy/MM/dd"
                     locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}

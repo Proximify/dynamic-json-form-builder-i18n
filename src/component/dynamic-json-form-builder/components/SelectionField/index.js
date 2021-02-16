@@ -77,13 +77,18 @@ export function MultiColSelectionWidget(props) {
             options={options.enumOptions}
             onChange={value => handleChange(value, props.onChange)}
             formatOptionLabel={formatOptionLabel}
+            // defaultValue={value ?
+            //     options.enumOptions[options.enumOptions.map(element => {
+            //             const tempEle = [...element.value];
+            //             const option_id = tempEle.shift();
+            //             const option_content = tempEle.join('|');
+            //             return [option_id, option_content, null].toString();
+            //         }
+            //     ).indexOf(value.toString())]
+            //     : null}
             defaultValue={value ?
-                options.enumOptions[options.enumOptions.map(element => {
-                        const tempEle = [...element.value];
-                        const option_id = tempEle.shift();
-                        const option_content = tempEle.join('|');
-                        return [option_id, option_content, null].toString();
-                    }
+                options.enumOptions[options.enumOptions.map(element =>
+                    element.value.toString()
                 ).indexOf(value.toString())]
                 : null}
             isClearable
@@ -147,13 +152,18 @@ export function MultiColLargeSelectionWidget(props) {
             options={options.enumOptions}
             // styles={customStyles}
             onChange={value => handleChange(value, props.onChange)}
+            // defaultValue={value ?
+            //     options.enumOptions[options.enumOptions.map(element => {
+            //             const tempEle = [...element.value];
+            //             const option_id = tempEle.shift();
+            //             const option_content = tempEle.join('|');
+            //             return [option_id, option_content, null].toString();
+            //         }
+            //     ).indexOf(value.toString())]
+            //     : null}
             defaultValue={value ?
-                options.enumOptions[options.enumOptions.map(element => {
-                        const tempEle = [...element.value];
-                        const option_id = tempEle.shift();
-                        const option_content = tempEle.join('|');
-                        return [option_id, option_content, null].toString();
-                    }
+                options.enumOptions[options.enumOptions.map(element =>
+                    element.value.toString()
                 ).indexOf(value.toString())]
                 : null}
             formatOptionLabel={formatOptionLabel}
@@ -189,7 +199,6 @@ export function DOBSelectionWidget(props) {
         }
     }, [value])
 
-    console.log("----", value)
     return (
         <div className="DOBField space-x-4" style={{minWidth: "16rem"}}>
             <Select

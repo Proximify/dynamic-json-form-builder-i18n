@@ -22,7 +22,11 @@ import {
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
 
-import {CurrencyFieldTemplate, FundBundleFieldTemplate, FundFieldTemplate} from "./components/FundField/FundFieldTemplates";
+import {
+    CurrencyFieldTemplate,
+    FundBundleFieldTemplate,
+    FundFieldTemplate
+} from "./components/FundField/FundFieldTemplates";
 import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
 import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
@@ -35,15 +39,15 @@ const customWidgets = {
     fundFieldWidget: FundFieldWidget,
     currencyFieldWidget: CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
-    multiLangTextAreaFieldWidget:MultiLangTextAreaFieldWidget,
+    multiLangTextAreaFieldWidget: MultiLangTextAreaFieldWidget,
 
 
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
     phoneInputWidget: PhoneInputWidget,
-    dateInputWidget:DateInputWidget,
-    monthDayInputWidget:MonthDayInputWidget,
-    yearMonthInputWidget:YearMonthInputWidget,
+    dateInputWidget: DateInputWidget,
+    monthDayInputWidget: MonthDayInputWidget,
+    yearMonthInputWidget: YearMonthInputWidget,
 
 
     singleSelectionWidget: SingleSelectionWidget,
@@ -52,12 +56,12 @@ const customWidgets = {
     multiColLargeSelectionWidget: MultiColLargeSelectionWidget,
     dobSelectionWidget: DOBSelectionWidget,
 
-    hiddenFieldWidget:HiddenFieldWidget
+    hiddenFieldWidget: HiddenFieldWidget
 };
 
 const customTemplates = {
     genericFieldTemplate: GenericFieldTemplate,
-    hiddenFieldTemplate:HiddenFieldTemplate
+    hiddenFieldTemplate: HiddenFieldTemplate
 }
 
 const customArrayTemplate = {
@@ -95,9 +99,42 @@ class FormBuilder extends Component {
     }
 
     validation = (formData, errors) => {
-        // if (formData.ca !== "dep"){
-        //     errors.department.addError("Passwords don't match");
+        console.log(this.props.validations);
+        const validations = this.props.validations;
+        Object.keys(validations).forEach(fieldName => {
+            const fieldValidations = validations[fieldName];
+            if (Array.isArray(fieldValidations)){
+                fieldValidations.forEach(fieldValidation=>{
+                    if (!fieldValidation.validateMethod(formData)){
+                        errors[fieldName].addError(fieldValidation.getErrMsg(formData));
+                    }
+                })
+            }else if(fieldValidations && fieldValidations.constructor === Object){
+                Object.keys(fieldValidations).forEach(subFieldName=>{
+                    const subFieldValidations = validations[fieldName][subFieldName];
+                    if (Array.isArray(subFieldValidations)){
+                        subFieldValidations.forEach(subFieldValidation=>{
+                            formData[fieldName].forEach((subsection,index)=>{
+                                if (!subFieldValidation.validateMethod(subsection[subFieldName])){
+                                    errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
+                                }
+                            })
+                        })
+                    }
+                })
+            }
+
+        })
+
+        // if (formData.sex && JSON.stringify(formData.sex) !== JSON.stringify(["1038", "Male"])){
+        //     errors.sex.addError("sex don't male");
         // }
+        // formData.country_of_citizenship.forEach((subsection,index) => {
+        //     console.log(subsection)
+        //     if (subsection.country_of_citizenship && JSON.stringify(subsection.country_of_citizenship) !== JSON.stringify(["12", "American Samoa"])){
+        //         errors.country_of_citizenship[index].addError("not america");
+        //     }
+        // })
 
         return errors;
     }
@@ -109,23 +146,23 @@ class FormBuilder extends Component {
         if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
             i18n.changeLanguage(this.props.language.toLowerCase());
         }
-        // console.log(this.props.formSchema, this.props.formData)
+        console.log(this.props.uiSchema)
         return (
             <Form
                 id={this.props.formID ?? null}
-                schema={this.props.formSchema ?? null}
-                uiSchema={this.props.uiSchema ?? null}
-                formData={this.props.formData ?? null}
+                schema={this.props.formSchema ?? undefined}
+                uiSchema={this.props.uiSchema ?? undefined}
+                formData={this.props.formData ?? undefined}
                 formContext={
-                    {...this.props.formContext, submitAction: this.onSubmit} ?? null
+                    {...this.props.formContext, submitAction: this.onSubmit} ?? undefined
                 }
                 widgets={customWidgets}
                 showErrorList={false}
-                // liveValidate
+                liveValidate
                 onChange={({formData}) => {
-                    console.log("data changed",formData)
+                    console.log("data changed", formData)
                 }}
-                // validate={this.validation}
+                validate={this.validation}
                 onError={(errors) => {
                     this.onErrorMsgChange(errors);
                 }}

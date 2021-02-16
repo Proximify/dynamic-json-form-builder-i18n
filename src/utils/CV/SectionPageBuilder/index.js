@@ -102,7 +102,7 @@ export function SectionPageBuilder(props) {
             let formSchema = null;
             if (form !== null) {
                 formSchema = props.fetchFormSchema(form.name);
-                // if (formSchema !== null) {
+                console.log(formSchema)
                 form.open[itemIndex] = true;
                 setState({
                     ...state,
@@ -178,12 +178,12 @@ export function SectionPageBuilder(props) {
                                                         <FormBuilder
                                                             formID={"user-profile-form"}
                                                             resourceURL={"form/"}
-                                                            // validationDeclaration={this.validationDeclaration}
                                                             HTTPMethod={"PATCH"}
                                                             language={props.language}
                                                             formSchema={state.schema.formSchema}
                                                             uiSchema={state.schema.uiSchema}
                                                             formData={state.schema.dataSchema}
+                                                            validations={state.schema.validations}
                                                             onFormEditSubmit={handleFormEditSubmit}
                                                             onFormEditCancel={handleFormEditCancel}
                                                             onFormEditDelete={handleFormEditDelete}
