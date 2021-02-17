@@ -1,5 +1,4 @@
 import React from "react";
-import {stringify} from "postcss";
 import {FieldValueMapper, FormatterTracker, any} from "../../../utils/helper";
 
 export default function LanguageSkills(props) {
@@ -10,23 +9,27 @@ export default function LanguageSkills(props) {
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
-        // console.log(mappedValue)
-        // const ft = new FormatterTracker(mappedValue);
-        // const it = ft.getFields();
-        // const val = ft.getValue();
-        // const lbl = ft.getLabel();
+        const ft = new FormatterTracker(mappedValue);
+        const {
+            language: la,
+            read: rd,
+            write: wr,
+            speak: sp,
+            understand: und,
+            peer_review: pv
+        } = ft.getFields();
+
         return (
-            // <div className="border border-red-300 m-2 rounded">
-            //     {any(it.language) ?
-            //         <p>{lbl.language}{val.language}</p> : null}
-            //     {any(it.speak) ?
-            //         <p>{lbl.speak}{val.speak}</p> : null}
-            //     {any(it.write) ? <p>{lbl.write}: {val.write}</p> : null}
-            //     {Object.keys(ft.getUnFormattedField()).length > 0 ?
-            //         <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
-            //     }
-            // </div>
-            null
+            <div>
+                {any(la) &&
+                <p>
+                    <span>{la.val} </span>
+                    {any(rd, wr, sp, und, pv) && <span>({rd.val} {wr.val} {sp.val} {und.val} {pv.val})</span>}
+                </p>}
+                {Object.keys(ft.getUnFormattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                }
+            </div>
         )
     } else {
         return (

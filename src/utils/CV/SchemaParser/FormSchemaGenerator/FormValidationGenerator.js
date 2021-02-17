@@ -2,7 +2,7 @@ export default function FormValidationGenerator(fields) {
     if (!fields || Object.keys(fields).length === 0) {
         return null;
     }
-    console.log(fields);
+    // console.log(fields);
     const validations = {};
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
@@ -76,7 +76,7 @@ const fieldConstraintsHandler = (field, fields) => {
             }
             //TODO: missing autoSum
             default:
-                console.log("unhandled constraint", constraintName);
+                // console.log("unhandled constraint", constraintName);
                 break;
         }
         // if (constraint.dependantFieldID) {

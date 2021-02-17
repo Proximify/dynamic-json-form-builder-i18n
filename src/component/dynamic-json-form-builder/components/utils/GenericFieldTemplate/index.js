@@ -49,7 +49,7 @@ const GenericFieldTemplate = (props) => {
                 {children}
                 <div className={`${!rawErrors ? 'hidden' : ''} `}>
                     {rawErrors ? rawErrors.map((error, index) => {
-                        return (<li className="text-red-600" key={index}>{error}</li>)
+                        return (<li className="text-red-600 text-sm" key={index}>{error}</li>)
                     }) : null}
                 </div>
             </div>

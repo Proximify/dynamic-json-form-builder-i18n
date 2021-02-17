@@ -5,7 +5,7 @@
 
 .react-datepicker-wrapper {
     min-width: 16rem;
-    @apply max-w-lg w-full h-full
+    @apply max-w-lg w-full
 }
 
 .react-datepicker-wrapper .react-datepicker__input-container input {

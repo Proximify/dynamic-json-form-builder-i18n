@@ -62,36 +62,13 @@ class App extends Component {
     //
     // }
 
-    fetchFormSchema(formName){
+    fetchFormSchema(formName) {
         const forms = {
             "identification": Identification,
             "address": Address,
-            "academic_work_experience" :academic_work_experience
+            "academic_work_experience": academic_work_experience
         }
-        return formName in forms ? SchemaParser(forms[formName],true) : null
-    }
-
-    validationMethods = {
-        requiredField: (value) => {
-            return value ? null : "is a required property";
-        },
-        emailField: (value) => {
-            const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return !value ? null : (re.test(value) ? null : "is not a valid email");
-        },
-        customTestFiled: (value) => {
-            return !value ? null : (value === "test" ? null : "is not valid");
-        },
-        fileFieldSizeLimit: (value) => {
-            return !value ? null : (value < 100 ? null : "is too large");
-        }
-    }
-
-    validationDeclaration = {
-        name: this.validationMethods["requiredField"],
-        email: this.validationMethods["emailField"],
-        signature: this.validationMethods["customTestFiled"],
-        age: this.validationMethods["fileFieldSizeLimit"]
+        return formName in forms ? SchemaParser(forms[formName], true) : null
     }
 
 
@@ -101,18 +78,19 @@ class App extends Component {
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
-                    <div className="container mx-auto">
-                        <div className="grid grid-cols-12 justify-center">
-                            <div
-                                className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
-                                {this.state.isReady &&
-                                <SectionPageBuilder schema={SchemaParser(CVSchema)} data={this.state.data}
-                                                    language={this.state.language.language}
-                                                    fetchFormSchema={(formName) => this.fetchFormSchema(formName)}
-                                                    />}
+                    <div className="bg-white py-4">
+                        <div className="container mx-auto">
+                            <div className="grid grid-cols-12">
+                                <div
+                                    className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
+                                    {this.state.isReady &&
+                                    <SectionPageBuilder schema={SchemaParser(CVSchema)} data={this.state.data}
+                                                        language={this.state.language.language}
+                                                        fetchFormSchema={(formName) => this.fetchFormSchema(formName)}
+                                    />}
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </LanguageContext.Provider>
             </Suspense>

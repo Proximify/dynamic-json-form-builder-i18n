@@ -99,7 +99,7 @@ class FormBuilder extends Component {
     }
 
     validation = (formData, errors) => {
-        console.log(this.props.validations);
+        // console.log(this.props.validations);
         const validations = this.props.validations;
         Object.keys(validations).forEach(fieldName => {
             const fieldValidations = validations[fieldName];
@@ -123,7 +123,6 @@ class FormBuilder extends Component {
                     }
                 })
             }
-
         })
 
         // if (formData.sex && JSON.stringify(formData.sex) !== JSON.stringify(["1038", "Male"])){

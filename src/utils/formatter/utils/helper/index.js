@@ -23,9 +23,10 @@ export const FieldValueMapper = (value, schema, isSubsection = false) => {
         const field = fields[fieldKey];
         result[field.name] = {}
         result[field.name]["type"] = field["type"];
+        result[field.name]["subtype"] = field["subtype"];
         result[field.name]["label"] = field["label"];
         Object.keys(value).forEach(valueKey => {
-            if (!isSubsection){
+            if (!isSubsection) {
                 if (fieldKey === valueKey) {
                     if (Array.isArray(value[valueKey]) && field["type"] === "section") {
                         result[field.name]["value"] = []
@@ -42,8 +43,8 @@ export const FieldValueMapper = (value, schema, isSubsection = false) => {
                         result[fields[fieldKey].name]["value"] = value[valueKey];
                     }
                 }
-            }else {
-                if (valueKey === field.name){
+            } else {
+                if (valueKey === field.name) {
                     result[fields[fieldKey].name]["value"] = value[valueKey];
                 }
             }
@@ -66,6 +67,7 @@ export class FormatterTracker {
                 val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
                 lbl: field.label ?? undefined,
                 type: field.type ?? undefined,
+                subtype: field.subtype ?? undefined,
                 rawValue: value ?? undefined,
                 name: key,
                 count: 0
@@ -81,8 +83,8 @@ export class FormatterTracker {
         const result = {}
         Object.keys(this.#fields).forEach(key => {
             const field = this.#fields[key];
-            if (field.count === 0 && field.value) {
-                result.key = this.#fields[key]
+            if (field.count === 0 && field.rawValue) {
+                result[key] = this.#fields[key]
             }
         })
         return result
@@ -113,7 +115,11 @@ export class FormatterTracker {
         if (field.type) {
             switch (field.type) {
                 case 'lov':
-                    return field.value[1];
+                    if (field.subtype && field.subtype === "Yes-No"){
+                        return field.value[1] === "Yes" ? field.label : null
+                    }else {
+                        return field.value[1];
+                    }
                 case "string":
                     return field.value;
                 case "monthday":
@@ -135,11 +141,11 @@ export class FormatterTracker {
                 case "reftable":
                     return field.value[1];
                 case "bilingual":
-                    const eng = field.value["english"] ? "English: " + field.value["english"] : "";
-                    const fre = field.value["french"] ? "French: " + field.value["french"] : "";
-                    return eng + " " + fre
+                    const eng = field.value["english"] ?? undefined;
+                    const fre = field.value["french"] ?? undefined;
+                    return {eng: eng, fre: fre}
                 default:
-                    return JSON.stringify(field.value)
+                    return "unhandled format type of field:" + JSON.stringify(field)
             }
         }
     }

@@ -1,8 +1,7 @@
 import React from "react";
 import Identification from "./Identification";
 import LanguageSkills from "./LanguageSkills";
-import CVFormatter from "../index";
-
+import Address from "./Address";
 
 export default function PersonalInformation(props) {
     // console.log("PersonalInformation", props);
@@ -13,7 +12,10 @@ export default function PersonalInformation(props) {
                                           rawData={props.rawData}/>,
         "language_skills": <LanguageSkills structureChain={props.structureChain}
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                          rawData={props.rawData}/>
+                                          rawData={props.rawData}/>,
+        "address": <Address structureChain={props.structureChain}
+                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                  rawData={props.rawData}/>,
     }
 
     return (

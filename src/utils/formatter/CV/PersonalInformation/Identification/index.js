@@ -34,7 +34,7 @@ export default function Identification(props) {
         } = ft.getFields();
 
         return (
-            <div className="border border-red-300 m-2 rounded">
+            <div>
                 {any(t, fin, mn, fan) &&
                 <p>
                     {t.val} {fin.val} {mn.val} {fan.val}

@@ -113,7 +113,7 @@ export function PhoneInputWidget(props) {
 
 export function DateInputWidget(props) {
     const date = props.value ? props.value.split("-") : null;
-    const [state, setState] = useState(date ? {date: new Date(date[0], date[1], date[2])} : {date: new Date()});
+    const [state, setState] = useState(date ? {date: new Date(date[0], date[1], date[2])} : {date: undefined});
     const {t, i18n} = useTranslation();
 
     const handleOnBlur = () => {
@@ -146,7 +146,7 @@ export function DateInputWidget(props) {
 
 export function MonthDayInputWidget(props) {
     const date = props.value ? props.value.split("/") : null;
-    const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: new Date()});
+    const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
     const {t, i18n} = useTranslation();
 
     const handleOnBlur = () => {
@@ -173,7 +173,7 @@ export function MonthDayInputWidget(props) {
 
 export function YearMonthInputWidget(props) {
     const date = props.value ? props.value.split("/") : null;
-    const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: new Date()});
+    const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
     const {t, i18n} = useTranslation();
 
     const handleOnBlur = () => {

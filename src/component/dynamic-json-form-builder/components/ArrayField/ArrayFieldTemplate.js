@@ -127,7 +127,7 @@ export function ReorderableArrayFieldTemplate(props) {
                                                                 className={`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 ? "border-b" : ""}`}
                                                             >
                                                                 <Formatter app={"CV"}
-                                                                           structureChain={[...formContext.structureChain, schema.id]}
+                                                                           structureChain={[...formContext.structureChain, schema.name]}
                                                                            isFullScreenViewMode={false}
                                                                            schema={schema}
                                                                            rawData={formData[index]}
@@ -255,7 +255,7 @@ export function ArrayFieldTemplate(props) {
                                             className={`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 ? "border-b" : ""}`}
                                         >
                                             <Formatter app={"CV"}
-                                                       structureChain={[...formContext.structureChain, schema.id]}
+                                                       structureChain={[...formContext.structureChain, schema.name]}
                                                        isFullScreenViewMode={false}
                                                        schema={schema}
                                                        rawData={formData[index]}

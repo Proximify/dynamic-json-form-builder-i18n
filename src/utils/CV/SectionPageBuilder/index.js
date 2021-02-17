@@ -135,18 +135,23 @@ export function SectionPageBuilder(props) {
         }
     }
 
-    const pageBuilder = (section, index, fontSize, structureChain) => {
-        const size = {
-            3: "text-2xl font-bold my-3 border border-yellow-500 bg-yellow-500 rounded inline-block p-1",
-            2: "text-xl font-semibold my-2 text-yellow-600",
-            1: "text-lg font-normal my-1 text-black",
-            0: "text-sm"
+    const pageBuilder = (section, index, layer, structureChain, isLast = false) => {
+        const titleCSS = {
+            3: "py-2 px-4 text-2xl font-semibold bg-blue-200 border border-blue-200 rounded-lg rounded-b-none", //section title
+            2: "px-2 text-xl font-semibold", //subsection title
+            1: "px-1 text-lg font-medium text-black" //subsection title of subsection
         }
+        const sectionCSS = {
+            3: "my-3 border-0 border-transparent rounded-md bg-white shadow-md", //section
+            2: "px-3 py-2 bg-gray-100", //subsection
+            1: "px-3 py-1 my-2 bg-white rounded-md" // subsection of subsection
+        }
+
         if (section.type === "form") {
             return (
-                <div key={index} className="pl-4 border border-black p-3 rounded">
-                    <div className={`flex items-center`}><p
-                        className={`${size[fontSize]}`}>{section.title}</p>
+                <div key={index} className={`${sectionCSS[layer]} hover:shadow-xl hover:bg-blue-100 ${isLast ? "" : "border-b border-gray-300"}`}>
+                    <div className={`${titleCSS[layer]} flex items-center justify-between`}>
+                        <p>{section.title}</p>
                         <p className="ml-3">{section.multiplicity === "multiple" ? <AiOutlineFileAdd size={"1.1rem"}/> :
                             <FiEdit size={"1.1rem"}/>}
                         </p>
@@ -154,19 +159,22 @@ export function SectionPageBuilder(props) {
                     {section.section_data.length > 0 ?
                         section.section_data.map((data, index) => {
                             return (
-                                <div key={index}>
+                                <div key={index} className="mx-1.5 my-2">
                                     {!state.shouldModalOpen &&
                                     <div className="font-medium text-black"
                                          onClick={() => {
                                              handleOnItemClick([...structureChain], index);
                                          }}>
                                         {
-                                            <Formatter app={"CV"}
-                                                       structureChain={[...structureChain]}
-                                                       isFullScreenViewMode={true}
-                                                       schema={section}
-                                                       rawData={section.section_data[index]}
-                                            />
+                                            <div
+                                                className={`my-1 p-2 border ${layer % 2 !== 0 ? "border-gray-100 bg-gray-100 hover:bg-white" : "border-white bg-white hover:bg-white"} rounded-md transform hover:scale-105 hover:border-opacity-0 hover:shadow-lg`}>
+                                                <Formatter app={"CV"}
+                                                           structureChain={[...structureChain]}
+                                                           isFullScreenViewMode={true}
+                                                           schema={section}
+                                                           rawData={section.section_data[index]}
+                                                />
+                                            </div>
                                         }
                                     </div>}
                                     <div>
@@ -211,10 +219,11 @@ export function SectionPageBuilder(props) {
                 </div>
             )
         } else if (section.type === "section") {
-            return (<div key={index}
-                         className="pl-4 border border-green-400 p-3 m-2 rounded shadow-xl"><p
-                className={`${size[fontSize]}`}>{section.title}</p>{Object.keys(section.subsections).map((key, index) => pageBuilder(section.subsections[key], index, fontSize - 1, structureChain.concat(section.subsections[key].name)))}
-            </div>)
+            return (
+                <div key={index} className={`${sectionCSS[layer]} ${isLast ? "" : "border-b border-gray-300"}`}>
+                    <p className={`${titleCSS[layer]}`}>{section.title}</p>
+                    {Object.keys(section.subsections).map((key, index) => pageBuilder(section.subsections[key], index, layer - 1, structureChain.concat(section.subsections[key].name),index === Object.keys(section.subsections).length - 1))}
+                </div>)
         }
     }
 
@@ -222,7 +231,7 @@ export function SectionPageBuilder(props) {
         <>
             {state.ready && state.sections.map((section, index) => {
                 // console.log(section)
-                return pageBuilder(section, index, 3, [section.name])
+                return pageBuilder(section, index, 3, [section.name], index === state.sections.length - 1)
             })}
         </>
     )
