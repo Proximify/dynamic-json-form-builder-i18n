@@ -28,7 +28,6 @@ export default function Recognitions(props) {
             fields_of_application: foa,
             converted_amount: ca
         } = ft.getFields();
-
         return (
             <div>
                 {any(rt, rn) &&
@@ -41,11 +40,7 @@ export default function Recognitions(props) {
                     {any(ori) && <span>{ori.val}</span>}
                 </>
                 }
-                {any(desc) &&
-                <>
-                    <p>{desc.lbl}</p>
-                    <p>{desc.val}</p>
-                </>}
+                {any(desc) && <div><p>{desc.lbl}</p> <p>{desc.val.eng} {desc.val.fre ? `(${desc.val.fre})` : null}</p></div>}
                 <div className="ml-2">
                     {any(redis) && <p>{redis.lbl}: {redis.val}</p>}
                     {any(aor) && <p>{aor.lbl}: {aor.val}</p>}

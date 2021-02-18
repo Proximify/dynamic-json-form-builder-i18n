@@ -34,60 +34,59 @@ class App extends Component {
             language: language.EN,
             pageLanguages: ["EN", "FR", "SP"],
             toggleLanguage: this.toggleLanguage,
-            isReady: true,
+            isReady: false,
 
             schema: null,
-            data: null
+            data: null,
+            rawError: null,
+            formSchema: null
         };
         this.fetchFormSchema = this.fetchFormSchema.bind(this);
     }
 
-    // componentDidMount() {
-    //     //TODO fork api request
-    //
-    //     // api.get("form/").then(res => {
-    //     //     this.setState({
-    //     //             schema: res.data.formSchema,
-    //     //             data: res.data.formData ?? undefined,
-    //     //             isReady: true
-    //     //         }, () => console.log("load success", this.state.schema, this.state.data)
-    //     //     )
-    //     // }).catch(err => {
-    //     //     console.log("loading err", err);
-    //     // })
-    //
-    //     this.setState({
-    //         isReady: true
-    //     })
-    //
-    // }
+    // http://127.0.0.1:8000/profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv&section=2&itemId=2&parentItemId=1&parentFieldId=46
+    componentDidMount() {
+        api.get("profiles.php?action=display&editable=true&contentType=members&contentId=1&viewType=cv&withFormat=true", {
+            headers: {'Content-Type': 'application/json'}
+        }).then(res => {
+            this.setState({...this.state, schema: res.data, isReady: true})
+            console.log("load success", res)
+        }).catch(err => {
+            this.setState({...this.state, isReady: false, rawError: err})
+            console.log("loading err", err);
+        })
+    }
 
-    fetchFormSchema(formName) {
-        const forms = {
-            "identification": Identification,
-            "address": Address,
-            "academic_work_experience": academic_work_experience
-        }
-        return formName in forms ? SchemaParser(forms[formName], true) : null
+    fetchFormSchema(section, itemId, parentItemId, parentFieldId, callback) {
+        const url = `profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv${section ? '&section=' + section : ""}${itemId ? '&itemId=' + itemId : ""}${parentItemId ? '&parentItemId=' + parentItemId : ""}${parentFieldId ? '&parentFieldId=' + parentFieldId : ""}`;
+        api.get(url, {
+            headers: {'Content-Type': 'application/json'}
+        }).then(res => {
+            console.log("fetch single schema success:", res);
+            callback(res.data)
+        }).catch(err => {
+            console.error("fetch single schema err:", err);
+        })
     }
 
 
     render() {
-        // console.log("parent render")
+        // console.log(this.state, CVSchema)
         return (
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
                     <div className="bg-white py-4">
                         <div className="container mx-auto">
-                            <div className="grid grid-cols-12">
+                            <div className="grid grid-cols-10">
                                 <div
-                                    className="md:col-span-6 md:col-start-4 sm:col-span-8 sm:col-start-3 col-span-10 col-start-2">
+                                    className="md:col-span-6 md:col-start-3 sm:col-span-8 sm:col-start-2 col-span-10 col-start-1">
                                     {this.state.isReady &&
-                                    <SectionPageBuilder schema={SchemaParser(CVSchema)} data={this.state.data}
+                                    <SectionPageBuilder schema={SchemaParser(this.state.schema)} data={this.state.data}
                                                         language={this.state.language.language}
-                                                        fetchFormSchema={(formName) => this.fetchFormSchema(formName)}
+                                                        fetchFormSchema={this.fetchFormSchema}
                                     />}
+                                    {this.state.rawError && <div>{JSON.stringify(this.state.rawError)}</div>}
                                 </div>
                             </div>
                         </div>

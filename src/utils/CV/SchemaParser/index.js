@@ -39,8 +39,11 @@ const sectionParser = (section, parent_id) => {
  * @constructor
  */
 export default function SchemaParser(schema, singleForm = false) {
-    const sections = schema.default.sections;
-    const selectionOptions = schema.default.selectionOptions;
+    // console.log(schema)
+    const sections = schema.sections;
+    // const selectionOptions = schema.default.selectionOptions;
+    const selectionOptions = null;
+
     const result = []
     sections.forEach(section => result.push(sectionParser(section, null)))
     if (singleForm) {

@@ -5,6 +5,7 @@ import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
 import Formatter from "../../formatter";
+import SchemaParser from "../SchemaParser";
 
 export function SectionPageBuilder(props) {
 
@@ -92,26 +93,46 @@ export function SectionPageBuilder(props) {
         })
     }
 
-    const handleOnItemClick = (structureChain, itemIndex) => {
-        const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
-        structureChain.shift();
-        if (clickedSectionIndex !== -1) {
-            // handleOnItemClick(clickedSectionIndex, [...structureChain].slice(1), index);
-            const sections = [...state.sections];
-            const form = structureChain.length > 0 ? getFormRecur(sections[clickedSectionIndex].subsections, structureChain) : sections[clickedSectionIndex];
-            let formSchema = null;
-            if (form !== null) {
-                formSchema = props.fetchFormSchema(form.name);
-                console.log(formSchema)
-                form.open[itemIndex] = true;
+    // const handleOnItemClick = (structureChain, itemIndex) => {
+    //     const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
+    //     structureChain.shift();
+    //     if (clickedSectionIndex !== -1) {
+    //         // handleOnItemClick(clickedSectionIndex, [...structureChain].slice(1), index);
+    //         const sections = [...state.sections];
+    //         const form = structureChain.length > 0 ? getFormRecur(sections[clickedSectionIndex].subsections, structureChain) : sections[clickedSectionIndex];
+    //         let formSchema = null;
+    //         if (form !== null) {
+    //             formSchema = props.fetchFormSchema(form.name);
+    //             console.log(formSchema)
+    //             form.open[itemIndex] = true;
+    //             setState({
+    //                 ...state,
+    //                 sections: sections,
+    //                 schema: formSchema,
+    //                 shouldModalOpen: true
+    //             })
+    //         }
+    //     }
+    // }
+
+    const handleOnItemClick = (section, itemId, parentItemId, parentFieldId) => {
+        // console.log(section, itemId, parentItemId, parentFieldId);
+        props.fetchFormSchema(section, itemId, parentItemId, parentFieldId, (res) => {
+            // console.log("---")
+            if (res) {
+                // console.log("+++")
+
+                const formSchema = SchemaParser(res, true);
+                // console.log(formSchema)
                 setState({
                     ...state,
-                    sections: sections,
                     schema: formSchema,
+                    formName: formSchema.formSchema.id,
+                    itemId: itemId,
                     shouldModalOpen: true
                 })
             }
-        }
+        })
     }
 
     const getFormRecur = (sections, structureChain) => {
@@ -135,50 +156,60 @@ export function SectionPageBuilder(props) {
         }
     }
 
-    const pageBuilder = (section, index, layer, structureChain, isLast = false) => {
+    const getParentFieldID = (section, parentSection) => {
+        return Object.keys(parentSection.fields).find(fieldID => parentSection.fields[fieldID].name === section.name);
+    }
+
+    const sectionBuilder = (section, sectionIndex, layer, structureChain, parentSection = null) => {
         const titleCSS = {
-            3: "py-2 px-4 text-2xl font-semibold bg-blue-200 border border-blue-200 rounded-lg rounded-b-none", //section title
-            2: "px-2 text-xl font-semibold", //subsection title
-            1: "px-1 text-lg font-medium text-black" //subsection title of subsection
+            3: "px-3 text-2xl font-bold", //section title
+            2: "px-3 text-xl font-semibold", //subsection title
+            1: "px-3 text-lg font-medium text-black" //subsection title of subsection
         }
         const sectionCSS = {
-            3: "my-3 border-0 border-transparent rounded-md bg-white shadow-md", //section
-            2: "px-3 py-2 bg-gray-100", //subsection
-            1: "px-3 py-1 my-2 bg-white rounded-md" // subsection of subsection
+            3: "mb-3 px-1 py-1 border-transparent rounded-lg bg-blue-200 shadow-lg", //section
+            2: "mb-2 mx-2 py-1 bg-gray-200 rounded-md", //subsection
+            1: "mb-1 mx-3 py-1 bg-white rounded-md" // subsection of subsection
         }
 
         if (section.type === "form") {
             return (
-                <div key={index} className={`${sectionCSS[layer]} hover:shadow-xl hover:bg-blue-100 ${isLast ? "" : "border-b border-gray-300"}`}>
+                <div key={sectionIndex}
+                     className={`${sectionCSS[layer]} ${layer % 2 === 0 ? "border-gray-200 bg-gray-200 hover:bg-white hover:border-opacity-0" : "border-white bg-white hover:bg-gray-200"}`}>
                     <div className={`${titleCSS[layer]} flex items-center justify-between`}>
-                        <p>{section.title}</p>
+                        <p>{section.title} form section(subsection)Index: {sectionIndex}</p>
                         <p className="ml-3">{section.multiplicity === "multiple" ? <AiOutlineFileAdd size={"1.1rem"}/> :
                             <FiEdit size={"1.1rem"}/>}
                         </p>
                     </div>
                     {section.section_data.length > 0 ?
-                        section.section_data.map((data, index) => {
+                        section.section_data.map((data, itemIndex) => {
                             return (
-                                <div key={index} className="mx-1.5 my-2">
+                                <div key={itemIndex}
+                                >
                                     {!state.shouldModalOpen &&
-                                    <div className="font-medium text-black"
-                                         onClick={() => {
-                                             handleOnItemClick([...structureChain], index);
-                                         }}>
+                                    <div
+                                        className={`mx-3 mb-1 px-2 border ${layer % 2 !== 0 ? "border-gray-200 bg-gray-200 hover:bg-white" : "border-white bg-white hover:bg-gray-200"} rounded-md transform hover:scale-105 hover:border-opacity-0 hover:shadow-2xl`}
+                                        onClick={() => {
+                                            // handleOnItemClick([...structureChain], sectionIndex);
+                                            handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
+                                        }}>
                                         {
-                                            <div
-                                                className={`my-1 p-2 border ${layer % 2 !== 0 ? "border-gray-100 bg-gray-100 hover:bg-white" : "border-white bg-white hover:bg-white"} rounded-md transform hover:scale-105 hover:border-opacity-0 hover:shadow-lg`}>
+                                            <div>
+                                                {/*{console.log(section, parentSection)}*/}
+                                                section={section.section_id} &itemId={section.section_data[itemIndex].id} &
+                                                parentItemId={parentSection ? parentSection.section_data[0].id : "null"} &parentFieldId={parentSection ? getParentFieldID(section, parentSection) : "null"}
                                                 <Formatter app={"CV"}
                                                            structureChain={[...structureChain]}
                                                            isFullScreenViewMode={true}
                                                            schema={section}
-                                                           rawData={section.section_data[index]}
+                                                           rawData={section.section_data[itemIndex]}
                                                 />
                                             </div>
                                         }
                                     </div>}
                                     <div>
-                                        {section.open[index] === true &&
+                                        {state.shouldModalOpen === true && state.formName === section.name && state.itemId === section.section_data[itemIndex].id &&
                                         // console.log(section)
                                         <ModalFullScreen
                                             content={
@@ -207,7 +238,7 @@ export function SectionPageBuilder(props) {
                                                             }}
                                                         />
                                                     ) :
-                                                    <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[index])}</div>
+                                                    <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[itemIndex])}</div>
                                             }
                                             title={section.title}
                                             fullScreen={true}/>
@@ -220,9 +251,9 @@ export function SectionPageBuilder(props) {
             )
         } else if (section.type === "section") {
             return (
-                <div key={index} className={`${sectionCSS[layer]} ${isLast ? "" : "border-b border-gray-300"}`}>
-                    <p className={`${titleCSS[layer]}`}>{section.title}</p>
-                    {Object.keys(section.subsections).map((key, index) => pageBuilder(section.subsections[key], index, layer - 1, structureChain.concat(section.subsections[key].name),index === Object.keys(section.subsections).length - 1))}
+                <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
+                    <p className={`${titleCSS[layer]}`}>{section.title} sectionindex: {sectionIndex}</p>
+                    {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
                 </div>)
         }
     }
@@ -231,7 +262,7 @@ export function SectionPageBuilder(props) {
         <>
             {state.ready && state.sections.map((section, index) => {
                 // console.log(section)
-                return pageBuilder(section, index, 3, [section.name], index === state.sections.length - 1)
+                return sectionBuilder(section, index, 3, [section.name])
             })}
         </>
     )

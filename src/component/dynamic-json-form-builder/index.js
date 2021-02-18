@@ -145,7 +145,7 @@ class FormBuilder extends Component {
         if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
             i18n.changeLanguage(this.props.language.toLowerCase());
         }
-        console.log(this.props.uiSchema)
+        // console.log(this.props)
         return (
             <Form
                 id={this.props.formID ?? null}
@@ -157,11 +157,11 @@ class FormBuilder extends Component {
                 }
                 widgets={customWidgets}
                 showErrorList={false}
-                liveValidate
+                // liveValidate
                 onChange={({formData}) => {
                     console.log("data changed", formData)
                 }}
-                validate={this.validation}
+                // validate={this.validation}
                 onError={(errors) => {
                     this.onErrorMsgChange(errors);
                 }}

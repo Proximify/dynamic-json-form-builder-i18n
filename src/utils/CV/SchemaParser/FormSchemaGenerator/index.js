@@ -26,7 +26,7 @@ export const SchemaGenerator = (schema, selectionOpts) => {
         result.formSchema = formStrSchemaGen(schema, selectionOpts);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
-        result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
+        // result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
     }
     // console.log(result.formSchema);
     return result;
@@ -96,7 +96,8 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
                     }
                 })
             }
-            result["enum"] = selectionOptions.length > 0 ? selectionOptions : ["no option found", "opt 1"];
+            // result["enum"] = selectionOptions.length > 0 ? selectionOptions : ["no option found", "opt 1"];
+            result["enum"] = ["no option found", "opt 1"];
             break;
         case "string":
             result["type"] = "string";
@@ -268,7 +269,7 @@ const formUISchemaGen = (schema) => {
                 }
             } else {
                 if (field.type === "bilingual") {
-                    result[fieldName] = fieldTypeWidgetMapper["bilingual"][field.constraints.richText ? "richText" : "plainText"];
+                    result[fieldName] = fieldTypeWidgetMapper["bilingual"][field.constraints ? field.constraints.richText ? "richText" : "plainText" : "plainText"];
                 } else {
                     result[fieldName] = fieldTypeWidgetMapper[field.type];
                 }
