@@ -28,7 +28,7 @@ import {
     FundFieldTemplate
 } from "./components/FundField/FundFieldTemplates";
 import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
-import {MultiLangFieldWidget, MultiLangTextAreaFieldWidget} from './components/MultiLangField'
+import {MultiLangTextAreaFieldWidget} from './components/MultiLangField'
 import MultiLangFieldTemplate from './components/MultiLangField/template';
 // import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
@@ -38,7 +38,6 @@ import FileFieldWidget from "./components/FileField";
 const customWidgets = {
     fundFieldWidget: FundFieldWidget,
     currencyFieldWidget: CurrencyFieldWidget,
-    multiLangFieldWidget: MultiLangFieldWidget,
     multiLangTextAreaFieldWidget: MultiLangTextAreaFieldWidget,
 
 

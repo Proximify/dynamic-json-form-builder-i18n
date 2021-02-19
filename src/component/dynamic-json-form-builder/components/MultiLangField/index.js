@@ -10,349 +10,22 @@ import draftToHtml from "draftjs-to-html";
 import {Editor} from "react-draft-wysiwyg";
 import {ToolbarStyleCompact} from "../../../../RichTextToolBarStyle";
 
-/**
- * This is the custom widget for multiple languages input field
- * @param props
- * @returns {JSX.Element}
- * @constructor
- // */
-export function MultiLangFieldWidget(props) {
-    // console.log("MultiLangTextInputWidget", props);
-    const {value} = props;
-    const {t, i18n} = useTranslation();
-    const isFirstRun = useRef(true);
-    const isLangFirstRun = useRef(true);
-
-    const [state, setState] = useState({
-        isBilingual: false,
-        primaryLanguage: "",
-        secondaryLanguage: "",
-        primaryContent: "",
-        secondaryContent: "",
-        discardedContent: "",
-        languageList: []
-    });
-
-    const languageLabel = {
-        english: "English",
-        french: "French"
-    }
-
-    useEffect(() => {
-        if (value) {
-            let valueObj = JSON.parse(props.value);
-            // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
-            const languageList = ["english", "french"];
-            if (valueObj.language === "Bilingual" && languageList.length === 2) {
-                // const htmlPageLang = i18n.language;
-                // const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
-                // const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
-                // const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : "";
-                // const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ? valueObj[secondaryLanguage] : "";
-                const primaryLanguage = "english";
-                const secondaryLanguage = "french";
-                const primaryContent = valueObj[primaryLanguage];
-                const secondaryContent = valueObj[secondaryLanguage];
-                setState({
-                    ...state,
-                    isBilingual: true,
-                    primaryLanguage: primaryLanguage,
-                    primaryContent: primaryContent,
-                    secondaryLanguage: secondaryLanguage,
-                    secondaryContent: secondaryContent,
-                    languageList: languageList
-                })
-            } else {
-                setState({
-                    ...state,
-                    primaryLanguage: valueObj.language,
-                    primaryContent: valueObj[valueObj.language],
-                    languageList: languageList
-                })
-            }
-        } else {
-            // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
-            const languageList = ["english", "french"];
-            setState({
-                ...state,
-                primaryLanguage: i18n.language.toUpperCase(),
-                languageList: languageList
-            })
-        }
-    }, [])
-
-    // useEffect(() => {
-    //     if (isLangFirstRun.current) {
-    //         isLangFirstRun.current = false;
-    //         return;
-    //     }
-    //     if (!value) {
-    //         if (state.isBilingual) {
-    //             if (state.languageList.includes(i18n.language.toUpperCase())) {
-    //                 const primaryLanguage = i18n.language.toUpperCase();
-    //                 const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
-    //                 setState({
-    //                     ...state,
-    //                     primaryLanguage: primaryLanguage,
-    //                     secondaryLanguage: secondaryLanguage
-    //                 })
-    //             }
-    //         } else {
-    //             if (state.languageList.includes(i18n.language.toUpperCase()))
-    //                 setState({...state, primaryLanguage: i18n.language.toUpperCase()})
-    //         }
-    //     } else if (state.languageList.includes(i18n.language.toUpperCase())) {
-    //         if (state.isBilingual && state.languageList.length === 2) {
-    //             const primaryLanguage = i18n.language.toUpperCase();
-    //             const secondaryLanguage = primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0];
-    //             const primaryContent = state.primaryLanguage !== primaryLanguage ? state.secondaryContent : state.primaryContent;
-    //             const secondaryContent = state.primaryLanguage !== primaryLanguage ? state.primaryContent : state.secondaryContent;
-    //             setState({
-    //                 ...state,
-    //                 primaryLanguage: primaryLanguage,
-    //                 primaryContent: primaryContent,
-    //                 secondaryLanguage: secondaryLanguage,
-    //                 secondaryContent: secondaryContent
-    //             })
-    //         } else {
-    //             if (!state.isBilingual && (!state.primaryContent || state.primaryContent === "")) {
-    //                 setState({
-    //                     ...state,
-    //                     primaryLanguage: i18n.language.toUpperCase()
-    //                 })
-    //             }
-    //         }
-    //     }
-    //     handleChange()
-    // }, [i18n.language])
-
-    useEffect(() => {
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            return;
-        }
-        handleChange();
-    }, [state.isBilingual, state.primaryLanguage, state.secondaryLanguage])
-
-    const handleChange = () => {
-        let newValue;
-        if (state.isBilingual) {
-            newValue = {
-                [state.languageList[0]]: state.primaryLanguage === state.languageList[0] ? state.primaryContent : state.secondaryContent,
-                [state.languageList[1]]: state.primaryLanguage === state.languageList[1] ? state.primaryContent : state.secondaryContent,
-            }
-        } else {
-            newValue = {
-                language: state.primaryLanguage,
-                [state.primaryLanguage]: state.primaryContent
-            }
-        }
-        if (value !== JSON.stringify(newValue)) {
-            props.onChange(JSON.stringify(newValue));
-        }
-    }
-
-    const handleLangChange = () => {
-        // handle language change from 1 to 2
-        if (state.languageList.length < 2)
-            return;
-
-        if (state.primaryLanguage === i18n.language.toUpperCase()) {
-            setState({
-                ...state,
-                isBilingual: true,
-                secondaryLanguage: state.primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0],
-                secondaryContent: state.discardedContent,
-                discardedContent: ""
-            })
-        } else {
-            setState({
-                ...state,
-                isBilingual: true,
-                primaryLanguage: state.primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0],
-                primaryContent: state.discardedContent,
-                secondaryLanguage: state.primaryLanguage,
-                secondaryContent: state.primaryContent,
-                discardedContent: ""
-            })
-        }
-    }
-
-    return (
-        <React.Fragment>
-            <div className="multiLangField">
-                <input
-                    className="multiLangFieldInput"
-                    type="text"
-                    id={props.schema.id}
-                    value={state.primaryContent}
-                    required={props.required}
-                    onChange={(event) => {
-                        setState({...state, primaryContent: event.target.value})
-                    }}
-                    onBlur={() => {
-                        handleChange()
-                    }}
-                />
-                <div className="multiLangFieldSelect">
-                    <Menu>
-                        {({open}) => (
-                            <>
-                                <div className="w-full h-full items-center justify-center">
-                                    <Menu.Button
-                                        className="w-full h-full flex flex-row items-center justify-center bg-white rounded-md hover:text-gray-600">
-                                        {state.primaryLanguage}
-                                        <BsCaretDownFill size={"0.8em"}/>
-                                    </Menu.Button>
-                                </div>
-                                <Transition
-                                    show={open}
-                                    // enter="transition ease-out duration-100"
-                                    // enterFrom="transform opacity-0 scale-95"
-                                    // enterTo="transform opacity-100 scale-100"
-                                    // leave="transition ease-in duration-75"
-                                    // leaveFrom="transform opacity-100 scale-100"
-                                    // leaveTo="transform opacity-0 scale-95"
-                                >
-                                    <Menu.Items
-                                        static
-                                        className="absolute w-30 mt-1 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10"
-                                    >
-                                        <div className="py-1">
-                                            {state.languageList.map((lang, index) => {
-                                                return (
-                                                    <Menu.Item key={index}>
-                                                        {({active}) => (
-                                                            <a className={`${
-                                                                (active || (!state.isBilingual && state.primaryLanguage === lang))
-                                                                    ? "bg-indigo-500 text-white"
-                                                                    : "text-gray-700"
-                                                            } flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none`}
-                                                               href="#"
-                                                               onClick={(e) => {
-                                                                   e.preventDefault();
-                                                                   if (state.isBilingual) {
-                                                                       if (state.primaryLanguage === lang) {
-                                                                           setState({
-                                                                               ...state,
-                                                                               isBilingual: false,
-                                                                               primaryContent: state.primaryContent !== "" ? state.primaryContent : state.secondaryContent,
-                                                                               secondaryLanguage: "",
-                                                                               secondaryContent: "",
-                                                                               discardedContent: (state.primaryContent !== "" && state.secondaryContent !== "") ? state.secondaryContent : ""
-                                                                           })
-                                                                       } else {
-                                                                           setState({
-                                                                               ...state,
-                                                                               isBilingual: false,
-                                                                               primaryLanguage: state.secondaryLanguage,
-                                                                               primaryContent: state.secondaryContent !== "" ? state.secondaryContent : state.primaryContent,
-                                                                               secondaryLanguage: "",
-                                                                               secondaryContent: "",
-                                                                               discardedContent: (state.primaryContent !== "" && state.secondaryContent !== "") ? state.primaryContent : ""
-                                                                           })
-                                                                       }
-                                                                   } else {
-                                                                       if (state.primaryLanguage !== lang) {
-                                                                           setState({...state, primaryLanguage: lang})
-                                                                       }
-                                                                   }
-                                                               }}
-                                                            >
-                                                                {languageLabel[lang]} Only</a>
-                                                        )}
-                                                    </Menu.Item>
-                                                )
-                                            })}
-                                        </div>
-                                        {state.languageList.length === 2 ?
-                                            <div className="py-1">
-                                                <Menu.Item>
-                                                    {({active}) => (
-                                                        <a className={`${
-                                                            (active || (state.isBilingual))
-                                                                ? "bg-red-500 text-white font-semibold"
-                                                                : "text-gray-700"
-                                                        } flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none`}
-                                                           href="#"
-                                                           onClick={(e) => {
-                                                               e.preventDefault();
-                                                               if (!state.isBilingual) {
-                                                                   handleLangChange()
-                                                               }
-                                                           }}>Bilingual</a>
-                                                    )}
-                                                </Menu.Item>
-                                            </div>
-                                            : null
-                                        }
-                                    </Menu.Items>
-                                </Transition>
-                            </>
-                        )}
-                    </Menu>
-                </div>
-            </div>
-            <div className={`mt-1 ${!state.isBilingual ? "hidden" : ""}`}>
-                <div className={`multiLangField`}>
-                    <input
-                        className="multiLangFieldInput"
-                        type="text"
-                        value={state.secondaryContent}
-                        onChange={(event) => {
-                            setState({...state, secondaryContent: event.target.value})
-                        }}
-                        onBlur={() => {
-                            handleChange()
-                        }}
-                    />
-                    <div className="multiLangFieldSelect">
-                        <div className="w-full h-full items-center justify-center">
-                            <button type="button"
-                                    className="w-full h-full items-center justify-center flex flex-row"
-                                    onClick={(event) => {
-                                        setState({
-                                            ...state,
-                                            isBilingual: false,
-                                            secondaryLanguage: "",
-                                            secondaryContent: "",
-                                            discardedContent: state.secondaryContent
-                                        })
-                                    }}>{state.secondaryLanguage}
-                                <BsX size={"0.9em"}/>
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <a className={`undoBtn ${!state.discardedContent ? "hidden" : ""}`}
-                   onClick={() => {
-                       handleLangChange()
-                   }}>
-                    {t('btn-undo')}
-                </a>
-            </div>
-        </React.Fragment>
-    );
-}
-
 export function MultiLangTextAreaFieldWidget(props) {
     console.log("MultiLangRichTextWidget", props)
-    const {value} = props;
+    const {value, schema} = props;
     const {t, i18n} = useTranslation();
-    const style = props.formContext.style;
     const isFirstRun = useRef(true);
     const isLangFirstRun = useRef(true);
 
+    const isRichText = schema.constraints ? !!schema.constraints.richText : false;
     const [state, setState] = useState({
         isBilingual: false,
+        isRichText: isRichText,
         primaryLanguage: "",
         secondaryLanguage: "",
-        primaryContent: EditorState.createEmpty(),
-        secondaryContent: EditorState.createEmpty(),
-        discardedContent: null,
+        primaryContent: isRichText ? null : "",
+        secondaryContent: isRichText ? null : "",
+        discardedContent: isRichText ? null : "",
         languageList: []
     });
 
@@ -361,51 +34,86 @@ export function MultiLangTextAreaFieldWidget(props) {
         french: "French"
     }
 
+    const languageShortLabel = {
+        english: "EN",
+        french: "FR"
+    }
+
     useEffect(() => {
+        const languageList = ["english", "french"];
         if (value) {
-            let valueObj = JSON.parse(props.value);
+            let fieldValue = JSON.parse(value);
             // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
-            const languageList = ["english", "french"];
-            if (valueObj.english && valueObj.french) {
+            if (fieldValue.english && fieldValue.french) {
                 // const htmlPageLang = i18n.language;
                 // const primaryLanguage = languageList.includes(htmlPageLang.toUpperCase()) ? htmlPageLang.toUpperCase() : languageList[0];
                 // const secondaryLanguage = primaryLanguage === languageList[0] ? languageList[1] : languageList[0];
-                // const primaryContent = valueObj.hasOwnProperty(primaryLanguage) ? valueObj[primaryLanguage] : null;
-                // const secondaryContent = valueObj.hasOwnProperty(secondaryLanguage) ? valueObj[secondaryLanguage] : null;
+                // const primaryContent = fieldValue.hasOwnProperty(primaryLanguage) ? fieldValue[primaryLanguage] : null;
+                // const secondaryContent = fieldValue.hasOwnProperty(secondaryLanguage) ? fieldValue[secondaryLanguage] : null;
                 const primaryLanguage = "english";
                 const secondaryLanguage = "french";
-                const primaryContent = valueObj[primaryLanguage];
-                const secondaryContent = valueObj[secondaryLanguage];
+                const primaryContent = fieldValue[primaryLanguage];
+                const secondaryContent = fieldValue[secondaryLanguage];
                 // console.log(primaryLanguage, primaryContent, secondaryLanguage, secondaryContent);
-
-                setState({
-                    ...state,
-                    isBilingual: true,
-                    primaryLanguage: primaryLanguage,
-                    primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
-                    secondaryLanguage: secondaryLanguage,
-                    secondaryContent: secondaryContent ? EditorState.createWithContent(getContentFromHTML(secondaryContent)) : EditorState.createEmpty(),
-                    languageList: languageList
-                })
+                if (state.isRichText) {
+                    setState({
+                        ...state,
+                        isBilingual: true,
+                        primaryLanguage: primaryLanguage,
+                        primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
+                        secondaryLanguage: secondaryLanguage,
+                        secondaryContent: secondaryContent ? EditorState.createWithContent(getContentFromHTML(secondaryContent)) : EditorState.createEmpty(),
+                        languageList: languageList
+                    })
+                } else {
+                    setState({
+                        ...state,
+                        isBilingual: true,
+                        primaryLanguage: primaryLanguage,
+                        primaryContent: primaryContent,
+                        secondaryLanguage: secondaryLanguage,
+                        secondaryContent: secondaryContent,
+                        languageList: languageList
+                    })
+                }
             } else {
-                const primaryLanguage = valueObj.english ? "english" : "french";
-                const primaryContent = valueObj[primaryLanguage];
+                const primaryLanguage = fieldValue.english ? "english" : "french";
+                const primaryContent = fieldValue[primaryLanguage];
                 // console.log(primaryLanguage, primaryContent);
-                setState({
-                    ...state,
-                    primaryLanguage: primaryLanguage,
-                    primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
-                    languageList: languageList
-                })
+                if (state.isRichText) {
+                    setState({
+                        ...state,
+                        primaryLanguage: primaryLanguage,
+                        primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
+                        languageList: languageList
+                    })
+                } else {
+                    setState({
+                        ...state,
+                        primaryLanguage: primaryLanguage,
+                        primaryContent: primaryContent,
+                        languageList: languageList
+                    })
+                }
             }
         } else {
             // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
-            const languageList = ["english", "french"];
-            setState({
-                ...state,
-                primaryLanguage: "english",
-                languageList: languageList
-            })
+            if (state.isRichText) {
+                setState({
+                    ...state,
+                    primaryLanguage: "english",
+                    primaryContent: EditorState.createEmpty(),
+                    languageList: languageList
+                })
+            } else {
+                setState({
+                    ...state,
+                    primaryLanguage: "english",
+                    primaryContent: "",
+                    languageList: languageList
+                })
+            }
+
         }
     }, [])
 
@@ -471,14 +179,28 @@ export function MultiLangTextAreaFieldWidget(props) {
     const handleChange = () => {
         let newValue;
         if (state.isBilingual) {
-            newValue = {
-                [state.languageList[0]]: state.primaryLanguage === state.languageList[0] ? draftToHtml(convertToRaw(state.primaryContent.getCurrentContent())) : draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent())),
-                [state.languageList[1]]: state.primaryLanguage === state.languageList[1] ? draftToHtml(convertToRaw(state.primaryContent.getCurrentContent())) : draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent())),
+            if (state.isRichText) {
+                newValue = {
+                    [state.languageList[0]]: state.primaryLanguage === state.languageList[0] ? draftToHtml(convertToRaw(state.primaryContent.getCurrentContent())) : draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent())),
+                    [state.languageList[1]]: state.primaryLanguage === state.languageList[1] ? draftToHtml(convertToRaw(state.primaryContent.getCurrentContent())) : draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent())),
+                }
+            } else {
+                newValue = {
+                    [state.languageList[0]]: state.primaryLanguage === state.languageList[0] ? state.primaryContent : state.secondaryContent,
+                    [state.languageList[1]]: state.primaryLanguage === state.languageList[1] ? state.primaryContent : state.secondaryContent,
+                }
             }
         } else {
-            newValue = {
-                language: state.primaryLanguage,
-                [state.primaryLanguage]: draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()))
+            if (state.isRichText) {
+                newValue = {
+                    language: state.primaryLanguage,
+                    [state.primaryLanguage]: draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()))
+                }
+            } else {
+                newValue = {
+                    language: state.primaryLanguage,
+                    [state.primaryLanguage]: state.primaryContent
+                }
             }
         }
         if (value !== JSON.stringify(newValue)) {
@@ -491,20 +213,20 @@ export function MultiLangTextAreaFieldWidget(props) {
         if (state.languageList.length < 2)
             return;
 
-        if (state.primaryLanguage === i18n.language.toUpperCase()) {
+        if (state.primaryLanguage === "english") {
             setState({
                 ...state,
                 isBilingual: true,
-                secondaryLanguage: state.primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0],
-                secondaryContent: state.discardedContent ?? EditorState.createEmpty(),
+                secondaryLanguage: "french",
+                secondaryContent: state.isRichText ? state.discardedContent ?? EditorState.createEmpty() : state.discardedContent,
                 discardedContent: null
             })
         } else {
             setState({
                 ...state,
                 isBilingual: true,
-                primaryLanguage: state.primaryLanguage === state.languageList[0] ? state.languageList[1] : state.languageList[0],
-                primaryContent: state.discardedContent ?? EditorState.createEmpty(),
+                primaryLanguage: "english",
+                primaryContent: state.isRichText ? state.discardedContent ?? EditorState.createEmpty() : state.discardedContent,
                 secondaryLanguage: state.primaryLanguage,
                 secondaryContent: state.primaryContent,
                 discardedContent: null
@@ -515,7 +237,7 @@ export function MultiLangTextAreaFieldWidget(props) {
     const LangDropDownBtn = () => {
         return (
             <div
-                className="focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500">
+                className={`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500 ${!state.isRichText && 'w-full h-full'}`}>
                 <div className={`w-full h-full items-center justify-center`}>
                     <Menu>
                         {({open}) => (
@@ -523,7 +245,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                                 <div className="w-full h-full items-center justify-center">
                                     <Menu.Button
                                         className="w-full h-full flex flex-row items-center justify-center bg-white rounded-md hover:text-gray-600">
-                                        {state.primaryLanguage}
+                                        {languageShortLabel[state.primaryLanguage] ?? "EN"}
                                         <BsCaretDownFill size={"0.8em"}/>
                                     </Menu.Button>
                                 </div>
@@ -558,20 +280,20 @@ export function MultiLangTextAreaFieldWidget(props) {
                                                                            setState({
                                                                                ...state,
                                                                                isBilingual: false,
-                                                                               primaryContent: state.primaryContent !== null ? state.primaryContent : state.secondaryContent,
+                                                                               primaryContent: state.primaryContent ? state.primaryContent : state.secondaryContent,
                                                                                secondaryLanguage: "",
-                                                                               secondaryContent: null,
-                                                                               discardedContent: (state.primaryContent !== null && state.secondaryContent !== null) ? state.secondaryContent : null
+                                                                               secondaryContent: state.isRichText ? null : "",
+                                                                               discardedContent: (state.primaryContent && state.secondaryContent) ? state.secondaryContent : (state.isRichText ? null : "")
                                                                            })
                                                                        } else {
                                                                            setState({
                                                                                ...state,
                                                                                isBilingual: false,
                                                                                primaryLanguage: state.secondaryLanguage,
-                                                                               primaryContent: state.secondaryContent !== null ? state.secondaryContent : state.primaryContent,
+                                                                               primaryContent: state.secondaryContent ? state.secondaryContent : state.primaryContent,
                                                                                secondaryLanguage: "",
-                                                                               secondaryContent: null,
-                                                                               discardedContent: (state.primaryContent !== null && state.secondaryContent !== null) ? state.primaryContent : null
+                                                                               secondaryContent: state.isRichText ? null : "",
+                                                                               discardedContent: (state.primaryContent && state.secondaryContent) ? state.primaryContent : (state.isRichText ? null : "")
                                                                            })
                                                                        }
                                                                    } else {
@@ -621,7 +343,7 @@ export function MultiLangTextAreaFieldWidget(props) {
     const LangCloseBtn = () => {
         return (
             <div
-                className="focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500">
+                className={`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500 ${!state.isRichText && 'w-full h-full'}`}>
                 <div className={`w-full h-full items-center justify-center`}>
                     <button
                         className="w-full h-full items-center justify-center flex flex-row"
@@ -633,10 +355,11 @@ export function MultiLangTextAreaFieldWidget(props) {
                                 ...state,
                                 isBilingual: false,
                                 secondaryLanguage: "",
-                                secondaryContent: null,
+                                secondaryContent: state.isRichText ? null : "",
                                 discardedContent: state.secondaryContent
                             })
-                        }}>{state.secondaryLanguage}
+                        }}>
+                        {languageShortLabel[state.secondaryLanguage] ?? "EN"}
                         <BsTrashFill size={"0.9em"}/>
                     </button>
                 </div>
@@ -647,46 +370,80 @@ export function MultiLangTextAreaFieldWidget(props) {
     return (
         <React.Fragment>
             <div className="multiLangField">
-                <Editor
-                    editorState={state.primaryContent}
-                    wrapperClassName="multiLangRichTextAreaWrapper"
-                    toolbarClassName="multiLangRichTextAreaToolbar"
-                    editorClassName="multiLangRichTextAreaEditor"
-                    stripPastedStyles={true}
-                    spellCheck={true}
-                    toolbar={ToolbarStyleCompact}
-                    tool
-                    onEditorStateChange={text => {
-                        setState({...state, primaryContent: text})
-                    }}
-                    toolbarCustomButtons={[<LangDropDownBtn/>]}
-                    onBlur={() => {
-                        handleChange()
-                    }}
-                />
-            </div>
-
-            <div className={`mt-1 ${!state.isBilingual ? "hidden" : ""}`}>
-                <div className="multiLangField">
-                    <Editor
-                        editorState={state.secondaryContent}
+                {state.isRichText ? <Editor
+                        editorState={state.primaryContent}
                         wrapperClassName="multiLangRichTextAreaWrapper"
                         toolbarClassName="multiLangRichTextAreaToolbar"
                         editorClassName="multiLangRichTextAreaEditor"
                         stripPastedStyles={true}
+                        spellCheck={true}
                         toolbar={ToolbarStyleCompact}
+                        tool
                         onEditorStateChange={text => {
-                            setState({...state, secondaryContent: text})
+                            setState({...state, primaryContent: text})
                         }}
-                        toolbarCustomButtons={[<LangCloseBtn/>]}
+                        toolbarCustomButtons={[<LangDropDownBtn/>]}
                         onBlur={() => {
                             handleChange()
                         }}
-                    />
+                    /> :
+                    <>
+                        <input
+                            className="multiLangFieldInput"
+                            type="text"
+                            id={props.schema.id}
+                            value={state.primaryContent}
+                            required={props.required}
+                            onChange={(event) => {
+                                setState({...state, primaryContent: event.target.value})
+                            }}
+                            onBlur={() => {
+                                handleChange()
+                            }}
+                        />
+                        <div className="multiLangFieldSelect">{<LangDropDownBtn/>}</div>
+                    </>
+                }
+
+            </div>
+
+            <div className={`mt-1 ${!state.isBilingual ? "hidden" : ""}`}>
+                <div className="multiLangField">
+                    {state.isRichText ?
+                        <Editor
+                            editorState={state.secondaryContent}
+                            wrapperClassName="multiLangRichTextAreaWrapper"
+                            toolbarClassName="multiLangRichTextAreaToolbar"
+                            editorClassName="multiLangRichTextAreaEditor"
+                            stripPastedStyles={true}
+                            toolbar={ToolbarStyleCompact}
+                            onEditorStateChange={text => {
+                                setState({...state, secondaryContent: text})
+                            }}
+                            toolbarCustomButtons={[<LangCloseBtn/>]}
+                            onBlur={() => {
+                                handleChange()
+                            }}
+                        /> :
+                        <>
+                            <input
+                                className="multiLangFieldInput"
+                                type="text"
+                                value={state.secondaryContent}
+                                onChange={(event) => {
+                                    setState({...state, secondaryContent: event.target.value})
+                                }}
+                                onBlur={() => {
+                                    handleChange()
+                                }}
+                            />
+                            <div className="multiLangFieldSelect">{<LangCloseBtn/>}</div>
+                        </>
+                    }
                 </div>
             </div>
             <div>
-                <a className={`undoBtn undoBtn ${(!state.discardedContent || !state.discardedContent.getCurrentContent().hasText()) ? "hidden" : ""}`}
+                <a className={`undoBtn undoBtn ${(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? "hidden" : ""}`}
                    onClick={() => {
                        handleLangChange()
                    }}>{t('btn-undo')}

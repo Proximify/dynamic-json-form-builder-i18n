@@ -129,7 +129,7 @@ export function DateInputWidget(props) {
 
     return (
         <DatePicker selected={state.date ?? null}
-                    onSelect={handleOnBlur()}
+                    onSelect={handleOnBlur}
                     onChange={date => setState({date: date})}
                     dateFormat="yyyy/MM/dd"
                     locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}

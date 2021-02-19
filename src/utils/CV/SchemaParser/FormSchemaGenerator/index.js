@@ -224,13 +224,8 @@ const fieldTypeWidgetMapper = {
         "ui:widget": "multiColLargeSelectionWidget"
     },
     "bilingual": {
-        "richText": {
-            "ui:FieldTemplate": customTemplates.genericFieldTemplate,
-            "ui:widget": "multiLangTextAreaFieldWidget"
-        }, "plainText": {
-            "ui:FieldTemplate": customTemplates.genericFieldTemplate,
-            "ui:widget": "multiLangFieldWidget"
-        }
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "multiLangTextAreaFieldWidget"
     },
     "integer": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
@@ -268,11 +263,7 @@ const formUISchemaGen = (schema) => {
                     "ui:widget": "hiddenFieldWidget"
                 }
             } else {
-                if (field.type === "bilingual") {
-                    result[fieldName] = fieldTypeWidgetMapper["bilingual"][field.constraints ? field.constraints.richText ? "richText" : "plainText" : "plainText"];
-                } else {
-                    result[fieldName] = fieldTypeWidgetMapper[field.type];
-                }
+                result[fieldName] = fieldTypeWidgetMapper[field.type];
             }
         }
     })
