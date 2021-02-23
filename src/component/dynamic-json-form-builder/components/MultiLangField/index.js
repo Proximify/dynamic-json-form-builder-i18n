@@ -11,7 +11,7 @@ import {Editor} from "react-draft-wysiwyg";
 import {ToolbarStyleCompact} from "../../../../RichTextToolBarStyle";
 
 export function MultiLangTextAreaFieldWidget(props) {
-    console.log("MultiLangRichTextWidget", props)
+    // console.log("MultiLangRichTextWidget", props)
     const {value, schema} = props;
     const {t, i18n} = useTranslation();
     const isFirstRun = useRef(true);
@@ -19,6 +19,7 @@ export function MultiLangTextAreaFieldWidget(props) {
 
     const isRichText = schema.constraints ? !!schema.constraints.richText : false;
     const [state, setState] = useState({
+        isReady: false,
         isBilingual: false,
         isRichText: isRichText,
         primaryLanguage: "",
@@ -54,66 +55,35 @@ export function MultiLangTextAreaFieldWidget(props) {
                 const secondaryLanguage = "french";
                 const primaryContent = fieldValue[primaryLanguage];
                 const secondaryContent = fieldValue[secondaryLanguage];
-                // console.log(primaryLanguage, primaryContent, secondaryLanguage, secondaryContent);
-                if (state.isRichText) {
-                    setState({
-                        ...state,
-                        isBilingual: true,
-                        primaryLanguage: primaryLanguage,
-                        primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
-                        secondaryLanguage: secondaryLanguage,
-                        secondaryContent: secondaryContent ? EditorState.createWithContent(getContentFromHTML(secondaryContent)) : EditorState.createEmpty(),
-                        languageList: languageList
-                    })
-                } else {
-                    setState({
-                        ...state,
-                        isBilingual: true,
-                        primaryLanguage: primaryLanguage,
-                        primaryContent: primaryContent,
-                        secondaryLanguage: secondaryLanguage,
-                        secondaryContent: secondaryContent,
-                        languageList: languageList
-                    })
-                }
+                setState({
+                    ...state,
+                    isReady: true,
+                    isBilingual: true,
+                    primaryLanguage: primaryLanguage,
+                    primaryContent: state.isRichText ? (primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty()) : primaryContent,
+                    secondaryLanguage: secondaryLanguage,
+                    secondaryContent: state.isRichText ? (secondaryContent ? EditorState.createWithContent(getContentFromHTML(secondaryContent)) : EditorState.createEmpty()) : secondaryContent,
+                    languageList: languageList
+                })
             } else {
                 const primaryLanguage = fieldValue.english ? "english" : "french";
                 const primaryContent = fieldValue[primaryLanguage];
-                // console.log(primaryLanguage, primaryContent);
-                if (state.isRichText) {
-                    setState({
-                        ...state,
-                        primaryLanguage: primaryLanguage,
-                        primaryContent: primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty(),
-                        languageList: languageList
-                    })
-                } else {
-                    setState({
-                        ...state,
-                        primaryLanguage: primaryLanguage,
-                        primaryContent: primaryContent,
-                        languageList: languageList
-                    })
-                }
+                setState({
+                    ...state,
+                    isReady: true,
+                    primaryLanguage: primaryLanguage,
+                    primaryContent: state.isRichText ? (primaryContent ? EditorState.createWithContent(getContentFromHTML(primaryContent)) : EditorState.createEmpty()) : primaryContent,
+                    languageList: languageList
+                })
             }
         } else {
-            // const languageList = props.registry.rootSchema["fieldLanguages"].map(lang => lang.toUpperCase()) ?? [i18n.language.toUpperCase()];
-            if (state.isRichText) {
-                setState({
-                    ...state,
-                    primaryLanguage: "english",
-                    primaryContent: EditorState.createEmpty(),
-                    languageList: languageList
-                })
-            } else {
-                setState({
-                    ...state,
-                    primaryLanguage: "english",
-                    primaryContent: "",
-                    languageList: languageList
-                })
-            }
-
+            setState({
+                ...state,
+                isReady: true,
+                primaryLanguage: "english",
+                primaryContent: state.isRichText ? EditorState.createEmpty() : "",
+                languageList: languageList
+            })
         }
     }, [])
 
@@ -163,8 +133,7 @@ export function MultiLangTextAreaFieldWidget(props) {
     // }, [i18n.language])
 
     useEffect(() => {
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
+        if (!state.isReady) {
             return;
         }
         handleChange();
@@ -178,6 +147,7 @@ export function MultiLangTextAreaFieldWidget(props) {
 
     const handleChange = () => {
         let newValue;
+        // console.log(draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()));
         if (state.isBilingual) {
             if (state.isRichText) {
                 newValue = {
@@ -193,12 +163,10 @@ export function MultiLangTextAreaFieldWidget(props) {
         } else {
             if (state.isRichText) {
                 newValue = {
-                    language: state.primaryLanguage,
                     [state.primaryLanguage]: draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()))
                 }
             } else {
                 newValue = {
-                    language: state.primaryLanguage,
                     [state.primaryLanguage]: state.primaryContent
                 }
             }
@@ -208,7 +176,7 @@ export function MultiLangTextAreaFieldWidget(props) {
         }
     }
 
-    const handleLangChange = () => {
+    const handleOnBilingual = () => {
         // handle language change from 1 to 2
         if (state.languageList.length < 2)
             return;
@@ -218,7 +186,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                 ...state,
                 isBilingual: true,
                 secondaryLanguage: "french",
-                secondaryContent: state.isRichText ? state.discardedContent ?? EditorState.createEmpty() : state.discardedContent,
+                secondaryContent: state.isRichText ? (state.discardedContent ?? EditorState.createEmpty()) : state.discardedContent,
                 discardedContent: null
             })
         } else {
@@ -226,7 +194,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                 ...state,
                 isBilingual: true,
                 primaryLanguage: "english",
-                primaryContent: state.isRichText ? state.discardedContent ?? EditorState.createEmpty() : state.discardedContent,
+                primaryContent: state.isRichText ? (state.discardedContent ?? EditorState.createEmpty()) : state.discardedContent,
                 secondaryLanguage: state.primaryLanguage,
                 secondaryContent: state.primaryContent,
                 discardedContent: null
@@ -322,7 +290,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                                                            onClick={(e) => {
                                                                e.preventDefault();
                                                                if (!state.isBilingual) {
-                                                                   handleLangChange()
+                                                                   handleOnBilingual()
                                                                }
                                                            }}>Bilingual</a>
                                                     )}
@@ -445,7 +413,7 @@ export function MultiLangTextAreaFieldWidget(props) {
             <div>
                 <a className={`undoBtn undoBtn ${(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? "hidden" : ""}`}
                    onClick={() => {
-                       handleLangChange()
+                       handleOnBilingual()
                    }}>{t('btn-undo')}
                 </a>
             </div>

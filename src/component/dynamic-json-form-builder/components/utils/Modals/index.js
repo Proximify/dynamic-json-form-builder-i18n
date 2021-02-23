@@ -6,8 +6,8 @@ import Tooltip from "../../../../Tooltip";
 
 export function ModalArrayItem(props) {
     console.log("ModalRegular", props);
-    const {fieldItems, setFieldItems, index, items, dropItem, context, title, fullScreen, reorder} = props;
-    const item = fieldItems[index];
+    const {state, setState, children, dropItem, context, title, fullScreen} = props;
+
     // const deleteHelper = (index) => {
     //     return items[index].onReorderClick(1,0);
     // }
@@ -32,7 +32,7 @@ export function ModalArrayItem(props) {
                         {/*body*/}
                         <div className="relative pt-2 pb-5 px-10 flex-auto">
                             <div className="my-4 text-gray-600 text-lg leading-relaxed">
-                                {items[index].children}
+                                {children}
                             </div>
 
                         </div>
@@ -40,18 +40,19 @@ export function ModalArrayItem(props) {
                         <div
                             className="flex items-center justify-between py-3 px-9 border-t border-solid border-gray-300">
                             <div>
-                                {item.edit &&
+                                {state.edit &&
                                 <button
                                     className="bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                                     onClick={() => {
-                                        const fi = [...fieldItems];
-                                        fi.splice(index, 1);
-                                        setFieldItems(fi);
                                         dropItem();
-                                        if (reorder !== undefined) {
-                                            reorder(index);
-                                        }
-                                    }}>
+                                        setState({
+                                            ...state,
+                                            open:false,
+                                            edit: false,
+                                            index: -1
+                                        })
+                                    }}
+                                >
                                     Delete
                                 </button>}
                             </div>
@@ -61,17 +62,22 @@ export function ModalArrayItem(props) {
                                     type="button"
                                     style={{transition: "all .15s ease"}}
                                     onClick={() => {
-                                        if (!item.edit) {
-                                            const fi = [...fieldItems];
-                                            fi.splice(index, 1);
-                                            setFieldItems(fi);
+                                        if (!state.edit) {
                                             dropItem();
+                                            setState({
+                                                ...state,
+                                                open:false,
+                                                edit: false,
+                                                index: -1
+                                            })
                                         } else {
-                                            items[index].children.props.onChange(item.data);
-                                            const fi = [...fieldItems];
-                                            fi[index].open = false;
-                                            fi[index].edit = false;
-                                            setFieldItems(fi);
+                                            children.props.onChange(state.dataPrev ?? undefined);
+                                            setState({
+                                                ...state,
+                                                open:false,
+                                                edit: false,
+                                                index: -1
+                                            })
                                         }
                                     }}
                                 >Cancel
@@ -81,9 +87,12 @@ export function ModalArrayItem(props) {
                                     type="button"
                                     style={{transition: "all .15s ease"}}
                                     onClick={() => {
-                                        const fi = [...fieldItems];
-                                        fi[index].open = false;
-                                        setFieldItems(fi);
+                                        setState({
+                                            ...state,
+                                            open:false,
+                                            edit: false,
+                                            index: -1
+                                        })
                                     }}
                                 >Save
                                 </button>

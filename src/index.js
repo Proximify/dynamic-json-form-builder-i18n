@@ -10,6 +10,7 @@ import * as Address from "./utils/CV/schemas/address.json";
 import * as CVSchema from "./utils/CV/schemas/cvSchema.json";
 import * as academic_work_experience from './utils/CV/schemas/academic_work_experience.json'
 import SchemaParser from "./utils/CV/SchemaParser";
+import axios from "axios";
 
 // if (navigator.serviceWorker) {
 //     console.log("service worker supported");
@@ -42,6 +43,7 @@ class App extends Component {
             formSchema: null
         };
         this.fetchFormSchema = this.fetchFormSchema.bind(this);
+        this.fetchLovOptions = this.fetchLovOptions.bind(this);
     }
 
     // http://127.0.0.1:8000/profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv&section=2&itemId=2&parentItemId=1&parentFieldId=46
@@ -69,9 +71,28 @@ class App extends Component {
         })
     }
 
+    fetchLovOptions(subtypeIds, callback) {
+        const urlTemplate = 'profiles.php?action=subtypeOptions&contentType=members&subtypeId=';
+        const urls = []
+        subtypeIds.forEach(id => {
+            if (Array.isArray(id)) {
+                urls.push(api.get(`${urlTemplate}${id[0]}&dependencies=${id[0].replaceAll(',', '%2C')}`))
+            } else {
+                urls.push(api.get(`${urlTemplate}${id}`))
+            }
+        })
+        axios.all(urls).then(axios.spread((...responses) => {
+            const res = {};
+            subtypeIds.forEach((subtypeId, index) => {
+                res[Array.isArray(subtypeId) ? subtypeId[0] : subtypeId] = responses[index].data;
+            })
+            callback(res);
+        })).catch(err => {
+            console.log(err)
+        })
+    }
 
     render() {
-        // console.log(this.state, CVSchema)
         return (
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
@@ -82,9 +103,12 @@ class App extends Component {
                                 <div
                                     className="md:col-span-6 md:col-start-3 sm:col-span-8 sm:col-start-2 col-span-10 col-start-1">
                                     {this.state.isReady &&
-                                    <SectionPageBuilder schema={SchemaParser(this.state.schema)} data={this.state.data}
-                                                        language={this.state.language.language}
-                                                        fetchFormSchema={this.fetchFormSchema}
+                                    <SectionPageBuilder
+                                        schema={SchemaParser(this.state.schema)}
+                                        data={this.state.data}
+                                        language={this.state.language.language}
+                                        fetchFormSchema={this.fetchFormSchema}
+                                        fetchLovOptions={this.fetchLovOptions}
                                     />}
                                     {this.state.rawError && <div>{JSON.stringify(this.state.rawError)}</div>}
                                 </div>

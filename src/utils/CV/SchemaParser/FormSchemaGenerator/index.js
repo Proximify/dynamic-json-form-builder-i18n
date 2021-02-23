@@ -6,15 +6,16 @@ import {ReorderableArrayFieldTemplate, ArrayFieldTemplate}
     from "../../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate";
 import HiddenFieldTemplate
     from "../../../../component/dynamic-json-form-builder/components/HiddenField/HiddenFieldTemplate";
+import api from "../../../../api";
 
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
  * @param schema: schema for the form
- * @param selectionOpts
+ * @param fetchLovOptions
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}}
  * @constructor
  */
-export const SchemaGenerator = (schema, selectionOpts) => {
+export const SchemaGenerator = (schema, lovOptions) => {
     // console.log(schema)
     const result = {
         formSchema: null,
@@ -23,7 +24,7 @@ export const SchemaGenerator = (schema, selectionOpts) => {
         validations: null
     }
     if (schema !== null) {
-        result.formSchema = formStrSchemaGen(schema, selectionOpts);
+        result.formSchema = formStrSchemaGen(schema, lovOptions);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
         // result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
@@ -35,10 +36,10 @@ export const SchemaGenerator = (schema, selectionOpts) => {
 /**
  * This function generate the form structure schema
  * @param schema
- * @param selectionOpts
+ * @param fetchLovOptions
  * @returns {{id, type: string, required: [], properties: {}}}
  */
-const formStrSchemaGen = (schema, selectionOpts) => {
+const formStrSchemaGen = (schema, lovOptions) => {
     const required = [];
     const properties = {};
     const fields = schema.fields;
@@ -51,7 +52,7 @@ const formStrSchemaGen = (schema, selectionOpts) => {
         // if (fieldSchema){
         //     properties[field.name] = fieldSchema;
         // }
-        properties[field.name] = fieldStrSchemaGen(field, schema, selectionOpts);
+        properties[field.name] = fieldStrSchemaGen(field, schema, lovOptions);
     })
     return {
         type: "object",
@@ -66,10 +67,10 @@ const formStrSchemaGen = (schema, selectionOpts) => {
  * This function generate the field structure schema
  * @param field: field schema
  * @param schema
- * @param selectionOpts
+ * @param fetchLovOptions
  * @returns {{}}
  */
-const fieldStrSchemaGen = (field, schema, selectionOpts) => {
+const fieldStrSchemaGen = (field, schema, lovOptions) => {
     // if (field.name === "order" && schema.asc_item_order === "1"){
     //     return null;
     // }
@@ -83,22 +84,12 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
     result["field_type"] = field.type;
     result["constraints"] = field.constraints;
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
-    const selectionOptions = [];
     switch (field.type) {
-        case "lov":
-            if (selectionOpts) {
-                const subtype_id = field.subtype_id;
-                Object.keys(selectionOpts).forEach(id => {
-                    if (subtype_id === id) {
-                        selectionOpts[id].forEach(option => {
-                            selectionOptions.push(option)
-                        })
-                    }
-                })
-            }
-            // result["enum"] = selectionOptions.length > 0 ? selectionOptions : ["no option found", "opt 1"];
-            result["enum"] = ["no option found", "opt 1"];
+        case "lov": {
+            const subtype_id = field.subtype_id;
+            result["enum"] = lovOptions[subtype_id] ?? []
             break;
+        }
         case "string":
             result["type"] = "string";
             result["max_char_count"] = field.max_char_count;
@@ -127,22 +118,14 @@ const fieldStrSchemaGen = (field, schema, selectionOpts) => {
             const subsections = schema.subsections
             if (subsectionId in subsections) {
                 result["fields"] = subsections[subsectionId].fields;
-                result["items"] = formStrSchemaGen(subsections[subsectionId], selectionOpts);
+                result["items"] = formStrSchemaGen(subsections[subsectionId], lovOptions);
             }
             break;
-        case "reftable":
-            if (selectionOpts) {
-                const subtype_id = field.subtype_id;
-                Object.keys(selectionOpts).forEach(id => {
-                    if (subtype_id === id) {
-                        selectionOpts[id].forEach(option => {
-                            selectionOptions.push(option)
-                        })
-                    }
-                })
-            }
-            result["enum"] = selectionOptions.length > 0 ? selectionOptions : [[1, 2], [2, 3], [3, 4]];
+        case "reftable": {
+            const subtype_id = field.subtype_id;
+            result["enum"] = lovOptions[subtype_id] ?? []
             break;
+        }
         default:
             break;
     }
@@ -153,10 +136,12 @@ const formDataSchemaGen = (schema) => {
     if (!schema.section_data) {
         return {}
     }
+    // console.log(schema)
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
     const dataSchema = {}
+    // console.log(mapper, ft.getFields())
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
         // console.log(field)

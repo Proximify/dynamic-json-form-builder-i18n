@@ -20,7 +20,7 @@ import {
     MultiLangFieldWidget,
     MultiLangTextAreaFieldWidget
 } from '../../../component/dynamic-json-form-builder/components/MultiLangField'
-import MultiLangFieldTemplate from '../../../component/dynamic-json-form-builder/components/MultiLangField/template';
+import MultiLangFieldTemplate from '../../../component/dynamic-json-form-builder/components/MultiLangField/MultiLanFieldTemplate';
 import {
     ObjectFieldTemplate,
     ObjectItemTemplate

@@ -1,5 +1,6 @@
 import React from "react";
 import {any, FieldValueMapper, FormatterTracker} from "../../utils/helper";
+import ResearchDisciplines from "./ResearchDisciplines";
 
 
 export default function Recognitions(props) {
@@ -7,6 +8,12 @@ export default function Recognitions(props) {
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
+
+    const subsections = {
+        "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
+                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                        rawData={props.rawData}/>
+    }
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -56,7 +63,7 @@ export default function Recognitions(props) {
     } else {
         return (
             <React.Fragment>
-                Recognitions
+                {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
             </React.Fragment>
         )
     }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import {BiPencil} from 'react-icons/bi';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
@@ -6,6 +6,7 @@ import ModalArrayItem from "../utils/Modals";
 import Formatter from "../../../../utils/formatter";
 import './ArrayField.css'
 import Tooltip from "../../../Tooltip";
+import {stringify} from "postcss";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -14,53 +15,52 @@ const descriptions = {
 }
 
 export function ReorderableArrayFieldTemplate(props) {
-    // console.log("ReorderableArrayFieldTemplate", props);
+    console.log("ReorderableArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
-    // console.log(schema.description)
 
-    const [fieldItems, setFieldItems] = useState(
-        () => {
-            const array = [];
-            formData.forEach((data, index) => {
-                array.push({
-                    open: false,
-                    index: index,
-                    edit: false,
-                    data: items[index].children.props.formData
-                })
-            });
-            return array;
+    const [state, setState] = useState(
+        {
+            open: false,
+            edit: false,
+            index: -1,
+            dataPrev: null
         }
-    );
-
-    const reorderOnItemDelete = (index) => {
-
-        for (let i = index; i < items.length; i++) {
-            // console.log("reorder", items)
-            formData[i]["order"]--;
-        }
-    }
+    )
 
     const handleOnDragEnd = (result) => {
         if (!result.destination)
             return;
-        const fi = [...fieldItems];
+        const sortedFormData = [...formData].sort((a, b) => (a.order > b.order ? 1 : -1));
         const si = result.source.index;
         const di = result.destination.index;
-        [fi[si], fi[di]] = [fi[di], fi[si]];
-        items[si].onReorderClick(si, di)("");
+
+        const sItem = sortedFormData[si];
+        const dItem = sortedFormData[di];
+        const sItemIndex = formData.findIndex(data => data.order === sItem.order);
+        const dItemIndex = formData.findIndex(data => data.order === dItem.order);
+        // console.log(sItem, dItem, sItemIndex, dItemIndex);
+
         if (di < si) {
-            formData[si]["order"] = di + 1;
-            for (let i = di; i < si; i++) {
-                formData[i]["order"]++;
+            formData[sItemIndex]["order"] = -1;
+            const destOrder = formData[dItemIndex]["order"];
+            for (let i = si - 1; i >= di; i--) {
+                let shiftItem = sortedFormData[i];
+                let shiftItemIndex = formData.findIndex(data => data.order === shiftItem.order);
+                // console.log("shift item ", i, shiftItem, shiftItemIndex);
+                formData[shiftItemIndex]["order"]++;
             }
+            formData[sItemIndex]["order"] = Number(destOrder);
         } else if (si < di) {
-            formData[si]["order"] = di + 1;
+            formData[sItemIndex]["order"] = 999;
+            const destOrder = formData[dItemIndex]["order"];
             for (let i = si + 1; i <= di; i++) {
-                formData[i]["order"]--;
+                let shiftItem = sortedFormData[i];
+                let shiftItemIndex = formData.findIndex(data => data.order === shiftItem.order);
+                // console.log("shift item ", i, shiftItem, shiftItemIndex);
+                formData[shiftItemIndex]["order"]--;
             }
+            formData[sItemIndex]["order"] = Number(destOrder);
         }
-        setFieldItems(fi);
     }
 
     return (
@@ -99,14 +99,13 @@ export function ReorderableArrayFieldTemplate(props) {
                     {canAdd &&
                     <a type="button" className="text-blue-600"
                        onClick={() => {
-                           const fi = [...fieldItems];
-                           fi.push({
+                           setState({
+                               ...state,
                                open: true,
-                               index: items.length,
                                edit: false,
-                               data: undefined
+                               index: formData.length,
+                               dataPrev: null
                            })
-                           setFieldItems(fi);
                            return onAddClick();
                        }}
                     >< AiOutlinePlusCircle/></a>}
@@ -117,7 +116,7 @@ export function ReorderableArrayFieldTemplate(props) {
                                 {(provided) => (
                                     <ul {...provided.droppableProps} ref={provided.innerRef}>
                                         {
-                                            fieldItems.map((item, index) => {
+                                            [...formData].sort((a, b) => (a.order > b.order ? 1 : -1)).map((item, index) => {
                                                 return (
                                                     <Draggable key={index} draggableId={`${schema.id}_${index}`}
                                                                index={index}>
@@ -130,46 +129,50 @@ export function ReorderableArrayFieldTemplate(props) {
                                                                            structureChain={[...formContext.structureChain, schema.name]}
                                                                            isFullScreenViewMode={false}
                                                                            schema={schema}
-                                                                           rawData={formData[index]}
+                                                                           rawData={item}
                                                                 />
                                                                 <BiPencil
                                                                     className="cursor-pointer mx-1"
                                                                     onClick={() => {
-                                                                        const fi = [...fieldItems];
-                                                                        fi[index].open = true;
-                                                                        fi[index].edit = true;
-                                                                        fi[index].data = items[index].children.props.formData;
-                                                                        setFieldItems(fi);
+                                                                        const itemIndex = formData.findIndex(data => data.order === item.order);
+                                                                        setState({
+                                                                            ...state,
+                                                                            open: true,
+                                                                            edit: true,
+                                                                            index: itemIndex,
+                                                                            dataPrev: formData[itemIndex]
+                                                                        })
                                                                     }}
                                                                 />
                                                             </li>
                                                         )}
                                                     </Draggable>
                                                 )
-                                            })
-                                        }
+                                            })}
+
                                         {provided.placeholder}
                                     </ul>
                                 )}
-
                             </Droppable>
                         </DragDropContext>
                     </div>
                 </div>
                 {
-                    fieldItems.length > 0 &&
-                    fieldItems.map((item, index) => {
-                        if (item.open) {
-                            if (item.edit === false) {
-                                formData[item.index]["order"] = item.index + 1;
+                    formData.length > 0 && state.open && state.index >= 0 &&
+                    formData.map((item, index) => {
+                        if (index === state.index) {
+                            if (!state.edit) {
+                                // TODO: investigate why order += 2
+                                formData[index]["order"] = Math.max(...formData.map(data => data.order ?? 0)) + 1;
                             }
                         }
-                        return item.open &&
-                            <ModalArrayItem key={index} fieldItems={fieldItems} setFieldItems={setFieldItems}
+                        return index === state.index &&
+                            <ModalArrayItem key={index} state={state}
+                                            setState={setState}
                                             index={index}
-                                            items={items} context={formContext}
+                                            children={items[index].children}
+                                            context={formContext}
                                             dropItem={items[index].onDropIndexClick(index)}
-                                            reorder={reorderOnItemDelete}
                                             title={title}
                                             fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/>
 
@@ -181,22 +184,17 @@ export function ReorderableArrayFieldTemplate(props) {
 }
 
 export function ArrayFieldTemplate(props) {
+    // console.log("ArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
-    const [fieldItems, setFieldItems] = useState(
-        () => {
-            const array = [];
-            formData.forEach((data, index) => {
-                array.push({
-                    open: false,
-                    index: index,
-                    edit: false,
-                    data: items[index].children.props.formData
-                })
-            });
-            return array;
+    const [state, setState] = useState(
+        {
+            open: false,
+            edit: false,
+            index: -1,
+            dataPrev: null
         }
-    );
+    )
 
     return (
         <div className="flex flex-wrap justify-center my-3">
@@ -234,14 +232,13 @@ export function ArrayFieldTemplate(props) {
                     {canAdd &&
                     <a type="button" className="text-blue-600"
                        onClick={() => {
-                           const fi = [...fieldItems];
-                           fi.push({
+                           setState({
+                               ...state,
                                open: true,
-                               index: items.length,
                                edit: false,
-                               data: undefined
+                               index: formData.length,
+                               dataPrev: null
                            })
-                           setFieldItems(fi);
                            return onAddClick();
                        }}
                     >< AiOutlinePlusCircle/></a>}
@@ -249,7 +246,7 @@ export function ArrayFieldTemplate(props) {
                         className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1 text-sm" : "hidden"}`}>
                         <ul>
                             {
-                                fieldItems.map((item, index) => {
+                                formData.map((item, index) => {
                                     return (
                                         <li key={index}
                                             className={`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 ? "border-b" : ""}`}
@@ -258,16 +255,18 @@ export function ArrayFieldTemplate(props) {
                                                        structureChain={[...formContext.structureChain, schema.name]}
                                                        isFullScreenViewMode={false}
                                                        schema={schema}
-                                                       rawData={formData[index]}
+                                                       rawData={item}
                                             />
                                             <BiPencil
                                                 className="cursor-pointer mx-1"
                                                 onClick={() => {
-                                                    const fi = [...fieldItems];
-                                                    fi[index].open = true;
-                                                    fi[index].edit = true;
-                                                    fi[index].data = items[index].children.props.formData;
-                                                    setFieldItems(fi);
+                                                    setState({
+                                                        ...state,
+                                                        open: true,
+                                                        edit: true,
+                                                        index: index,
+                                                        dataPrev: formData[index]
+                                                    })
                                                 }}
                                             />
                                         </li>
@@ -278,15 +277,17 @@ export function ArrayFieldTemplate(props) {
                     </div>
                 </div>
                 {
-                    fieldItems.length > 0 &&
-                    fieldItems.map((item, index) => {
-                        return item.open &&
-                            <ModalArrayItem key={index} fieldItems={fieldItems} setFieldItems={setFieldItems}
+                    formData.length > 0 && state.open && state.index >= 0 &&
+                    formData.map((item, index) => {
+                        return index === state.index &&
+                            <ModalArrayItem key={index} state={state}
+                                            setState={setState}
                                             index={index}
-                                            items={items} context={formContext}
+                                            children={items[index].children} context={formContext}
                                             dropItem={items[index].onDropIndexClick(index)}
                                             title={title}
                                             fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/>
+
                     })
                 }
             </div>

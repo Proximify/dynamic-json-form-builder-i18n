@@ -13,10 +13,10 @@ export const Months = [
     'December'
 ];
 
-export const FieldValueMapper = (value, schema, isSubsection = false) => {
+export const FieldValueMapper = (value, schema, isFormatterSubsection = false) => {
     // console.log(schema,value)
     const fields = schema.fields
-    // console.log(value)
+    // console.log(schema,value)
     const result = {}
     // console.log(value, schema)
     Object.keys(fields).forEach(fieldKey => {
@@ -25,30 +25,61 @@ export const FieldValueMapper = (value, schema, isSubsection = false) => {
         result[field.name]["type"] = field["type"];
         result[field.name]["subtype"] = field["subtype"];
         result[field.name]["label"] = field["label"];
-        Object.keys(value).forEach(valueKey => {
-            if (!isSubsection) {
-                if (fieldKey === valueKey) {
-                    if (Array.isArray(value[valueKey]) && field["type"] === "section") {
-                        result[field.name]["value"] = []
-                        value[valueKey].forEach(val => {
-                            if (val.values) {
-                                // result[fields[fieldKey].name]["value"] = []
-                                Object.keys(schema.subsections).forEach(key => {
-                                    // result[field.name]["order"] = val.order;
-                                    result[field.name]["value"].push(FieldValueMapper(val.values, schema.subsections[key]))
-                                })
-                            }
+        if (!isFormatterSubsection){
+            if (value[fieldKey]){
+                // console.log(fieldKey, value[fieldKey]);
+                if (field["type"] !== "section"){
+                    result[field.name]["value"] = value[fieldKey];
+                }else {
+                    result[field.name]["value"] = [];
+                    // console.log("--",field)
+                    const subsectionID = field.subsection_id;
+                    if (schema.subsections[subsectionID]){
+                        // console.log("===", schema.subsections[subsectionID])
+                        value[fieldKey].forEach(subsectionValue => {
+                            // id? order?
+                            result[field.name]["value"].push(FieldValueMapper(subsectionValue.values, schema.subsections[subsectionID]))
                         })
-                    } else {
-                        result[fields[fieldKey].name]["value"] = value[valueKey];
                     }
                 }
-            } else {
-                if (valueKey === field.name) {
-                    result[fields[fieldKey].name]["value"] = value[valueKey];
-                }
             }
-        })
+        }else {
+            if (value[field.name]){
+                result[field.name]["value"] = value[field.name];
+            }
+        }
+
+
+        // console.log(result)
+        // Object.keys(value).forEach(valueKey => {
+        //     if (!isSubsection) {
+        //         if (fieldKey === valueKey) {
+        //             if (Array.isArray(value[valueKey]) && field["type"] === "section") {
+        //                 // console.log(fieldKey, value)
+        //                 result[field.name]["value"] = []
+        //                 value[valueKey].forEach(val => {
+        //                     // console.log("--")
+        //                     if (val.values) {
+        //                         // result[fields[fieldKey].name]["value"] = []
+        //                         Object.keys(schema.subsections).forEach(key => {
+        //                             // result[field.name]["order"] = val.order;
+        //                             console.log(val.values, schema.subsections[key])
+        //                             // result[field.name]["value"].push(FieldValueMapper(val.values, schema.subsections[key],true))
+        //                         })
+        //                     }
+        //                 })
+        //             } else {
+        //                 result[fields[fieldKey].name]["value"] = value[valueKey];
+        //             }
+        //         }
+        //     } else {
+        //         // console.log(field.name, value, valueKey)
+        //
+        //         if (valueKey === fieldKey) {
+        //             result[fields[fieldKey].name]["value"] = value[valueKey];
+        //         }
+        //     }
+        // })
     })
     // console.log(result)
 

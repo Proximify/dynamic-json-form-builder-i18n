@@ -29,7 +29,7 @@ import {
 } from "./components/FundField/FundFieldTemplates";
 import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
 import {MultiLangTextAreaFieldWidget} from './components/MultiLangField'
-import MultiLangFieldTemplate from './components/MultiLangField/template';
+import MultiLangFieldTemplate from './components/MultiLangField/MultiLanFieldTemplate';
 // import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
 import FileFieldTemplate from "./components/FileField/FileFieldTemplate";
@@ -144,7 +144,7 @@ class FormBuilder extends Component {
         if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
             i18n.changeLanguage(this.props.language.toLowerCase());
         }
-        // console.log(this.props)
+        console.log(this.props.formData)
         return (
             <Form
                 id={this.props.formID ?? null}

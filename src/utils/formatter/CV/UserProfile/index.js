@@ -71,7 +71,7 @@ export default function UserProfile(props) {
     } else {
         return (
             <React.Fragment>
-                UserProfile
+                {JSON.stringify(rawData)}formatter
             </React.Fragment>
         )
     }

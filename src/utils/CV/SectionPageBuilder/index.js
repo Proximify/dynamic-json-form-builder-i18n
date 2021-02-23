@@ -5,7 +5,7 @@ import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
 import Formatter from "../../formatter";
-import SchemaParser from "../SchemaParser";
+import SchemaParser, {getLovSubtypeId} from "../SchemaParser";
 
 export function SectionPageBuilder(props) {
 
@@ -115,14 +115,15 @@ export function SectionPageBuilder(props) {
     //     }
     // }
 
+
     const handleOnItemClick = (section, itemId, parentItemId, parentFieldId) => {
         // console.log(section, itemId, parentItemId, parentFieldId);
         props.fetchFormSchema(section, itemId, parentItemId, parentFieldId, (res) => {
-            // console.log("---")
-            if (res) {
-                // console.log("+++")
-
-                const formSchema = SchemaParser(res, true);
+            const lovSubtypeIDs = getLovSubtypeId(res);
+            // console.log(lovSubtypeIDs);
+            props.fetchLovOptions(lovSubtypeIDs, (optRes => {
+                // console.log(optRes);
+                const formSchema = SchemaParser(res, true, optRes);
                 // console.log(formSchema)
                 setState({
                     ...state,
@@ -131,7 +132,21 @@ export function SectionPageBuilder(props) {
                     itemId: itemId,
                     shouldModalOpen: true
                 })
-            }
+            }))
+
+            // if (res) {
+            //     console.log("+++")
+            //
+            //     const formSchema = SchemaParser(res, true,props.fetchLovOptions);
+            //     // console.log(formSchema)
+            //     setState({
+            //         ...state,
+            //         schema: formSchema,
+            //         formName: formSchema.formSchema.id,
+            //         itemId: itemId,
+            //         shouldModalOpen: true
+            //     })
+            // }
         })
     }
 

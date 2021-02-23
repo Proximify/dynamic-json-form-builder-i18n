@@ -1,5 +1,35 @@
 import {SchemaGenerator} from "./FormSchemaGenerator";
 
+
+const getLovSubtypeIdHelper = (sectionSchema) => {
+    if (!sectionSchema.fields){
+        return [];
+    }else {
+        const lovSubtypeIds = [];
+        Object.keys(sectionSchema.fields).forEach(fieldID => {
+            const  field = sectionSchema.fields[fieldID];
+            if (field.type === "lov"){
+                lovSubtypeIds.push(field.subtype_id);
+            }else if (field.type === "reftable"){
+                lovSubtypeIds.push([field.subtype_id, field.dependencies]);
+            }
+        })
+        return lovSubtypeIds;
+    }
+}
+
+export const getLovSubtypeId = (schema) => {
+    const sections = schema.sections;
+    const result = []
+    sections.forEach(section => result.push(sectionParser(section, null)));
+    const formSchema = result[0];
+    const lovSubtypeIds = getLovSubtypeIdHelper(formSchema);
+    Object.keys(formSchema.subsections).forEach(subsectionID => {
+        lovSubtypeIds.push(...getLovSubtypeIdHelper(formSchema.subsections[subsectionID]));
+    })
+    return (lovSubtypeIds);
+}
+
 /**
  * This function extract useful information from the form schema recursively
  * @param section: schema for a single section(a form or one of the subsections in the form)
@@ -35,19 +65,19 @@ const sectionParser = (section, parent_id) => {
 /**
  * @param schema: raw Response from Server
  * @param singleForm: single to identify the Response if for one form or full screen view mode
+ * @param fetchLovOptions
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}|[]}
  * @constructor
  */
-export default function SchemaParser(schema, singleForm = false) {
+export default function SchemaParser(schema, singleForm = false, lovOptions = null) {
     // console.log(schema)
     const sections = schema.sections;
     // const selectionOptions = schema.default.selectionOptions;
-    const selectionOptions = null;
 
     const result = []
     sections.forEach(section => result.push(sectionParser(section, null)))
     if (singleForm) {
-        return SchemaGenerator(result[0], selectionOptions);
+        return SchemaGenerator(result[0], lovOptions);
     } else
         return result;
 }
