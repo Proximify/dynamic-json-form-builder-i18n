@@ -1,22 +1,17 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker} from "../../../../utils/helper";
+import {any, FieldValueMapper, FormatterTracker} from "../../../utils/helper";
 
-export default function CountryOfCitizenship(props) {
-    //console.log("CountryOfCitizenship", props)
-
+export default function AreaOfResearch(props) {
     const {rawData, schema} = props;
-
     const mappedValue = FieldValueMapper(rawData, schema, true);
-    const ft = new FormatterTracker(mappedValue, true);
-
+    const ft = new FormatterTracker(mappedValue);
     const {
-        country_of_citizenship: coc
+        area_of_research: aor
     } = ft.getFields();
-
     return (
         <div>
-            {any(coc) &&
-            <p>{coc.val}</p>}
+            {any(aor) &&
+            <p>{aor.lbl}: {aor.val}</p>}
             {Object.keys(ft.getUnFormattedField()).length > 0 ?
                 <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
             }

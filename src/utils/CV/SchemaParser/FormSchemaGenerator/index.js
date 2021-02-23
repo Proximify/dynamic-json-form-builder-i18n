@@ -67,7 +67,7 @@ const formStrSchemaGen = (schema, lovOptions) => {
  * This function generate the field structure schema
  * @param field: field schema
  * @param schema
- * @param fetchLovOptions
+ * @param lovOptions
  * @returns {{}}
  */
 const fieldStrSchemaGen = (field, schema, lovOptions) => {
@@ -95,7 +95,7 @@ const fieldStrSchemaGen = (field, schema, lovOptions) => {
             result["max_char_count"] = field.max_char_count;
             break;
         case "integer":
-            result["type"] = "integer";
+            result["type"] = "string";
             break;
         case "monthday":
             result["type"] = "string";
@@ -140,6 +140,7 @@ const formDataSchemaGen = (schema) => {
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
+    console.log(fields)
     const dataSchema = {}
     // console.log(mapper, ft.getFields())
     Object.keys(fields).forEach(fieldName => {
@@ -149,11 +150,19 @@ const formDataSchemaGen = (schema) => {
             if (field.rawValue) {
                 const values = [];
                 field.rawValue.forEach(val => {
-                    const subField = {}
+                    const subFieldDataSchema = {}
                     Object.keys(val).forEach(subFieldName => {
-                        subField[subFieldName] = val[subFieldName].value;
+                        const subField = val[subFieldName];
+                        if (subField.type === "bilingual") {
+                            subFieldDataSchema[subFieldName] = JSON.stringify(val[subFieldName].value);
+                        } else if (subField.type === "reftable") {
+                            subFieldDataSchema[subFieldName] = val[subFieldName].value && val[subFieldName].value.length ? [val[subFieldName].value[0]].concat(val[subFieldName].value[1].split("|")) : undefined;
+                        } else {
+                            subFieldDataSchema[subFieldName] = val[subFieldName].value;
+                        }
+                        // subFieldDataSchema[subFieldName] = val[subFieldName].value;
                     })
-                    values.push(subField);
+                    values.push(subFieldDataSchema);
                 })
                 dataSchema[fieldName] = values;
             } else {

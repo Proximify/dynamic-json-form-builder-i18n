@@ -1,22 +1,19 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker} from "../../../../utils/helper";
+import {any, FieldValueMapper, FormatterTracker, reftableFormatter} from "../../../utils/helper";
 
-export default function CountryOfCitizenship(props) {
-    //console.log("CountryOfCitizenship", props)
-
+export default function TemporalPeriods(props) {
     const {rawData, schema} = props;
-
     const mappedValue = FieldValueMapper(rawData, schema, true);
     const ft = new FormatterTracker(mappedValue, true);
-
     const {
-        country_of_citizenship: coc
+        from_year: fy,
+        from_year_period: fyp,
+        to_year: ty,
+        to_year_period: typ
     } = ft.getFields();
-
     return (
         <div>
-            {any(coc) &&
-            <p>{coc.val}</p>}
+            {any(fy, ty, fyp, typ) && <p><span>{fy.val} {fyp.val && `(${fyp.val})`} - {ty.val} {typ.val && `(${typ.val})`}</span></p>}
             {Object.keys(ft.getUnFormattedField()).length > 0 ?
                 <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
             }

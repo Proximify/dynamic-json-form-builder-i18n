@@ -13,7 +13,7 @@ export const Months = [
     'December'
 ];
 
-export const FieldValueMapper = (value, schema, isFormatterSubsection = false) => {
+export const FieldValueMapper = (value, schema, isSubsectionFormatter = false) => {
     // console.log(schema,value)
     const fields = schema.fields
     // console.log(schema,value)
@@ -25,16 +25,16 @@ export const FieldValueMapper = (value, schema, isFormatterSubsection = false) =
         result[field.name]["type"] = field["type"];
         result[field.name]["subtype"] = field["subtype"];
         result[field.name]["label"] = field["label"];
-        if (!isFormatterSubsection){
-            if (value[fieldKey]){
+        if (!isSubsectionFormatter) {
+            if (value[fieldKey]) {
                 // console.log(fieldKey, value[fieldKey]);
-                if (field["type"] !== "section"){
+                if (field["type"] !== "section") {
                     result[field.name]["value"] = value[fieldKey];
-                }else {
+                } else {
                     result[field.name]["value"] = [];
                     // console.log("--",field)
                     const subsectionID = field.subsection_id;
-                    if (schema.subsections[subsectionID]){
+                    if (schema.subsections[subsectionID]) {
                         // console.log("===", schema.subsections[subsectionID])
                         value[fieldKey].forEach(subsectionValue => {
                             // id? order?
@@ -43,9 +43,13 @@ export const FieldValueMapper = (value, schema, isFormatterSubsection = false) =
                     }
                 }
             }
-        }else {
-            if (value[field.name]){
-                result[field.name]["value"] = value[field.name];
+        } else {
+            if (value[field.name]) {
+                if (field.type === 'bilingual'){
+                    result[field.name]["value"] = JSON.parse(value[field.name]);
+                }else {
+                    result[field.name]["value"] = value[field.name];
+                }
             }
         }
 
@@ -86,11 +90,24 @@ export const FieldValueMapper = (value, schema, isFormatterSubsection = false) =
     return result
 }
 
+export const reftableFormatter = (fieldValue, isViewModeSubsectionField = false, delimiter = ' - ') => {
+    if (isViewModeSubsectionField){
+        return fieldValue.map(val => {
+            const {order, ...data} = val;
+            return Object.values(data).map(data=>data.join(delimiter))
+        })
+    }else {
+        return fieldValue.slice(1).join(delimiter)
+    }
+}
+
+
 export class FormatterTracker {
     #fields = {}
-
-    constructor(fields) {
+    #isSubsectionFormatter = false
+    constructor(fields, isSubsectionFormatter = false) {
         const tempFields = {...fields}
+        this.#isSubsectionFormatter = isSubsectionFormatter;
         Object.keys(tempFields).forEach(key => {
             const field = tempFields[key];
             const value = field.value;
@@ -114,7 +131,7 @@ export class FormatterTracker {
         const result = {}
         Object.keys(this.#fields).forEach(key => {
             const field = this.#fields[key];
-            if (field.count === 0 && field.rawValue) {
+            if (field.count === 0 && field.rawValue && field.name !== "order") {
                 result[key] = this.#fields[key]
             }
         })
@@ -146,9 +163,9 @@ export class FormatterTracker {
         if (field.type) {
             switch (field.type) {
                 case 'lov':
-                    if (field.subtype && field.subtype === "Yes-No"){
+                    if (field.subtype && field.subtype === "Yes-No") {
                         return field.value[1] === "Yes" ? field.label : null
-                    }else {
+                    } else {
                         return field.value[1];
                     }
                 case "string":
@@ -158,19 +175,28 @@ export class FormatterTracker {
                 case "date":
                     return Months[field.value.split("-")[1] - 1] + " " + field.value.split("-")[2] + ", " + field.value.split("-")[0];
                 case "section":
-                    let string = "";
+                    // console.log("----", field)
+                    let result = [];
                     field.value.forEach((val, i) => {
-                        if (i < field.value.length - 1)
-                            string += Object.keys(val).map(key => this.format(val[key])) + ", ";
-                        else
-                            string += Object.keys(val).map(key => this.format(val[key]));
+                        result[i] = {};
+                        Object.keys(val).forEach(key => result[i][key] = this.format(val[key]));
                     })
-                    return string;
+                    return result;
+                    //
+                    // let string = "";
+                    // field.value.forEach((val, i) => {
+                    //     Object.keys(val).map(key => console.log(val, this.format(val[key])))
+                    //     if (i < field.value.length - 1)
+                    //         string += Object.keys(val).map(key => this.format(val[key])) + ", ";
+                    //     else
+                    //         string += Object.keys(val).map(key => this.format(val[key]));
+                    // })
+                    // return string;
                 case "integer":
                     const integer = Number(field.value);
                     return isNaN(integer) ? field.value : integer
                 case "reftable":
-                    return field.value[1];
+                    return this.#isSubsectionFormatter ? field.value : field.value[1].split('|');
                 case "bilingual":
                     const eng = field.value["english"] ?? undefined;
                     const fre = field.value["french"] ?? undefined;

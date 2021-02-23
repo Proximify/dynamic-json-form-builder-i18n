@@ -113,6 +113,7 @@ export function SingleLargeSelectionWidget(props) {
 }
 
 export function MultiColLargeSelectionWidget(props) {
+    console.log("MultiColLargeSelectionWidget",props)
     const {options, value} = props;
 
     const formatOptionLabel = ({label, value}) => (

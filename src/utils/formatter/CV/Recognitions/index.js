@@ -1,5 +1,5 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker} from "../../utils/helper";
+import {any, FieldValueMapper, FormatterTracker, reftableFormatter} from "../../utils/helper";
 import ResearchDisciplines from "./ResearchDisciplines";
 
 
@@ -44,15 +44,15 @@ export default function Recognitions(props) {
                 {any(efd, end, ori) &&
                 <>
                     {any(efd, end) && <span>({efd.val - end.val})</span>}
-                    {any(ori) && <span>{ori.val}</span>}
+                    {any(ori) && <span>{reftableFormatter(ori.val)}</span>}
+
                 </>
                 }
                 {any(desc) && <div><p>{desc.lbl}</p> <p>{desc.val.eng} {desc.val.fre ? `(${desc.val.fre})` : null}</p></div>}
                 <div className="ml-2">
-                    {any(redis) && <p>{redis.lbl}: {redis.val}</p>}
-                    {any(aor) && <p>{aor.lbl}: {aor.val}</p>}
-                    {any(foa) &&
-                    <p>{foa.lbl}: {foa.val}</p>}
+                    {any(redis) && <p>{redis.lbl}: {reftableFormatter(redis.val,true)}</p>}
+                    {any(aor) && <p>{aor.lbl}: {reftableFormatter(aor.val,true)}</p>}
+                    {any(foa) && <p>{foa.lbl}: {reftableFormatter(foa.val, true)}</p>}
                 </div>
                 {any(ca) && <p>{ca.lbl}: {ca.val}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
