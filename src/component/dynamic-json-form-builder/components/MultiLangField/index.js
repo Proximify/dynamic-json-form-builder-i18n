@@ -360,7 +360,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                             className="multiLangFieldInput"
                             type="text"
                             id={props.schema.id}
-                            value={state.primaryContent}
+                            value={state.primaryContent ?? undefined}
                             required={props.required}
                             onChange={(event) => {
                                 setState({...state, primaryContent: event.target.value})
@@ -397,7 +397,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                             <input
                                 className="multiLangFieldInput"
                                 type="text"
-                                value={state.secondaryContent}
+                                value={state.secondaryContent ?? undefined}
                                 onChange={(event) => {
                                     setState({...state, secondaryContent: event.target.value})
                                 }}

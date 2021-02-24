@@ -170,6 +170,8 @@ export class FormatterTracker {
                     }
                 case "string":
                     return field.value;
+                case "yearmonth":
+                    return Months[field.value.split("/")[1] - 1] + " " + field.value.split("/")[0];
                 case "monthday":
                     return Months[field.value.split("/")[0]] + " " + field.value.split("/")[1];
                 case "date":

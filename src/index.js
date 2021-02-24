@@ -4,11 +4,6 @@ import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
 import {SectionPageBuilder} from "./utils/CV/SectionPageBuilder";
 import api from "./api";
-import * as Identification
-    from "./utils/CV/schemas/identification.json";
-import * as Address from "./utils/CV/schemas/address.json";
-import * as CVSchema from "./utils/CV/schemas/cvSchema.json";
-import * as academic_work_experience from './utils/CV/schemas/academic_work_experience.json'
 import SchemaParser from "./utils/CV/SchemaParser";
 import axios from "axios";
 

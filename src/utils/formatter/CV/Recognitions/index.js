@@ -1,6 +1,8 @@
 import React from "react";
 import {any, FieldValueMapper, FormatterTracker, reftableFormatter} from "../../utils/helper";
 import ResearchDisciplines from "./ResearchDisciplines";
+import AreaOfResearch from "./AreaOfResearch";
+import FieldsOfApplication from "./FieldOfAppliance";
 
 
 export default function Recognitions(props) {
@@ -12,7 +14,13 @@ export default function Recognitions(props) {
     const subsections = {
         "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
                                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                        rawData={props.rawData}/>
+                                                        rawData={props.rawData}/>,
+        "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
+                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                  rawData={props.rawData}/>,
+        "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
+                                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                      rawData={props.rawData}/>,
     }
 
     if (props.isFullScreenViewMode === true) {
@@ -28,6 +36,7 @@ export default function Recognitions(props) {
             effective_date: efd,
             end_date: end,
             "amount_(can$)": amc,
+            amount: am,
             description: desc,
             currency: cur,
             research_disciplines: redis,
@@ -42,13 +51,13 @@ export default function Recognitions(props) {
                     {rt.val} {rn.val}
                 </p>}
                 {any(efd, end, ori) &&
-                <>
-                    {any(efd, end) && <span>({efd.val - end.val})</span>}
+                <p>
+                    {any(efd, end) && <span>{`(${efd.val} - ${end.val})`} </span>}
                     {any(ori) && <span>{reftableFormatter(ori.val)}</span>}
-
-                </>
+                </p>
                 }
-                {any(desc) && <div><p>{desc.lbl}</p> <p>{desc.val.eng} {desc.val.fre ? `(${desc.val.fre})` : null}</p></div>}
+                {any(am,cur) && <p>{am.val && `${am.lbl}: ${am.val} ${cur.val}`}</p>}
+                {any(desc) && <div><p>{desc.lbl}</p> <p>{desc.val.eng} {desc.val.fre && `(${desc.val.fre})`}</p></div>}
                 <div className="ml-2">
                     {any(redis) && <p>{redis.lbl}: {reftableFormatter(redis.val,true)}</p>}
                     {any(aor) && <p>{aor.lbl}: {reftableFormatter(aor.val,true)}</p>}

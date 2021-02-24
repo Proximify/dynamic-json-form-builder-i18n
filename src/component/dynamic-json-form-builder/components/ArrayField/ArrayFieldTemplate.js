@@ -64,34 +64,36 @@ export function ReorderableArrayFieldTemplate(props) {
     }
 
     return (
-        <div className="flex flex-wrap justify-center my-3">
-            <div className="w-1/4 flex-grow text-base font-medium text-gray-700">
-                <div className="flex items-center">
-                    {title && <label>{title}</label>}
-                    {required && <p className="text-red-700 ml-1 mr-2">*</p>}
-                    {schema.description && <Tooltip
-                        placement="right-start"
-                        trigger="hover"
-                        delayHide={150}
-                        tooltip={
-                            <>
-                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                <p>{descriptions[schema.field_type]}</p>
-                            </>
-                        }
-                        hideArrow={true}
-                        modifiers={[
-                            {
-                                name: "offset",
-                                enabled: true,
-                                options: {
-                                    offset: [0, 8]
-                                }
+        <div className="flex flex-wrap justify-center my-3 space-x-6">
+            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end">
+                <div>
+                    <div className="flex items-center">
+                        {title && <label>{title}</label>}
+                        {required && <p className="text-red-700 ml-1 mr-2">*</p>}
+                        {schema.description && <Tooltip
+                            placement="right-start"
+                            trigger="hover"
+                            delayHide={150}
+                            tooltip={
+                                <>
+                                    <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                    <p>{descriptions[schema.field_type]}</p>
+                                </>
                             }
-                        ]}
-                    >
-                        <AiOutlineQuestionCircle className="text-gray-400 mx-1"/>
-                    </Tooltip>}
+                            hideArrow={true}
+                            modifiers={[
+                                {
+                                    name: "offset",
+                                    enabled: true,
+                                    options: {
+                                        offset: [0, 8]
+                                    }
+                                }
+                            ]}
+                        >
+                            <AiOutlineQuestionCircle className="text-gray-400 mx-1" size={'1.1em'}/>
+                        </Tooltip>}
+                    </div>
                 </div>
             </div>
             <div className="flex-grow" style={{maxWidth: "20rem"}}>
@@ -108,7 +110,7 @@ export function ReorderableArrayFieldTemplate(props) {
                            })
                            return onAddClick();
                        }}
-                    >< AiOutlinePlusCircle/></a>}
+                    >< AiOutlinePlusCircle size={"1.2em"}/></a>}
                     <div
                         className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1 text-sm" : "hidden"}`}>
                         <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -197,34 +199,36 @@ export function ArrayFieldTemplate(props) {
     )
 
     return (
-        <div className="flex flex-wrap justify-center my-3">
-            <div className="w-1/4 flex-grow text-base font-medium text-gray-700">
-                <div className="flex items-center">
-                    {title && <label>{title}</label>}
-                    {required && <p className="text-red-700 ml-1 mr-2">*</p>}
-                    {schema.description && <Tooltip
-                        placement="right-start"
-                        trigger="hover"
-                        delayHide={150}
-                        tooltip={
-                            <>
-                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                <p>{descriptions[schema.field_type]}</p>
-                            </>
-                        }
-                        hideArrow={true}
-                        modifiers={[
-                            {
-                                name: "offset",
-                                enabled: true,
-                                options: {
-                                    offset: [0, 8]
-                                }
+        <div className="flex flex-wrap justify-center my-3 space-x-6">
+            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end">
+                <div>
+                    <div className="flex items-center">
+                        {title && <label>{title}</label>}
+                        {required && <p className="text-red-700 ml-1 mr-2">*</p>}
+                        {schema.description && <Tooltip
+                            placement="right-start"
+                            trigger="hover"
+                            delayHide={150}
+                            tooltip={
+                                <>
+                                    <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                    <p>{descriptions[schema.field_type]}</p>
+                                </>
                             }
-                        ]}
-                    >
-                        <AiOutlineQuestionCircle className="text-gray-400 mx-1"/>
-                    </Tooltip>}
+                            hideArrow={true}
+                            modifiers={[
+                                {
+                                    name: "offset",
+                                    enabled: true,
+                                    options: {
+                                        offset: [0, 8]
+                                    }
+                                }
+                            ]}
+                        >
+                            <AiOutlineQuestionCircle className="text-gray-400 mx-1" size={"1.1em"}/>
+                        </Tooltip>}
+                    </div>
                 </div>
             </div>
             <div className="flex-grow" style={{maxWidth: "20rem"}}>
@@ -241,7 +245,7 @@ export function ArrayFieldTemplate(props) {
                            })
                            return onAddClick();
                        }}
-                    >< AiOutlinePlusCircle/></a>}
+                    >< AiOutlinePlusCircle size={"1.2em"}/></a>}
                     <div
                         className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1 text-sm" : "hidden"}`}>
                         <ul>

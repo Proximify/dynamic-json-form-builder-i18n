@@ -99,21 +99,22 @@ export function MultiColSelectionWidget(props) {
 export function SingleLargeSelectionWidget(props) {
     const {options, value} = props;
     return (
-        <WindowedSelect
-            id={props.schema.id}
-            className={"singleFieldSelect"}
-            options={options.enumOptions}
-            isClearable={true}
-            onChange={value => handleChange(value, props.onChange)}
-            defaultValue={value ? options.enumOptions[options.enumOptions.map(function (e) {
-                return e.value[1];
-            }).indexOf(value[1])] : null}
-        />
+        <WindowedSelect id={props.schema.id}
+                        getOptionLabel={option => option.value[1] ?? option.label}
+                        className={"singleFieldSelect"}
+                        options={options.enumOptions}
+                        defaultValue={value ?
+                            options.enumOptions[options.enumOptions.map(element =>
+                                element.value.toString()
+                            ).indexOf(value.toString())]
+                            : null}
+                        onChange={value => handleChange(value, props.onChange)}
+                        isClearable={true}/>
     );
 }
 
 export function MultiColLargeSelectionWidget(props) {
-    console.log("MultiColLargeSelectionWidget",props)
+    console.log("MultiColLargeSelectionWidget", props)
     const {options, value} = props;
 
     const formatOptionLabel = ({label, value}) => (

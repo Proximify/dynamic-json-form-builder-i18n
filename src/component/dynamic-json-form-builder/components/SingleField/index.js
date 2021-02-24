@@ -196,3 +196,29 @@ export function YearMonthInputWidget(props) {
         />
     );
 }
+
+export function YearInputWidget(props) {
+    const year = props.value ?? null;
+    const [state, setState] = useState(year ? {date: new Date(year, 0)} : {date: undefined});
+    const {t, i18n} = useTranslation();
+
+    const handleOnBlur = () => {
+        if (!state.date) {
+            props.onChange(undefined);
+        } else {
+            const month = state.date.getMonth() + 1;
+            const date = state.date.getDate();
+            props.onChange(month + '/' + date);
+        }
+    }
+
+    return (
+        <DatePicker selected={state.date ?? null}
+                    onChange={date => setState({date: date})}
+                    dateFormat="yyyy/MM"
+                    locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                    placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
+                    onBlur={handleOnBlur}
+        />
+    );
+}

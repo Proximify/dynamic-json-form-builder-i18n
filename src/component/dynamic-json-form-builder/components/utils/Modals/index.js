@@ -180,8 +180,8 @@ export function ModalFullScreen(props) {
         <>
             <div className="overflow-y-auto fixed z-50 w-full h-full top-0 left-0 bg-white">
                 <div className="max-w-2xl h-full w-full mx-auto py-5">
-                    <h1 className="text-2xl flex font-semibold text-black border-b-2 border-gray-200 py-3 items-center justify-between">
-                        {title}
+                    <div className="flex border-b-2 border-gray-200 py-3 items-center space-x-3">
+                        <h1 className="text-2xl font-semibold text-black">{title}</h1>
                         {content.props.formSchema && content.props.formSchema.form_description && <Tooltip
                             placement="left"
                             trigger="hover"
@@ -204,9 +204,9 @@ export function ModalFullScreen(props) {
                                 }
                             ]}
                         >
-                            <AiOutlineQuestionCircle className="text-gray-400"/>
+                            <AiOutlineQuestionCircle className="text-red-600" size={"1.5em"}/>
                         </Tooltip>}
-                    </h1>
+                    </div>
                     <div className="pt-2 pb-5 my-4">
                         {content}
                     </div>

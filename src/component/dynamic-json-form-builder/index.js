@@ -11,7 +11,8 @@ import {
     PhoneInputWidget,
     DateInputWidget,
     MonthDayInputWidget,
-    YearMonthInputWidget
+    YearMonthInputWidget,
+    YearInputWidget
 } from "./components/SingleField";
 import {
     SingleSelectionWidget,
@@ -47,6 +48,7 @@ const customWidgets = {
     dateInputWidget: DateInputWidget,
     monthDayInputWidget: MonthDayInputWidget,
     yearMonthInputWidget: YearMonthInputWidget,
+    yearInputWidget:YearInputWidget,
 
 
     singleSelectionWidget: SingleSelectionWidget,
@@ -156,11 +158,12 @@ class FormBuilder extends Component {
                 }
                 widgets={customWidgets}
                 showErrorList={false}
-                // liveValidate
+                liveValidate
                 onChange={({formData}) => {
-                    console.log("data changed", formData)
+                    console.log("data changed", formData, formData.description)
                 }}
-                // validate={this.validation}
+                validate={this.validation}
+                // noValidate={true}
                 onError={(errors) => {
                     this.onErrorMsgChange(errors);
                 }}

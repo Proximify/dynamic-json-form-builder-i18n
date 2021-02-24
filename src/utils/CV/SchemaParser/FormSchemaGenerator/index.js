@@ -11,7 +11,7 @@ import api from "../../../../api";
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
  * @param schema: schema for the form
- * @param fetchLovOptions
+ * @param lovOptions
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}}
  * @constructor
  */
@@ -27,16 +27,16 @@ export const SchemaGenerator = (schema, lovOptions) => {
         result.formSchema = formStrSchemaGen(schema, lovOptions);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
-        // result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
+        result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
     }
-    // console.log(result.formSchema);
+    console.log(result);
     return result;
 }
 
 /**
  * This function generate the form structure schema
  * @param schema
- * @param fetchLovOptions
+ * @param lovOptions
  * @returns {{id, type: string, required: [], properties: {}}}
  */
 const formStrSchemaGen = (schema, lovOptions) => {
@@ -78,11 +78,12 @@ const fieldStrSchemaGen = (field, schema, lovOptions) => {
     const result = {}
     result["name"] = field.name ?? null;
     result["id"] = field.field_id ?? null;
-    result["description"] = field.description ? field.description.replaceAll('<a/>', '</a>') : null;
+    result["description"] = field.description ? field.description.replaceAll('<a/>', '</a>') : undefined;
     result["title"] = field.label;
     result["subtype_id"] = field.subtype_id;
     result["field_type"] = field.type;
     result["constraints"] = field.constraints;
+    result["exclusive_with"] = field.exclusive_with;
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
     switch (field.type) {
         case "lov": {
@@ -101,6 +102,9 @@ const fieldStrSchemaGen = (field, schema, lovOptions) => {
             result["type"] = "string";
             break;
         case "yearmonth":
+            result["type"] = "string";
+            break;
+        case "year":
             result["type"] = "string";
             break;
         case "date":
@@ -195,7 +199,7 @@ const customArrayTemplate = {
 const fieldTypeWidgetMapper = {
     "lov": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
-        "ui:widget": "singleSelectionWidget"
+        "ui:widget": "singleLargeSelectionWidget"
     },
     "string": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
@@ -208,6 +212,10 @@ const fieldTypeWidgetMapper = {
     "yearmonth": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "yearMonthInputWidget"
+    },
+    "year": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "yearInputWidget"
     },
     "date": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
@@ -225,7 +233,6 @@ const fieldTypeWidgetMapper = {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "numberInputWidget",
         // "ui:readonly": true
-
     }
 }
 

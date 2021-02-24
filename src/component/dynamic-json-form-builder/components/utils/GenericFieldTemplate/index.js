@@ -15,20 +15,20 @@ const GenericFieldTemplate = (props) => {
 
 
     return (
-        <div className="flex flex-wrap justify-center my-3">
-            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700">
+        <div className="flex flex-wrap justify-center my-3 space-x-6">
+            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end">
                 <div className="flex items-center">
                     {label && <label>{label}</label>}
                     {required && <p className="text-red-700 mx-0.5">*</p>}
-                    {schema.description && <Tooltip
+                    {<Tooltip
                         placement="right-start"
                         trigger="hover"
                         delayHide={150}
                         tooltip={
-                            <>
-                                <div dangerouslySetInnerHTML={{__html:schema.description}} />
+                            schema.description ? <>
+                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
                                 <div>{descriptions[schema.field_type]}</div>
-                            </>
+                            </> : <div>{label}</div>
                         }
                         hideArrow={true}
                         modifiers={[
@@ -41,7 +41,7 @@ const GenericFieldTemplate = (props) => {
                             }
                         ]}
                     >
-                        <AiOutlineQuestionCircle className="text-gray-400 mx-1"/>
+                        <AiOutlineQuestionCircle className="text-gray-400 mx-1" size={'1.1em'}/>
                     </Tooltip>}
                 </div>
             </div>
