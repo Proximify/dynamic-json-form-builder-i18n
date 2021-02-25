@@ -3,6 +3,8 @@ import Identification from "./Identification";
 import LanguageSkills from "./LanguageSkills";
 import Address from "./Address";
 import Telephone from "./Telephone";
+import Email from "./Email";
+import Website from "./Website";
 
 export default function PersonalInformation(props) {
     // console.log("PersonalInformation", props);
@@ -12,14 +14,20 @@ export default function PersonalInformation(props) {
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                           rawData={props.rawData}/>,
         "language_skills": <LanguageSkills structureChain={props.structureChain}
-                                          isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                          rawData={props.rawData}/>,
+                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                           rawData={props.rawData}/>,
         "address": <Address structureChain={props.structureChain}
-                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                  rawData={props.rawData}/>,
-        "telephone":<Telephone structureChain={props.structureChain}
-                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                             rawData={props.rawData}/>,
+                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                            rawData={props.rawData}/>,
+        "telephone": <Telephone structureChain={props.structureChain}
+                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                rawData={props.rawData}/>,
+        "email": <Email structureChain={props.structureChain}
+                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                        rawData={props.rawData}/>,
+        "website": <Website structureChain={props.structureChain}
+                          isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                          rawData={props.rawData}/>,
     }
 
     return (

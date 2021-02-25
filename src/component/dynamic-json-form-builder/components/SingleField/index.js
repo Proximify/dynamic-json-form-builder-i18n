@@ -315,10 +315,11 @@ export function YearInputWidget(props) {
     return (
         <DatePicker selected={state.date}
                     onChangeRaw={event => {
-                        if (event.target.value === undefined){
+                        const value = event.target.value;
+                        if (value === undefined){
                             return;
                         }
-                        if (event.target.value === '') {
+                        if (value === '') {
                             setState({
                                 ...state,
                                 date: null,
@@ -327,30 +328,36 @@ export function YearInputWidget(props) {
                             })
                             handleChange(undefined);
                         } else {
-                            const newHasMonth = event.target.value.split('/').length > 2 || (event.target.value.split('/').length === 2 && event.target.value.slice(-1) !== '/');
-                            const newHasDate = event.target.value.split('/').length >= 3 && event.target.value.slice(-1) !== '/';
-                            const newDate = new Date(event.target.value.split('/')[0], newHasMonth ? event.target.value.split('/')[1] - 1 : 0, newHasDate ? event.target.value.split('/')[2] : 1);
+                            const regExp = new RegExp('^([0-9]{2,4}/?)([0-9]{0,2}/?)([0-9]{0,2})$');
+                            if (regExp.test(value)){
+                                if (regExp.test(value)){
+                                    const newHasMonth = value.split('/').length > 2 || (value.split('/').length === 2 && value.slice(-1) !== '/');
+                                    const newHasDate = value.split('/').length >= 3 && value.slice(-1) !== '/';
+                                    const newDate = new Date(value.split('/')[0], newHasMonth ? value.split('/')[1] - 1 : 0, newHasDate ? value.split('/')[2] : 1);
 
-                            if (newHasMonth !== state.hasMonth || newHasDate !== state.hasDate) {
-                                console.log("monthday state change", state, newHasMonth, newHasDate);
-                                setState({
-                                    ...state,
-                                    date: newDate,
-                                    hasMonth: newHasMonth,
-                                    hasDate: newHasDate
-                                })
-                                handleChange(newDate, newHasMonth, newHasDate);
-                            } else {
-                                // console.log(`date is ${JSON.stringify(newDate) === JSON.stringify(state.date) ? 'same' : "not same"}`)
-                                if (JSON.stringify(newDate) !== JSON.stringify(state.date)){
-                                    // console.log(newDate.getFullYear(), newDate.getMonth(), newDate.getDay(), newDate)
-                                    setState({
-                                        ...state,
-                                        date: newDate,
-                                    })
-                                    handleChange(newDate, newHasMonth, newHasDate);
+                                    if (newHasMonth !== state.hasMonth || newHasDate !== state.hasDate) {
+                                        console.log("monthday state change", state, newHasMonth, newHasDate);
+                                        setState({
+                                            ...state,
+                                            date: newDate,
+                                            hasMonth: newHasMonth,
+                                            hasDate: newHasDate
+                                        })
+                                        handleChange(newDate, newHasMonth, newHasDate);
+                                    } else {
+                                        // console.log(`date is ${JSON.stringify(newDate) === JSON.stringify(state.date) ? 'same' : "not same"}`)
+                                        if (JSON.stringify(newDate) !== JSON.stringify(state.date)){
+                                            // console.log(newDate.getFullYear(), newDate.getMonth(), newDate.getDay(), newDate)
+                                            setState({
+                                                ...state,
+                                                date: newDate,
+                                            })
+                                            handleChange(newDate, newHasMonth, newHasDate);
+                                        }
+                                    }
                                 }
                             }
+
                         }
                     }}
                     onSelect={(date) => {

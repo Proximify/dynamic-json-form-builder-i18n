@@ -1,7 +1,7 @@
 import React from "react";
 import {FieldValueMapper, FormatterTracker, any} from "../../../utils/helper";
 
-export default function Telephone(props) {
+export default function Website(props) {
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -10,21 +10,16 @@ export default function Telephone(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            phone_type: pt,
-            country_code: cc,
-            area_code: ac,
-            telephone_number: tn,
-            extension: ex,
-            telephone_start_date: tsd,
-            telephone_end_date: ted
+            url: u,
+            website_type: wt
         } = ft.getFields();
 
         return (
             <div>
-                {any(pt, cc, ac, tn, ex, tsd, ted) &&
+                {any(u, wt) &&
                 <p>
-                    <span>{pt.val && `${pt.val}: `}{cc.val && `+${cc.val} `}{ac.val && `(${ac.val}) `}{tn.val}{ex.val && `x ${ex.val} `}</span>
-                    {any(tsd, ted) && <span>| ({tsd.val} - {ted.val})</span>}
+                    <span>{wt.val && `${wt.val}: `}</span>
+                    <a href={u} className="text-blue-500 hover:underline"> {u.val}</a>
                 </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
@@ -34,7 +29,7 @@ export default function Telephone(props) {
     } else {
         return (
             <React.Fragment>
-                LanguageSkill
+                Email
             </React.Fragment>
         )
     }

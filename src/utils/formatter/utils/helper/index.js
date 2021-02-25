@@ -45,66 +45,61 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false) =
             }
         } else {
             if (value[field.name]) {
-                if (field.type === 'bilingual'){
+                if (field.type === 'bilingual') {
                     result[field.name]["value"] = JSON.parse(value[field.name]);
-                }else {
+                } else {
                     result[field.name]["value"] = value[field.name];
                 }
             }
         }
-
-
-        // console.log(result)
-        // Object.keys(value).forEach(valueKey => {
-        //     if (!isSubsection) {
-        //         if (fieldKey === valueKey) {
-        //             if (Array.isArray(value[valueKey]) && field["type"] === "section") {
-        //                 // console.log(fieldKey, value)
-        //                 result[field.name]["value"] = []
-        //                 value[valueKey].forEach(val => {
-        //                     // console.log("--")
-        //                     if (val.values) {
-        //                         // result[fields[fieldKey].name]["value"] = []
-        //                         Object.keys(schema.subsections).forEach(key => {
-        //                             // result[field.name]["order"] = val.order;
-        //                             console.log(val.values, schema.subsections[key])
-        //                             // result[field.name]["value"].push(FieldValueMapper(val.values, schema.subsections[key],true))
-        //                         })
-        //                     }
-        //                 })
-        //             } else {
-        //                 result[fields[fieldKey].name]["value"] = value[valueKey];
-        //             }
-        //         }
-        //     } else {
-        //         // console.log(field.name, value, valueKey)
-        //
-        //         if (valueKey === fieldKey) {
-        //             result[fields[fieldKey].name]["value"] = value[valueKey];
-        //         }
-        //     }
-        // })
     })
-    // console.log(result)
-
     return result
 }
 
-export const reftableFormatter = (fieldValue, isViewModeSubsectionField = false, delimiter = ' - ') => {
-    if (isViewModeSubsectionField){
-        return fieldValue.map(val => {
-            const {order, ...data} = val;
-            return Object.values(data).map(data=>data.join(delimiter))
+export const reftableFormatter = (fieldValue, isViewModeSubsectionField = false, isInViewMode = false, delimiter = ' - ') => {
+    const format = (valueArray) => {
+        let html = [];
+        valueArray.forEach((value, index) => {
+            if (index === 0) {
+                html.push(<strong>{value}</strong>);
+                if (valueArray.length > 1) {
+                    html.push(' (')
+                }
+            } else if (index === valueArray.length - 1) {
+                html.push(<span>{value}</span>);
+                if (valueArray.length > 1) {
+                    html.push(')')
+                }
+            } else {
+                html.push(<span>{value} - </span>)
+            }
         })
-    }else {
-        return fieldValue.slice(1).join(delimiter)
+        return html;
     }
+
+    if (!fieldValue) {
+        return null;
+    }
+    const result = [];
+    if (isViewModeSubsectionField) {
+
+        fieldValue.forEach((val, index) => {
+            const {order, ...data} = val;
+            Object.values(data).forEach(data => {
+                Array.isArray(data) ? result.push(format(data), (index < fieldValue.length - 1 ? ', ' : '')) : result.push(data)
+            })
+        })
+    } else {
+        isInViewMode ? result.push(format(fieldValue)) : result.push(format(fieldValue.slice(1)))
+    }
+    return result
 }
 
 
 export class FormatterTracker {
     #fields = {}
     #isSubsectionFormatter = false
+
     constructor(fields, isSubsectionFormatter = false) {
         const tempFields = {...fields}
         this.#isSubsectionFormatter = isSubsectionFormatter;
@@ -184,16 +179,16 @@ export class FormatterTracker {
                         Object.keys(val).forEach(key => result[i][key] = this.format(val[key]));
                     })
                     return result;
-                    //
-                    // let string = "";
-                    // field.value.forEach((val, i) => {
-                    //     Object.keys(val).map(key => console.log(val, this.format(val[key])))
-                    //     if (i < field.value.length - 1)
-                    //         string += Object.keys(val).map(key => this.format(val[key])) + ", ";
-                    //     else
-                    //         string += Object.keys(val).map(key => this.format(val[key]));
-                    // })
-                    // return string;
+                //
+                // let string = "";
+                // field.value.forEach((val, i) => {
+                //     Object.keys(val).map(key => console.log(val, this.format(val[key])))
+                //     if (i < field.value.length - 1)
+                //         string += Object.keys(val).map(key => this.format(val[key])) + ", ";
+                //     else
+                //         string += Object.keys(val).map(key => this.format(val[key]));
+                // })
+                // return string;
                 case "integer":
                     const integer = Number(field.value);
                     return isNaN(integer) ? field.value : integer

@@ -72,6 +72,7 @@ export default function UserProfile(props) {
             countries: co,
             orcid: or
         } = ft.getFields();
+        console.log(ft.getFields());
         return (
             <div>
                 {any(rs, rcsd) &&
@@ -93,7 +94,7 @@ export default function UserProfile(props) {
                     {res.val.fre && <div><p>{res.lbl} (french)</p><p>{res.val.fre}</p></div>}
                 </>}
                 <div className="ml-2">
-                    {any(rsk) && <div><p>{rsk.lbl}</p> <p>{rsk.val.eng} {rsk.val.fre ? `(${rsk.val.fre})` : null}</p></div>}
+                    {any(rsk) && <div><p>{rsk.lbl}</p> <p>{rsk.val.eng} {rsk.val.fre ? `(${rsk.val.fre})` : null}</p></div>} error
                     {any(rc) && <div><p>{rc.lbl}</p> <p>{reftableFormatter(rc.val ,true)}</p></div>}
                     {any(ta) && <div><p>{ta.lbl}</p> <p>{reftableFormatter(ta.val, true)}</p></div>}
                     {any(dti) && <div><p>{dti.lbl}</p> <p>{reftableFormatter(dti.val, true)}</p></div>}

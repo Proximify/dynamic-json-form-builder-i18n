@@ -2,7 +2,7 @@ export default function FormValidationGenerator(fields) {
     if (!fields || Object.keys(fields).length === 0) {
         return null;
     }
-    console.log(fields);
+    // console.log(fields);
     const validations = {};
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
@@ -63,18 +63,18 @@ const fieldConstraintsHandler = (field, fields) => {
                         }
                     };
                     break;
-                case "exclusive_with": {
-                    const dependantField = getFieldById(fields, constraint["exclusive_with"].toString());
-                    validations[validations.length] = {
-                        validateMethod: (formData) => {
-                            return !(formData[field.name] && formData[field.name].length && formData[dependantField.name] && formData[dependantField.name] !== '');
-                        },
-                        getErrMsg: (formData) => {
-                            return `This field has error`
-                        }
-                    };
-                    break;
-                }
+                // case "exclusive_with": {
+                //     const dependantField = getFieldById(fields, constraint["exclusive_with"].toString());
+                //     validations[validations.length] = {
+                //         validateMethod: (formData) => {
+                //             return formData === undefined || (!(formData[field.name] && formData[field.name].length && formData[dependantField.name] && formData[dependantField.name] !== ''));
+                //         },
+                //         getErrMsg: (formData) => {
+                //             return `This field has error`
+                //         }
+                //     };
+                //     break;
+                // }
                 //TODO: missing autoSum
                 default:
                     // console.log("unhandled constraint", constraintName);
@@ -90,10 +90,10 @@ const fieldConstraintsHandler = (field, fields) => {
 
     if (field.exclusive_with) {
         const dependantField = getFieldById(fields, field.exclusive_with);
-        console.log(field.name, dependantField);
+        // console.log(field.name, dependantField);
         validations[validations.length] = {
             validateMethod: (formData) => {
-                return !(formData[field.name] && formData[field.name].length && formData[dependantField.name] && formData[dependantField.name] !== '');
+                return formData === undefined || (!(formData[field.name] && formData[field.name].length && formData[dependantField.name] && formData[dependantField.name] !== ''));
             },
             getErrMsg: (formData) => {
                 return `Cannot have a value when ${dependantField.title} has a value`

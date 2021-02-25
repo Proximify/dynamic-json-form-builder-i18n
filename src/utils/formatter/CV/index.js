@@ -3,14 +3,17 @@ import React from "react";
 import UserProfile from './UserProfile';
 import PersonalInformation from './PersonalInformation'
 import Recognitions from "./Recognitions";
+import Education from "./Education";
 
 export default function CVFormatter(props) {
     // console.log("CVFormatters", props);
 
     const subsections = {
-        "user_profile": <UserProfile structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
         "personal_information": <PersonalInformation structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
-        "recognitions": <Recognitions structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>
+        "education": <Education structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
+        "recognitions": <Recognitions structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
+        "user_profile": <UserProfile structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
+
     }
 
     return (

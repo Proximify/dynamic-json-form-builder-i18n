@@ -144,7 +144,7 @@ const formDataSchemaGen = (schema) => {
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
-    console.log(fields)
+    // console.log(fields)
     const dataSchema = {}
     // console.log(mapper, ft.getFields())
     Object.keys(fields).forEach(fieldName => {

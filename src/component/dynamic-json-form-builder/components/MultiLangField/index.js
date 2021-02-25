@@ -283,7 +283,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                                                     {({active}) => (
                                                         <a className={`${
                                                             (active || (state.isBilingual))
-                                                                ? "bg-red-500 text-white font-semibold"
+                                                                ? "bg-gray-500 text-white font-semibold"
                                                                 : "text-gray-700"
                                                         } flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none`}
                                                            href="#"

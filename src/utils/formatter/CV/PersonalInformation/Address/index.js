@@ -1,5 +1,5 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any, reftableFormatter} from "../../../utils/helper";
 
 export default function Address(props) {
     // console.log("Address", props)
@@ -34,7 +34,8 @@ export default function Address(props) {
                 {any(l3) && <p>{l3.val}</p>}
                 {any(l4) && <p>{l4.val}</p>}
                 {any(l5) && <p>{l5.val}</p>}
-                {any(ci, lo) && <p>{ci.val}, {lo.val}</p>}
+                {any(ci, lo) &&
+                <p><span>{ci.val}</span>{lo.val && <span>{reftableFormatter(lo.val, false, true)}</span>}</p>}
                 {any(pzc) && <p>{pzc.val}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null

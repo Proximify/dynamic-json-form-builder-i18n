@@ -44,6 +44,7 @@ export default function Recognitions(props) {
             fields_of_application: foa,
             converted_amount: ca
         } = ft.getFields();
+        // console.log("cogn---",reftableFormatter(foa.val,true))
         return (
             <div>
                 {any(rt, rn) &&
@@ -61,7 +62,7 @@ export default function Recognitions(props) {
                 <div className="ml-2">
                     {any(redis) && <p>{redis.lbl}: {reftableFormatter(redis.val,true)}</p>}
                     {any(aor) && <p>{aor.lbl}: {reftableFormatter(aor.val,true)}</p>}
-                    {any(foa) && <p>{foa.lbl}: {reftableFormatter(foa.val, true)}</p>}
+                    {any(foa) && <div><p>{foa.lbl}</p> <p>{reftableFormatter(foa.val, true)}</p></div>}
                 </div>
                 {any(ca) && <p>{ca.lbl}: {ca.val}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
