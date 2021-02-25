@@ -2,6 +2,7 @@ import React from "react";
 import Identification from "./Identification";
 import LanguageSkills from "./LanguageSkills";
 import Address from "./Address";
+import Telephone from "./Telephone";
 
 export default function PersonalInformation(props) {
     // console.log("PersonalInformation", props);
@@ -16,6 +17,9 @@ export default function PersonalInformation(props) {
         "address": <Address structureChain={props.structureChain}
                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                   rawData={props.rawData}/>,
+        "telephone":<Telephone structureChain={props.structureChain}
+                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                             rawData={props.rawData}/>,
     }
 
     return (

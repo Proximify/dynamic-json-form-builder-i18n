@@ -160,7 +160,7 @@ class FormBuilder extends Component {
                 showErrorList={false}
                 liveValidate
                 onChange={({formData}) => {
-                    console.log("data changed", formData, formData.description)
+                    console.log("data changed", formData)
                 }}
                 validate={this.validation}
                 // noValidate={true}

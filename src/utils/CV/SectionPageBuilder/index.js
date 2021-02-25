@@ -192,7 +192,7 @@ export function SectionPageBuilder(props) {
                 <div key={sectionIndex}
                      className={`${sectionCSS[layer]} ${layer % 2 === 0 ? "border-gray-200 bg-gray-200 hover:bg-white hover:border-opacity-0" : "border-white bg-white hover:bg-gray-200"}`}>
                     <div className={`${titleCSS[layer]} flex items-center justify-between`}>
-                        <p>{section.title} form section(subsection)Index: {sectionIndex}</p>
+                        <p>{section.title}</p>
                         <p className="ml-3">{section.multiplicity === "multiple" ? <AiOutlineFileAdd size={"1.1rem"}/> :
                             <FiEdit size={"1.1rem"}/>}
                         </p>
@@ -211,9 +211,8 @@ export function SectionPageBuilder(props) {
                                         }}>
                                         {
                                             <div>
-                                                {/*{console.log(section, parentSection)}*/}
-                                                section={section.section_id} &itemId={section.section_data[itemIndex].id} &
-                                                parentItemId={parentSection ? parentSection.section_data[0].id : "null"} &parentFieldId={parentSection ? getParentFieldID(section, parentSection) : "null"}
+                                                {/*section={section.section_id} &itemId={section.section_data[itemIndex].id} &*/}
+                                                {/*parentItemId={parentSection ? parentSection.section_data[0].id : "null"} &parentFieldId={parentSection ? getParentFieldID(section, parentSection) : "null"}*/}
                                                 <Formatter app={"CV"}
                                                            structureChain={[...structureChain]}
                                                            isFullScreenViewMode={true}
@@ -267,7 +266,7 @@ export function SectionPageBuilder(props) {
         } else if (section.type === "section") {
             return (
                 <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
-                    <p className={`${titleCSS[layer]}`}>{section.title} sectionindex: {sectionIndex}</p>
+                    <p className={`${titleCSS[layer]}`}>{section.title}</p>
                     {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
                 </div>)
         }
