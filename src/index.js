@@ -96,7 +96,7 @@ class App extends Component {
                         <div className="container mx-auto">
                             <div className="grid grid-cols-10">
                                 <div
-                                    className="md:col-span-6 md:col-start-3 sm:col-span-8 sm:col-start-2 col-span-10 col-start-1">
+                                    className="md:col-span-5 md:col-start-4 sm:col-span-8 sm:col-start-2 col-span-10 col-start-1">
                                     {this.state.isReady &&
                                     <SectionPageBuilder
                                         schema={SchemaParser(this.state.schema)}

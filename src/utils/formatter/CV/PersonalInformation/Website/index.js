@@ -18,7 +18,7 @@ export default function Website(props) {
             <div>
                 {any(u, wt) &&
                 <p>
-                    <span>{wt.val && `${wt.val}: `}</span>
+                    <>{wt.val && <span className="font-bold">{`${wt.val}: `}</span>}</>
                     <a href={u} className="text-blue-500 hover:underline"> {u.val}</a>
                 </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

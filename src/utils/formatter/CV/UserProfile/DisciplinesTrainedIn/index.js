@@ -1,5 +1,5 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker, reftableFormatter} from "../../../utils/helper";
+import {any, FieldValueMapper, FormatterTracker, reftableValueParser} from "../../../utils/helper";
 
 export default function DisciplinesTrainedIn(props) {
     const {rawData, schema} = props;
@@ -12,7 +12,7 @@ export default function DisciplinesTrainedIn(props) {
     return (
         <div>
             {any(dt) &&
-            <p>{reftableFormatter(dt.val)}</p>}
+            <p>{reftableValueParser(dt.val)}</p>}
             {Object.keys(ft.getUnFormattedField()).length > 0 ?
                 <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
             }

@@ -1,5 +1,6 @@
 import React from "react";
 import Degree from "./Degrees";
+import Credentials from "./Credentials";
 
 export default function Education(props) {
     // console.log("PersonalInformation", props);
@@ -7,7 +8,10 @@ export default function Education(props) {
     const subsections = {
         "degrees": <Degree structureChain={props.structureChain}
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                          rawData={props.rawData}/>
+                                          rawData={props.rawData}/>,
+        "credentials": <Credentials structureChain={props.structureChain}
+                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                               rawData={props.rawData}/>,
     }
 
     return (

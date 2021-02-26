@@ -1,6 +1,6 @@
 import React from "react";
 import CountryOfCitizenship from "./CountryOfCitizenship";
-import {FieldValueMapper, FormatterTracker, any, reftableFormatter} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any, reftableValueParser} from "../../../utils/helper";
 
 export default function Identification(props) {
     // console.log("Identification", props)
@@ -36,7 +36,7 @@ export default function Identification(props) {
         return (
             <div>
                 {any(t, fin, mn, fan) &&
-                <p>
+                <p className="font-bold text-lg">
                     {t.val} {fin.val} {mn.val} {fan.val}
                 </p>}
                 {any(pfan) &&

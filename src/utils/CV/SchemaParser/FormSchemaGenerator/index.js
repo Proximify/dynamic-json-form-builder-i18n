@@ -88,6 +88,8 @@ const fieldStrSchemaGen = (field, schema, lovOptions) => {
     switch (field.type) {
         case "lov": {
             const subtype_id = field.subtype_id;
+            // result["type"] = "string";
+            // result["options"] = lovOptions[subtype_id] ?? [];
             result["enum"] = lovOptions[subtype_id] ?? []
             break;
         }

@@ -23,7 +23,7 @@ export default function LanguageSkills(props) {
             <div>
                 {any(la) &&
                 <p>
-                    <span>{la.val} </span>
+                    <span className="font-bold">{la.val} </span>
                     {any(rd, wr, sp, und, pv) && <span>({rd.val} {wr.val} {sp.val} {und.val} {pv.val})</span>}
                 </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

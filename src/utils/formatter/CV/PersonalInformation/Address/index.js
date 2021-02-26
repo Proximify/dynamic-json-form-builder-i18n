@@ -1,5 +1,11 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any, reftableFormatter} from "../../../utils/helper";
+import {
+    FieldValueMapper,
+    FormatterTracker,
+    any,
+    reftableValueParser,
+    reftableValueFormatter
+} from "../../../utils/helper";
 
 export default function Address(props) {
     // console.log("Address", props)
@@ -25,17 +31,22 @@ export default function Address(props) {
 
         return (
             <div>
+                {/*TODO: Primary value?*/}
                 {any(at, al1, asd, aed) &&
                 <p>
-                    <span>{at.val}: {al1.val}</span>
-                    {any(asd, aed) && <span>({asd.val} - {aed.val})</span>}
+                    <>{at.val && <span className="font-bold">{at.val}: </span>}{al1.val}</>
+                    {any(asd, aed) && <span> ({asd.val} - {aed.val})</span>}
                 </p>}
                 {any(l2) && <p>{l2.val}</p>}
                 {any(l3) && <p>{l3.val}</p>}
                 {any(l4) && <p>{l4.val}</p>}
                 {any(l5) && <p>{l5.val}</p>}
-                {any(ci, lo) &&
-                <p><span>{ci.val}</span>{lo.val && <span>{reftableFormatter(lo.val, false, true)}</span>}</p>}
+                {any(ci, lo) && <p><span>{ci.val}</span>
+                    {lo.val && <><span>, </span>
+                        {reftableValueParser(lo.val, false, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}
+                    </>}</p>}
                 {any(pzc) && <p>{pzc.val}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null

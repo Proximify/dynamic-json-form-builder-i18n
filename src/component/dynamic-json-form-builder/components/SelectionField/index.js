@@ -97,14 +97,20 @@ export function MultiColSelectionWidget(props) {
 }
 
 export function SingleLargeSelectionWidget(props) {
+    console.log("SingleLargeSelectionWidget", props)
     const {options, value} = props;
+    const lovOptions = props.schema.options.map(opt => {
+        return {label: opt.toString(), value: opt}
+    });
+    console.log(lovOptions);
     return (
         <WindowedSelect id={props.schema.id}
-                        getOptionLabel={option => option.value[1] ?? option.label}
+            getOptionLabel={option => option.value[1] ?? option.label}
                         className={"singleFieldSelect"}
-                        options={options.enumOptions}
+                        // options={options.enumOptions}
+            options={lovOptions}
                         defaultValue={value ?
-                            options.enumOptions[options.enumOptions.map(element =>
+                            lovOptions[lovOptions.map(element =>
                                 element.value.toString()
                             ).indexOf(value.toString())]
                             : null}

@@ -65,7 +65,7 @@ const sectionParser = (section, parent_id) => {
 /**
  * @param schema: raw Response from Server
  * @param singleForm: single to identify the Response if for one form or full screen view mode
- * @param fetchLovOptions
+ * @param lovOptions
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}|[]}
  * @constructor
  */

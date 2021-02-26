@@ -56,25 +56,28 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false) =
     return result
 }
 
-export const reftableFormatter = (fieldValue, isViewModeSubsectionField = false, isInViewMode = false, delimiter = ' - ') => {
+export const reftableValueParser = (fieldValue, isViewModeSubsectionField = false, isInViewMode = false, delimiter = ' - ') => {
     const format = (valueArray) => {
-        let html = [];
+        let result = [];
         valueArray.forEach((value, index) => {
+            if (value === 'Not Required') {
+                return;
+            }
             if (index === 0) {
-                html.push(<strong>{value}</strong>);
+                result.push(value);
                 if (valueArray.length > 1) {
-                    html.push(' (')
+                    result.push(' (')
                 }
             } else if (index === valueArray.length - 1) {
-                html.push(<span>{value}</span>);
+                result.push(value);
                 if (valueArray.length > 1) {
-                    html.push(')')
+                    result.push(')')
                 }
             } else {
-                html.push(<span>{value} - </span>)
+                result.push(value + ' - ')
             }
         })
-        return html;
+        return result;
     }
 
     if (!fieldValue) {
@@ -82,7 +85,6 @@ export const reftableFormatter = (fieldValue, isViewModeSubsectionField = false,
     }
     const result = [];
     if (isViewModeSubsectionField) {
-
         fieldValue.forEach((val, index) => {
             const {order, ...data} = val;
             Object.values(data).forEach(data => {
@@ -93,6 +95,15 @@ export const reftableFormatter = (fieldValue, isViewModeSubsectionField = false,
         isInViewMode ? result.push(format(fieldValue)) : result.push(format(fieldValue.slice(1)))
     }
     return result
+}
+
+export const reftableValueFormatter = (fieldValue, index) => {
+    // console.log(fieldValue)
+    if (!fieldValue)
+        return;
+    if (!Array.isArray(fieldValue))
+        return <span key={index} className="baseValue">{fieldValue}</span>
+    return <span key={index}><strong className="mainValue">{fieldValue[0]}</strong><span className="baseValue">{fieldValue.slice(1)}</span></span>;
 }
 
 

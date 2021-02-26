@@ -4,6 +4,7 @@ import UserProfile from './UserProfile';
 import PersonalInformation from './PersonalInformation'
 import Recognitions from "./Recognitions";
 import Education from "./Education";
+import './index.css'
 
 export default function CVFormatter(props) {
     // console.log("CVFormatters", props);

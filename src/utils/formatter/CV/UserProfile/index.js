@@ -1,5 +1,5 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker ,reftableFormatter} from "../../utils/helper";
+import {any, FieldValueMapper, FormatterTracker ,reftableValueParser} from "../../utils/helper";
 import ResearchDisciplines from "./ResearchDisciplines";
 import AreaOfResearch from "./AreasOfResearch";
 import ResearchCentres from "./ResearchCentres";
@@ -95,15 +95,15 @@ export default function UserProfile(props) {
                 </>}
                 <div className="ml-2">
                     {any(rsk) && <div><p>{rsk.lbl}</p> <p>{rsk.val.eng} {rsk.val.fre ? `(${rsk.val.fre})` : null}</p></div>} error
-                    {any(rc) && <div><p>{rc.lbl}</p> <p>{reftableFormatter(rc.val ,true)}</p></div>}
-                    {any(ta) && <div><p>{ta.lbl}</p> <p>{reftableFormatter(ta.val, true)}</p></div>}
-                    {any(dti) && <div><p>{dti.lbl}</p> <p>{reftableFormatter(dti.val, true)}</p></div>}
-                    {any(rd) && <div><p>{rd.lbl}</p> <p>{reftableFormatter(rd.val, true)}</p></div>}
-                    {any(aor) && <div><p>{aor.lbl}</p> <p>{reftableFormatter(aor.val, true)}</p></div>}
-                    {any(foa) && <div><p>{foa.lbl}</p> <p>{reftableFormatter(foa.val, true)}</p></div>}
-                    {any(tp) && <div><p>{tp.lbl}</p> <p>{reftableFormatter(foa.val, true)}</p></div>}
-                    {any(gr) && <div><p>{gr.lbl}</p> <p>{reftableFormatter(foa.val, true)}</p></div>}
-                    {any(co) && <div><p>{co.lbl}</p> <p>{reftableFormatter(foa.val, true)}</p></div>}
+                    {any(rc) && <div><p>{rc.lbl}</p> <p>{reftableValueParser(rc.val ,true)}</p></div>}
+                    {any(ta) && <div><p>{ta.lbl}</p> <p>{reftableValueParser(ta.val, true)}</p></div>}
+                    {any(dti) && <div><p>{dti.lbl}</p> <p>{reftableValueParser(dti.val, true)}</p></div>}
+                    {any(rd) && <div><p>{rd.lbl}</p> <p>{reftableValueParser(rd.val, true)}</p></div>}
+                    {any(aor) && <div><p>{aor.lbl}</p> <p>{reftableValueParser(aor.val, true)}</p></div>}
+                    {any(foa) && <div><p>{foa.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
+                    {any(tp) && <div><p>{tp.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
+                    {any(gr) && <div><p>{gr.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
+                    {any(co) && <div><p>{co.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
                 </div>
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
