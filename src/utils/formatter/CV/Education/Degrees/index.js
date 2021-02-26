@@ -54,7 +54,7 @@ export default function Degree(props) {
                 })}</p>}
                 {any(tt) && <p>{tt.val}</p>}
                 <div className="viewModeSubsection">
-                    {any(sup) && <div><p>{sup.lbl}</p> sup.val</div>}
+                    {any(sup) && <div><p>{sup.lbl}</p> sup.val</div>} error
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)

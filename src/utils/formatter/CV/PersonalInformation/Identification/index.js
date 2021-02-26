@@ -1,6 +1,6 @@
 import React from "react";
 import CountryOfCitizenship from "./CountryOfCitizenship";
-import {FieldValueMapper, FormatterTracker, any, reftableValueParser} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any, reftableValueParser,singleFieldSubsectionFormatter} from "../../../utils/helper";
 
 export default function Identification(props) {
     // console.log("Identification", props)
@@ -55,7 +55,7 @@ export default function Identification(props) {
                 <p>{prsd.lbl}: {prsd.val}</p>}
                 {any(afpr) && <p>{afpr.lbl}</p>}
                 {any(coc) &&
-                <p>{coc.lbl}: {coc.val.map(val => Object.values(val)).join(", ")}</p>}
+                <p>{coc.lbl}: {singleFieldSubsectionFormatter(coc.val)}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }

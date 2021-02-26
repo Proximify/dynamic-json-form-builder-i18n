@@ -85,6 +85,9 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
     }
     const result = [];
     if (isViewModeSubsectionField) {
+        if (fieldValue && fieldValue[0].order) {
+            fieldValue.sort((a, b) => a.order > b.order ? 1 : -1);
+        }
         fieldValue.forEach((val, index) => {
             const {order, ...data} = val;
             Object.values(data).forEach(data => {
@@ -103,9 +106,40 @@ export const reftableValueFormatter = (fieldValue, index) => {
         return;
     if (!Array.isArray(fieldValue))
         return <span key={index} className="baseValue">{fieldValue}</span>
-    return <span key={index}><strong className="mainValue">{fieldValue[0]}</strong><span className="baseValue">{fieldValue.slice(1)}</span></span>;
+    return <span key={index}><strong className="mainValue">{fieldValue[0]}</strong><span
+        className="baseValue">{fieldValue.slice(1)}</span></span>;
 }
 
+export const singleFieldSubsectionFormatter = (fieldValue, isBilingualItem = false) => {
+    const result = [];
+    if (fieldValue && fieldValue[0].order) {
+        fieldValue.sort((a, b) => a.order > b.order ? 1 : -1);
+    }
+    fieldValue.forEach((val, index) => {
+        const {order, ...data} = val;
+        Object.values(data).forEach(data => {
+            if (isBilingualItem) {
+                const bilingualData = [];
+                Object.values(data).forEach(biliData => {
+                    if (biliData) {
+                        bilingualData.push(biliData)
+                    }
+                })
+                if (bilingualData.length > 1) {
+                    result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
+                        className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
+                        className="secondLang">({bilingualData[1]})</span>, </>}</span>)
+                } else {
+                    result.push(<span
+                        key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
+                }
+            } else {
+                result.push(<span key={index}>{index === fieldValue.length - 1 ? `${data}` : `${data}, `}</span>)
+            }
+        })
+    })
+    return result
+}
 
 export class FormatterTracker {
     #fields = {}

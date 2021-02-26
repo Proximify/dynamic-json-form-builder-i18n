@@ -1,5 +1,12 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker ,reftableValueParser} from "../../utils/helper";
+import {
+    any,
+    FieldValueMapper,
+    FormatterTracker,
+    reftableValueFormatter,
+    reftableValueParser,
+    singleFieldSubsectionFormatter
+} from "../../utils/helper";
 import ResearchDisciplines from "./ResearchDisciplines";
 import AreaOfResearch from "./AreasOfResearch";
 import ResearchCentres from "./ResearchCentres";
@@ -19,35 +26,41 @@ export default function UserProfile(props) {
 
     const subsections = {
         "research_specialization_keywords": <ResearchSpecializationKeywords structureChain={props.structureChain}
-                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                        rawData={props.rawData}/>,
+                                                                            isFullScreenViewMode={props.isFullScreenViewMode}
+                                                                            schema={props.schema}
+                                                                            rawData={props.rawData}/>,
         "research_centres": <ResearchCentres structureChain={props.structureChain}
-                                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                                  rawData={props.rawData}/>,
+                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                             rawData={props.rawData}/>,
         "technological_applications": <TechnologicalApplications structureChain={props.structureChain}
-                                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                                  rawData={props.rawData}/>,
+                                                                 isFullScreenViewMode={props.isFullScreenViewMode}
+                                                                 schema={props.schema}
+                                                                 rawData={props.rawData}/>,
         "disciplines_trained_in": <DisciplinesTrainedIn structureChain={props.structureChain}
-                                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                                  rawData={props.rawData}/>,
-        "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-                                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                                  rawData={props.rawData}/>,
-        "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-                                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                      rawData={props.rawData}/>,
-        "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                        isFullScreenViewMode={props.isFullScreenViewMode}
+                                                        schema={props.schema}
                                                         rawData={props.rawData}/>,
+        "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
+                                                     isFullScreenViewMode={props.isFullScreenViewMode}
+                                                     schema={props.schema}
+                                                     rawData={props.rawData}/>,
+        "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
+                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                             rawData={props.rawData}/>,
+        "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
+                                                      isFullScreenViewMode={props.isFullScreenViewMode}
+                                                      schema={props.schema}
+                                                      rawData={props.rawData}/>,
         "temporal_periods": <TemporalPeriods structureChain={props.structureChain}
-                                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                      rawData={props.rawData}/>,
+                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                             rawData={props.rawData}/>,
         "geographical_regions": <GeographicalRegions structureChain={props.structureChain}
-                                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                   rawData={props.rawData}/>,
+                                                     isFullScreenViewMode={props.isFullScreenViewMode}
+                                                     schema={props.schema}
+                                                     rawData={props.rawData}/>,
         "countries": <Countries structureChain={props.structureChain}
-                                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                      rawData={props.rawData}/>,
+                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                rawData={props.rawData}/>,
     }
 
     if (props.isFullScreenViewMode === true) {
@@ -72,38 +85,85 @@ export default function UserProfile(props) {
             countries: co,
             orcid: or
         } = ft.getFields();
-        console.log(ft.getFields());
+        // console.log(singleFieldSubsectionFormatter(rsk.val));
         return (
             <div>
                 {any(rs, rcsd) &&
-                <>
-                    {any(rc) && <span>{rs.lbl}: {rs.val}</span>}
-                    {any(rcsd) && <span>({rcsd.lbl}: {rcsd.val})</span>}
-                </>}
+                <p>
+                    {rs.val && <><strong>{rs.lbl}: </strong><span>{rs.val} </span></>}
+                    {rcsd.val && <span>({rcsd.lbl}: {rcsd.val})</span>}
+                </p>}
                 {any(eicr) && <p>{eicr.val}</p>}
                 {any(ktm) && <>
-                    {ktm.val.eng && <div><p>{ktm.lbl}</p><p>{ktm.val.eng}</p></div>}
-                    {ktm.val.fre && <div><p>{ktm.lbl} (french)</p><p>{ktm.val.fre}</p></div>}
+                    {ktm.val.eng && <div className="bilingualItem">
+                        <p className="mainValue">{ktm.lbl}</p>
+                        <p dangerouslySetInnerHTML={{__html: ktm.val.eng}}/>
+                    </div>}
+                    {ktm.val.fre && <div className="bilingualItem">
+                        <p className="mainValue">{ktm.lbl} (French)</p>
+                        <p dangerouslySetInnerHTML={{__html: ktm.val.fre}}/>
+                    </div>}
                 </>}
                 {any(ri) && <>
-                    {ri.val.eng && <div><p>{ri.lbl}</p><p>{ri.val.eng}</p></div>}
-                    {ri.val.fre && <div><p>{ri.lbl} (french)</p><p>{ri.val.fre}</p></div>}
+                    {ri.val.eng && <div className="bilingualItem">
+                        <p className="mainValue">{ri.lbl}</p>
+                        <p dangerouslySetInnerHTML={{__html: ri.val.eng}}/>
+                    </div>}
+                    {ri.val.fre && <div className="bilingualItem">
+                        <p className="mainValue">{ri.lbl} (French)</p>
+                        <p dangerouslySetInnerHTML={{__html: ri.val.fre}}/>
+                    </div>}
                 </>}
                 {any(res) && <>
-                    {res.val.eng && <div><p>{res.lbl}</p><p>{res.val.eng}</p></div>}
-                    {res.val.fre && <div><p>{res.lbl} (french)</p><p>{res.val.fre}</p></div>}
+                    {res.val.eng && <div className="bilingualItem">
+                        <p className="mainValue">{res.lbl}</p>
+                        <p dangerouslySetInnerHTML={{__html: res.val.eng}}/>
+                    </div>}
+                    {res.val.fre && <div className="bilingualItem">
+                        <p className="mainValue">{res.lbl} (French)</p>
+                        <p dangerouslySetInnerHTML={{__html: res.val.fre}}/>
+                    </div>}
                 </>}
-                <div className="ml-2">
-                    {any(rsk) && <div><p>{rsk.lbl}</p> <p>{rsk.val.eng} {rsk.val.fre ? `(${rsk.val.fre})` : null}</p></div>} error
-                    {any(rc) && <div><p>{rc.lbl}</p> <p>{reftableValueParser(rc.val ,true)}</p></div>}
-                    {any(ta) && <div><p>{ta.lbl}</p> <p>{reftableValueParser(ta.val, true)}</p></div>}
-                    {any(dti) && <div><p>{dti.lbl}</p> <p>{reftableValueParser(dti.val, true)}</p></div>}
-                    {any(rd) && <div><p>{rd.lbl}</p> <p>{reftableValueParser(rd.val, true)}</p></div>}
-                    {any(aor) && <div><p>{aor.lbl}</p> <p>{reftableValueParser(aor.val, true)}</p></div>}
-                    {any(foa) && <div><p>{foa.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
-                    {any(tp) && <div><p>{tp.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
-                    {any(gr) && <div><p>{gr.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
-                    {any(co) && <div><p>{co.lbl}</p> <p>{reftableValueParser(foa.val, true)}</p></div>}
+                <div className="viewModeSubsection">
+                    {any(rsk) &&
+                    <div><p>{rsk.lbl}</p> <p>{singleFieldSubsectionFormatter(rsk.val, true)}</p></div>}
+                    {any(rc) && <div><p>{rc.lbl}</p>
+                        {reftableValueParser(rc.val, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}</div>}
+                    {any(ta) && <div><p>{ta.lbl}</p>
+                        {reftableValueParser(ta.val, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}</div>}
+                    {any(dti) && <div><p>{dti.lbl}</p>
+                        {reftableValueParser(dti.val, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}</div>}
+                    {any(rd) && <div><p>{rd.lbl}</p>
+                        {reftableValueParser(rd.val, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}</div>}
+                    {any(aor) && <div><p>{aor.lbl}</p>
+                        {reftableValueParser(aor.val, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}</div>}
+                    {any(foa) && <div><p>{foa.lbl}</p>
+                        {reftableValueParser(foa.val, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}</div>}
+                    {any(tp) &&
+                    <div><p>{tp.lbl}</p> <p>{tp.val.sort((a, b) => a.order > b.order ? 1 : -1).map((val, index) => {
+                        return <span key={index}>
+                            {val.from_year && <span>{val.from_year}</span>}
+                            {val.from_year_period && <span> ({val.from_year_period})</span>}
+                            <span> - </span>
+                            {val.to_year && <span>{val.to_year}</span>}
+                            {val.to_year_period && <span> ({val.to_year_period})</span>}
+                            {index === tp.val.length - 1 ? null : <span>, </span>}
+                        </span>
+                    })}</p></div>}
+                    {any(gr) && <div><p>{gr.lbl}</p> <p>{singleFieldSubsectionFormatter(gr.val)}</p></div>}
+                    {any(co) && <div><p>{co.lbl}</p> <p>{singleFieldSubsectionFormatter(co.val)}</p></div>}
                 </div>
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
