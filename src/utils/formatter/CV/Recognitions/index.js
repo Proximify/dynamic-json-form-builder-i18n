@@ -89,44 +89,6 @@ export default function Recognitions(props) {
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
             </div>
-
-            /*
-            {any(ti, efd, end) &&
-                <p>
-                    <strong>{ti.val} </strong>
-                    {any(efd, end) && <span>({efd.val} - {end.val})</span>}
-                </p>}
-                {any(org) && <p>{reftableValueParser(org.val, false, true).map((val, index) => {
-                    return reftableValueFormatter(val, index)
-                })}</p>}
-                {any(desc) && <>
-                    {desc.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl}</p>
-                        <p>{desc.val.eng}</p>
-                    </div>}
-                    {desc.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl} (French)</p>
-                        <p>{desc.val.fre}</p>
-                    </div>}
-                </>}
-                <div className="viewModeSubsection">
-                    {any(rd) && <div><p>{rd.lbl}</p>
-                        {reftableValueParser(rd.val, true).map((val, index) => {
-                            return reftableValueFormatter(val, index)
-                        })}</div>}
-                    {any(aor) && <div><p>{aor.lbl}</p>
-                        {reftableValueParser(aor.val, true).map((val, index) => {
-                            return reftableValueFormatter(val, index)
-                        })}</div>}
-                    {any(foa) && <div><p>{foa.lbl}</p>
-                        {reftableValueParser(foa.val, true).map((val, index) => {
-                            return reftableValueFormatter(val, index)
-                        })}</div>}
-                </div>
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
-                }
-             */
         )
     } else {
         return (
