@@ -21,18 +21,18 @@ export default function CVFormatter(props) {
         "recognitions": <Recognitions structureChain={props.structureChain}
                                       isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                       rawData={props.rawData}/>,
-        "user_profile": <UserProfile structureChain={props.structureChain}
-                                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                     rawData={props.rawData}/>,
-        "employment": <Employment structureChain={props.structureChain}
-                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                  rawData={props.rawData}/>,
-        "research_funding_history": <ResearchFundingHistory structureChain={props.structureChain}
-                                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                rawData={props.rawData}/>,
-        "activities":  <Activities structureChain={props.structureChain}
-                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                               rawData={props.rawData}/>,
+        // "user_profile": <UserProfile structureChain={props.structureChain}
+        //                              isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+        //                              rawData={props.rawData}/>,
+        // "employment": <Employment structureChain={props.structureChain}
+        //                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+        //                           rawData={props.rawData}/>,
+        // "research_funding_history": <ResearchFundingHistory structureChain={props.structureChain}
+        //                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+        //                                         rawData={props.rawData}/>,
+        // "activities":  <Activities structureChain={props.structureChain}
+        //                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+        //                                        rawData={props.rawData}/>,
 
     }
 

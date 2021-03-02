@@ -53,17 +53,6 @@ export default function ResearchFundingHistory(props) {
         //                         rawData={props.rawData}/>,
     }
 
-    /**
-     * "[{funding_role} ][({funding_start_date} - {funding_end_date}) ][- {funding_status}]",
-     "{funding_title}",
-     "[{funding_type}], [{grant_type}]",
-     "{project_description}",
-     "[{clinical_research_project}]",
-     "[{research_uptake}]"
-     *
-     *
-     */
-
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         console.log(mappedValue)
@@ -94,10 +83,9 @@ export default function ResearchFundingHistory(props) {
             <div>
                 {any(fr, fsd, fed, fst) &&
                 <p>
-                    {fr.val && <><strong>{fr.lbl}: </strong>
-                        {any(fsd, fed) && <span>({fsd.val} - {fed.val})</span>}
-                        {fst.val && <> - <strong>{fst.val}</strong></>}
-                    </>}
+                    {fr.val && <strong>{fr.val} </strong>}
+                    {any(fsd, fed) && <span>({fsd.val} - {fed.val})</span>}
+                    {fst.val && <> - <strong>{fst.val}</strong></>}
                 </p>}
                 {any(fti) && <p><i>{fti.val}</i></p>}
                 {any(fty, gt) && <p>
@@ -201,7 +189,9 @@ export default function ResearchFundingHistory(props) {
                 }
             </div>
         )
-    } else {
+    }
+else
+    {
         return (
             <React.Fragment>
                 {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}

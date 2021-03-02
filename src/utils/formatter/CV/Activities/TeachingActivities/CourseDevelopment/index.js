@@ -66,11 +66,11 @@ export default function CourseDevelopment(props) {
                 {any(cdesc) && <>
                     {cdesc.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{cdesc.lbl}</p>
-                        <p dangerouslySetInnerHTML={{__html: cdesc.val.eng}}/>
+                        <p>{cdesc.val.eng}</p>
                     </div>}
                     {cdesc.val.fre && <div className="bilingualItem">
                         <p className="mainValue">{cdesc.lbl} (French)</p>
-                        <p dangerouslySetInnerHTML={{__html: cdesc.val.fre}}/>
+                        <p>{cdesc.val.fre}</p>
                     </div>}
                 </>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

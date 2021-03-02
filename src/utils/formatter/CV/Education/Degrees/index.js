@@ -4,7 +4,8 @@ import {
     FormatterTracker,
     any,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter,
+    multiFieldSubsectionFormatter
 } from "../../../utils/helper";
 
 export default function Degree(props) {
@@ -35,7 +36,7 @@ export default function Degree(props) {
             areas_of_research: aor,
             fields_of_application: foa
         } = ft.getFields();
-
+        console.log(rd)
         return (
             <div>
                 {any(dt, dsd, drd) &&
@@ -46,7 +47,8 @@ export default function Degree(props) {
                 {any(dn, spe, ds) && <p>
                     {dn.val && <>{dn.val.eng} {dn.val.fre &&
                     <span className="secondLang">{`(${dn.val.fre})`}</span>}</>}
-                    {spe.val && <>, {spe.val.eng} {spe.val.fre && <span className="secondLang">{`(${spe.val.fre})`}</span>}</>}
+                    {spe.val && <>, {spe.val.eng} {spe.val.fre &&
+                    <span className="secondLang">{`(${spe.val.fre})`}</span>}</>}
                     {ds.val && <span> ({ds.val})</span>}
                 </p>}
                 {any(org) && <p>{reftableValueParser(org.val, false, true).map((val, index) => {
@@ -57,9 +59,8 @@ export default function Degree(props) {
                     {any(sup) &&
                     <div><p>{sup.lbl}</p> <p>{sup.val.map((val, index) => {
                         return <span key={index}>
-                            {val.supervisor_name
-                            && <span>{val.supervisor_name} </span>}
-                            {(val.start_date || val.end_date) && <span>({val.start_date} - {val.end_date})</span>}
+                            {multiFieldSubsectionFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' ', ['(', ' - '], [')']])}
+                            {index < sup.val.length - 1 && ', '}
                         </span>
                     })}</p></div>}
                     {any(rd) && <div><p>{rd.lbl}</p>

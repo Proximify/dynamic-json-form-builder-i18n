@@ -1,5 +1,6 @@
 import React from "react";
 import TeachingActivities from "./TeachingActivities";
+import SupervisoryActivities from "./SupervisoryActivities";
 
 
 export default function Activities(props) {
@@ -9,6 +10,9 @@ export default function Activities(props) {
         "teaching_activities": <TeachingActivities structureChain={props.structureChain}
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                           rawData={props.rawData}/>,
+        "supervisory_activities": <SupervisoryActivities structureChain={props.structureChain}
+                                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                   rawData={props.rawData}/>,
         // "language_skills": <LanguageSkills structureChain={props.structureChain}
         //                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
         //                                    rawData={props.rawData}/>,

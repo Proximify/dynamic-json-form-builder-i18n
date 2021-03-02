@@ -13,7 +13,7 @@ export const Months = [
     'December'
 ];
 
-export const FieldValueMapper = (value, schema, isSubsectionFormatter = false) => {
+export const FieldValueMapper = (value, schema, isSubsectionFormatter = false, order = null) => {
     // console.log(schema,value)
     const fields = schema.fields
     // console.log(schema,value)
@@ -25,6 +25,9 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false) =
         result[field.name]["type"] = field["type"];
         result[field.name]["subtype"] = field["subtype"];
         result[field.name]["label"] = field["label"];
+        if (field.name === 'order' && order) {
+            result[field.name]['value'] = order;
+        }
         if (!isSubsectionFormatter) {
             if (value[fieldKey]) {
                 // console.log(fieldKey, value[fieldKey]);
@@ -38,7 +41,7 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false) =
                         // console.log("===", schema.subsections[subsectionID])
                         value[fieldKey].forEach(subsectionValue => {
                             // id? order?
-                            result[field.name]["value"].push(FieldValueMapper(subsectionValue.values, schema.subsections[subsectionID]))
+                            result[field.name]["value"].push(FieldValueMapper(subsectionValue.values, schema.subsections[subsectionID], false, subsectionValue.order))
                         })
                     }
                 }
@@ -87,12 +90,13 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
     const result = [];
     if (isViewModeSubsectionField) {
         if (fieldValue && fieldValue[0].order) {
-            fieldValue.sort((a, b) => a.order > b.order ? 1 : -1);
+            fieldValue.sort((a, b) => (a.order > b.order ? 1 : -1));
         }
         fieldValue.forEach((val, index) => {
-            const {order, ...data} = val;
-            Object.values(data).forEach(data => {
-                Array.isArray(data) ? result.push(format(data), (index < fieldValue.length - 1 ? ', ' : '')) : result.push(data)
+            const {order, ...fields} = val;
+            Object.values(fields).forEach(field => {
+                field.count++;
+                Array.isArray(field.val) ? result.push(format(field.val), (index < fieldValue.length - 1 ? ', ' : '')) : result.push(field.val)
             })
         })
     } else {
@@ -117,29 +121,60 @@ export const singleFieldSubsectionFormatter = (fieldValue, isBilingualItem = fal
         fieldValue.sort((a, b) => a.order > b.order ? 1 : -1);
     }
     fieldValue.forEach((val, index) => {
-        const {order, ...data} = val;
-        Object.values(data).forEach(data => {
+        const {order, ...field} = val;
+        Object.values(field).forEach(subField => {
             if (isBilingualItem) {
-                const bilingualData = [];
-                Object.values(data).forEach(biliData => {
-                    if (biliData) {
-                        bilingualData.push(biliData)
-                    }
-                })
-                if (bilingualData.length > 1) {
-                    result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
-                        className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
-                        className="secondLang">({bilingualData[1]})</span>, </>}</span>)
-                } else {
-                    result.push(<span
-                        key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
-                }
+                // const bilingualData = [];
+                // Object.values(data).forEach(biliData => {
+                //     if (biliData) {
+                //         bilingualData.push(biliData)
+                //     }
+                // })
+                // if (bilingualData.length > 1) {
+                //     result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
+                //         className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
+                //         className="secondLang">({bilingualData[1]})</span>, </>}</span>)
+                // } else {
+                //     result.push(<span
+                //         key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
+                // }
             } else {
-                result.push(<span key={index}>{index === fieldValue.length - 1 ? `${data}` : `${data}, `}</span>)
+                subField.count++;
+                result.push(<span
+                    key={index}>{index === fieldValue.length - 1 ? `${subField.val}` : `${subField.val}, `}</span>)
             }
         })
     })
     return result
+}
+
+
+
+export const multiFieldSubsectionFormatter = (fields, labels, tags, delimiters) => {
+    const formatter = (value, tag) => {
+        switch (tag) {
+            case 's':
+                return <strong>{value}</strong>
+            case 'i':
+                return <i>{value}</i>
+            case 'u':
+                return <u>{value}</u>
+            default:
+                return <span>{value}</span>
+        }
+    }
+
+    return <>{
+        Object.values(fields).map((field, index) => {
+            field.count++;
+            const firstDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
+                <span>{delimiters[index][0]}</span> : null;
+            const secondDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
+                <span>{delimiters[index][1]}</span> : (delimiters ? <span>{delimiters[index]}</span> : null);
+            return field.val ? (<>
+                <span>{labels && labels[index]}</span>{firstDelimiter}{formatter(field.val, tags ? tags[index] : null)}{secondDelimiter}</>) : null
+        })
+    }</>
 }
 
 export class FormatterTracker {
@@ -149,19 +184,50 @@ export class FormatterTracker {
     constructor(fields, isSubsectionFormatter = false) {
         const tempFields = {...fields}
         this.#isSubsectionFormatter = isSubsectionFormatter;
-        Object.keys(tempFields).forEach(key => {
-            const field = tempFields[key];
+        this.#fields = this.fieldsLoader(tempFields);
+        // Object.keys(tempFields).forEach(key => {
+        //     const field = tempFields[key];
+        //     const value = field.value;
+        //     this.#fields[key] = {
+        //         val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
+        //         lbl: field.label ?? undefined,
+        //         type: field.type ?? undefined,
+        //         subtype: field.subtype ?? undefined,
+        //         rawValue: value ?? undefined,
+        //         name: key,
+        //         count: 0
+        //     }
+        // })
+    }
+
+    fieldsLoader = (fields) => {
+        const fie = {};
+        Object.keys(fields).forEach(key => {
+            const field = fields[key];
             const value = field.value;
-            this.#fields[key] = {
-                val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
-                lbl: field.label ?? undefined,
-                type: field.type ?? undefined,
-                subtype: field.subtype ?? undefined,
-                rawValue: value ?? undefined,
-                name: key,
-                count: 0
+            if (field.type === 'section') {
+                fie[key] = {
+                    val: (value !== undefined && value !== "" && value !== null) ? [].concat(value.map(subVal => this.fieldsLoader(subVal))) : undefined,
+                    lbl: field.label ?? undefined,
+                    type: field.type ?? undefined,
+                    subtype: field.subtype ?? undefined,
+                    rawValue: value ?? undefined,
+                    name: key,
+                    count: 0
+                }
+            } else {
+                fie[key] = {
+                    val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
+                    lbl: field.label ?? undefined,
+                    type: field.type ?? undefined,
+                    subtype: field.subtype ?? undefined,
+                    rawValue: value ?? undefined,
+                    name: key,
+                    count: 0
+                }
             }
         })
+        return fie;
     }
 
     getFields() {
@@ -169,25 +235,47 @@ export class FormatterTracker {
     }
 
     getUnFormattedField() {
-        const result = {}
-        Object.keys(this.#fields).forEach(key => {
-            const field = this.#fields[key];
-            if (field.count === 0 && field.rawValue && field.name !== "order") {
-                result[key] = this.#fields[key]
+        // Object.keys(this.#fields).forEach(key => {
+        //     const field = this.#fields[key];
+        //     if (field.count === 0 && field.rawValue && field.name !== "order") {
+        //         result[key] = this.#fields[key]
+        //     }
+        // })
+        return this.getUnFormattedFieldHelper(this.#fields)
+    }
+
+    getUnFormattedFieldHelper = (fields) => {
+        const result = {};
+        Object.keys(fields).forEach(key => {
+            const field = fields[key];
+            if (field.count === 0 && field.rawValue && field.name !== 'order') {
+                result[key] = fields[key];
+            } else if (field.count !== 0 && field.type === 'section' && field.val) {
+                field.val.forEach(subFields => {
+                    const subFieldsResult = this.getUnFormattedFieldHelper(subFields);
+                    if (Object.keys(subFieldsResult).length !== 0) {
+                        if (!result[key]) {
+                            result[key] = [].concat(subFieldsResult)
+                        } else {
+                            result[key].push(subFieldsResult)
+                        }
+                    }
+                })
             }
         })
         return result
     }
 
-    getFieldValue(field, rawData = false) {
-        if (!field)
-            return null;
-        if (rawData) {
-            return this.#fields[field.name].rawValue;
-        } else {
-            return this.#fields[field.name].val;
-        }
-    }
+
+    // getFieldValue(field, rawData = false) {
+    //     if (!field)
+    //         return null;
+    //     if (rawData) {
+    //         return this.#fields[field.name].rawValue;
+    //     } else {
+    //         return this.#fields[field.name].val;
+    //     }
+    // }
 
     // getLabel(field) {
     //     const result = {};
@@ -211,6 +299,9 @@ export class FormatterTracker {
                     }
                 case "string":
                     return field.value;
+                case 'year':
+                    // TODO: handle option month and day
+                    return field.value.split("/")[0]
                 case "yearmonth":
                     return Months[field.value.split("/")[1] - 1] + " " + field.value.split("/")[0];
                 case "monthday":

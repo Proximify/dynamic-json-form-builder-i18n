@@ -32,7 +32,7 @@ export default function Identification(props) {
             sex: s,
             title: t,
         } = ft.getFields();
-
+        console.log(ft.getFields())
         return (
             <div>
                 {any(t, fin, mn, fan) &&

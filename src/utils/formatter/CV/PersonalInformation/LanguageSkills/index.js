@@ -1,5 +1,5 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any, multiFieldSubsectionFormatter} from "../../../utils/helper";
 
 export default function LanguageSkills(props) {
     // console.log("LanguageSkill", props);
@@ -24,14 +24,17 @@ export default function LanguageSkills(props) {
                 {any(la) &&
                 <p>
                     <span className="font-bold">{la.val} </span>
-                    {any(rd, wr, sp, und, pv) && <span>({rd.val} {wr.val} {sp.val} {und.val} {pv.val})</span>}
+                    {any(rd, wr, sp, und, pv) &&
+                    <span>({multiFieldSubsectionFormatter([rd, wr, sp, und, pv], null, null, [', ', ', ', ', ', ', '])})</span>}
                 </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
             </div>
         )
-    } else {
+    }
+else
+    {
         return (
             <React.Fragment>
                 LanguageSkill
