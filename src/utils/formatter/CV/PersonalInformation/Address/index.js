@@ -34,7 +34,7 @@ export default function Address(props) {
                 {/*TODO: Primary value?*/}
                 {any(at, al1, asd, aed) &&
                 <p>
-                    <>{at.val && <span className="font-bold">{at.val}: </span>}{al1.val}</>
+                    <>{at.val && <strong>{at.val}: </strong>}{al1.val}</>
                     {any(asd, aed) && <span> ({asd.val} - {aed.val})</span>}
                 </p>}
                 {any(l2) && <p>{l2.val}</p>}

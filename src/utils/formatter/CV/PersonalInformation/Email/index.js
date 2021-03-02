@@ -20,7 +20,7 @@ export default function Email(props) {
             <div>
                 {any(ea, eed, esd, et) &&
                 <p>
-                    <>{et.val && <span className="font-bold">{`${et.val}: `}</span>}{ea.val}</>
+                    <>{et.val && <strong>{`${et.val}: `}</strong>}{ea.val}</>
                     {any(eed, esd) && <span> ({esd.val} - {eed.val})</span>}
                 </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

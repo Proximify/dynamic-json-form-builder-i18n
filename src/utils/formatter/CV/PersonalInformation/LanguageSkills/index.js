@@ -1,11 +1,10 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any, multiFieldSubsectionFormatter} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any, singleLineMultiFieldValueFormatter} from "../../../utils/helper";
 
 export default function LanguageSkills(props) {
     // console.log("LanguageSkill", props);
-    const rawData = props.rawData;
+    const {rawData, schema} = props;
     const formData = rawData.values;
-    const schema = props.schema;
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -25,16 +24,14 @@ export default function LanguageSkills(props) {
                 <p>
                     <span className="font-bold">{la.val} </span>
                     {any(rd, wr, sp, und, pv) &&
-                    <span>({multiFieldSubsectionFormatter([rd, wr, sp, und, pv], null, null, [', ', ', ', ', ', ', '])})</span>}
+                    <span>({singleLineMultiFieldValueFormatter([rd, wr, sp, und, pv], null, null, [', ', ', ', ', ', ', '])})</span>}
                 </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
             </div>
         )
-    }
-else
-    {
+    } else {
         return (
             <React.Fragment>
                 LanguageSkill

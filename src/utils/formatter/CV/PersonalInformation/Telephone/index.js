@@ -23,8 +23,8 @@ export default function Telephone(props) {
             <div>
                 {any(pt, cc, ac, tn, ex, tsd, ted) &&
                 <p>
-                    <>{pt.val && <span
-                        className="font-bold">{`${pt.val}: `}</span>}{cc.val && `+${cc.val} `}{ac.val && `(${ac.val}) `}{tn.val}{ex.val && `x ${ex.val} `}</>
+                    <>{pt.val &&
+                    <strong>{`${pt.val}: `}</strong>}{cc.val && `+${cc.val} `}{ac.val && `(${ac.val}) `}{tn.val}{ex.val && `x ${ex.val} `}</>
                     {any(tsd, ted) && <span>| ({tsd.val} - {ted.val})</span>}
                 </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

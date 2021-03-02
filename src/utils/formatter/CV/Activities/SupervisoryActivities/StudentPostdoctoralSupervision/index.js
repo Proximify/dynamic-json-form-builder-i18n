@@ -6,7 +6,7 @@ import {
     reftableValueFormatter,
     reftableValueParser,
     singleFieldSubsectionFormatter,
-    multiFieldSubsectionFormatter
+    singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
 export default function StudentPostdoctoralSupervision(props) {
@@ -179,9 +179,9 @@ export default function StudentPostdoctoralSupervision(props) {
                     <div><p>{str.lbl}</p>
                         <div>{str.val.map((val, index) => {
                             return <div key={index}>
-                                {/*{multiFieldSubsectionFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], [*/}
+                                {/*{singleLineMultiFieldValueFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], [*/}
                                 {/*    <strong>{str.rawValue[index].recognition_type.label + ': '}</strong>], null, [', ', ', '].concat(val.start_date && val.end_date ? [['(', ' - '], [')']] : [['(', ' - '], [' - ', ')']]))}*/}
-                                {multiFieldSubsectionFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], [
+                                {singleLineMultiFieldValueFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], [
                                     <strong>{str.rawValue[index].recognition_type.label + ': '}</strong>], null, [', ', ', '].concat(val.start_date && val.end_date ? [['(', ' - '], [')']] : [['(', ' - '], [' - ', ')']]))}
                                 {/*{(val.recognition_type || val.recognition_name || val.start_date || val.end_date) &&*/}
                                 {/*<p>*/}

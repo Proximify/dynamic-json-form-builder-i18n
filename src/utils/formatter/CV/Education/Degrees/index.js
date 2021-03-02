@@ -5,7 +5,7 @@ import {
     any,
     reftableValueParser,
     reftableValueFormatter,
-    multiFieldSubsectionFormatter
+    singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
 
 export default function Degree(props) {
@@ -59,7 +59,7 @@ export default function Degree(props) {
                     {any(sup) &&
                     <div><p>{sup.lbl}</p> <p>{sup.val.map((val, index) => {
                         return <span key={index}>
-                            {multiFieldSubsectionFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' ', ['(', ' - '], [')']])}
+                            {singleLineMultiFieldValueFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' ', ['(', ' - '], [')']])}
                             {index < sup.val.length - 1 && ', '}
                         </span>
                     })}</p></div>}

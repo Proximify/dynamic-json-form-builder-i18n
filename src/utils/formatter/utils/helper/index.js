@@ -150,7 +150,7 @@ export const singleFieldSubsectionFormatter = (fieldValue, isBilingualItem = fal
 
 
 
-export const multiFieldSubsectionFormatter = (fields, labels, tags, delimiters) => {
+export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimiters) => {
     const formatter = (value, tag) => {
         switch (tag) {
             case 's':
@@ -164,15 +164,29 @@ export const multiFieldSubsectionFormatter = (fields, labels, tags, delimiters) 
         }
     }
 
+    const isLastField = (targetField) => {
+        const targetIndex = fields.map((e) => { return e.name }).indexOf(targetField.name);
+        if (targetIndex === fields.length - 1){
+            return true;
+        }else {
+            for (let i = targetIndex + 1; i<fields.length; i++){
+                if (fields[i].val){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     return <>{
         Object.values(fields).map((field, index) => {
             field.count++;
-            const firstDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
+            const frontDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
                 <span>{delimiters[index][0]}</span> : null;
-            const secondDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
+            const rearDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
                 <span>{delimiters[index][1]}</span> : (delimiters ? <span>{delimiters[index]}</span> : null);
             return field.val ? (<>
-                <span>{labels && labels[index]}</span>{firstDelimiter}{formatter(field.val, tags ? tags[index] : null)}{secondDelimiter}</>) : null
+                <span>{labels && labels[index]}</span>{frontDelimiter}{formatter(field.val, tags ? tags[index] : null)}{!isLastField(field) && rearDelimiter}</>) : null
         })
     }</>
 }
