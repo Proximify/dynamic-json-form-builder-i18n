@@ -1,8 +1,8 @@
-.viewModeSubsection div{
+.viewModeSubsection > div{
     @apply ml-6 py-1 border-b border-dotted border-gray-200
 }
 
-.viewModeSubsection div p:first-child{
+.viewModeSubsection > div > p:first-child {
     @apply font-bold
 }
 

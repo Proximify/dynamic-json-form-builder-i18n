@@ -56,11 +56,11 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false) =
     return result
 }
 
-export const reftableValueParser = (fieldValue, isViewModeSubsectionField = false, isInViewMode = false, delimiter = ' - ') => {
+export const reftableValueParser = (fieldValue, isViewModeSubsectionField = false, isInViewMode = false, needNotRequired = false) => {
     const format = (valueArray) => {
         let result = [];
         valueArray.forEach((value, index) => {
-            if (value === 'Not Required') {
+            if (value === 'Not Required' && !needNotRequired) {
                 return;
             }
             if (index === 0) {
@@ -76,6 +76,7 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
             } else {
                 result.push(value + ' - ')
             }
+
         })
         return result;
     }
@@ -101,7 +102,7 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
 }
 
 export const reftableValueFormatter = (fieldValue, index) => {
-    // console.log(fieldValue)
+    console.log(fieldValue)
     if (!fieldValue)
         return;
     if (!Array.isArray(fieldValue))
@@ -204,7 +205,7 @@ export class FormatterTracker {
             switch (field.type) {
                 case 'lov':
                     if (field.subtype && field.subtype === "Yes-No") {
-                        return field.value[1] === "Yes" ? field.label : null
+                        return field.value[1] === "Yes" ? field.label.replace('?', '') : null
                     } else {
                         return field.value[1];
                     }

@@ -6,6 +6,7 @@ import Recognitions from "./Recognitions";
 import Education from "./Education";
 import './index.css'
 import Employment from "./Employment";
+import ResearchFundingHistory from "./ResearchFundingHistory";
 
 export default function CVFormatter(props) {
     // console.log("CVFormatters", props);
@@ -25,6 +26,9 @@ export default function CVFormatter(props) {
         "employment": <Employment structureChain={props.structureChain}
                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                   rawData={props.rawData}/>,
+        "research_funding_history": <ResearchFundingHistory structureChain={props.structureChain}
+                                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                rawData={props.rawData}/>,
 
     }
 
