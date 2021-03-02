@@ -54,7 +54,14 @@ export default function Degree(props) {
                 })}</p>}
                 {any(tt) && <p>{tt.val}</p>}
                 <div className="viewModeSubsection">
-                    {any(sup) && <div><p>{sup.lbl}</p> sup.val</div>} error
+                    {any(sup) &&
+                    <div><p>{sup.lbl}</p> <p>{sup.val.map((val, index) => {
+                        return <span key={index}>
+                            {val.supervisor_name
+                            && <span>{val.supervisor_name} </span>}
+                            {(val.start_date || val.end_date) && <span>({val.start_date} - {val.end_date})</span>}
+                        </span>
+                    })}</p></div>}
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)

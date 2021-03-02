@@ -62,11 +62,11 @@ export default function AcademicWorkExperience(props) {
                 <p>
                     {ar.val && <span>{ar.val}, </span>}
                     {ts.val && <span>{ts.val} </span>}
-                    {any(tsd, ted) && <span>{`(${tsd.val} - ${ted.val})`} </span>}
+                    {any(tsd, ted) && <span>{`(${tsd.val} - ${ted.val})`}</span>}
                 </p>}
-                {any(ori) && <span>{reftableValueParser(ori.val, false, true).map((val, index) => {
+                {any(ori) && <p>{reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</span>}
+                })}</p>}
                 {any(fsc) && <p>{fsc.val}</p>}
                 {any(de) && <p>{de.val}</p>}
                 {any(wd) && <>

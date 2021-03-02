@@ -102,7 +102,7 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
 }
 
 export const reftableValueFormatter = (fieldValue, index) => {
-    console.log(fieldValue)
+    // console.log(fieldValue)
     if (!fieldValue)
         return;
     if (!Array.isArray(fieldValue))

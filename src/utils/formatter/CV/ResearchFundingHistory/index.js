@@ -89,7 +89,7 @@ export default function ResearchFundingHistory(props) {
             research_settings: rs,
             funding_sources: fso
         } = ft.getFields();
-        console.log(rs);
+        // console.log(rs);
         return (
             <div>
                 {any(fr, fsd, fed, fst) &&
@@ -127,7 +127,7 @@ export default function ResearchFundingHistory(props) {
                 </>}
                 <div className="viewModeSubsection">
                     {any(oi) &&
-                    <div><p>{oi.lbl}</p> <p>{oi.val.sort((a, b) => a.order > b.order ? 1 : -1).map((val, index) => {
+                    <div><p>{oi.lbl}</p> <p>{oi.val.map((val, index) => {
                         return <span key={index}>
                             {val.investigator_name
                             && <span>{val.investigator_name}</span>}
