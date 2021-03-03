@@ -56,7 +56,6 @@ export default function ResearchFundingHistory(props) {
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
-        console.log(mappedValue)
 
         const ft = new FormatterTracker(mappedValue);
         const {

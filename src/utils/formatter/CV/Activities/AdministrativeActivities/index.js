@@ -1,18 +1,16 @@
 import React from "react";
-import StudentPostdoctoralSupervision from "./StudentPostdoctoralSupervision";
-import StaffSupervision from "./StaffSupervision";
+import EventAdministration from "./EventAdministration";
 
-
-export default function SupervisoryActivities(props) {
+export default function AdministrativeActivities(props) {
     // console.log("PersonalInformation", props);
 
     const subsections = {
-        "student_postdoctoral_supervision": <StudentPostdoctoralSupervision structureChain={props.structureChain}
+        "event_administration": <EventAdministration structureChain={props.structureChain}
                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                         rawData={props.rawData}/>,
-        "staff_supervision": <StaffSupervision structureChain={props.structureChain}
-                                                 isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                 rawData={props.rawData}/>,
+        // "course_development": <CourseDevelopment structureChain={props.structureChain}
+        //                                          isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+        //                                          rawData={props.rawData}/>,
         // "program_development": <ProgramDevelopment structureChain={props.structureChain}
         //                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
         //                                            rawData={props.rawData}/>

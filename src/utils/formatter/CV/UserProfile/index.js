@@ -86,7 +86,6 @@ export default function UserProfile(props) {
             countries: co,
             orcid: or
         } = ft.getFields();
-        console.log(tp);
         return (
             <div>
                 {any(rs, rcsd) &&
