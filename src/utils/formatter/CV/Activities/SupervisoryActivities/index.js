@@ -4,7 +4,6 @@ import StaffSupervision from "./StaffSupervision";
 
 
 export default function SupervisoryActivities(props) {
-    // console.log("PersonalInformation", props);
 
     const subsections = {
         "student_postdoctoral_supervision": <StudentPostdoctoralSupervision structureChain={props.structureChain}
@@ -12,10 +11,7 @@ export default function SupervisoryActivities(props) {
                                         rawData={props.rawData}/>,
         "staff_supervision": <StaffSupervision structureChain={props.structureChain}
                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                 rawData={props.rawData}/>,
-        // "program_development": <ProgramDevelopment structureChain={props.structureChain}
-        //                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                            rawData={props.rawData}/>
+                                                 rawData={props.rawData}/>
     }
 
     return (

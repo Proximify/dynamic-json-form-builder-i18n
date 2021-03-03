@@ -15,22 +15,7 @@ export default function TeachingActivities(props) {
                                             rawData={props.rawData}/>,
         "program_development": <ProgramDevelopment structureChain={props.structureChain}
                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                 rawData={props.rawData}/>,
-        // "language_skills": <LanguageSkills structureChain={props.structureChain}
-        //                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                    rawData={props.rawData}/>,
-        // "address": <Address structureChain={props.structureChain}
-        //                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                     rawData={props.rawData}/>,
-        // "telephone": <Telephone structureChain={props.structureChain}
-        //                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                         rawData={props.rawData}/>,
-        // "email": <Email structureChain={props.structureChain}
-        //                 isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                 rawData={props.rawData}/>,
-        // "website": <Website structureChain={props.structureChain}
-        //                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                     rawData={props.rawData}/>,
+                                                 rawData={props.rawData}/>
     }
 
     return (

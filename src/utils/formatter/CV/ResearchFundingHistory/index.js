@@ -155,7 +155,7 @@ export default function ResearchFundingHistory(props) {
                                 <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_start_date, val.funding_end_date], null, ['s'], [' '], [[1, 1, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.program_name, val.funding_reference_number], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.total_funding, val.currency_of_total_funding, val['total_funding_(can$)']], [true], null, [' ', ['(', ')'], ['(', ')  CAN']])}</p>
-                                <p>{singleLineMultiFieldValueFormatter([val.portion_of_funding_received, val['portion_of_funding_received_(can$)'], val.currency_of_portion_of_funding_received], [true], null, [' ', ['(', ')  CAN'], ['(',')']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.portion_of_funding_received, val['portion_of_funding_received_(can$)'], val.currency_of_portion_of_funding_received], [true], null, [' ', ['(', ')  CAN'], ['(', ')']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.funding_renewable], null, null)}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.funding_competitive], null, null)}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.converted_total_funding], null, null)}</p>

@@ -2,6 +2,8 @@ import React from "react";
 import TeachingActivities from "./TeachingActivities";
 import SupervisoryActivities from "./SupervisoryActivities";
 import AdministrativeActivities from "./AdministrativeActivities";
+import AdvisoryActivities from "./AdvisoryActivities";
+import AssessmentAndReviewActivities from "./AssessmentAndReviewActivities";
 
 
 export default function Activities(props) {
@@ -11,15 +13,18 @@ export default function Activities(props) {
         "teaching_activities": <TeachingActivities structureChain={props.structureChain}
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                           rawData={props.rawData}/>,
+        "supervisory_activities": <SupervisoryActivities structureChain={props.structureChain}
+                                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                               rawData={props.rawData}/>,
         "administrative_activities": <AdministrativeActivities structureChain={props.structureChain}
                                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                                    rawData={props.rawData}/>,
-        // "language_skills": <LanguageSkills structureChain={props.structureChain}
-        //                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                    rawData={props.rawData}/>,
-        // "address": <Address structureChain={props.structureChain}
-        //                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                     rawData={props.rawData}/>,
+        "advisory_activities": <AdvisoryActivities structureChain={props.structureChain}
+                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                           rawData={props.rawData}/>,
+        "assessment_and_review_activities": <AssessmentAndReviewActivities structureChain={props.structureChain}
+                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                            rawData={props.rawData}/>,
         // "telephone": <Telephone structureChain={props.structureChain}
         //                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
         //                         rawData={props.rawData}/>,

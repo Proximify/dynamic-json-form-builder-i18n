@@ -1,5 +1,6 @@
 import React from "react";
 import EventAdministration from "./EventAdministration";
+import EditorialActivities from "./EditorialActivities";
 
 export default function AdministrativeActivities(props) {
     // console.log("PersonalInformation", props);
@@ -8,12 +9,9 @@ export default function AdministrativeActivities(props) {
         "event_administration": <EventAdministration structureChain={props.structureChain}
                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                         rawData={props.rawData}/>,
-        // "course_development": <CourseDevelopment structureChain={props.structureChain}
-        //                                          isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                          rawData={props.rawData}/>,
-        // "program_development": <ProgramDevelopment structureChain={props.structureChain}
-        //                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                            rawData={props.rawData}/>
+        "editorial_activities": <EditorialActivities structureChain={props.structureChain}
+                                                 isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                 rawData={props.rawData}/>
     }
 
     return (
