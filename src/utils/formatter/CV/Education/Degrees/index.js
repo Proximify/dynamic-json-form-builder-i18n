@@ -22,10 +22,10 @@ export default function Degree(props) {
             degree_name: dn,
             specialization: spe,
             thesis_title: tt,
-            organization: org,
-            other_organization: oorg,
-            other_organization_type: oorgt,
-            other_organization_location: oorgl,
+            organization: ori,
+            other_organization: otori,
+            other_organization_type: otorit,
+            other_organization_location: otoril,
             degree_status: ds,
             degree_start_date: dsd,
             degree_received_date: drd,
@@ -39,10 +39,10 @@ export default function Degree(props) {
         console.log(rd)
         return (
             <div>
-                {any(dt, dsd, drd) &&
+                {any(dt, dsd, drd, ded) &&
                 <p>
                     <strong>{dt.val} </strong>
-                    {any(dsd, drd) && <span>({dsd.val} - {drd.val})</span>}
+                    {any(dsd, drd) && <span>({dsd.val} - {drd.val}{ded.val})</span>}
                 </p>}
                 {any(dn, spe, ds) && <p>
                     {dn.val && <>{dn.val.eng} {dn.val.fre &&
@@ -51,15 +51,21 @@ export default function Degree(props) {
                     <span className="secondLang">{`(${spe.val.fre})`}</span>}</>}
                     {ds.val && <span> ({ds.val})</span>}
                 </p>}
-                {any(org) && <p>{reftableValueParser(org.val, false, true).map((val, index) => {
+                {any(ori, otori, otorit, otoril) &&
+                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</p>}
+                })}
+                    {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
+                    {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                    {otoril.val && <span>{otoril.val}</span>}
+                </p>}
                 {any(tt) && <p>{tt.val}</p>}
+                {any(ttpwcm) && <p>{ttpwcm.val}</p>}
                 <div className="viewModeSubsection">
                     {any(sup) &&
                     <div><p>{sup.lbl}</p> <p>{sup.val.map((val, index) => {
                         return <span key={index}>
-                            {singleLineMultiFieldValueFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' ', ['(', ' - '], [')']])}
+                            {singleLineMultiFieldValueFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' ', ['(', ' '], [' ', ')']], [[1, '-']])}
                             {index < sup.val.length - 1 && ', '}
                         </span>
                     })}</p></div>}

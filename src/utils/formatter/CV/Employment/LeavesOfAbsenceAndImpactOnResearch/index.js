@@ -33,9 +33,14 @@ export default function LeavesOfAbsenceAndImpactOnResearch(props) {
                     {lt.val && <strong>{lt.val}, </strong>}
                     {any(sd, ed) && <strong>({sd.val} - {ed.val})</strong>}
                 </p>}
-                {any(ori) && <span>{reftableValueParser(ori.val, false, true).map((val, index) => {
+                {any(ori, otori, otorit, otoril) &&
+                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</span>}
+                })}
+                    {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
+                    {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                    {otoril.val && <span>{otoril.val}</span>}
+                </p>}
                 {any(aaid) && <>
                     {aaid.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{aaid.lbl}</p>

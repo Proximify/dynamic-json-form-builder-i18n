@@ -123,23 +123,23 @@ export const singleFieldSubsectionFormatter = (fieldValue, isBilingualItem = fal
     fieldValue.forEach((val, index) => {
         const {order, ...field} = val;
         Object.values(field).forEach(subField => {
-            if (isBilingualItem) {
-                // const bilingualData = [];
-                // Object.values(data).forEach(biliData => {
-                //     if (biliData) {
-                //         bilingualData.push(biliData)
-                //     }
-                // })
-                // if (bilingualData.length > 1) {
-                //     result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
-                //         className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
-                //         className="secondLang">({bilingualData[1]})</span>, </>}</span>)
-                // } else {
-                //     result.push(<span
-                //         key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
-                // }
+            subField.count++;
+            if (subField.type === 'bilingual') {
+                const bilingualData = [];
+                Object.values(subField.val).forEach(biliData => {
+                    if (biliData) {
+                        bilingualData.push(biliData)
+                    }
+                })
+                if (bilingualData.length > 1) {
+                    result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
+                        className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
+                        className="secondLang">({bilingualData[1]})</span>, </>}</span>)
+                } else {
+                    result.push(<span
+                        key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
+                }
             } else {
-                subField.count++;
                 result.push(<span
                     key={index}>{index === fieldValue.length - 1 ? `${subField.val}` : `${subField.val}, `}</span>)
             }
@@ -149,8 +149,7 @@ export const singleFieldSubsectionFormatter = (fieldValue, isBilingualItem = fal
 }
 
 
-
-export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimiters) => {
+export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimiters, constantDelimitersIndex = null) => {
     const formatter = (value, tag) => {
         switch (tag) {
             case 's':
@@ -165,12 +164,14 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
     }
 
     const isLastField = (targetField) => {
-        const targetIndex = fields.map((e) => { return e.name }).indexOf(targetField.name);
-        if (targetIndex === fields.length - 1){
+        const targetIndex = fields.map((e) => {
+            return e.name
+        }).indexOf(targetField.name);
+        if (targetIndex === fields.length - 1) {
             return true;
-        }else {
-            for (let i = targetIndex + 1; i<fields.length; i++){
-                if (fields[i].val){
+        } else {
+            for (let i = targetIndex + 1; i < fields.length; i++) {
+                if (fields[i].val) {
                     return false;
                 }
             }
@@ -178,15 +179,31 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
         }
     }
 
+    const addConstantDelimiters = (index, isRare = true) => {
+        if (constantDelimitersIndex && constantDelimitersIndex.length > 0) {
+            if (isRare && index === constantDelimitersIndex[0][0]) {
+                return constantDelimitersIndex.shift()[1];
+            }
+        }
+        return null;
+    }
+
+    // if (conflictDelimitersIndex && conflictDelimitersIndex.length > 1) {
+    //     if (fields[conflictDelimitersIndex[0]].val && fields[conflictDelimitersIndex[1]].val) {
+    //         delimiters[conflictDelimitersIndex[1]].splice(0, 1);
+    //     }
+    // }
+
     return <>{
         Object.values(fields).map((field, index) => {
             field.count++;
             const frontDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
                 <span>{delimiters[index][0]}</span> : null;
             const rearDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
-                <span>{delimiters[index][1]}</span> : (delimiters ? <span>{delimiters[index]}</span> : null);
-            return field.val ? (<>
-                <span>{labels && labels[index]}</span>{frontDelimiter}{formatter(field.val, tags ? tags[index] : null)}{!isLastField(field) && rearDelimiter}</>) : null
+                <span>{delimiters[index][1]}</span> : (delimiters ?
+                    <span>{Array.isArray(delimiters[index]) ? delimiters[index] : (!isLastField(field) && delimiters[index])}</span> : null);
+            return field.val ? (<span key={index}>
+                <span>{labels && labels[index]}</span>{frontDelimiter}{formatter(field.val, tags ? tags[index] : null)}{rearDelimiter}{addConstantDelimiters(index)}</span>) : <span key={index}>{addConstantDelimiters(index)}</span>
         })
     }</>
 }

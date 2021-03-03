@@ -5,7 +5,8 @@ import {
     FormatterTracker,
     reftableValueFormatter,
     reftableValueParser,
-    singleFieldSubsectionFormatter
+    singleFieldSubsectionFormatter,
+    singleLineMultiFieldValueFormatter
 } from "../../utils/helper";
 import ResearchDisciplines from "./ResearchDisciplines";
 import AreaOfResearch from "./AreasOfResearch";
@@ -85,7 +86,7 @@ export default function UserProfile(props) {
             countries: co,
             orcid: or
         } = ft.getFields();
-        // console.log(singleFieldSubsectionFormatter(rsk.val));
+        console.log(tp);
         return (
             <div>
                 {any(rs, rcsd) &&
@@ -152,16 +153,13 @@ export default function UserProfile(props) {
                             return reftableValueFormatter(val, index)
                         })}</div>}
                     {any(tp) &&
-                    <div><p>{tp.lbl}</p> <p>{tp.val.sort((a, b) => a.order > b.order ? 1 : -1).map((val, index) => {
-                        return <span key={index}>
-                            {val.from_year && <span>{val.from_year}</span>}
-                            {val.from_year_period && <span> ({val.from_year_period})</span>}
-                            <span> - </span>
-                            {val.to_year && <span>{val.to_year}</span>}
-                            {val.to_year_period && <span> ({val.to_year_period})</span>}
-                            {index === tp.val.length - 1 ? null : <span>, </span>}
+                    <div><p>{tp.lbl}</p>
+                        <p>{tp.val.sort((a, b) => a.order.val > b.order.val ? 1 : -1).map((val, index) => {
+                            return <span key={index}>
+                             {singleLineMultiFieldValueFormatter([val.from_year, val.from_year_period, val.to_year, val.to_year_period], null, null, [' ', ['(', ')'], ' ', ['(', ')']], [[1, ' - ']])}
+                                {index === tp.val.length - 1 ? null : <span>, </span>}
                         </span>
-                    })}</p></div>}
+                        })}</p></div>}
                     {any(gr) && <div><p>{gr.lbl}</p> <p>{singleFieldSubsectionFormatter(gr.val)}</p></div>}
                     {any(co) && <div><p>{co.lbl}</p> <p>{singleFieldSubsectionFormatter(co.val)}</p></div>}
                 </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker, reftableValueParser,reftableValueFormatter} from "../../utils/helper";
+import {any, FieldValueMapper, FormatterTracker, reftableValueParser, reftableValueFormatter} from "../../utils/helper";
 import ResearchDisciplines from "./ResearchDisciplines";
 import AreaOfResearch from "./AreaOfResearch";
 import FieldsOfApplication from "./FieldOfAppliance";
@@ -13,13 +13,15 @@ export default function Recognitions(props) {
 
     const subsections = {
         "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                        rawData={props.rawData}/>,
+                                                     isFullScreenViewMode={props.isFullScreenViewMode}
+                                                     schema={props.schema}
+                                                     rawData={props.rawData}/>,
         "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                  rawData={props.rawData}/>,
+                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                             rawData={props.rawData}/>,
         "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-                                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                      isFullScreenViewMode={props.isFullScreenViewMode}
+                                                      schema={props.schema}
                                                       rawData={props.rawData}/>,
     }
 
@@ -44,7 +46,7 @@ export default function Recognitions(props) {
             fields_of_application: foa,
             converted_amount: ca
         } = ft.getFields();
-        // console.log("cogn---",reftableValueParser(foa.val,true))
+
         return (
             <div>
                 {any(rt, rn) &&
@@ -52,14 +54,18 @@ export default function Recognitions(props) {
                     <strong>{rt.val} </strong>
                     {rn.val && <i>{rn.val}</i>}
                 </p>}
-                {any(efd, end, ori) &&
+                {any(efd, end, ori, otori, otorit, otoril) &&
                 <p>
                     {any(efd, end) && <span>{`(${efd.val} - ${end.val})`} </span>}
-                    {any(ori) && <span>{reftableValueParser(ori.val, false, true).map((val, index) => {
+                    <span>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                         return reftableValueFormatter(val, index)
-                    })}</span>}
+                    })}
+                        {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
+                        {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                        {otoril.val && <span>{otoril.val}</span>}
+                    </span>
                 </p>}
-                {any(am, cur) && <p>{am.val && `${am.lbl}: ${am.val} ${cur.val}`}</p>}
+                {any(am, cur, amc) && <p>{am.val && `${am.lbl}: ${am.val} ${cur.val} ${amc.val}`}</p>}
                 {any(desc) && <>
                     {desc.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{desc.lbl}</p>

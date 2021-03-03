@@ -18,10 +18,10 @@ export default function Credentials(props) {
 
         const {
             title: ti,
-            organization: org,
-            other_organization: oorg,
-            other_organization_type: oorgt,
-            other_organization_location: oorgl,
+            organization: ori,
+            other_organization: otori,
+            other_organization_type: otorit,
+            other_organization_location: otoril,
             effective_date: efd,
             description: desc,
             end_date: end,
@@ -36,9 +36,14 @@ export default function Credentials(props) {
                     <strong>{ti.val} </strong>
                     {any(efd, end) && <span>({efd.val} - {end.val})</span>}
                 </p>}
-                {any(org) && <p>{reftableValueParser(org.val, false, true).map((val, index) => {
+                {any(ori, otori, otorit, otoril) &&
+                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</p>}
+                })}
+                    {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
+                    {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                    {otoril.val && <span>{otoril.val}</span>}
+                </p>}
                 {any(desc) && <>
                     {desc.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{desc.lbl}</p>

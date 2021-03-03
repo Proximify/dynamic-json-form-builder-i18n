@@ -64,9 +64,14 @@ export default function AcademicWorkExperience(props) {
                     {ts.val && <span>{ts.val} </span>}
                     {any(tsd, ted) && <span>{`(${tsd.val} - ${ted.val})`}</span>}
                 </p>}
-                {any(ori) && <p>{reftableValueParser(ori.val, false, true).map((val, index) => {
+                {any(ori, otori, otorit, otoril) &&
+                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</p>}
+                })}
+                    {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
+                    {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                    {otoril.val && <span>{otoril.val}</span>}
+                </p>}
                 {any(fsc) && <p>{fsc.val}</p>}
                 {any(de) && <p>{de.val}</p>}
                 {any(wd) && <>

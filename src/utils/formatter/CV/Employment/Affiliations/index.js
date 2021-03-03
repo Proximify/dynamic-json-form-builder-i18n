@@ -35,9 +35,14 @@ export default function Affiliations(props) {
                     <span className="secondLang">{`(${pti.val.fre}) `}</span>}</strong>}
                     {any(sd, ed) && <strong>({sd.val} - {ed.val})</strong>}
                 </p>}
-                {any(ori) && <span>{reftableValueParser(ori.val, false, true).map((val, index) => {
+                {any(ori, otori, otorit, otoril) &&
+                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</span>}
+                })}
+                    {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
+                    {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                    {otoril.val && <span>{otoril.val}</span>}
+                </p>}
                 {any(de) && <p>{de.val}</p>}
                 {any(ad) && <p>{ad.val}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
