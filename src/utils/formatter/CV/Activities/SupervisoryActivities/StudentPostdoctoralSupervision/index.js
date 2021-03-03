@@ -87,18 +87,15 @@ export default function StudentPostdoctoralSupervision(props) {
         return (
             <div>
                 {any(sur, ssd, sed) && <p>
-                    {sur.val && <strong>{sur.val} </strong>}
-                    {any(ssd, sed) && <span>({ssd.val} - {sed.val})</span>}
+                    {singleLineMultiFieldValueFormatter([sur, ssd, sed], null, ['s'], [' '], [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
+                    {/*{sur.val && <strong>{sur.val} </strong>}*/}
+                    {/*{any(ssd, sed) && <span>({ssd.val} - {sed.val})</span>}*/}
                 </p>}
                 {any(sn, spl, sds, sdsd, sdrd, sded) && <p>
-                    {sn.val && <strong>{sn.val}, </strong>}
-                    {spl.val && <span>{spl.val}, </span>}
-                    {sds.val && <strong>{sds.val} </strong>}
-                    {any(sdsd, sdrd, sded) && <span>({sdsd.val} - {sdrd.val}{sded.val})</span>}
+                    {singleLineMultiFieldValueFormatter([sn, spl, sds, sdsd, sdrd, sded], null, ['s', '', 's'], [', ', ', '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}
                 </p>}
                 {any(si, po) && <p>
-                    {si.val && <span>{si.val}{po.val && ', '}</span>}
-                    {po.val && <span>{po.val}</span>}
+                    {singleLineMultiFieldValueFormatter([si, po], null, null, [', '])}
                 </p>}
                 {any(dn) && <>
                     {dn.val.eng && <div className="bilingualItem">
@@ -128,7 +125,7 @@ export default function StudentPostdoctoralSupervision(props) {
                 <div><p>{os.lbl}:</p>
                     <p>{os.val.map((val, index) => {
                         return <span key={index}>
-                            <span>{val.first_name} {val.family_name}{val.role && ` (${val.role})`}</span>
+                            {singleLineMultiFieldValueFormatter([val.first_name, val.family_name, val.role], null, null, [' ', ' ', ['(', ')']])}
                             {index < os.val.length - 1 ? ', ' : ''}
                         </span>
                     })}</p>
@@ -160,18 +157,10 @@ export default function StudentPostdoctoralSupervision(props) {
                     <div><p>{pfs.lbl}</p>
                         <div>{pfs.val.map((val, index) => {
                             return <div key={index}>
-                                {(val.funding_reference_number || val.amount || val.currency) &&
-                                <p>{val.funding_reference_number &&
-                                <span>{pfs.rawValue[index].funding_reference_number.label}: {val.funding_reference_number}{val.amount && ', '}</span>}
-                                    {val.amount &&
-                                    <span>{pfs.rawValue[index].amount.label}: {val.amount}{val.currency && ' '}</span>}
-                                    {val.currency && <span>{val.currency}</span>}
-                                </p>}
-                                {(val.funding_organization || val.other_funding_organization) &&
-                                <p>
-                                    {val.funding_organization && <span>{val.funding_organization} </span>}
-                                    {val.other_funding_organization && <span>{val.other_funding_organization}</span>}
-                                </p>}
+                                <p>{singleLineMultiFieldValueFormatter([val.funding_reference_number, val.amount, val.currency], [true, true], null, [', ', ', ', ['(', ')']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization], null, null, [' ', ' '])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.converted_amount], [true], null, null)}</p>
+
                             </div>
                         })}</div>
                     </div>}
@@ -179,41 +168,14 @@ export default function StudentPostdoctoralSupervision(props) {
                     <div><p>{str.lbl}</p>
                         <div>{str.val.map((val, index) => {
                             return <div key={index}>
-                                {/*{singleLineMultiFieldValueFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], [*/}
-                                {/*    <strong>{str.rawValue[index].recognition_type.label + ': '}</strong>], null, [', ', ', '].concat(val.start_date && val.end_date ? [['(', ' - '], [')']] : [['(', ' - '], [' - ', ')']]))}*/}
-                                {singleLineMultiFieldValueFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], [
-                                    <strong>{str.rawValue[index].recognition_type.label + ': '}</strong>], null, [', ', ', '].concat(val.start_date && val.end_date ? [['(', ' - '], [')']] : [['(', ' - '], [' - ', ')']]))}
-                                {/*{(val.recognition_type || val.recognition_name || val.start_date || val.end_date) &&*/}
-                                {/*<p>*/}
-                                {/*    {val.recognition_type &&*/}
-                                {/*    <span>{val.recognition_type}, </span>}*/}
-                                {/*    {val.recognition_name &&*/}
-                                {/*    <span>{val.recognition_name}, </span>}*/}
-                                {/*    {val.recognition_name &&*/}
-                                {/*    <span>{val.recognition_name}, </span>}*/}
-
-                                {/*    /!*{val.amount &&*!/*/}
-                                {/*    /!*<span>{pfs.rawValue[index].amount.label}: {val.amount}{val.currency && ' '}</span>}*!/*/}
-                                {/*    /!*{val.currency && <span>{val.currency}</span>}*!/*/}
-                                {/*</p>}*/}
-
-                                {/*{val.funding_organization &&*/}
-                                {/*<p><strong>{val.funding_organization}{val.other_funding_organization &&*/}
-                                {/*<span>, {val.other_funding_organization}</span>}</strong>*/}
-                                {/*    {(val.funding_start_date || val.funding_end_date) &&*/}
-                                {/*    <span> ({val.funding_start_date} - {val.funding_end_date})</span>}</p>}*/}
-                                {/*{(val.program_name || val.funding_reference_number) &&*/}
-                                {/*<p><span>{val.program_name}</span>{val.funding_reference_number &&*/}
-                                {/*<span>, {fso.rawValue[index].funding_reference_number.label}: {val.funding_reference_number}</span>}*/}
-                                {/*</p>}*/}
-                                {/*{val.total_funding &&*/}
-                                {/*<p>{fso.rawValue[index].total_funding.label}: {val.total_funding} {val.currency_of_total_funding &&*/}
-                                {/*<span>({val.currency_of_total_funding})</span>}</p>}*/}
-                                {/*{val.portion_of_funding_received &&*/}
-                                {/*<p>{fso.rawValue[index].portion_of_funding_received.label}: {val.portion_of_funding_received} {val.currency_of_portion_of_funding_received &&*/}
-                                {/*<span>({val.currency_of_portion_of_funding_received})</span>}</p>}*/}
-                                {/*{val.funding_renewable && <p>{val.funding_renewable}</p>}*/}
-                                {/*{val.funding_competitive && <p>{val.funding_competitive}</p>}*/}
+                                <p>{singleLineMultiFieldValueFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], null, null, [', '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
+                                <p>{val.organization.val && reftableValueParser(val.organization.val, false, true).map((val, index) => {
+                                    return reftableValueFormatter(val, index)
+                                })}
+                                    {singleLineMultiFieldValueFormatter([val.organization, val.other_organization_type, val.other_organization_location, val.other_organization], null, null, [' ', ', ', ', '])}
+                                </p>
+                                <p>{singleLineMultiFieldValueFormatter([val['amount_(can$)'], val.amount, val.currency], [true], null, [' ', ['(', ') ']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.converted_amount], [true], null, null)}</p>
                             </div>
                         })}</div>
                     </div>}

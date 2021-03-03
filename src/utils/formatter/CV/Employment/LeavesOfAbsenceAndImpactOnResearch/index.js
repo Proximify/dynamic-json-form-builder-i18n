@@ -4,7 +4,8 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter,
+    singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
 
 export default function LeavesOfAbsenceAndImpactOnResearch(props) {
@@ -30,8 +31,9 @@ export default function LeavesOfAbsenceAndImpactOnResearch(props) {
             <div>
                 {any(lt, sd, ed) &&
                 <p>
-                    {lt.val && <strong>{lt.val}, </strong>}
-                    {any(sd, ed) && <strong>({sd.val} - {ed.val})</strong>}
+                    {singleLineMultiFieldValueFormatter([lt, sd, ed], null, ['s', 's', 's'], [' '],[[0,1,2,<strong> (</strong>],[1,1,2,<strong> - </strong>],[2,1,2,<strong>)</strong>]])}
+                    {/*{lt.val && <strong>{lt.val}, </strong>}*/}
+                    {/*{any(sd, ed) && <strong>({sd.val} - {ed.val})</strong>}*/}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {

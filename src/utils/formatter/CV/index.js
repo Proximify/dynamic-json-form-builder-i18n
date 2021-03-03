@@ -27,12 +27,12 @@ export default function CVFormatter(props) {
         "employment": <Employment structureChain={props.structureChain}
                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                   rawData={props.rawData}/>,
-        // "research_funding_history": <ResearchFundingHistory structureChain={props.structureChain}
-        //                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                         rawData={props.rawData}/>,
-        // "activities":  <Activities structureChain={props.structureChain}
-        //                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                        rawData={props.rawData}/>,
+        "research_funding_history": <ResearchFundingHistory structureChain={props.structureChain}
+                                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                rawData={props.rawData}/>,
+        "activities":  <Activities structureChain={props.structureChain}
+                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                               rawData={props.rawData}/>,
 
     }
 

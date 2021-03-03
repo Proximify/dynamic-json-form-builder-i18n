@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
 
 export default function NonAcademicWorkExperience(props) {
@@ -47,9 +47,7 @@ export default function NonAcademicWorkExperience(props) {
             <div>
                 {any(pti, ps, sd, ed) &&
                 <p>
-                    {pti.val && <strong>{pti.val}, </strong>}
-                    {ps.val && <strong>{ps.val} </strong>}
-                    {any(sd, ed) && <strong>({sd.val} - {ed.val})</strong>}
+                    {singleLineMultiFieldValueFormatter([pti, ps, sd, ed], null, ['s','s','s','s'], [', '],[[1,2,3,<strong> (</strong>],[2,2,3,<strong> - </strong>],[3,2,3,<strong>)</strong>]])}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {

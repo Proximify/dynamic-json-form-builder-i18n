@@ -1,6 +1,13 @@
 import React from "react";
 import CountryOfCitizenship from "./CountryOfCitizenship";
-import {FieldValueMapper, FormatterTracker, any, reftableValueParser,singleFieldSubsectionFormatter} from "../../../utils/helper";
+import {
+    FieldValueMapper,
+    FormatterTracker,
+    any,
+    reftableValueParser,
+    singleFieldSubsectionFormatter,
+    singleLineMultiFieldValueFormatter
+} from "../../../utils/helper";
 
 export default function Identification(props) {
     // console.log("Identification", props)
@@ -36,8 +43,8 @@ export default function Identification(props) {
         return (
             <div>
                 {any(t, fin, mn, fan) &&
-                <p className="font-bold text-lg">
-                    {t.val} {fin.val} {mn.val} {fan.val}
+                <p className="text-lg">
+                    {singleLineMultiFieldValueFormatter([t, fin, mn, fan], null, ['s', 's', 's','s'], [' ', ' ', ' '])}
                 </p>}
                 {any(pfan) &&
                 <p>{pfan.lbl}: {pfan.val}</p>}

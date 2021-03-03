@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
 export default function CourseDevelopment(props) {
@@ -46,22 +46,24 @@ export default function CourseDevelopment(props) {
             <div>
                 {any(ro, dp) &&
                 <p>
-                    {ro.val && <strong>{ro.val}{dp.val && ', '}</strong>}
-                    {dp.val && <span>{dp.val} </span>}
+                    {singleLineMultiFieldValueFormatter([ro, dp], null, ['s'], [', '])}
                 </p>}
-                {any(cti) && <p>
-                    {cti.val && <span>{cti.val}</span>}</p>}
-
-                {any(ori) && <p>{reftableValueParser(ori.val, false, true).map((val, index) => {
+                {any(cti) && <strong>{cti.val}</strong>}
+                {any(ori, otori, otorit, otoril) &&
+                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</p>}
+                })}
+                    {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
+                </p>}
                 {any(cl) && <p>{cl.lbl}: {cl.val}</p>}
                 {any(cd) &&
-                <div><p>{cd.lbl}: </p> <p>{cd.val.map((val, index) => {
-                    return <span key={index}>
-                            <span>{val.first_name} {val.family_name}</span>
-                        </span>
-                })}</p></div>}
+                <div><p>{cd.lbl}: </p><p>
+                    {cd.val.map((val, index) => {
+                        return <span key={index}>
+                                {singleLineMultiFieldValueFormatter([val.first_name, val.family_name], null, null, [' ', ' '])}
+                            </span>
+                    })}
+                </p></div>}
                 {any(dft) && <p>{dft.lbl}: {dft.val}</p>}
                 {any(cdesc) && <>
                     {cdesc.val.eng && <div className="bilingualItem">

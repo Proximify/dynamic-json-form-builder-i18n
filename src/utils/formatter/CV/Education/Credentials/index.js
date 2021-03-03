@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
 
 export default function Credentials(props) {
@@ -33,8 +33,7 @@ export default function Credentials(props) {
             <div>
                 {any(ti, efd, end) &&
                 <p>
-                    <strong>{ti.val} </strong>
-                    {any(efd, end) && <span>({efd.val} - {end.val})</span>}
+                    {singleLineMultiFieldValueFormatter([ti, efd, end], null, ['s'], [' '],[[0,1,2,' ('],[1,1,2,' - '],[2,1,2,')']])}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {

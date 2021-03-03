@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
 
 export default function Address(props) {
@@ -34,8 +34,7 @@ export default function Address(props) {
                 {/*TODO: Primary value?*/}
                 {any(at, al1, asd, aed) &&
                 <p>
-                    <>{at.val && <strong>{at.val}: </strong>}{al1.val}</>
-                    {any(asd, aed) && <span> ({asd.val} - {aed.val})</span>}
+                    {singleLineMultiFieldValueFormatter([at, al1, asd, aed], null, ['s'], [': '],[[1,2,3,' ('],[2,2,3,' - '],[3,2,3,')']])}
                 </p>}
                 {any(l2) && <p>{l2.val}</p>}
                 {any(l3) && <p>{l3.val}</p>}

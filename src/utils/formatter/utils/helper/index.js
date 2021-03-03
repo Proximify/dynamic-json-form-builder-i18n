@@ -94,9 +94,12 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
         }
         fieldValue.forEach((val, index) => {
             const {order, ...fields} = val;
-            Object.values(fields).forEach(field => {
+            Object.values(fields).forEach((field,fieldIndex) => {
                 field.count++;
-                Array.isArray(field.val) ? result.push(format(field.val), (index < fieldValue.length - 1 ? ', ' : '')) : result.push(field.val)
+                Array.isArray(field.val) ? result.push(format(field.val)) : result.push(field.val)
+                if (index < fieldValue.length - 1 || fieldIndex < Object.values(fields).length - 1){
+                    result.push(', ')
+                }
             })
         })
     } else {
@@ -179,10 +182,24 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
         }
     }
 
-    const addConstantDelimiters = (index, isRare = true) => {
+    const addConstantDelimiters = (index) => {
         if (constantDelimitersIndex && constantDelimitersIndex.length > 0) {
-            if (isRare && index === constantDelimitersIndex[0][0]) {
-                return constantDelimitersIndex.shift()[1];
+            if (index === constantDelimitersIndex[0][0]) {
+                const fromIndex = constantDelimitersIndex[0][1];
+                const toIndex = constantDelimitersIndex[0][2];
+                let valid = false;
+                for (let i = fromIndex; i<=toIndex ; i++){
+                    if (i > fields.length - 1){
+                        break;
+                    }else {
+                        if (fields[i].val){
+                            valid = true;
+                            break;
+                        }
+                    }
+
+                }
+                return valid ? constantDelimitersIndex.shift()[3] : null;
             }
         }
         return null;
@@ -200,10 +217,15 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
             const frontDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
                 <span>{delimiters[index][0]}</span> : null;
             const rearDelimiter = (delimiters && Array.isArray(delimiters[index]) && delimiters[index].length > 1) ?
-                <span>{delimiters[index][1]}</span> : (delimiters ?
-                    <span>{Array.isArray(delimiters[index]) ? delimiters[index] : (!isLastField(field) && delimiters[index])}</span> : null);
+                <span>{delimiters[index][1]}</span> : (delimiters && delimiters[index] && !(isLastField(field) && delimiters[index].includes(',')) ?
+                    <span>{delimiters[index]}</span> : null)
             return field.val ? (<span key={index}>
-                <span>{labels && labels[index]}</span>{frontDelimiter}{formatter(field.val, tags ? tags[index] : null)}{rearDelimiter}{addConstantDelimiters(index)}</span>) : <span key={index}>{addConstantDelimiters(index)}</span>
+                    {(labels && labels[index]) && <span>{field.lbl}: </span>}
+                    {frontDelimiter}
+                    {formatter(field.val, tags ? tags[index] : null)}
+                    {rearDelimiter}
+                    {addConstantDelimiters(index)}</span>) :
+                <span key={index}>{addConstantDelimiters(index)}</span>
         })
     }</>
 }

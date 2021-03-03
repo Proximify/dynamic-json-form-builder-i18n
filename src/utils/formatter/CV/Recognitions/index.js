@@ -1,5 +1,12 @@
 import React from "react";
-import {any, FieldValueMapper, FormatterTracker, reftableValueParser, reftableValueFormatter} from "../../utils/helper";
+import {
+    any,
+    FieldValueMapper,
+    FormatterTracker,
+    reftableValueParser,
+    reftableValueFormatter,
+    singleLineMultiFieldValueFormatter
+} from "../../utils/helper";
 import ResearchDisciplines from "./ResearchDisciplines";
 import AreaOfResearch from "./AreaOfResearch";
 import FieldsOfApplication from "./FieldOfAppliance";
@@ -56,7 +63,9 @@ export default function Recognitions(props) {
                 </p>}
                 {any(efd, end, ori, otori, otorit, otoril) &&
                 <p>
-                    {any(efd, end) && <span>{`(${efd.val} - ${end.val})`} </span>}
+                    {any(efd, end) && <span>
+                        {singleLineMultiFieldValueFormatter([efd, end], null, null, [['(','']], [[0, 0, 1, ' - '],  [1, 0, 1, ') ']])}
+                    </span>}
                     <span>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                         return reftableValueFormatter(val, index)
                     })}

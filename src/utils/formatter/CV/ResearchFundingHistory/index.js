@@ -5,7 +5,8 @@ import {
     FormatterTracker,
     reftableValueFormatter,
     reftableValueParser,
-    singleFieldSubsectionFormatter
+    singleFieldSubsectionFormatter,
+    singleLineMultiFieldValueFormatter
 } from "../../utils/helper";
 
 export default function ResearchFundingHistory(props) {
@@ -78,14 +79,12 @@ export default function ResearchFundingHistory(props) {
             research_settings: rs,
             funding_sources: fso
         } = ft.getFields();
-        // console.log(rs);
+        // console.log(fso);
         return (
             <div>
                 {any(fr, fsd, fed, fst) &&
                 <p>
-                    {fr.val && <strong>{fr.val} </strong>}
-                    {any(fsd, fed) && <span>({fsd.val} - {fed.val})</span>}
-                    {fst.val && <> - <strong>{fst.val}</strong></>}
+                    {singleLineMultiFieldValueFormatter([fr, fsd, fed, fst], null, ['s', '', '', 's'], [' ', '', '', [' - ', '']], [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
                 </p>}
                 {any(fti) && <p><i>{fti.val}</i></p>}
                 {any(fty, gt) && <p>
@@ -117,9 +116,8 @@ export default function ResearchFundingHistory(props) {
                     {any(oi) &&
                     <div><p>{oi.lbl}</p> <p>{oi.val.map((val, index) => {
                         return <span key={index}>
-                            {val.investigator_name
-                            && <span>{val.investigator_name}</span>}
-                            {val.role && <span> ({val.role})</span>}
+                              {singleLineMultiFieldValueFormatter([val.investigator_name, val.role], null, null, [' ', ['(', ')']])}
+                            {index === oi.val.length - 1 ? null : <span>, </span>}
                         </span>
                     })}</p></div>}
                     {any(rus) && <div><p>{rus.lbl}</p> <p>{singleFieldSubsectionFormatter(rus.val)}</p></div>}
@@ -127,15 +125,10 @@ export default function ResearchFundingHistory(props) {
                     <div><p>{fby.lbl}</p>
                         <div>{fby.val.map((val, index) => {
                             return <div key={index}>
-                                {(val.start_date || val.end_date) && <p>({val.start_date} - {val.end_date})</p>}
-                                {val.total_funding &&
-                                <p>{fby.rawValue[index].total_funding.label}: {val.total_funding} {val.currency_of_total_funding &&
-                                <span>({val.currency_of_total_funding})</span>}</p>}
-                                {val.portion_of_funding_received &&
-                                <p>{fby.rawValue[index].portion_of_funding_received.label}: {val.portion_of_funding_received} {val.currency_of_portion_of_funding_received &&
-                                <span>({val.currency_of_portion_of_funding_received})</span>}</p>}
-                                {val.time_commitment &&
-                                <p>{fby.rawValue[index].time_commitment.label}: {val.time_commitment}</p>}
+                                <p>{singleLineMultiFieldValueFormatter([val.start_date, val.end_date], null, null, [['(', ''], ')'], [[0, ' - ']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.total_funding, val.currency_of_total_funding], [true], null, [' ', ['(', ')']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.portion_of_funding_received, val.currency_of_portion_of_funding_received], [true], null, [' ', ['(', ')']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.time_commitment], [true], null, null)}</p>
                             </div>
                         })}</div>
                     </div>}
@@ -151,35 +144,24 @@ export default function ResearchFundingHistory(props) {
                         {reftableValueParser(foa.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-                    {any(rs) && <div><p>{rs.lbl}</p><p>{rs.val.map((val, index) => {
-                        return <span
-                            key={index}><span>{reftableValueParser(val.location, false, true, true).map((refVal, index) => {
-                            return reftableValueFormatter(refVal, index)
-                        })}</span>{val.setting_type &&
-                        <span>, {val.setting_type}</span>}{index < rs.val.length - 1 ? ', ' : ''} </span>
-                    })}</p>
+                    {any(rs) && <div><p>{rs.lbl}</p>
+                        {reftableValueParser(rs.val, true, true, true).map((val, index) => {
+                            return reftableValueFormatter(val, index)
+                        })}
                     </div>}
                     {any(fso) &&
                     <div><p>{fso.lbl}</p>
                         <div>{fso.val.map((val, index) => {
                             return <div key={index}>
-                                {val.funding_organization &&
-                                <p><strong>{val.funding_organization}{val.other_funding_organization &&
-                                <span>, {val.other_funding_organization}</span>}</strong>
-                                    {(val.funding_start_date || val.funding_end_date) &&
-                                    <span> ({val.funding_start_date} - {val.funding_end_date})</span>}</p>}
-                                {(val.program_name || val.funding_reference_number) &&
-                                <p><span>{val.program_name}</span>{val.funding_reference_number &&
-                                <span>, {fso.rawValue[index].funding_reference_number.label}: {val.funding_reference_number}</span>}
-                                </p>}
-                                {val.total_funding &&
-                                <p>{fso.rawValue[index].total_funding.label}: {val.total_funding} {val.currency_of_total_funding &&
-                                <span>({val.currency_of_total_funding})</span>}</p>}
-                                {val.portion_of_funding_received &&
-                                <p>{fso.rawValue[index].portion_of_funding_received.label}: {val.portion_of_funding_received} {val.currency_of_portion_of_funding_received &&
-                                <span>({val.currency_of_portion_of_funding_received})</span>}</p>}
-                                {val.funding_renewable && <p>{val.funding_renewable}</p>}
-                                {val.funding_competitive && <p>{val.funding_competitive}</p>}
+                                <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_start_date, val.funding_end_date], null, ['s'], [' '], [[1, 1, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.program_name, val.funding_reference_number], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.total_funding, val.currency_of_total_funding, val['total_funding_(can$)']], [true], null, [' ', ['(', ')'], ['(', ')  CAN']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.portion_of_funding_received, val['portion_of_funding_received_(can$)'], val.currency_of_portion_of_funding_received], [true], null, [' ', ['(', ')  CAN'], ['(',')']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.funding_renewable], null, null)}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.funding_competitive], null, null)}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.converted_total_funding], null, null)}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.converted_total_funding], null, null)}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.converted_portion_of_funding_received], null, null)}</p>
                             </div>
                         })}</div>
                     </div>}
@@ -189,9 +171,7 @@ export default function ResearchFundingHistory(props) {
                 }
             </div>
         )
-    }
-else
-    {
+    } else {
         return (
             <React.Fragment>
                 {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}

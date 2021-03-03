@@ -36,13 +36,11 @@ export default function Degree(props) {
             areas_of_research: aor,
             fields_of_application: foa
         } = ft.getFields();
-        console.log(rd)
         return (
             <div>
                 {any(dt, dsd, drd, ded) &&
                 <p>
-                    <strong>{dt.val} </strong>
-                    {any(dsd, drd) && <span>({dsd.val} - {drd.val}{ded.val})</span>}
+                    {singleLineMultiFieldValueFormatter([dt, dsd, drd, ded], null, ['s'], [' '],[[0,1,3,' ('],[1,1,3,' - '],[3,1,3,')']])}
                 </p>}
                 {any(dn, spe, ds) && <p>
                     {dn.val && <>{dn.val.eng} {dn.val.fre &&
@@ -65,7 +63,7 @@ export default function Degree(props) {
                     {any(sup) &&
                     <div><p>{sup.lbl}</p> <p>{sup.val.map((val, index) => {
                         return <span key={index}>
-                            {singleLineMultiFieldValueFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' ', ['(', ' '], [' ', ')']], [[1, '-']])}
+                            {singleLineMultiFieldValueFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' '], [[0,1,2,' ('],[1,1,2,' - '],[2,1,2,')']])}
                             {index < sup.val.length - 1 && ', '}
                         </span>
                     })}</p></div>}

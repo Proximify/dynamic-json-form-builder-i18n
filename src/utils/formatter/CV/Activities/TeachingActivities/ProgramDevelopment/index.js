@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
 export default function ProgramDevelopment(props) {
@@ -76,13 +76,11 @@ export default function ProgramDevelopment(props) {
                     {any(cd) &&
                     <div><p>{cd.lbl}: </p> <p>{cd.val.map((val, index) => {
                         return <span key={index}>
-                                <span>{val.first_name} {val.family_name}</span>
+                                {singleLineMultiFieldValueFormatter([val.first_name, val.family_name], null, null, [' '])}
                             </span>
                     })}</p></div>}
                     {any(dft) && <div><p>{dft.lbl}: </p><p>{dft.val}</p></div>}
                 </div>
-
-
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }

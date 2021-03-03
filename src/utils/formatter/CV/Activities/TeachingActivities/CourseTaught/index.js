@@ -4,7 +4,8 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter,
+    singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
 export default function CourseTaught(props) {
@@ -56,39 +57,41 @@ export default function CourseTaught(props) {
             <div>
                 {any(ro, cc, as, sd, ed) &&
                 <p>
-                    {ro.val && <strong>{ro.val}, </strong>}
-                    {cc.val && <span>{cc.val}, </span>}
-                    {as.val && <span>{as.val} </span>}
-                    {any(sd, ed) && <span>({sd.val} - {ed.val})</span>}
+                    {singleLineMultiFieldValueFormatter([ro, cc, as, sd, ed], null, ['s'], [', ', ', '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}
                 </p>}
                 {any(cti, gl) &&
                 <p>
-                    {cti.val && <span>{cti.val}</span>}
-                    {gl.val && <span> ({gl.val})</span>}
+                    {singleLineMultiFieldValueFormatter([cti, gl], null, null, [' ', ['(', ')']])}
                 </p>}
                 {any(dp, ori) && <p>{dp.val && <span>{dp.val}{ori.val && ', '}</span>}
                     {reftableValueParser(ori.val, false, true).map((val, index) => {
                         return reftableValueFormatter(val, index)
                     })}</p>}
-                {any(cl,cto) && <p>{cl.val && <span>{cl.val}{cto.val && ', '}</span>}{cto.val && <span>{cto.val}</span>}</p>}
+                {any(cl, cto) && <p>
+                    {singleLineMultiFieldValueFormatter([cl, cto], null, null, [', '])}
+                </p>}
                 {any(sec) && <p>{sec.lbl}: {sec.val}</p>}
-                {any(nos, noc) && <p><span>{nos.lbl}: {nos.val}{noc.val && ', '}</span><span>{noc.lbl}: {noc.val}</span></p>}
-                {any(nos, noc) && <p><span>{nos.lbl}: {nos.val}{noc.val && ', '}</span><span>{noc.lbl}: {noc.val}</span></p>}
-                {any(lehpw, lahpw, thpw) && <p><span>{lehpw.lbl}: {lehpw.val}{any(lahpw, thpw) && ', '}</span><span>{lahpw.lbl}: {lahpw.val}{thpw.val && ', '}</span><span>{thpw.lbl}: {thpw.val}</span></p>}
+                {any(nos, noc) && <p>
+                    {singleLineMultiFieldValueFormatter([nos, noc], [true, true], null, [', '])}
+                </p>}
+                {any(lehpw, lahpw, thpw) && <p>
+                    {singleLineMultiFieldValueFormatter([lehpw, lahpw, thpw], [true, true, true], null, [', ', ', '])}
+                </p>}
                 {any(ci) &&
-                <div><p><strong>{ci.lbl}: </strong></p> <p>{ci.val.map((val, index) => {
-                    return <span key={index}>
-                            <span>{val.first_name} {val.family_name}</span>
-                        </span>
-                })}</p></div>}
+                <div>
+                    <p><strong>{ci.lbl}: </strong></p><p>
+                    {ci.val.map((val, index) => {
+                        return <span key={index}>
+                                {singleLineMultiFieldValueFormatter([val.first_name, val.family_name], null, null, [' '])}
+                            </span>
+                    })}
+                </p></div>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
             </div>
         )
-    }
-    else
-    {
+    } else {
         return (
             <React.Fragment>
                 CourseTaught

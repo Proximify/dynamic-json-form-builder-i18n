@@ -4,7 +4,8 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter
+    reftableValueFormatter,
+    singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
 
 export default function AcademicWorkExperience(props) {
@@ -53,16 +54,11 @@ export default function AcademicWorkExperience(props) {
             <div>
                 {any(pty, pti, ps, sd, ed) &&
                 <p>
-                    {pty.val && <strong>{pty.val}, </strong>}
-                    {pti.val && <strong>{pti.val}, </strong>}
-                    {ps.val && <strong>{ps.val} </strong>}
-                    {any(sd, ed) && <strong>({sd.val} - {ed.val})</strong>}
+                    {singleLineMultiFieldValueFormatter([pty, pti, ps, sd, ed], null, ['s', 's','s','s','s'], [', ',', '],[[2,3,4,<strong> (</strong>],[3,3,4,<strong> - </strong>],[4,3,4,<strong>)</strong>]])}
                 </p>}
                 {any(ar, ts, tsd, ted) &&
                 <p>
-                    {ar.val && <span>{ar.val}, </span>}
-                    {ts.val && <span>{ts.val} </span>}
-                    {any(tsd, ted) && <span>{`(${tsd.val} - ${ted.val})`}</span>}
+                    {singleLineMultiFieldValueFormatter([ar, ts, tsd, ted], null, null, [', '],[[1,2,3,' ('],[2,2,3,' - '],[3,2,3,')']])}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
