@@ -1,13 +1,15 @@
 import React from "react";
+import './index.css'
 
 import UserProfile from './UserProfile';
 import PersonalInformation from './PersonalInformation'
 import Recognitions from "./Recognitions";
 import Education from "./Education";
-import './index.css'
 import Employment from "./Employment";
 import ResearchFundingHistory from "./ResearchFundingHistory";
 import Activities from "./Activities";
+import Memberships from "./Memberships";
+import MostSignificantContributions from "./MostSignificantContributions";
 
 export default function CVFormatter(props) {
     // console.log("CVFormatters", props);
@@ -33,6 +35,12 @@ export default function CVFormatter(props) {
         "activities":  <Activities structureChain={props.structureChain}
                                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                                rawData={props.rawData}/>,
+        "memberships":  <Memberships structureChain={props.structureChain}
+                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                   rawData={props.rawData}/>,
+        "most_significant_contributions":  <MostSignificantContributions structureChain={props.structureChain}
+                                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                     rawData={props.rawData}/>,
 
     }
 
