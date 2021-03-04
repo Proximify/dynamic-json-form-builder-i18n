@@ -28,14 +28,11 @@ export default function JournalReviewActivities(props) {
 
         return (
             <div>
-                {any(ro, rt, jn) && <p>
-                    {singleLineMultiFieldValueFormatter([ro, rt, jn], null, ['s', '', 's'], [', ', ', '])}
+                {any(ro, rt, jn,sd, ed) && <p>
+                    {singleLineMultiFieldValueFormatter([ro, rt, jn,sd, ed], null, ['s', '', 's'], [', ', ', '], [[2,3,4,' ('],[3,3,4,' - '],[4,3,4,')']])}
                 </p>}
                 {any(pr) && <p>{pr.val}</p>}
                 {any(nowrr) && <p>{nowrr.lbl}: {nowrr.val}</p>}
-                {any(sd, ed) && <p>
-                    <span>({sd.val} - {ed.val})</span>
-                </p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }

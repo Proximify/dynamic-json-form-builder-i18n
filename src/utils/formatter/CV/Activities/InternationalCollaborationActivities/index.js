@@ -5,9 +5,9 @@ import {
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
     singleLineMultiFieldValueFormatter
-} from "../../../../utils/helper";
+} from "../../../utils/helper";
 
-export default function OrganizationalReviewActivities(props) {
+export default function InternationalCollaborationActivities(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -19,25 +19,16 @@ export default function OrganizationalReviewActivities(props) {
         const ft = new FormatterTracker(mappedValue);
         const {
             role: ro,
-            organization: ori,
-            other_organization: otori,
-            other_organization_type: otorit,
-            other_organization_location: otoril,
-            activity_description: ad,
+            location: lo,
             start_date: sd,
-            end_date: ed
+            end_date: ed,
+            activity_description: ad
         } = ft.getFields();
 
         return (
             <div>
-                {any(ro, sd, ed) && <p>
-                    {singleLineMultiFieldValueFormatter([ro, sd, ed], null, ['s'], null, [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
-                </p>}
-                {any(ori, otori, otorit, otoril) &&
-                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
-                    return reftableValueFormatter(val, index)
-                })}
-                    {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
+                {any(ro, lo, sd, ed) && <p>
+                    {singleLineMultiFieldValueFormatter([ro, lo, sd, ed], null, ['s'], [', '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}
                 </p>}
                 {any(ad) && <>
                     {ad.val.eng && <div className="bilingualItem">
@@ -57,7 +48,7 @@ export default function OrganizationalReviewActivities(props) {
     } else {
         return (
             <React.Fragment>
-                EventAdministration
+                InternationalCollaborationActivities
             </React.Fragment>
         )
     }

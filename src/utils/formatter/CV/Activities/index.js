@@ -4,6 +4,10 @@ import SupervisoryActivities from "./SupervisoryActivities";
 import AdministrativeActivities from "./AdministrativeActivities";
 import AdvisoryActivities from "./AdvisoryActivities";
 import AssessmentAndReviewActivities from "./AssessmentAndReviewActivities";
+import ParticipationActivities from "./ParticipationActivities";
+import CommunityAndVolunteerActivities from "./CommunityAndVolunteerActivities";
+import KnowledgeAndTechnologyTranslation from "./KnowledgeAndTechnologyTranslation";
+import InternationalCollaborationActivities from "./InternationalCollaborationActivities";
 
 
 export default function Activities(props) {
@@ -25,6 +29,18 @@ export default function Activities(props) {
         "assessment_and_review_activities": <AssessmentAndReviewActivities structureChain={props.structureChain}
                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                             rawData={props.rawData}/>,
+        "participation_activities": <ParticipationActivities structureChain={props.structureChain}
+                                                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                                           rawData={props.rawData}/>,
+        "community_and_volunteer_activities": <CommunityAndVolunteerActivities structureChain={props.structureChain}
+                                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                             rawData={props.rawData}/>,
+        "knowledge_and_technology_translation": <KnowledgeAndTechnologyTranslation structureChain={props.structureChain}
+                                                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                                               rawData={props.rawData}/>,
+        "international_collaboration_activities": <InternationalCollaborationActivities structureChain={props.structureChain}
+                                                                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                                                   rawData={props.rawData}/>,
         // "telephone": <Telephone structureChain={props.structureChain}
         //                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
         //                         rawData={props.rawData}/>,

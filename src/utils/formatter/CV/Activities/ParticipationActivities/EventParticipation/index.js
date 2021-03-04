@@ -7,7 +7,7 @@ import {
     singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
-export default function OrganizationalReviewActivities(props) {
+export default function EventParticipation(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -19,25 +19,24 @@ export default function OrganizationalReviewActivities(props) {
         const ft = new FormatterTracker(mappedValue);
         const {
             role: ro,
-            organization: ori,
-            other_organization: otori,
-            other_organization_type: otorit,
-            other_organization_location: otoril,
-            activity_description: ad,
+            event_type:et,
+            event_name:en,
             start_date: sd,
-            end_date: ed
+            end_date: ed,
+            activity_description: ad,
+            event_start_date:esd,
+            event_end_date:eed
         } = ft.getFields();
 
         return (
             <div>
-                {any(ro, sd, ed) && <p>
-                    {singleLineMultiFieldValueFormatter([ro, sd, ed], null, ['s'], null, [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
+                {any(ro, et, en, sd, ed) && <p>
+                    {singleLineMultiFieldValueFormatter([ro, et, en, sd, ed], null, ['s'], [', ', ', '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}
                 </p>}
-                {any(ori, otori, otorit, otoril) &&
-                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
-                    return reftableValueFormatter(val, index)
-                })}
-                    {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
+                {any(esd, eed)&&<p>
+                    ({esd.val && <span>{esd.lbl}: {esd.val} </span>}
+                    <span> - </span>
+                    {eed.val && <span>{eed.lbl}: {eed.val}</span>})
                 </p>}
                 {any(ad) && <>
                     {ad.val.eng && <div className="bilingualItem">

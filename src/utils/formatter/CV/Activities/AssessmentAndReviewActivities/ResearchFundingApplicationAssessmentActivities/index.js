@@ -38,7 +38,7 @@ export default function ResearchFundingApplicationAssessmentActivities(props) {
         return (
             <div>
                 {any(frr, rt, cn) && <p>
-                    {singleLineMultiFieldValueFormatter([frr, rt, cn], [false, false, true], null, [', ', ', '])}
+                    {singleLineMultiFieldValueFormatter([frr, rt, cn], [false, false, true], ['s'], [', ', ', '])}
                 </p>}
                 {any(at) && <p>{at.lbl}: {at.val}</p>}
                 {any(ori, otori, otorit, otoril) &&

@@ -28,14 +28,12 @@ export default function ConferenceReviewActivities(props) {
 
         return (
             <div>
-                {any(ro, rt, co) && <p>
-                    {singleLineMultiFieldValueFormatter([ro, rt, co], null, ['s', '', 's'], [', ', ', '])}
+                {any(ro, rt, co,sd, ed) && <p>
+                    {singleLineMultiFieldValueFormatter([ro, rt, co,sd, ed], null, ['s', '', 's'], [', ', ', '], [[2,3,4,' ('],[3,3,4,' - '],[4,3,4,')']])}
                 </p>}
                 {any(ch) && <p>{ch.val}</p>}
                 {any(nowrr) && <p>{nowrr.lbl}: {nowrr.val}</p>}
-                {any(sd, ed) && <p>
-                    <span>({sd.val} - {ed.val})</span>
-                </p>}
+
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
