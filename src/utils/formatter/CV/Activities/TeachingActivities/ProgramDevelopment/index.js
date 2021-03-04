@@ -47,9 +47,12 @@ export default function ProgramDevelopment(props) {
             <div>
                 {any(ro) && <p><strong>{ro.val}</strong></p>}
                 {any(pt) && <p><strong>{pt.val}</strong></p>}
-                {any(ori) && <p>{reftableValueParser(ori.val, false, true).map((val, index) => {
+                {any(ori, otori, otorit, otoril) &&
+                <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
-                })}</p>}
+                })}
+                    {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
+                </p>}
                 {any(pd) && <>
                     {pd.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{pd.lbl}</p>

@@ -10,6 +10,7 @@ import ResearchFundingHistory from "./ResearchFundingHistory";
 import Activities from "./Activities";
 import Memberships from "./Memberships";
 import MostSignificantContributions from "./MostSignificantContributions";
+import Contributions from "./Contributions";
 
 export default function CVFormatter(props) {
     // console.log("CVFormatters", props);
@@ -30,18 +31,22 @@ export default function CVFormatter(props) {
                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                   rawData={props.rawData}/>,
         "research_funding_history": <ResearchFundingHistory structureChain={props.structureChain}
-                                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                rawData={props.rawData}/>,
-        "activities":  <Activities structureChain={props.structureChain}
-                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                               rawData={props.rawData}/>,
-        "memberships":  <Memberships structureChain={props.structureChain}
-                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                   rawData={props.rawData}/>,
-        "most_significant_contributions":  <MostSignificantContributions structureChain={props.structureChain}
-                                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                     rawData={props.rawData}/>,
-
+                                                            isFullScreenViewMode={props.isFullScreenViewMode}
+                                                            schema={props.schema}
+                                                            rawData={props.rawData}/>,
+        "activities": <Activities structureChain={props.structureChain}
+                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                  rawData={props.rawData}/>,
+        "memberships": <Memberships structureChain={props.structureChain}
+                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                    rawData={props.rawData}/>,
+        "most_significant_contributions": <MostSignificantContributions structureChain={props.structureChain}
+                                                                        isFullScreenViewMode={props.isFullScreenViewMode}
+                                                                        schema={props.schema}
+                                                                        rawData={props.rawData}/>,
+        "contributions": <Contributions structureChain={props.structureChain}
+                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                        rawData={props.rawData}/>,
     }
 
     return (

@@ -11,8 +11,6 @@ import InternationalCollaborationActivities from "./InternationalCollaborationAc
 
 
 export default function Activities(props) {
-    // console.log("PersonalInformation", props);
-
     const subsections = {
         "teaching_activities": <TeachingActivities structureChain={props.structureChain}
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
@@ -40,16 +38,7 @@ export default function Activities(props) {
                                                                                rawData={props.rawData}/>,
         "international_collaboration_activities": <InternationalCollaborationActivities structureChain={props.structureChain}
                                                                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                                                   rawData={props.rawData}/>,
-        // "telephone": <Telephone structureChain={props.structureChain}
-        //                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                         rawData={props.rawData}/>,
-        // "email": <Email structureChain={props.structureChain}
-        //                 isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                 rawData={props.rawData}/>,
-        // "website": <Website structureChain={props.structureChain}
-        //                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                     rawData={props.rawData}/>,
+                                                                                   rawData={props.rawData}/>
     }
 
     return (
