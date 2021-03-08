@@ -351,6 +351,7 @@ export class FormatterTracker {
                         return field.value[1];
                     }
                 case "string":
+                case "elapsed-time":
                     return field.value;
                 case 'year':
                     // TODO: handle option month and day

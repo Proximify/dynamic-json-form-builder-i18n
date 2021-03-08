@@ -86,28 +86,7 @@ export default function Publications(props) {
                         rawData={props.rawData}/>,
         "conference_publications": <ConferencePublications structureChain={props.structureChain}
                                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                            rawData={props.rawData}/>,
-        // "administrative_activities": <AdministrativeActivities structureChain={props.structureChain}
-        //                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                                        rawData={props.rawData}/>,
-        // "advisory_activities": <AdvisoryActivities structureChain={props.structureChain}
-        //                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                            rawData={props.rawData}/>,
-        // "assessment_and_review_activities": <AssessmentAndReviewActivities structureChain={props.structureChain}
-        //                                                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                                                    rawData={props.rawData}/>,
-        // "participation_activities": <ParticipationActivities structureChain={props.structureChain}
-        //                                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                                      rawData={props.rawData}/>,
-        // "community_and_volunteer_activities": <CommunityAndVolunteerActivities structureChain={props.structureChain}
-        //                                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                                                        rawData={props.rawData}/>,
-        // "knowledge_and_technology_translation": <KnowledgeAndTechnologyTranslation structureChain={props.structureChain}
-        //                                                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                                                            rawData={props.rawData}/>,
-        // "international_collaboration_activities": <InternationalCollaborationActivities structureChain={props.structureChain}
-        //                                                                                 isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                                                                 rawData={props.rawData}/>
+                                                            rawData={props.rawData}/>
     }
 
     return (

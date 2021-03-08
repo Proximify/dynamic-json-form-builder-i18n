@@ -2,6 +2,7 @@ import React from "react";
 import Presentations from "./Presentations";
 import InterviewsAndMediaRelations from "./InterviewsAndMediaRelations";
 import Publications from "./Publications";
+import ArtisticContributions from "./ArtisticContributions";
 
 export default function Contributions(props) {
     const subsections = {
@@ -14,6 +15,9 @@ export default function Contributions(props) {
         "publications": <Publications structureChain={props.structureChain}
                                                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                                                rawData={props.rawData}/>,
+        "artistic_performances": <ArtisticContributions structureChain={props.structureChain}
+                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                      rawData={props.rawData}/>,
         // "advisory_activities": <AdvisoryActivities structureChain={props.structureChain}
         //                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
         //                                            rawData={props.rawData}/>,

@@ -10,7 +10,7 @@ import {
 } from "../../../../utils/helper";
 
 export default function StudentPostdoctoralSupervision(props) {
-    console.log("StudentPostdoctoralSupervision", props);
+    // console.log("StudentPostdoctoralSupervision", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
