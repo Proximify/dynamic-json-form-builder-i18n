@@ -7,7 +7,7 @@ import {
     reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
-export default function NewsletterArticles(props) {
+export default function ClinicalCareGuidelines(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -29,20 +29,14 @@ export default function NewsletterArticles(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            article_title: at,
-            newsletter: nl,
-            volume:vo,
-            issue:is,
-            page_range: pr,
-            publication_date: pd,
-            publication_location:pl,
+            title: ti,
+            date_first_released:dfr,
+            contribution_role: cr,
+            contributors: co,
+            number_of_contributors: noc,
             url: u,
             doi: d,
             contribution_percentage: cp,
-            contribution_role:cr,
-            number_of_contributors:noc,
-            authors:au,
-            editors:ed,
             description_contribution_value: dcv,
             description_of_contribution_role: docr,
             funding_sources: fs
@@ -50,10 +44,9 @@ export default function NewsletterArticles(props) {
 
         return (
             <div>
-                {any(at,nl,vo,is,pr, pd) && <p>
-                    {singleLineMultiFieldValueFormatter([at,nl,vo,is,pr, pd], [false,false,true,true,true], ['s'], [', ', ', ', ', ', ', ', ' ', ['(',')']])}
+                {any(ti,dfr) && <p>
+                    {singleLineMultiFieldValueFormatter([ti,dfr], null, ['s'], [' ',['(',')']])}
                 </p>}
-                {any(pl) && <p>{pl.val}</p>}
                 {any(u, d, cp) && <p>
                     {u.val && <span><a href={u}
                                        className="text-blue-500 hover:underline">{u.val}</a>{any(d, cp) && ', '}</span>}
@@ -63,8 +56,7 @@ export default function NewsletterArticles(props) {
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
-                {any(au) && <p><strong>{au.lbl}</strong>: {au.val}</p>}
-                {any(ed) && <p><strong>{ed.lbl}</strong>: {ed.val}</p>}
+                {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(dcv) && <>
                     {dcv.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{dcv.lbl}</p>

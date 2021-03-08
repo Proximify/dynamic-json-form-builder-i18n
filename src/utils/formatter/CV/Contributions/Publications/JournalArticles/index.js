@@ -70,7 +70,7 @@ export default function JournalArticles(props) {
                 </p>}
                 {any(sy) && <p>{sy.val}</p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
-                {any(ed) && <p>{ed.lbl}: {ed.val}</p>}
+                {any(ed) && <p><strong>{ed.lbl}</strong>: {ed.val}</p>}
                 {any(dcv) && <>
                     {dcv.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{dcv.lbl}</p>

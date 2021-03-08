@@ -69,7 +69,7 @@ export default function Reports(props) {
                     {cp.val && <span>{cp.val}</span>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
-                {any(noc) && <p><strong>{noc.lbl}</strong>: {noc.val}</p>}
+                {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
                 {any(au) && <p><strong>{au.lbl}</strong>: {au.val}</p>}
                 {any(ed) && <p><strong>{ed.lbl}</strong>: {ed.val}</p>}
                 {any(dcv) && <>

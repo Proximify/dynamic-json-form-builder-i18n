@@ -7,7 +7,7 @@ import {
     reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
-export default function NewsletterArticles(props) {
+export default function Manuals(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -29,20 +29,24 @@ export default function NewsletterArticles(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            article_title: at,
-            newsletter: nl,
-            volume:vo,
-            issue:is,
-            page_range: pr,
-            publication_date: pd,
-            publication_location:pl,
+            manual_title: mt,
+            published_in:pi,
+            edition: edi,
+            volume: vo,
+            number_of_volumes: nov,
+            number_of_pages:nop,
+            publishing_status: ps,
+            date: da,
+            publisher: pub,
+            publication_location: pl,
+            publication_city: pc,
             url: u,
             doi: d,
             contribution_percentage: cp,
-            contribution_role:cr,
-            number_of_contributors:noc,
-            authors:au,
-            editors:ed,
+            contribution_role: cr,
+            number_of_contributors: noc,
+            authors: au,
+            editors: ed,
             description_contribution_value: dcv,
             description_of_contribution_role: docr,
             funding_sources: fs
@@ -50,10 +54,12 @@ export default function NewsletterArticles(props) {
 
         return (
             <div>
-                {any(at,nl,vo,is,pr, pd) && <p>
-                    {singleLineMultiFieldValueFormatter([at,nl,vo,is,pr, pd], [false,false,true,true,true], ['s'], [', ', ', ', ', ', ', ', ' ', ['(',')']])}
+                {any(mt, pi, edi, vo, nov, nop, ps,da) && <p>
+                    {singleLineMultiFieldValueFormatter([mt, pi, edi, vo, nov, nop, ps,da], [false, false, true, true, true, true], ['s', '', '', '', '', '', 's'], [', ', ', ', ', ', ', ', ', ', ', ', ' ',['(',')']])}
                 </p>}
-                {any(pl) && <p>{pl.val}</p>}
+                {any(pub, pl, pc) && <p>
+                    {singleLineMultiFieldValueFormatter([pub, pl, pc], null, ['i'], [' ', ', ', ' '])}
+                </p>}
                 {any(u, d, cp) && <p>
                     {u.val && <span><a href={u}
                                        className="text-blue-500 hover:underline">{u.val}</a>{any(d, cp) && ', '}</span>}

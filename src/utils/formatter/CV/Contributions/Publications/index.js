@@ -14,6 +14,12 @@ import EncyclopediaEntries from "./EncyclopediaEntries";
 import MagazineEntries from "./MagazineEntries";
 import DictionaryEntries from "./DictionaryEntries";
 import Reports from "./Reports";
+import WorkingPapers from "./WorkingPapers";
+import Manuals from "./Manuals";
+import OnlineResources from "./OnlineResources";
+import Tests from "./Tests";
+import ClinicalCareGuidelines from "./ClinicalCareGuidelines";
+import ConferencePublications from "./ConferencePublications";
 
 export default function Publications(props) {
     const subsections = {
@@ -63,6 +69,24 @@ export default function Publications(props) {
         "reports": <Reports structureChain={props.structureChain}
                                                  isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                                  rawData={props.rawData}/>,
+        "working_papers": <WorkingPapers structureChain={props.structureChain}
+                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                            rawData={props.rawData}/>,
+        "manuals": <Manuals structureChain={props.structureChain}
+                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                         rawData={props.rawData}/>,
+        "online_resources": <OnlineResources structureChain={props.structureChain}
+                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                            rawData={props.rawData}/>,
+        "tests": <Tests structureChain={props.structureChain}
+                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                             rawData={props.rawData}/>,
+        "clinical_care_guidelines": <ClinicalCareGuidelines structureChain={props.structureChain}
+                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                        rawData={props.rawData}/>,
+        "conference_publications": <ConferencePublications structureChain={props.structureChain}
+                                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                            rawData={props.rawData}/>,
         // "administrative_activities": <AdministrativeActivities structureChain={props.structureChain}
         //                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
         //                                                        rawData={props.rawData}/>,

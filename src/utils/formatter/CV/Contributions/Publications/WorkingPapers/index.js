@@ -7,7 +7,7 @@ import {
     reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
-export default function NewsletterArticles(props) {
+export default function WorkingPapers(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -29,20 +29,16 @@ export default function NewsletterArticles(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            article_title: at,
-            newsletter: nl,
-            volume:vo,
-            issue:is,
-            page_range: pr,
-            publication_date: pd,
-            publication_location:pl,
+            paper_title: pt,
+            date_completed:dc,
+            number_of_pages: nop,
             url: u,
             doi: d,
             contribution_percentage: cp,
-            contribution_role:cr,
-            number_of_contributors:noc,
-            authors:au,
-            editors:ed,
+            contribution_role: cr,
+            number_of_contributors: noc,
+            authors: au,
+            editors: ed,
             description_contribution_value: dcv,
             description_of_contribution_role: docr,
             funding_sources: fs
@@ -50,10 +46,9 @@ export default function NewsletterArticles(props) {
 
         return (
             <div>
-                {any(at,nl,vo,is,pr, pd) && <p>
-                    {singleLineMultiFieldValueFormatter([at,nl,vo,is,pr, pd], [false,false,true,true,true], ['s'], [', ', ', ', ', ', ', ', ' ', ['(',')']])}
+                {any(pt,dc,nop) && <p>
+                    {singleLineMultiFieldValueFormatter([pt,nop,dc], [false, true], ['s'], [', ', ' ',['(', ')']])}
                 </p>}
-                {any(pl) && <p>{pl.val}</p>}
                 {any(u, d, cp) && <p>
                     {u.val && <span><a href={u}
                                        className="text-blue-500 hover:underline">{u.val}</a>{any(d, cp) && ', '}</span>}
@@ -101,7 +96,7 @@ export default function NewsletterArticles(props) {
     } else {
         return (
             <React.Fragment>
-                NewspaperArticles
+                WorkingPapers
                 {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
             </React.Fragment>
         )

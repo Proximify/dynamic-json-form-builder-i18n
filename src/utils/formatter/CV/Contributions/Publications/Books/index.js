@@ -68,8 +68,8 @@ export default function Books(props) {
                     <span><a href={d} className="text-blue-500 hover:underline">{d.val}</a>{cp.val ? ', ' : ''}</span>}
                     {cp.val && <span>{cp.val}</span>}
                 </p>}
-                {any(noc) && <p><strong>{noc.lbl}</strong>: {noc.val}</p>}
-                {any(ed) && <p>{ed.lbl}: {ed.val}</p>}
+                {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
+                {any(ed) && <p><strong>{ed.lbl}</strong>: {ed.val}</p>}
                 {any(dcv) && <>
                     {dcv.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{dcv.lbl}</p>
