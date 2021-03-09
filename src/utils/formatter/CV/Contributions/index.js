@@ -3,6 +3,7 @@ import Presentations from "./Presentations";
 import InterviewsAndMediaRelations from "./InterviewsAndMediaRelations";
 import Publications from "./Publications";
 import ArtisticContributions from "./ArtisticContributions";
+import IntellectualProperty from "./IntellectualProperty";
 
 export default function Contributions(props) {
     const subsections = {
@@ -18,9 +19,9 @@ export default function Contributions(props) {
         "artistic_performances": <ArtisticContributions structureChain={props.structureChain}
                                       isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                       rawData={props.rawData}/>,
-        // "advisory_activities": <AdvisoryActivities structureChain={props.structureChain}
-        //                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                            rawData={props.rawData}/>,
+        "intellectual_property": <IntellectualProperty structureChain={props.structureChain}
+                                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                   rawData={props.rawData}/>,
         // "assessment_and_review_activities": <AssessmentAndReviewActivities structureChain={props.structureChain}
         //                                                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
         //                                                                    rawData={props.rawData}/>,
