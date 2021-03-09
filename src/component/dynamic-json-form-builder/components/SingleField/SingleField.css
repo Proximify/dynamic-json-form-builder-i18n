@@ -3,6 +3,10 @@
     @apply max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded
 }
 
+.multiFieldInput {
+    @apply max-w-lg block shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded
+}
+
 .react-datepicker-wrapper {
     min-width: 16rem;
     @apply max-w-lg w-full

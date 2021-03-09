@@ -20,7 +20,7 @@ export default function FormValidationGenerator(fields) {
 
 
 const fieldConstraintsHandler = (field, fields) => {
-    if (!field.constraints && !field.exclusive_with) {
+    if (!field.constraints && !field.exclusive_with && field.field_type !== "elapsed-time") {
         return null;
     }
     const validations = [];
@@ -97,6 +97,17 @@ const fieldConstraintsHandler = (field, fields) => {
             },
             getErrMsg: (formData) => {
                 return `Cannot have a value when ${dependantField.title} has a value`
+            }
+        };
+    }
+
+    if (field.field_type === "elapsed-time"){
+        validations[validations.length] = {
+            validateMethod: (formData) => {
+                return formData === undefined || !(formData[field.name] && formData[field.name].split(':').filter(time => /\d/.test(time)).length !== 2);
+            },
+            getErrMsg: (formData) => {
+                return `Incomplete ${field.label}`
             }
         };
     }

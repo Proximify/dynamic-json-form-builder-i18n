@@ -98,6 +98,9 @@ const fieldStrSchemaGen = (field, schema, lovOptions) => {
         case "integer":
             result["type"] = "string";
             break;
+        case "elapsed-time":
+            result["type"] = "string";
+            break;
         case "monthday":
             result["type"] = "string";
             break;
@@ -233,6 +236,10 @@ const fieldTypeWidgetMapper = {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "numberInputWidget",
         // "ui:readonly": true
+    },
+    "elapsed-time": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "elapsedTimeWidget",
     }
 }
 

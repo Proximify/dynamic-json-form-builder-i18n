@@ -54,12 +54,21 @@ const locale = (local) => {
     }
 }
 
-const handleValueChange = (value, rawErrors, setValue, onChange) => {
+const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime = false) => {
     if (!rawErrors || rawErrors.length === 0) {
         setValue(value);
     } else {
         setValue(value);
-        onChange(value ?? undefined)
+        if (!isElapsedTime) {
+            onChange(value ?? undefined)
+        } else {
+            if (!value.Min && !value.Sec) {
+                onChange(undefined)
+            } else {
+                const time = `${value.Min ? Number(value.Min) :value.Min}:${value.Sec ? Number(value.Sec) :value.Sec}`
+                onChange(time)
+            }
+        }
     }
 }
 
@@ -109,6 +118,60 @@ export function PhoneInputWidget(props) {
             onBlur={() => props.onChange(value)}
         />
     );
+}
+
+export function ElapsedTimeWidget(props) {
+    const [value, setValue] = useState(props.value ? {
+        Min: props.value.split(':')[0],
+        Sec: props.value.split(':')[1]
+    } : {Min: undefined, Sec: undefined});
+
+    return (
+        <div className="flex space-x-4"
+             onBlur={() => {
+                 if (!value.Min && !value.Sec) {
+                     if (props.value !== undefined)
+                         props.onChange(undefined)
+                 } else {
+                     const time = `${value.Min ? Number(value.Min) :value.Min}:${value.Sec ? Number(value.Sec) :value.Sec}`
+                     if (props.value !== time)
+                         props.onChange(time)
+                 }
+             }}>
+            <NumberFormat
+                className={"multiFieldInput w-1/2"}
+                type="text"
+                suffix={" Min"}
+                decimalScale={0}
+                id={`${props.schema.id}`}
+                value={value.Min}
+                placeholder="Min."
+                isAllowed={(values) => values.value >= 0 ? values : null}
+                onValueChange={(values) => {
+                    handleValueChange({
+                        Min: values.value,
+                        Sec: value.Sec
+                    }, props.rawErrors, setValue, props.onChange, true)
+                }}
+            />
+            <NumberFormat
+                className={"multiFieldInput w-1/2"}
+                type="text"
+                suffix={" Sec"}
+                decimalScale={0}
+                id={props.schema.id}
+                value={value.Sec}
+                placeholder="Sec."
+                isAllowed={(values) => values.value < 60 ? values : null}
+                onValueChange={(values) => {
+                    handleValueChange({
+                        Min: value.Min,
+                        Sec: values.value
+                    }, props.rawErrors, setValue, props.onChange, true)
+                }}
+            />
+        </div>
+    )
 }
 
 export function DateInputWidget(props) {
@@ -208,7 +271,7 @@ export function YearMonthInputWidget(props) {
     // }
 
     const handleChange = (dateValue, hasDate) => {
-        console.log("handle change", dateValue, hasDate)
+        // console.log("handle change", dateValue, hasDate)
         if (!dateValue) {
             props.onChange(undefined);
         } else {
@@ -222,12 +285,12 @@ export function YearMonthInputWidget(props) {
 
     return (
         <DatePicker selected={state.date}
-                    // onChange={(date) => {
-                    //     setDate(date);
-                    //     return handleChange(date);
-                    // }}
+            // onChange={(date) => {
+            //     setDate(date);
+            //     return handleChange(date);
+            // }}
                     onChangeRaw={event => {
-                        if (event.target.value === undefined){
+                        if (event.target.value === undefined) {
                             return;
                         }
                         if (event.target.value === '') {
@@ -252,7 +315,7 @@ export function YearMonthInputWidget(props) {
                                 handleChange(newDate, newHasDate);
                             } else {
                                 // console.log(`date is ${JSON.stringify(newDate) === JSON.stringify(state.date) ? 'same' : "not same"}`)
-                                if (JSON.stringify(newDate) !== JSON.stringify(state.date)){
+                                if (JSON.stringify(newDate) !== JSON.stringify(state.date)) {
                                     // console.log(newDate.getFullYear(), newDate.getMonth(), newDate.getDay(), newDate)
                                     setState({
                                         ...state,
@@ -298,9 +361,8 @@ export function YearInputWidget(props) {
     );
     const {t, i18n} = useTranslation();
     // console.log(date, value.split('/')[0], hasMonth, hasDate)
-    console.log(value, state)
     const handleChange = (dateValue, hasMonth, hasDate) => {
-        console.log("handle change", dateValue, hasMonth, hasDate)
+        // console.log("handle change", dateValue, hasMonth, hasDate)
         if (!dateValue) {
             props.onChange(undefined);
         } else {
@@ -316,7 +378,7 @@ export function YearInputWidget(props) {
         <DatePicker selected={state.date}
                     onChangeRaw={event => {
                         const value = event.target.value;
-                        if (value === undefined){
+                        if (value === undefined) {
                             return;
                         }
                         if (value === '') {
@@ -329,8 +391,8 @@ export function YearInputWidget(props) {
                             handleChange(undefined);
                         } else {
                             const regExp = new RegExp('^([0-9]{2,4}/?)([0-9]{0,2}/?)([0-9]{0,2})$');
-                            if (regExp.test(value)){
-                                if (regExp.test(value)){
+                            if (regExp.test(value)) {
+                                if (regExp.test(value)) {
                                     const newHasMonth = value.split('/').length > 2 || (value.split('/').length === 2 && value.slice(-1) !== '/');
                                     const newHasDate = value.split('/').length >= 3 && value.slice(-1) !== '/';
                                     const newDate = new Date(value.split('/')[0], newHasMonth ? value.split('/')[1] - 1 : 0, newHasDate ? value.split('/')[2] : 1);
@@ -346,7 +408,7 @@ export function YearInputWidget(props) {
                                         handleChange(newDate, newHasMonth, newHasDate);
                                     } else {
                                         // console.log(`date is ${JSON.stringify(newDate) === JSON.stringify(state.date) ? 'same' : "not same"}`)
-                                        if (JSON.stringify(newDate) !== JSON.stringify(state.date)){
+                                        if (JSON.stringify(newDate) !== JSON.stringify(state.date)) {
                                             // console.log(newDate.getFullYear(), newDate.getMonth(), newDate.getDay(), newDate)
                                             setState({
                                                 ...state,
@@ -375,7 +437,6 @@ export function YearInputWidget(props) {
                     showMonthDropdown={state.hasMonth}
                     showYearDropdown={state.hasMonth}
                     scrollableYearDropdown={state.hasMonth}
-
         />
     );
 }
