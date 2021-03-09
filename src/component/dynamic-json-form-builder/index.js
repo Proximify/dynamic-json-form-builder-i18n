@@ -46,11 +46,11 @@ const customWidgets = {
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
     phoneInputWidget: PhoneInputWidget,
-    elapsedTimeWidget:ElapsedTimeWidget,
+    elapsedTimeWidget: ElapsedTimeWidget,
     dateInputWidget: DateInputWidget,
     monthDayInputWidget: MonthDayInputWidget,
     yearMonthInputWidget: YearMonthInputWidget,
-    yearInputWidget:YearInputWidget,
+    yearInputWidget: YearInputWidget,
 
 
     singleSelectionWidget: SingleSelectionWidget,
@@ -82,6 +82,16 @@ class FormBuilder extends Component {
         this.props.onFormEditSubmit(data, this.props.formDependent);
     }
 
+    componentWillMount() {
+        document.addEventListener("keydown", this._handleKeyDown.bind(this));
+    }
+
+    _handleKeyDown(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+        }
+    }
+
     onErrorMsgChange = (errors) => {
         const errorMsgDiv = document.getElementById(`${this.props.formID}-errorMsg`);
         if (!errorMsgDiv)
@@ -106,19 +116,19 @@ class FormBuilder extends Component {
         const validations = this.props.validations;
         Object.keys(validations).forEach(fieldName => {
             const fieldValidations = validations[fieldName];
-            if (Array.isArray(fieldValidations)){
-                fieldValidations.forEach(fieldValidation=>{
-                    if (!fieldValidation.validateMethod(formData)){
+            if (Array.isArray(fieldValidations)) {
+                fieldValidations.forEach(fieldValidation => {
+                    if (!fieldValidation.validateMethod(formData)) {
                         errors[fieldName].addError(fieldValidation.getErrMsg(formData));
                     }
                 })
-            }else if(fieldValidations && fieldValidations.constructor === Object){
-                Object.keys(fieldValidations).forEach(subFieldName=>{
+            } else if (fieldValidations && fieldValidations.constructor === Object) {
+                Object.keys(fieldValidations).forEach(subFieldName => {
                     const subFieldValidations = validations[fieldName][subFieldName];
-                    if (Array.isArray(subFieldValidations)){
-                        subFieldValidations.forEach(subFieldValidation=>{
-                            formData[fieldName].forEach((subsection,index)=>{
-                                if (!subFieldValidation.validateMethod(subsection)){
+                    if (Array.isArray(subFieldValidations)) {
+                        subFieldValidations.forEach(subFieldValidation => {
+                            formData[fieldName].forEach((subsection, index) => {
+                                if (!subFieldValidation.validateMethod(subsection)) {
                                     errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
                                 }
                             })
@@ -169,7 +179,6 @@ class FormBuilder extends Component {
                 onError={(errors) => {
                     this.onErrorMsgChange(errors);
                 }}
-                submitOnEnter={false}
                 onSubmit={({formData}) => this.onFormSubmit(formData)}>
                 <div className="flex mt-5">
                     <div id={`${this.props.formID}-errorMsg`}>

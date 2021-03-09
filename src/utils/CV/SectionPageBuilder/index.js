@@ -187,7 +187,7 @@ export function SectionPageBuilder(props) {
             1: "mb-1 mx-3 py-1 bg-white rounded-md" // subsection of subsection
         }
 
-        if (section.type === "form") {
+        if (section.type === "form" && (section.disabled && section.disabled !== "1")) {
             return (
                 <div key={sectionIndex}
                      className={`${sectionCSS[layer]} ${layer % 2 === 0 ? "border-gray-200 bg-gray-200 hover:bg-white hover:border-opacity-0" : "border-white bg-white hover:bg-gray-200"}`}>

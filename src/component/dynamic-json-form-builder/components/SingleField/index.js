@@ -60,6 +60,7 @@ const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime =
     } else {
         setValue(value);
         if (!isElapsedTime) {
+            console.log("++++", value)
             onChange(value ?? undefined)
         } else {
             if (!value.Min && !value.Sec) {
@@ -84,7 +85,7 @@ export function StringInputWidget(props) {
             value={value}
             required={props.required}
             onChange={event => handleValueChange(event.target.value, props.rawErrors, setValue, props.onChange)}
-            onBlur={() => props.onChange(value)}
+            onBlur={() => props.onChange(value !== "" ? value : undefined)}
         />
     );
 }
@@ -97,9 +98,10 @@ export function NumberInputWidget(props) {
             type="text"
             id={props.schema.id}
             value={value}
+            isAllowed={(values) => values.value >= 0 ? values : null}
             thousandSeparator={false}
             onValueChange={value => handleValueChange(value.value, props.rawErrors, setValue, props.onChange)}
-            onBlur={() => props.onChange(value)}
+            onBlur={() => props.onChange(value !== "" ? value : undefined)}
         />
     );
 }

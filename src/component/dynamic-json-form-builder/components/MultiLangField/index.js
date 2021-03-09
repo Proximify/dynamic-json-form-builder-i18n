@@ -346,7 +346,6 @@ export function MultiLangTextAreaFieldWidget(props) {
                         stripPastedStyles={true}
                         spellCheck={true}
                         toolbar={ToolbarStyleCompact}
-                        tool
                         onEditorStateChange={text => {
                             setState({...state, primaryContent: text})
                         }}

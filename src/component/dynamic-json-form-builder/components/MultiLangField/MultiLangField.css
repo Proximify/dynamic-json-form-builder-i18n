@@ -35,5 +35,13 @@
 }
 
 .multiLangRichTextAreaEditor {
+    @apply px-2 pb-1
+}
 
+.multiLangRichTextAreaEditor .DraftEditor-root{
+    z-index: 0;
+}
+
+.public-DraftStyleDefault-block {
+    margin: 0 !important;
 }

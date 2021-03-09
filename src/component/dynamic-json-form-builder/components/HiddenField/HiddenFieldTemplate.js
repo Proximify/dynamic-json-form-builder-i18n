@@ -1,8 +1,7 @@
 import React from "react";
 
 export default function HiddenFieldTemplate(props) {
-    const {children, rawErrors} = props;
-    console.log("hiddenFieldWidget" , children)
+    const {children} = props;
 
     return (
         <React.Fragment>

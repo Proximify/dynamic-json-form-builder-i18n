@@ -270,6 +270,11 @@ const formUISchemaGen = (schema) => {
                     "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
                     "ui:widget": "hiddenFieldWidget"
                 }
+            } else if (field.disabled && field.disabled === '1') {
+                result[fieldName] = {
+                    "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
+                    "ui:widget": "hiddenFieldWidget"
+                }
             } else {
                 result[fieldName] = fieldTypeWidgetMapper[field.type];
             }
