@@ -94,10 +94,10 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
         }
         fieldValue.forEach((val, index) => {
             const {order, ...fields} = val;
-            Object.values(fields).forEach((field,fieldIndex) => {
+            Object.values(fields).forEach((field, fieldIndex) => {
                 field.count++;
                 Array.isArray(field.val) ? result.push(format(field.val)) : result.push(field.val)
-                if (index < fieldValue.length - 1 || fieldIndex < Object.values(fields).length - 1){
+                if (index < fieldValue.length - 1 || fieldIndex < Object.values(fields).length - 1) {
                     result.push(', ')
                 }
             })
@@ -188,11 +188,11 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
                 const fromIndex = constantDelimitersIndex[0][1];
                 const toIndex = constantDelimitersIndex[0][2];
                 let valid = false;
-                for (let i = fromIndex; i<=toIndex ; i++){
-                    if (i > fields.length - 1){
+                for (let i = fromIndex; i <= toIndex; i++) {
+                    if (i > fields.length - 1) {
                         break;
-                    }else {
-                        if (fields[i].val){
+                    } else {
+                        if (fields[i].val) {
                             valid = true;
                             break;
                         }
@@ -316,7 +316,7 @@ export class FormatterTracker {
                 })
             }
         })
-        return result
+        return result;
     }
 
 
@@ -353,33 +353,34 @@ export class FormatterTracker {
                 case "string":
                 case "elapsed-time":
                     return field.value;
-                case 'year':
-                    // TODO: handle option month and day
-                    return field.value.split("/")[0]
+                case 'year': {
+                    const date = field.value.split("/").filter(time => /\d/.test(time));
+                    if (date.length === 3) {
+                        return Months[date[1] - 1] + " " + date[2] + ", " + date[0];
+                    } else if (date.length === 2) {
+                        return Months[date[1] - 1] + " " + date[0];
+                    } else {
+                        return date[0]
+                    }
+                }
                 case "yearmonth":
-                    return Months[field.value.split("/")[1] - 1] + " " + field.value.split("/")[0];
+                    const date = field.value.split("/").filter(time => /\d/.test(time));
+                    if (date.length === 3){
+                        return Months[date[1] - 1] + " " + date[2] + ", " + date[0];
+                    }else {
+                        return Months[date[1] - 1] + " " + date[0];
+                    }
                 case "monthday":
                     return Months[field.value.split("/")[0]] + " " + field.value.split("/")[1];
                 case "date":
                     return Months[field.value.split("-")[1] - 1] + " " + field.value.split("-")[2] + ", " + field.value.split("-")[0];
                 case "section":
-                    // console.log("----", field)
                     let result = [];
                     field.value.forEach((val, i) => {
                         result[i] = {};
                         Object.keys(val).forEach(key => result[i][key] = this.format(val[key]));
                     })
                     return result;
-                //
-                // let string = "";
-                // field.value.forEach((val, i) => {
-                //     Object.keys(val).map(key => console.log(val, this.format(val[key])))
-                //     if (i < field.value.length - 1)
-                //         string += Object.keys(val).map(key => this.format(val[key])) + ", ";
-                //     else
-                //         string += Object.keys(val).map(key => this.format(val[key]));
-                // })
-                // return string;
                 case "integer":
                     const integer = Number(field.value);
                     return isNaN(integer) ? field.value : integer

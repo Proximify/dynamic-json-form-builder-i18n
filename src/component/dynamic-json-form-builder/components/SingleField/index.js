@@ -65,7 +65,7 @@ const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime =
             if (!value.Min && !value.Sec) {
                 onChange(undefined)
             } else {
-                const time = `${value.Min ? Number(value.Min) :value.Min}:${value.Sec ? Number(value.Sec) :value.Sec}`
+                const time = `${value.Min ? Number(value.Min) : value.Min}:${value.Sec ? Number(value.Sec) : value.Sec}`
                 onChange(time)
             }
         }
@@ -133,7 +133,7 @@ export function ElapsedTimeWidget(props) {
                      if (props.value !== undefined)
                          props.onChange(undefined)
                  } else {
-                     const time = `${value.Min ? Number(value.Min) :value.Min}:${value.Sec ? Number(value.Sec) :value.Sec}`
+                     const time = `${value.Min ? Number(value.Min) : value.Min}:${value.Sec ? Number(value.Sec) : value.Sec}`
                      if (props.value !== time)
                          props.onChange(time)
                  }

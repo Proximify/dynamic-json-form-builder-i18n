@@ -169,6 +169,7 @@ class FormBuilder extends Component {
                 onError={(errors) => {
                     this.onErrorMsgChange(errors);
                 }}
+                submitOnEnter={false}
                 onSubmit={({formData}) => this.onFormSubmit(formData)}>
                 <div className="flex mt-5">
                     <div id={`${this.props.formID}-errorMsg`}>
