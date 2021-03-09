@@ -7,7 +7,7 @@ import {
     reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
-export default function MusicalPerformances(props) {
+export default function Poetry(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -29,36 +29,47 @@ export default function MusicalPerformances(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            title_of_work: tow,
-            venue: ven,
-            date_of_first_performance: dofp,
-            description_contribution_value: dcv,
-            url: u,
+            title: pt,
+            venue: ve,
+            appeared_in: ai,
+            volume: vo,
+            issue: is,
+            page_range: pr,
+            date: da,
+            publisher: pub,
+            country: co,
             contribution_role: cr,
-            contributors: co,
             number_of_contributors: noc,
+            url: u,
+            authors: au,
+            editors: ed,
+            description_contribution_value: dcv,
             funding_sources: fs
         } = ft.getFields();
 
         return (
             <div>
-                {any(tow, ven, dofp) && <p>
-                    {singleLineMultiFieldValueFormatter([tow, ven, dofp], null, ['s'], [', ', ' ', ['(', ')']])}
+                {any(pt, ve, ai, vo, is, pr, da) && <p>
+                    {singleLineMultiFieldValueFormatter([pt, ve, ai, vo, is, pr, da], [false, false, false, true, true, true], ['s'], [', ', ', ', ', ', ', ', ', ', ' ', ['(', ')']])}
+                </p>}
+                {any(pub, co) && <p>
+                    {singleLineMultiFieldValueFormatter([pub, co], null, null, [', '])}
                 </p>}
                 {any(u) && <p>
                     {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
-                {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
+                {any(au) && <p><strong>{au.lbl}</strong>: {au.val}</p>}
+                {any(ed) && <p><strong>{ed.lbl}</strong>: {ed.val}</p>}
                 {any(dcv) && <>
                     {dcv.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{dcv.lbl}</p>
-                        <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
+                        <p>{dcv.val.eng}</p>
                     </div>}
                     {dcv.val.fre && <div className="bilingualItem">
                         <p className="mainValue">{dcv.lbl} (French)</p>
-                        <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
+                        <p>{dcv.val.fre}</p>
                     </div>}
                 </>}
                 {any(fs) &&
@@ -74,10 +85,12 @@ export default function MusicalPerformances(props) {
                 }
             </div>
         )
-    } else {
+    }
+else
+    {
         return (
             <React.Fragment>
-                CourseTaught
+                NewspaperArticles
                 {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
             </React.Fragment>
         )

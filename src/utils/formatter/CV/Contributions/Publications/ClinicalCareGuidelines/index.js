@@ -79,11 +79,11 @@ export default function ClinicalCareGuidelines(props) {
                 </>}
                 {any(fs) &&
                 <div><p><strong>{fs.lbl}</strong></p>
-                    <div>{fs.val.map((val, index) => {
-                        return <div key={index}>
-                            <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}</p>
-                        </div>
-                    })}</div>
+                    {fs.val.map((val, index) => {
+                        return <p key={index}>
+                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                        </p>
+                    })}
                 </div>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null

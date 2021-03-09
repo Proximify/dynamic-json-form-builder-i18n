@@ -61,11 +61,11 @@ export default function BroadcastInterviews(props) {
                 <div className="viewModeSubsection">
                     {any(fs) &&
                     <div><p>{fs.lbl}</p>
-                        <div>{fs.val.map((val, index) => {
-                            return <div key={index}>
-                                <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}</p>
-                            </div>
-                        })}</div>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
                     </div>}
                 </div>
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

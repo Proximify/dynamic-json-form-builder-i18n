@@ -10,6 +10,14 @@ import Fiction from "./Fiction";
 import TheatrePerformancesAndProductions from "./TheatrePerformancesAndProductions";
 import VideoRecordings from "./VideoRecordings";
 import VisualArtworks from "./VisualArtworks";
+import SoundDesign from "./SoundDesign";
+import SetDesign from "./SetDesign";
+import LightDesign from "./LightDesign";
+import Choreography from "./Choreography";
+import MuseumExhibitions from "./MuseumExhibitions";
+import PerformanceArt from "./PerformanceArt";
+import Poetry from "./Poetry";
+import OtherArtisticContributions from "./OtherArtisticContributions";
 
 export default function ArtisticContributions(props) {
     const subsections = {
@@ -52,6 +60,30 @@ export default function ArtisticContributions(props) {
         "visual_artworks": <VisualArtworks structureChain={props.structureChain}
                                              isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                                              rawData={props.rawData}/>,
+        "sound_design": <SoundDesign structureChain={props.structureChain}
+                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                           rawData={props.rawData}/>,
+        "set_design": <SetDesign structureChain={props.structureChain}
+                                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                     rawData={props.rawData}/>,
+        "light_design": <LightDesign structureChain={props.structureChain}
+                                 isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                 rawData={props.rawData}/>,
+        "choreography": <Choreography structureChain={props.structureChain}
+                                     isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                     rawData={props.rawData}/>,
+        "museum_exhibitions": <MuseumExhibitions structureChain={props.structureChain}
+                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                      rawData={props.rawData}/>,
+        "performance_art": <PerformanceArt structureChain={props.structureChain}
+                                                 isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                 rawData={props.rawData}/>,
+        "poetry": <Poetry structureChain={props.structureChain}
+                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                           rawData={props.rawData}/>,
+        "other_artistic_contributions": <OtherArtisticContributions structureChain={props.structureChain}
+                          isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                          rawData={props.rawData}/>,
 
     }
 

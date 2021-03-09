@@ -73,12 +73,12 @@ export default function Presentations(props) {
                 <div className="viewModeSubsection">
                     {any(cp) && <div><p>{cp.lbl}: </p><p>{cp.val}</p></div>}
                     {any(fs) &&
-                    <div><p>{fs.lbl}</p>
-                        <div>{fs.val.map((val, index) => {
-                            return <div key={index}>
-                                <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1,2,2,' ('], [2,2,2,')']])}</p>
-                            </div>
-                        })}</div>
+                    <div><p><strong>{fs.lbl}</strong></p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
                     </div>}
                 </div>
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

@@ -7,7 +7,7 @@ import {
     reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../../utils/helper";
 
-export default function MusicalPerformances(props) {
+export default function MuseumExhibitions(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -29,28 +29,30 @@ export default function MusicalPerformances(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            title_of_work: tow,
-            venue: ven,
-            date_of_first_performance: dofp,
+            exhibition_title:et,
+            venue:ve,
+            start_date:sd,
+            end_date:ed,
+            exhibition_catalogue_title:ect,
             description_contribution_value: dcv,
             url: u,
             contribution_role: cr,
-            contributors: co,
             number_of_contributors: noc,
+            contributors:co,
             funding_sources: fs
         } = ft.getFields();
 
         return (
             <div>
-                {any(tow, ven, dofp) && <p>
-                    {singleLineMultiFieldValueFormatter([tow, ven, dofp], null, ['s'], [', ', ' ', ['(', ')']])}
+                {any(et,ve,sd,ed,ect) && <p>
+                    {singleLineMultiFieldValueFormatter([et,ve,sd,ed,ect], null, ['s'], [', ', ', '], [[1,2,3,' ('],[2,2,3,' - '],[3,2,3,') ']])}
                 </p>}
                 {any(u) && <p>
                     {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
-                {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
+                {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(dcv) && <>
                     {dcv.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{dcv.lbl}</p>
@@ -77,7 +79,7 @@ export default function MusicalPerformances(props) {
     } else {
         return (
             <React.Fragment>
-                CourseTaught
+                NewspaperArticles
                 {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
             </React.Fragment>
         )
