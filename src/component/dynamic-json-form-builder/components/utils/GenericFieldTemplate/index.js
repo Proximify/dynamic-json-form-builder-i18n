@@ -16,7 +16,7 @@ const GenericFieldTemplate = (props) => {
 
     return (
         <div className="flex flex-wrap justify-center my-3 space-x-6">
-            <div className="w-5/12 flex flex-grow text-base font-medium text-gray-700 justify-end">
+            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end">
                 <div className="flex items-center">
                     {label && <label>{label}</label>}
                     {required && <p className="text-red-700 mx-0.5">*</p>}

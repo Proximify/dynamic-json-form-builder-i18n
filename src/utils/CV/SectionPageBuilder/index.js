@@ -16,7 +16,7 @@ export function SectionPageBuilder(props) {
         shouldModalOpen: false,
         ready: false
     })
-    // console.log("SchemaParser", state)
+    console.log("SectionPageBuilder", state)
 
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
@@ -177,40 +177,77 @@ export function SectionPageBuilder(props) {
 
     const sectionBuilder = (section, sectionIndex, layer, structureChain, parentSection = null) => {
         const titleCSS = {
-            3: "px-3 text-2xl font-bold", //section title
-            2: "px-3 text-xl font-semibold", //subsection title
-            1: "px-3 text-lg font-medium text-black" //subsection title of subsection
+            3: "my-2 py-0.5 px-1 inline-block bg-blue-400 border rounded-md font-bold", //section title
+            2: "my-1 inline-block text-yellow-600 font-semibold", //subsection title
+            1: "my-0.5 inline-block text-yellow-700" //subsection title of subsection
         }
         const sectionCSS = {
-            3: "mb-3 px-1 py-1 border-transparent rounded-lg bg-blue-200 shadow-lg", //section
-            2: "mb-2 mx-2 py-1 bg-gray-200 rounded-md", //subsection
-            1: "mb-1 mx-3 py-1 bg-white rounded-md" // subsection of subsection
+            3: "mb-6 mt-1 mx-3", //section
+            2: "mb-2 pl-4 py-1", //subsection
+            1: "mb-1 pl-4 py-1" // subsection of subsection
         }
 
         if (section.type === "form" && (section.disabled && section.disabled !== "1")) {
             return (
-                <div key={sectionIndex}
-                     className={`${sectionCSS[layer]} ${layer % 2 === 0 ? "border-gray-200 bg-gray-200 hover:bg-white hover:border-opacity-0" : "border-white bg-white hover:bg-gray-200"}`}>
-                    <div className={`${titleCSS[layer]} flex items-center justify-between`}>
-                        <p>{section.title}</p>
-                        <p className="ml-3">{section.multiplicity === "multiple" ? <AiOutlineFileAdd size={"1.1rem"}/> :
-                            <FiEdit size={"1.1rem"}/>}
+                <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
+                    <div className="flex items-center">
+                        <p className={`${titleCSS[layer]}`}>{section.title}</p>
+                        <p className="ml-3 hover:text-yellow-700">{section.multiplicity === "multiple" ?
+                            <AiOutlineFileAdd size={"1.1rem"}
+                                              onClick={() => {
+                                                  handleOnItemClick(section.section_id, 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
+                                              }}
+                            /> :
+                            <FiEdit size={"1.1rem"}
+                                    onClick={() => {
+                                        handleOnItemClick(section.section_id, section.section_data[0].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
+                                    }}
+                            />}
                         </p>
                     </div>
-                    {section.section_data.length > 0 ?
-                        section.section_data.map((data, itemIndex) => {
-                            return (
-                                <div key={itemIndex}
-                                >
-                                    {!state.shouldModalOpen &&
-                                    <div
-                                        className={`mx-3 mb-1 px-2 border ${layer % 2 !== 0 ? "border-gray-200 bg-gray-200 hover:bg-white" : "border-white bg-white hover:bg-gray-200"} rounded-md transform hover:scale-105 hover:border-opacity-0 hover:shadow-2xl`}
-                                        onClick={() => {
-                                            // handleOnItemClick([...structureChain], sectionIndex);
-                                            handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
-                                        }}>
-                                        {
-                                            <div>
+                    {state.shouldModalOpen === true && state.itemId === 0 && state.formName === section.name ?
+                        <ModalFullScreen
+                            content={
+                                state.schema ? (
+                                        <FormBuilder
+                                            formID={"user-profile-form"}
+                                            resourceURL={"form/"}
+                                            HTTPMethod={"PATCH"}
+                                            language={props.language}
+                                            formSchema={state.schema.formSchema}
+                                            uiSchema={state.schema.uiSchema}
+                                            formData={state.schema.dataSchema}
+                                            validations={state.schema.validations}
+                                            onFormEditSubmit={handleFormEditSubmit}
+                                            onFormEditCancel={handleFormEditCancel}
+                                            onFormEditDelete={handleFormEditDelete}
+                                            formDependent={{
+                                                section: null,
+                                                form: null,
+                                                index: NaN
+                                            }}
+                                            formContext={{
+                                                api: api,
+                                                app: "CV",
+                                                structureChain: structureChain
+                                            }}
+                                        />
+                                    ) :
+                                    <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[0])}</div>
+                            }
+                            title={section.title}
+                            fullScreen={true}/>
+                        :
+                        section.section_data.length > 0 ?
+                            section.section_data.map((data, itemIndex) => {
+                                return (
+                                    <div key={itemIndex}
+                                    >
+                                        {!state.shouldModalOpen &&
+                                        <div
+                                            className={`mx-3 mb-1 px-2 text-sm flex justify-between`}
+                                        >
+                                            <div className="w-11/12">
                                                 {/*section={section.section_id} &itemId={section.section_data[itemIndex].id} &*/}
                                                 {/*parentItemId={parentSection ? parentSection.section_data[0].id : "null"} &parentFieldId={parentSection ? getParentFieldID(section, parentSection) : "null"}*/}
                                                 <Formatter app={"CV"}
@@ -220,47 +257,56 @@ export function SectionPageBuilder(props) {
                                                            rawData={section.section_data[itemIndex]}
                                                 />
                                             </div>
+                                            {section.multiplicity === "multiple" ?
+                                                <div className="hover:text-yellow-700">
+                                                    <FiEdit size={"1.1rem"}
+                                                            onClick={() => {
+                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
+                                                            }}
+                                                    />
+                                                </div> : null}
+
+                                        </div>
                                         }
-                                    </div>}
-                                    <div>
-                                        {state.shouldModalOpen === true && state.formName === section.name && state.itemId === section.section_data[itemIndex].id &&
-                                        // console.log(section)
-                                        <ModalFullScreen
-                                            content={
-                                                state.schema ? (
-                                                        <FormBuilder
-                                                            formID={"user-profile-form"}
-                                                            resourceURL={"form/"}
-                                                            HTTPMethod={"PATCH"}
-                                                            language={props.language}
-                                                            formSchema={state.schema.formSchema}
-                                                            uiSchema={state.schema.uiSchema}
-                                                            formData={state.schema.dataSchema}
-                                                            validations={state.schema.validations}
-                                                            onFormEditSubmit={handleFormEditSubmit}
-                                                            onFormEditCancel={handleFormEditCancel}
-                                                            onFormEditDelete={handleFormEditDelete}
-                                                            formDependent={{
-                                                                section: null,
-                                                                form: null,
-                                                                index: NaN
-                                                            }}
-                                                            formContext={{
-                                                                api: api,
-                                                                app: "CV",
-                                                                structureChain: structureChain
-                                                            }}
-                                                        />
-                                                    ) :
-                                                    <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[itemIndex])}</div>
+                                        <div>
+                                            {state.shouldModalOpen === true && state.formName === section.name && state.itemId === section.section_data[itemIndex].id &&
+                                            // console.log(section)
+                                            <ModalFullScreen
+                                                content={
+                                                    state.schema ? (
+                                                            <FormBuilder
+                                                                formID={"user-profile-form"}
+                                                                resourceURL={"form/"}
+                                                                HTTPMethod={"PATCH"}
+                                                                language={props.language}
+                                                                formSchema={state.schema.formSchema}
+                                                                uiSchema={state.schema.uiSchema}
+                                                                formData={state.schema.dataSchema}
+                                                                validations={state.schema.validations}
+                                                                onFormEditSubmit={handleFormEditSubmit}
+                                                                onFormEditCancel={handleFormEditCancel}
+                                                                onFormEditDelete={handleFormEditDelete}
+                                                                formDependent={{
+                                                                    section: null,
+                                                                    form: null,
+                                                                    index: NaN
+                                                                }}
+                                                                formContext={{
+                                                                    api: api,
+                                                                    app: "CV",
+                                                                    structureChain: structureChain
+                                                                }}
+                                                            />
+                                                        ) :
+                                                        <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[itemIndex])}</div>
+                                                }
+                                                title={section.title}
+                                                fullScreen={true}/>
                                             }
-                                            title={section.title}
-                                            fullScreen={true}/>
-                                        }
+                                        </div>
                                     </div>
-                                </div>
-                            )
-                        }) : null}
+                                )
+                            }) : null}
                 </div>
             )
         } else if (section.type === "section") {

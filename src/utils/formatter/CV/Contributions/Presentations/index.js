@@ -73,7 +73,7 @@ export default function Presentations(props) {
                 <div className="viewModeSubsection">
                     {any(cp) && <div><p>{cp.lbl}: </p><p>{cp.val}</p></div>}
                     {any(fs) &&
-                    <div><p><strong>{fs.lbl}</strong></p>
+                    <div><p>{fs.lbl}</p>
                         {fs.val.map((val, index) => {
                             return <p key={index}>
                                 {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}

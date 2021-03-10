@@ -55,7 +55,7 @@ class App extends Component {
     }
 
     fetchFormSchema(section, itemId, parentItemId, parentFieldId, callback) {
-        const url = `profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv${section ? '&section=' + section : ""}${itemId ? '&itemId=' + itemId : ""}${parentItemId ? '&parentItemId=' + parentItemId : ""}${parentFieldId ? '&parentFieldId=' + parentFieldId : ""}`;
+        const url = `profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv${section !== null ? '&section=' + section : ""}${itemId !== null ? '&itemId=' + itemId : ""}${parentItemId !== null ? '&parentItemId=' + parentItemId : ""}${parentFieldId !== null ? '&parentFieldId=' + parentFieldId : ""}`;
         api.get(url, {
             headers: {'Content-Type': 'application/json'}
         }).then(res => {
@@ -92,11 +92,11 @@ class App extends Component {
             <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
                 <LanguageContext.Provider value={this.state}>
                     <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
-                    <div className="bg-white py-4">
+                    <div className="bg-gray-200 py-4">
                         <div className="container mx-auto">
-                            <div className="grid grid-cols-10">
+                            <div className="flex justify-center">
                                 <div
-                                    className="md:col-span-6 md:col-start-3 sm:col-span-8 sm:col-start-2 col-span-10 col-start-1">
+                                    className="bg-white" style={{maxWidth: "40rem"}}>
                                     {this.state.isReady &&
                                     <SectionPageBuilder
                                         schema={SchemaParser(this.state.schema)}

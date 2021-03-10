@@ -36,6 +36,7 @@ import MultiLangFieldTemplate from './components/MultiLangField/MultiLanFieldTem
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
 import FileFieldTemplate from "./components/FileField/FileFieldTemplate";
 import FileFieldWidget from "./components/FileField";
+import {ModalConfirm} from "./components/utils/Modals";
 
 const customWidgets = {
     fundFieldWidget: FundFieldWidget,
@@ -73,6 +74,14 @@ const customArrayTemplate = {
 }
 
 class FormBuilder extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {shouldDeleteConfirmModalOpen: false, shouldDeleteForm: false};
+        this.handleStateChange = this.handleStateChange.bind(this);
+
+    }
+
     /**
      * This function handle the form submit event
      * @param data
@@ -90,6 +99,10 @@ class FormBuilder extends Component {
         if (event.keyCode === 13) {
             event.preventDefault();
         }
+    }
+
+    handleStateChange(newState) {
+        this.setState(newState);
     }
 
     onErrorMsgChange = (errors) => {
@@ -127,11 +140,13 @@ class FormBuilder extends Component {
                     const subFieldValidations = validations[fieldName][subFieldName];
                     if (Array.isArray(subFieldValidations)) {
                         subFieldValidations.forEach(subFieldValidation => {
-                            formData[fieldName].forEach((subsection, index) => {
-                                if (!subFieldValidation.validateMethod(subsection)) {
-                                    errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
-                                }
-                            })
+                            if (formData[fieldName]) {
+                                formData[fieldName].forEach((subsection, index) => {
+                                    if (!subFieldValidation.validateMethod(subsection)) {
+                                        errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
+                                    }
+                                })
+                            }
                         })
                     }
                 })
@@ -160,51 +175,61 @@ class FormBuilder extends Component {
         }
         // console.log(this.props.formData)
         return (
-            <Form
-                id={this.props.formID ?? null}
-                schema={this.props.formSchema ?? undefined}
-                uiSchema={this.props.uiSchema ?? undefined}
-                formData={this.props.formData ?? undefined}
-                formContext={
-                    {...this.props.formContext, submitAction: this.onSubmit} ?? undefined
-                }
-                widgets={customWidgets}
-                showErrorList={false}
-                liveValidate
-                onChange={({formData}) => {
-                    console.log("data changed", formData)
-                }}
-                validate={this.validation}
-                // noValidate={true}
-                onError={(errors) => {
-                    this.onErrorMsgChange(errors);
-                }}
-                onSubmit={({formData}) => this.onFormSubmit(formData)}>
-                <div className="flex mt-5">
-                    <div id={`${this.props.formID}-errorMsg`}>
+            <>
+                <Form
+                    id={this.props.formID ?? null}
+                    schema={this.props.formSchema ?? undefined}
+                    uiSchema={this.props.uiSchema ?? undefined}
+                    formData={this.props.formData ?? undefined}
+                    formContext={
+                        {...this.props.formContext, submitAction: this.onSubmit} ?? undefined
+                    }
+                    widgets={customWidgets}
+                    showErrorList={false}
+                    liveValidate
+                    onChange={({formData}) => {
+                        console.log("data changed", formData)
+                    }}
+                    validate={this.validation}
+                    // noValidate={true}
+                    onError={(errors) => {
+                        this.onErrorMsgChange(errors);
+                    }}
+                    onSubmit={({formData}) => this.onFormSubmit(formData)}>
+                    <div className="my-4 mb-20 mx-1.5">
+                        <div id={`${this.props.formID}-errorMsg`}>
+                        </div>
+                        <div className="flex justify-between">
+                            <div>
+                                <button className="py-1 px-2 border bg-red-500 rounded text-white"
+                                        type="button"
+                                        onClick={() => {
+                                            // this.props.onFormEditDelete(this.props.formDependent);
+                                            this.setState({shouldDeleteConfirmModalOpen: true})
+                                        }}
+                                >Delete
+                                </button>
+                            </div>
+                            <div>
+                                <button className="py-1 px-2 mr-4 border bg-gray-300 rounded text-black"
+                                        type="button"
+                                        onClick={() => {
+                                            this.props.onFormEditCancel();
+                                        }}>
+                                    {t('btn-cancel')}
+                                </button>
+                                <button className="py-1 px-2 border bg-green-400 rounded"
+                                        type="submit">
+                                    {t('btn-save')}
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <button className="border bg-green-400 px-1 py-1 rounded mr-3"
-                                type="submit">
-                            {t('btn-save')}
-                        </button>
-                        <button className="border bg-gray-600 px-1 py-1 rounded text-white mr-20"
-                                type="button"
-                                onClick={() => {
-                                    this.props.onFormEditCancel();
-                                }}>
-                            {t('btn-cancel')}
-                        </button>
-                        <button className="border bg-gray-300 px-1 py-1 rounded text-black"
-                                type="button"
-                                onClick={() => {
-                                    this.props.onFormEditDelete(this.props.formDependent);
-                                }}
-                        >Delete
-                        </button>
-                    </div>
-                </div>
-            </Form>
+                </Form>
+                {this.state.shouldDeleteConfirmModalOpen &&
+                <ModalConfirm state={this.state} changeState={this.handleStateChange}/>}
+                {this.state.shouldDeleteForm && this.props.onFormEditDelete(this.props.formDependent)}
+            </>
         );
     }
 
