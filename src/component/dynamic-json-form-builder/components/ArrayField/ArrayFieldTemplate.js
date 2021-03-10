@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import {BiPencil} from 'react-icons/bi';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
@@ -6,7 +6,6 @@ import ModalArrayItem from "../utils/Modals";
 import Formatter from "../../../../utils/formatter";
 import './ArrayField.css'
 import Tooltip from "../../../Tooltip";
-import {stringify} from "postcss";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,

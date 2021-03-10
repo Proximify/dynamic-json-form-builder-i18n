@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
-import {BsCaretDownFill, BsTrashFill, BsX} from 'react-icons/bs';
+import React, {useEffect, useState} from "react";
+import {BsCaretDownFill, BsTrashFill} from 'react-icons/bs';
 import './MultiLangField.css';
 import {useTranslation} from 'react-i18next';
 import {Menu, Transition} from "@headlessui/react";
@@ -10,12 +10,10 @@ import draftToHtml from "draftjs-to-html";
 import {Editor} from "react-draft-wysiwyg";
 import {ToolbarStyleCompact} from "../../../../RichTextToolBarStyle";
 
-export function MultiLangTextAreaFieldWidget(props) {
+export function MultiLangFieldWidget(props) {
     // console.log("MultiLangRichTextWidget", props)
     const {value, schema} = props;
-    const {t, i18n} = useTranslation();
-    const isFirstRun = useRef(true);
-    const isLangFirstRun = useRef(true);
+    const {t} = useTranslation();
 
     const isRichText = schema.constraints ? !!schema.constraints.richText : false;
     const [state, setState] = useState({
@@ -318,7 +316,7 @@ export function MultiLangTextAreaFieldWidget(props) {
                         data-toggle={"tooltip"}
                         data-placement={"left"}
                         title={"Delete this content"}
-                        onClick={(event) => {
+                        onClick={() => {
                             setState({
                                 ...state,
                                 isBilingual: false,

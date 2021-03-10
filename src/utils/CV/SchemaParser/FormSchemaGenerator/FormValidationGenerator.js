@@ -31,7 +31,7 @@ const fieldConstraintsHandler = (field, fields) => {
             switch (constraintName) {
                 case "Validate Dataset Field": {
                     const dependantField = getFieldById(fields, constraint.dependantFieldID.toString());
-                    const mandatory = constraint.mandatory ? constraint.mandatory !== "No" : null;
+                    // const mandatory = constraint.mandatory ? constraint.mandatory !== "No" : null;
                     const equals = constraint["equals"] ? constraint["equals"] !== "No" : null;
                     const optionCodes = constraint.code ? (Array.isArray(constraint.code) ? constraint.code : [constraint.code]) : null;
                     validations[validations.length] = {
@@ -58,7 +58,7 @@ const fieldConstraintsHandler = (field, fields) => {
                                 return true;
                             }
                         },
-                        getErrMsg: (formData) => {
+                        getErrMsg: () => {
                             return `This field has error`
                         }
                     };
@@ -95,7 +95,7 @@ const fieldConstraintsHandler = (field, fields) => {
             validateMethod: (formData) => {
                 return formData === undefined || (!(formData[field.name] && formData[field.name].length && formData[dependantField.name] && formData[dependantField.name] !== ''));
             },
-            getErrMsg: (formData) => {
+            getErrMsg: () => {
                 return `Cannot have a value when ${dependantField.title} has a value`
             }
         };
@@ -106,7 +106,7 @@ const fieldConstraintsHandler = (field, fields) => {
             validateMethod: (formData) => {
                 return formData === undefined || !(formData[field.name] && formData[field.name].split(':').filter(time => /\d/.test(time)).length !== 2);
             },
-            getErrMsg: (formData) => {
+            getErrMsg: () => {
                 return `Incomplete ${field.label}`
             }
         };

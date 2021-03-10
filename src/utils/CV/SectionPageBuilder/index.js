@@ -93,29 +93,6 @@ export function SectionPageBuilder(props) {
         })
     }
 
-    // const handleOnItemClick = (structureChain, itemIndex) => {
-    //     const clickedSectionIndex = state.sections.map(s => s.name).indexOf(structureChain[0]);
-    //     structureChain.shift();
-    //     if (clickedSectionIndex !== -1) {
-    //         // handleOnItemClick(clickedSectionIndex, [...structureChain].slice(1), index);
-    //         const sections = [...state.sections];
-    //         const form = structureChain.length > 0 ? getFormRecur(sections[clickedSectionIndex].subsections, structureChain) : sections[clickedSectionIndex];
-    //         let formSchema = null;
-    //         if (form !== null) {
-    //             formSchema = props.fetchFormSchema(form.name);
-    //             console.log(formSchema)
-    //             form.open[itemIndex] = true;
-    //             setState({
-    //                 ...state,
-    //                 sections: sections,
-    //                 schema: formSchema,
-    //                 shouldModalOpen: true
-    //             })
-    //         }
-    //     }
-    // }
-
-
     const handleOnItemClick = (section, itemId, parentItemId, parentFieldId) => {
         // console.log(section, itemId, parentItemId, parentFieldId);
         props.fetchFormSchema(section, itemId, parentItemId, parentFieldId, (res) => {

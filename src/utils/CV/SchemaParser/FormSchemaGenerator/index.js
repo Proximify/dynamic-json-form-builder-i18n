@@ -6,7 +6,6 @@ import {ReorderableArrayFieldTemplate, ArrayFieldTemplate}
     from "../../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate";
 import HiddenFieldTemplate
     from "../../../../component/dynamic-json-form-builder/components/HiddenField/HiddenFieldTemplate";
-import api from "../../../../api";
 
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
@@ -230,7 +229,7 @@ const fieldTypeWidgetMapper = {
     },
     "bilingual": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
-        "ui:widget": "multiLangTextAreaFieldWidget"
+        "ui:widget": "multiLangFieldWidget"
     },
     "integer": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,

@@ -1,6 +1,5 @@
-import React, {useEffect, useRef} from "react";
+import React from "react";
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
-import TooltipTrigger from "react-popper-tooltip";
 import Tooltip from "../../../../Tooltip";
 
 

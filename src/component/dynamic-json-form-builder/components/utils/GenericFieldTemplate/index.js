@@ -10,7 +10,7 @@ const descriptions = {
 }
 
 const GenericFieldTemplate = (props) => {
-    const {id, label, children, required, rawErrors, schema} = props;
+    const {label, children, required, rawErrors, schema} = props;
     // console.log("GenericFieldTemplate", props);
 
 

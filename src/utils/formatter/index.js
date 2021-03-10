@@ -1,6 +1,5 @@
 import React from "react";
 import CVFormatter from './CV';
-import RMFormatter from "./RM";
 import './index.css'
 /**
  * Entry file for formatter
@@ -14,7 +13,6 @@ export default function Formatter(props) {
     // console.log("Formatter", props)
     const apps = {
         "CV": <CVFormatter structureChain={props.structureChain} isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema} rawData={props.rawData}/>,
-        "RM": <RMFormatter/>
     }
 
     return (

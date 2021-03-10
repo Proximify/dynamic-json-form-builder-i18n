@@ -88,10 +88,11 @@ export default function UserProfile(props) {
         } = ft.getFields();
         return (
             <div>
-                {any(rs, rcsd) &&
+                {any(rs, rcsd, or) &&
                 <p>
                     {rs.val && <><strong>{rs.lbl}: </strong><span>{rs.val} </span></>}
                     {rcsd.val && <span>({rcsd.lbl}: {rcsd.val})</span>}
+                    {or.val && <span>{'\u00A0'} {or.val}</span>}
                 </p>}
                 {any(eicr) && <p>{eicr.val}</p>}
                 {any(ktm) && <>

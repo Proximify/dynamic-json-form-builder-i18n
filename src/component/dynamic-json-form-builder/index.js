@@ -24,24 +24,15 @@ import {
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
 
-import {
-    CurrencyFieldTemplate,
-    FundBundleFieldTemplate,
-    FundFieldTemplate
-} from "./components/FundField/FundFieldTemplates";
 import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
-import {MultiLangTextAreaFieldWidget} from './components/MultiLangField'
-import MultiLangFieldTemplate from './components/MultiLangField/MultiLanFieldTemplate';
-// import ObjectFieldTemplate from './components/ObjectField/ObjectFieldTemplate';
+import {MultiLangFieldWidget} from './components/MultiLangField'
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
-import FileFieldTemplate from "./components/FileField/FileFieldTemplate";
-import FileFieldWidget from "./components/FileField";
 import {ModalConfirm} from "./components/utils/Modals";
 
 const customWidgets = {
     fundFieldWidget: FundFieldWidget,
     currencyFieldWidget: CurrencyFieldWidget,
-    multiLangTextAreaFieldWidget: MultiLangTextAreaFieldWidget,
+    multiLangFieldWidget: MultiLangFieldWidget,
 
 
     stringInputWidget: StringInputWidget,
@@ -233,7 +224,6 @@ class FormBuilder extends Component {
             </>
         );
     }
-
 }
 
 export default withTranslation()(FormBuilder);

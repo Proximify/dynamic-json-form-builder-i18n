@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState} from 'react';
 import './SingleField.css'
 import {useTranslation} from 'react-i18next';
 import NumberFormat from "react-number-format";
@@ -179,7 +179,7 @@ export function ElapsedTimeWidget(props) {
 export function DateInputWidget(props) {
     const {value} = props;
     const [date, setDate] = useState(value ? new Date(value.split('-')[0], value.split('-')[1] - 1, value.split('-')[2]) : null);
-    const {t, i18n} = useTranslation();
+    const {i18n} = useTranslation();
 
     const handleChange = (dateValue) => {
         if (!dateValue) {
@@ -215,7 +215,7 @@ export function MonthDayInputWidget(props) {
     // const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
     const {value} = props;
     const [date, setDate] = useState(value ? new Date(1000, value.split('/')[0] - 1, value.split('/')[1]) : null);
-    const {t, i18n} = useTranslation();
+    const {i18n} = useTranslation();
 
     const handleChange = (dateValue) => {
         if (!dateValue) {
@@ -259,7 +259,7 @@ export function YearMonthInputWidget(props) {
     //
     // const date = props.value ? props.value.split("/") : null;
     // const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
-    const {t, i18n} = useTranslation();
+    const {i18n} = useTranslation();
 
     // const handleChange = (dateValue) => {
     //     if (!dateValue) {
@@ -361,7 +361,7 @@ export function YearInputWidget(props) {
             }
         }
     );
-    const {t, i18n} = useTranslation();
+    const {i18n} = useTranslation();
     // console.log(date, value.split('/')[0], hasMonth, hasDate)
     const handleChange = (dateValue, hasMonth, hasDate) => {
         // console.log("handle change", dateValue, hasMonth, hasDate)
