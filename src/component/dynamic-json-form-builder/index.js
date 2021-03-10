@@ -79,7 +79,7 @@ class FormBuilder extends Component {
         super(props);
         this.state = {shouldDeleteConfirmModalOpen: false, shouldDeleteForm: false};
         this.handleStateChange = this.handleStateChange.bind(this);
-
+        document.addEventListener("keydown", this._handleKeyDown.bind(this));
     }
 
     /**
@@ -91,8 +91,10 @@ class FormBuilder extends Component {
         this.props.onFormEditSubmit(data, this.props.formDependent);
     }
 
-    componentWillMount() {
-        document.addEventListener("keydown", this._handleKeyDown.bind(this));
+    componentDidUpdate() {
+        if (this.state.shouldDeleteForm){
+            this.props.onFormEditDelete(this.props.formDependent)
+        }
     }
 
     _handleKeyDown(event) {
@@ -228,7 +230,6 @@ class FormBuilder extends Component {
                 </Form>
                 {this.state.shouldDeleteConfirmModalOpen &&
                 <ModalConfirm state={this.state} changeState={this.handleStateChange}/>}
-                {this.state.shouldDeleteForm && this.props.onFormEditDelete(this.props.formDependent)}
             </>
         );
     }
