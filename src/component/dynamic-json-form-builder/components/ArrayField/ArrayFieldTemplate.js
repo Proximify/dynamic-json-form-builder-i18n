@@ -37,7 +37,6 @@ export function ReorderableArrayFieldTemplate(props) {
         const dItem = sortedFormData[di];
         const sItemIndex = formData.findIndex(data => data.order === sItem.order);
         const dItemIndex = formData.findIndex(data => data.order === dItem.order);
-        // console.log(sItem, dItem, sItemIndex, dItemIndex);
 
         if (di < si) {
             formData[sItemIndex]["order"] = -1;
@@ -45,20 +44,32 @@ export function ReorderableArrayFieldTemplate(props) {
             for (let i = si - 1; i >= di; i--) {
                 let shiftItem = sortedFormData[i];
                 let shiftItemIndex = formData.findIndex(data => data.order === shiftItem.order);
-                // console.log("shift item ", i, shiftItem, shiftItemIndex);
-                formData[shiftItemIndex]["order"]++;
+                const newData = formData[shiftItemIndex];
+                newData['order'] = (Number(formData[shiftItemIndex]["order"]) + 1).toString();
+                items[shiftItemIndex].children.props.onChange(newData);
+
+                // formData[shiftItemIndex]["order"] = (Number(formData[shiftItemIndex]["order"]) + 1).toString();
             }
-            formData[sItemIndex]["order"] = Number(destOrder);
+            // formData[sItemIndex]["order"] = destOrder.toString();
+            const newData = formData[sItemIndex];
+            newData['order'] = destOrder.toString()
+            items[sItemIndex].children.props.onChange(newData);
         } else if (si < di) {
             formData[sItemIndex]["order"] = 999;
             const destOrder = formData[dItemIndex]["order"];
             for (let i = si + 1; i <= di; i++) {
                 let shiftItem = sortedFormData[i];
                 let shiftItemIndex = formData.findIndex(data => data.order === shiftItem.order);
-                // console.log("shift item ", i, shiftItem, shiftItemIndex);
-                formData[shiftItemIndex]["order"]--;
+                const newData = formData[shiftItemIndex];
+                newData['order'] = (Number(formData[shiftItemIndex]["order"]) - 1).toString();
+                items[shiftItemIndex].children.props.onChange(newData);
+
+                // formData[shiftItemIndex]["order"] = (Number(formData[shiftItemIndex]["order"] - 1)).toString();
             }
-            formData[sItemIndex]["order"] = Number(destOrder);
+            const newData = formData[sItemIndex];
+            newData['order'] = destOrder.toString()
+            items[sItemIndex].children.props.onChange(newData);
+            // formData[sItemIndex]["order"] = destOrder.toString();
         }
     }
 
@@ -164,7 +175,7 @@ export function ReorderableArrayFieldTemplate(props) {
                         if (index === state.index) {
                             if (!state.edit) {
                                 // TODO: investigate why order += 2
-                                formData[index]["order"] = Math.max(...formData.map(data => data.order ?? 0)) + 1;
+                                formData[index]["order"] = (Math.max(...formData.map(data => data.order ?? 0)) + 1).toString();
                             }
                         }
                         return index === state.index &&

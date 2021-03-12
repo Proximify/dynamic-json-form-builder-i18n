@@ -75,7 +75,7 @@ export default function Credentials(props) {
     } else {
         return (
             <React.Fragment>
-                Credentials
+                {JSON.stringify(rawData)}
             </React.Fragment>
         )
     }

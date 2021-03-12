@@ -79,12 +79,12 @@ class FormBuilder extends Component {
      */
     onFormSubmit = (data) => {
         this.onErrorMsgChange(null);
-        this.props.onFormEditSubmit(data, this.props.formDependent);
+        this.props.onFormEditSubmit(data);
     }
 
     componentDidUpdate() {
         if (this.state.shouldDeleteForm){
-            this.props.onFormEditDelete(this.props.formDependent)
+            this.props.onFormEditDelete()
         }
     }
 
@@ -197,7 +197,7 @@ class FormBuilder extends Component {
                                 <button className="py-1 px-2 border bg-red-500 rounded text-white"
                                         type="button"
                                         onClick={() => {
-                                            // this.props.onFormEditDelete(this.props.formDependent);
+                                            // this.props.onFormEditDelete();
                                             this.setState({shouldDeleteConfirmModalOpen: true})
                                         }}
                                 >Delete

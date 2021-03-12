@@ -2,15 +2,15 @@ import {SchemaGenerator} from "./FormSchemaGenerator";
 
 
 const getLovSubtypeIdHelper = (sectionSchema) => {
-    if (!sectionSchema.fields){
+    if (!sectionSchema.fields) {
         return [];
-    }else {
+    } else {
         const lovSubtypeIds = [];
         Object.keys(sectionSchema.fields).forEach(fieldID => {
-            const  field = sectionSchema.fields[fieldID];
-            if (field.type === "lov"){
+            const field = sectionSchema.fields[fieldID];
+            if (field.type === "lov") {
                 lovSubtypeIds.push(field.subtype_id);
-            }else if (field.type === "reftable"){
+            } else if (field.type === "reftable") {
                 lovSubtypeIds.push([field.subtype_id, field.dependencies]);
             }
         })
@@ -63,6 +63,60 @@ const sectionParser = (section, parent_id) => {
     return result;
 }
 
+export const bilingualValueParser = (field, fieldData, dataToServer = false, dataFromServer = false) => {
+    const result = {};
+    if (dataToServer) {
+        console.log(fieldData);
+        const bilingualData = JSON.parse(fieldData);
+        if (!field.constraints) {
+            if (bilingualData.english) {
+                result['eng'] = bilingualData.english;
+                // formData.append(`data[${field.id}][english]`, bilingualData.english)
+            }
+            if (bilingualData.french) {
+                result['fre'] = bilingualData.french;
+                // formData.append(`data[${field.id}][french]`, bilingualData.french)
+            }
+        } else if (field.constraints.richText) {
+            if (bilingualData.english) {
+                let engData = bilingualData.english;
+
+                engData = engData.replace(/<p>/g, '');
+                engData = engData.replace(/<\/p>/g, '');
+                engData = engData.replace(/<strong>/g, '<b>');
+                engData = engData.replace(/<\/strong>/g, '</b>');
+                engData = engData.replace(/<em>/g, '<i>');
+                engData = engData.replace(/<\/em>/g, '</i>');
+                engData = engData.replace(/<ins>/g, '<u>');
+                engData = engData.replace(/<\/ins>/g, '</u>');
+                engData = engData.replace('\n', '');
+                // engData = engData.replace(/<\/em>/g,'</i>');
+                result['eng'] = engData;
+
+                // formData.append(`data[${field.id}][english]`, engData)
+            }
+            if (bilingualData.french) {
+                let freData = bilingualData.french;
+
+                freData = freData.replace(/<p>/g, '');
+                freData = freData.replace(/<\/p>/g, '');
+                freData = freData.replace(/<strong>/g, '<b>');
+                freData = freData.replace(/<\/strong>/g, '</b>');
+                freData = freData.replace(/<em>/g, '<i>');
+                freData = freData.replace(/<\/em>/g, '</i>');
+                freData = freData.replace(/<ins>/g, '<u>');
+                freData = freData.replace(/<\/ins>/g, '</u>');
+                freData = freData.replace('\n', '');
+                result['fre'] = freData;
+
+                // formData.append(`data[${field.id}][french]`, freData)
+            }
+        }
+    }
+    return result
+
+}
+
 /**
  * @param schema: raw Response from Server
  * @param singleForm: single to identify the Response if for one form or full screen view mode
@@ -70,15 +124,15 @@ const sectionParser = (section, parent_id) => {
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}|[]}
  * @constructor
  */
-export default function SchemaParser(schema, singleForm = false, lovOptions = null) {
-    // console.log(schema)
+export default function SchemaParser(schema, singleForm = false) {
+    console.log(schema)
     const sections = schema.sections;
     // const selectionOptions = schema.default.selectionOptions;
 
     const result = []
     sections.forEach(section => result.push(sectionParser(section, null)))
     if (singleForm) {
-        return SchemaGenerator(result[0], lovOptions);
+        return SchemaGenerator(result[0]);
     } else
         return result;
 }

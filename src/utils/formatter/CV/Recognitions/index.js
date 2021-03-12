@@ -108,7 +108,8 @@ export default function Recognitions(props) {
     } else {
         return (
             <React.Fragment>
-                {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+                Recognitions
+                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
             </React.Fragment>
         )
     }

@@ -14,7 +14,7 @@ import HiddenFieldTemplate
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}}
  * @constructor
  */
-export const SchemaGenerator = (schema, lovOptions) => {
+export const SchemaGenerator = (schema) => {
     // console.log(schema)
     const result = {
         formSchema: null,
@@ -23,12 +23,12 @@ export const SchemaGenerator = (schema, lovOptions) => {
         validations: null
     }
     if (schema !== null) {
-        result.formSchema = formStrSchemaGen(schema, lovOptions);
+        result.formSchema = formStrSchemaGen(schema);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
         result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
     }
-    console.log(result);
+    // console.log(result);
     return result;
 }
 
@@ -38,7 +38,7 @@ export const SchemaGenerator = (schema, lovOptions) => {
  * @param lovOptions
  * @returns {{id, type: string, required: [], properties: {}}}
  */
-const formStrSchemaGen = (schema, lovOptions) => {
+const formStrSchemaGen = (schema) => {
     const required = [];
     const properties = {};
     const fields = schema.fields;
@@ -51,7 +51,7 @@ const formStrSchemaGen = (schema, lovOptions) => {
         // if (fieldSchema){
         //     properties[field.name] = fieldSchema;
         // }
-        properties[field.name] = fieldStrSchemaGen(field, schema, lovOptions);
+        properties[field.name] = fieldStrSchemaGen(field, schema);
     })
     return {
         type: "object",
@@ -69,7 +69,7 @@ const formStrSchemaGen = (schema, lovOptions) => {
  * @param lovOptions
  * @returns {{}}
  */
-const fieldStrSchemaGen = (field, schema, lovOptions) => {
+const fieldStrSchemaGen = (field, schema) => {
     // if (field.name === "order" && schema.asc_item_order === "1"){
     //     return null;
     // }
@@ -85,9 +85,24 @@ const fieldStrSchemaGen = (field, schema, lovOptions) => {
     result["exclusive_with"] = field.exclusive_with;
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
     switch (field.type) {
+        // case "lov": {
+        //     const subtype_id = field.subtype_id;
+        //     result["enum"] = lovOptions[subtype_id] ?? []
+        //     break;
+        // }
         case "lov": {
-            const subtype_id = field.subtype_id;
-            result["enum"] = lovOptions[subtype_id] ?? []
+            // const subtype_id = field.subtype_id;
+            result["type"] = "string";
+            // result["options"] = lovOptions[subtype_id] ?? []; // should be url
+            result['subtype_id'] = field.subtype_id;
+            // result["enum"] = lovOptions[subtype_id] ?? []
+            break;
+        }
+        case "reftable": {
+            // const subtype_id = field.subtype_id;
+            // result["enum"] = lovOptions[subtype_id] ?? []
+            result["type"] = "string";
+            result['subtype_id'] = field.subtype_id;
             break;
         }
         case "string":
@@ -124,14 +139,12 @@ const fieldStrSchemaGen = (field, schema, lovOptions) => {
             const subsections = schema.subsections
             if (subsectionId in subsections) {
                 result["fields"] = subsections[subsectionId].fields;
-                result["items"] = formStrSchemaGen(subsections[subsectionId], lovOptions);
+                result["items"] = formStrSchemaGen(subsections[subsectionId]);
+                if (result['items'].properties) {
+                    result['items'].properties['itemId'] = {name: 'itemId', type: 'string'}
+                }
             }
             break;
-        case "reftable": {
-            const subtype_id = field.subtype_id;
-            result["enum"] = lovOptions[subtype_id] ?? []
-            break;
-        }
         default:
             break;
     }
@@ -144,6 +157,7 @@ const formDataSchemaGen = (schema) => {
     }
     // console.log(schema)
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
+    // console.log(mapper)
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
     // console.log(fields)
@@ -153,34 +167,51 @@ const formDataSchemaGen = (schema) => {
         const field = fields[fieldName];
         // console.log(field)
         if (field.type === "section") {
+            console.log(field)
             if (field.rawValue) {
                 const values = [];
                 field.rawValue.forEach(val => {
                     const subFieldDataSchema = {}
                     Object.keys(val).forEach(subFieldName => {
-                        const subField = val[subFieldName];
-                        if (subField.type === "bilingual") {
-                            subFieldDataSchema[subFieldName] = JSON.stringify(val[subFieldName].value);
-                        } else if (subField.type === "reftable") {
-                            subFieldDataSchema[subFieldName] = val[subFieldName].value && val[subFieldName].value.length ? [val[subFieldName].value[0]].concat(val[subFieldName].value[1].split("|")) : undefined;
+                        if (subFieldName === 'itemId') {
+                            subFieldDataSchema[subFieldName] = val[subFieldName]
                         } else {
-                            subFieldDataSchema[subFieldName] = val[subFieldName].value;
+                            const subField = val[subFieldName];
+                            if (subField.type === "bilingual") {
+                                subFieldDataSchema[subFieldName] = JSON.stringify(val[subFieldName].value);
+                            } else if (subField.type === "reftable") {
+                                subFieldDataSchema[subFieldName] = val[subFieldName].value && val[subFieldName].value.length ? JSON.stringify([val[subFieldName].value[0]].concat(val[subFieldName].value[1].split("|"))) : undefined;
+                            } else if (subField.type === 'lov') {
+                                subFieldDataSchema[subFieldName] = val[subFieldName].value ? JSON.stringify(val[subFieldName].value) : undefined
+                            }
+                                // else if (subField.type === "reftable") {
+                                //     subFieldDataSchema[subFieldName] = val[subFieldName].value && val[subFieldName].value.length ? [val[subFieldName].value[0]].concat(val[subFieldName].value[1].split("|")) : undefined;
+                            // }
+                            else {
+                                subFieldDataSchema[subFieldName] = val[subFieldName].value;
+                            }
                         }
                         // subFieldDataSchema[subFieldName] = val[subFieldName].value;
                     })
                     values.push(subFieldDataSchema);
+                    // console.log(subFieldDataSchema)
                 })
                 dataSchema[fieldName] = values;
             } else {
                 dataSchema[fieldName] = [];
             }
-
         } else {
             if (field.type === "bilingual") {
                 dataSchema[fieldName] = JSON.stringify(field.rawValue);
             } else if (field.type === "reftable") {
-                dataSchema[fieldName] = field.rawValue && field.rawValue.length ? [field.rawValue[0]].concat(field.rawValue[1].split("|")) : undefined;
-            } else {
+                dataSchema[fieldName] = field.rawValue && field.rawValue.length ? JSON.stringify([field.rawValue[0]].concat(field.rawValue[1].split("|"))) : undefined;
+            } else if (field.type === 'lov') {
+                dataSchema[fieldName] = field.rawValue ? JSON.stringify(field.rawValue) : undefined
+            }
+                // else if (field.type === "reftable") {
+                //     dataSchema[fieldName] = field.rawValue && field.rawValue.length ? [field.rawValue[0]].concat(field.rawValue[1].split("|")) : undefined;
+            // }
+            else {
                 dataSchema[fieldName] = field.rawValue;
             }
         }
@@ -261,6 +292,10 @@ const formUISchemaGen = (schema) => {
                 result[fieldName] = {
                     "ui:ArrayFieldTemplate": subsections[subsectionId].asc_item_order === "1" ? customArrayTemplate.reorderableArrayFieldTemplate : customArrayTemplate.arrayFieldTemplate,
                     "items": formUISchemaGen(subsections[subsectionId])
+                }
+                result[fieldName]['items']['itemId'] = {
+                    "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
+                    "ui:widget": "hiddenFieldWidget"
                 }
             }
         } else {

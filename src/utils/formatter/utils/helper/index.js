@@ -42,6 +42,8 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false, o
                         value[fieldKey].forEach(subsectionValue => {
                             // id? order?
                             result[field.name]["value"].push(FieldValueMapper(subsectionValue.values, schema.subsections[subsectionID], false, subsectionValue.order))
+                            result[field.name]["value"][result[field.name]["value"].length - 1]['itemId'] = subsectionValue.id;
+                            // console.log(result[field.name]["value"])
                         })
                     }
                 }
@@ -256,27 +258,29 @@ export class FormatterTracker {
     fieldsLoader = (fields) => {
         const fie = {};
         Object.keys(fields).forEach(key => {
-            const field = fields[key];
-            const value = field.value;
-            if (field.type === 'section') {
-                fie[key] = {
-                    val: (value !== undefined && value !== "" && value !== null) ? [].concat(value.map(subVal => this.fieldsLoader(subVal))) : undefined,
-                    lbl: field.label ?? undefined,
-                    type: field.type ?? undefined,
-                    subtype: field.subtype ?? undefined,
-                    rawValue: value ?? undefined,
-                    name: key,
-                    count: 0
-                }
-            } else {
-                fie[key] = {
-                    val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
-                    lbl: field.label ?? undefined,
-                    type: field.type ?? undefined,
-                    subtype: field.subtype ?? undefined,
-                    rawValue: value ?? undefined,
-                    name: key,
-                    count: 0
+            if (key !== 'itemId'){
+                const field = fields[key];
+                const value = field.value;
+                if (field.type === 'section') {
+                    fie[key] = {
+                        val: (value !== undefined && value !== "" && value !== null) ? [].concat(value.map(subVal => this.fieldsLoader(subVal))) : undefined,
+                        lbl: field.label ?? undefined,
+                        type: field.type ?? undefined,
+                        subtype: field.subtype ?? undefined,
+                        rawValue: value ?? undefined,
+                        name: key,
+                        count: 0
+                    }
+                } else {
+                    fie[key] = {
+                        val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
+                        lbl: field.label ?? undefined,
+                        type: field.type ?? undefined,
+                        subtype: field.subtype ?? undefined,
+                        rawValue: value ?? undefined,
+                        name: key,
+                        count: 0
+                    }
                 }
             }
         })
@@ -301,7 +305,7 @@ export class FormatterTracker {
         const result = {};
         Object.keys(fields).forEach(key => {
             const field = fields[key];
-            if (field.count === 0 && field.rawValue && field.name !== 'order') {
+            if (field.count === 0 && field.rawValue && field.name !== 'order' && field.name !== 'itemId') {
                 result[key] = fields[key];
             } else if (field.count !== 0 && field.type === 'section' && field.val) {
                 field.val.forEach(subFields => {

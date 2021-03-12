@@ -171,7 +171,8 @@ export default function UserProfile(props) {
     } else {
         return (
             <React.Fragment>
-                {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+                User Profile
+                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
             </React.Fragment>
         )
     }

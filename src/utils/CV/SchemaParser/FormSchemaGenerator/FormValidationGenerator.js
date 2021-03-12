@@ -37,14 +37,16 @@ const fieldConstraintsHandler = (field, fields) => {
                     validations[validations.length] = {
                         validateMethod: (formData) => {
                             if (formData[field.name] && formData[field.name].length && formData[dependantField.name] && formData[dependantField.name].length) {
-                                const hasVal = optionCodes.indexOf(Number(formData[dependantField.name][0])) >= 0;
+                                // const hasVal = optionCodes.indexOf(Number(formData[dependantField.name][0])) >= 0;
+                                const hasVal = optionCodes.indexOf(Number(JSON.parse(formData[dependantField.name])[0])) >= 0;
+
                                 return hasVal ? equals : !equals;
                             } else {
                                 return true;
                             }
                         },
                         getErrMsg: (formData) => {
-                            return `Cannot have a value when ${dependantField.title} is ${formData[dependantField.name].slice(1)}`
+                            return `Cannot have a value when ${dependantField.title} is ${JSON.parse(formData[dependantField.name]).slice(1)}`
                         }
                     };
                     break;

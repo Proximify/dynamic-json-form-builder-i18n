@@ -5,31 +5,37 @@ import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
 import Formatter from "../../formatter";
-import SchemaParser, {getLovSubtypeId} from "../SchemaParser";
+import SchemaParser, {getLovSubtypeId, bilingualValueParser} from "../SchemaParser";
 
 export function SectionPageBuilder(props) {
 
+    /*
+          schema: null,
+        formName: null,
+        itemId: null,
+        lovOptions: null,
+     */
     const schema = [...props.schema];
     const [state, setState] = useState({
         sections: [],
-        schema: null,
+        form: null,
         shouldModalOpen: false,
-        ready: false
+        ready: false,
     })
     console.log("SectionPageBuilder", state)
 
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
         if (section["type"] === "form") {
-            if (section.section_data.length > 0) {
-                let opens = [];
-                for (let i = 0; i < section.section_data.length; i++) {
-                    opens.push(false)
-                }
-                section["open"] = opens;
-            } else {
-                section["open"] = []
-            }
+            // if (section.section_data.length > 0) {
+            //     let opens = [];
+            //     for (let i = 0; i < section.section_data.length; i++) {
+            //         opens.push(false)
+            //     }
+            //     section["open"] = opens;
+            // } else {
+            //     section["open"] = []
+            // }
         } else if (section["type"] === "section") {
             // console.log(section)
             Object.keys(section["subsections"]).forEach(key => {
@@ -65,17 +71,314 @@ export function SectionPageBuilder(props) {
             ...state,
             sections: schema,
             shouldModalOpen: false,
-            ready: true
+            ready: true,
+            form: null,
         })
     }, [state.ready])
 
-    const handleFormEditSubmit = (formData, formDependent) => {
-        console.log("received form data", formData, formDependent);
+    const handleFormEditSubmit = (data) => {
+        console.log("received form data", data, state);
         console.log("should fetch data");
-        setState({
-            ...state,
-            ready: false
-        })
+
+        if (state.form && state.form.schema && state.form.schema.formSchema) {
+            const formData = new FormData();
+            formData.append('action', state.form.itemId !== 0 ? 'update' : 'insert');
+            Object.keys(state.form.schema.formSchema.properties).forEach(fieldName => {
+                const field = state.form.schema.formSchema.properties[fieldName]
+                const fieldData = data[fieldName];
+                switch (field.field_type) {
+                    //TODO: handle bilingual
+                    case 'string':
+                    case 'integer':
+                    case 'elaelapsed-time':
+                    case "monthday":
+                    case "yearmonth":
+                    case "year":
+                    case "date":
+                        formData.append(`data[${field.id}]`, fieldData ?? "");
+                        break;
+                    case 'lov':
+                    case 'reftable':
+                        if (fieldData) {
+                            const lovData = JSON.parse(fieldData);
+                            if (field.field_type === 'lov') {
+                                lovData.forEach(data => {
+                                    formData.append(`data[${field.id}][]`, data)
+                                })
+                            } else {
+                                formData.append(`data[${field.id}][]`, lovData[0])
+                                formData.append(`data[${field.id}][]`, lovData.slice(1).join('|'))
+                            }
+                        } else {
+                            formData.append(`data[${field.id}]`, "")
+                        }
+                        break;
+                    case 'bilingual':
+                        if (fieldData) {
+                            const bilingualData = bilingualValueParser(field, fieldData, true, false);
+                            if (bilingualData.eng) {
+                                formData.append(`data[${field.id}][english]`, bilingualData.eng)
+                            }
+                            if (bilingualData.fre) {
+                                formData.append(`data[${field.id}][french]`, bilingualData.fre)
+                            }
+                            // const bilingualData = JSON.parse(fieldData);
+                            // if (!field.constraints){
+                            //     if (bilingualData.english){
+                            //         formData.append(`data[${field.id}][english]`, bilingualData.english)
+                            //     }
+                            //     if (bilingualData.french){
+                            //         formData.append(`data[${field.id}][french]`, bilingualData.french)
+                            //     }
+                            // }else if (field.constraints.richText) {
+                            //     if (bilingualData.english){
+                            //         let engData = bilingualData.english;
+                            //         console.log(engData)
+                            //
+                            //         engData = engData.replace(/<p>/g,'');
+                            //         engData = engData.replace(/<\/p>/g,'');
+                            //         engData = engData.replace(/<strong>/g,'<b>');
+                            //         engData = engData.replace(/<\/strong>/g,'</b>');
+                            //         engData = engData.replace(/<em>/g,'<i>');
+                            //         engData = engData.replace(/<\/em>/g,'</i>');
+                            //         engData = engData.replace(/<ins>/g,'<u>');
+                            //         engData = engData.replace(/<\/ins>/g,'</u>');
+                            //         engData = engData.replace('\n','');
+                            //         // engData = engData.replace(/<\/em>/g,'</i>');
+                            //         console.log(engData)
+                            //         formData.append(`data[${field.id}][english]`, engData)
+                            //     }
+                            //     if (bilingualData.french){
+                            //         let freData = bilingualData.french;
+                            //
+                            //         freData = freData.replace(/<p>/g,'');
+                            //         freData = freData.replace(/<\/p>/g,'');
+                            //         freData = freData.replace(/<strong>/g,'<b>');
+                            //         freData = freData.replace(/<\/strong>/g,'</b>');
+                            //         freData = freData.replace(/<em>/g,'<i>');
+                            //         freData = freData.replace(/<\/em>/g,'</i>');
+                            //         freData = freData.replace(/<ins>/g,'<u>');
+                            //         freData = freData.replace(/<\/ins>/g,'</u>');
+                            //         freData = freData.replace('\n','');
+                            //         formData.append(`data[${field.id}][french]`, freData)
+                            //     }
+                            // }
+                        } else {
+                            formData.append(`data[${field.id}]`, "")
+                        }
+                        break;
+                    case 'section': {
+                        // console.log(field, fieldData, state.form.sectionData[fieldName])
+                        const newFieldData = [...fieldData];
+                        const oldFieldData = [...state.form.sectionData[fieldName]];
+                        let insertItemCount = 1;
+                        let processCount = 0;
+                        while (newFieldData.length > 0) {
+                            const template = `data[${field.id}][${processCount}]`;
+                            const nfd = newFieldData[0];
+                            let oldFieldDataIndexTracker = -1;
+                            if (!nfd.itemId) {
+                                // console.log(" insert new data", nfd);
+                                // console.log(`${field.id}-new${insertItemCount}-action insert`);
+                                formData.append(`${template}[itemId]`, `new${insertItemCount}`)
+                                formData.append(`${template}[action]`, `insert`)
+
+                                const subsectionFields = field.fields;
+                                Object.keys(subsectionFields).forEach(fieldId => {
+                                    const subsectionField = subsectionFields[fieldId];
+                                    Object.keys(nfd).forEach(nfdId => {
+                                        const newFieldData = nfd[nfdId];
+                                        if (nfdId === subsectionField.name) {
+                                            if (newFieldData) {
+                                                if (subsectionField.type === 'lov') {
+                                                    const subsectionLovData = JSON.parse(newFieldData);
+                                                    subsectionLovData.forEach(data => {
+                                                        formData.append(`${template}[data][${fieldId}][]`, data)
+                                                    })
+                                                } else if (subsectionField.type === 'reftable') {
+                                                    const subsectionLovData = JSON.parse(newFieldData);
+                                                    formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
+                                                    formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
+                                                } else if (subsectionField.type === 'bilingual') {
+                                                    const bilingualData = bilingualValueParser(subsectionField, newFieldData, true, false);
+                                                    if (bilingualData.eng) {
+                                                        formData.append(`${template}[data][${fieldId}][english]`, bilingualData.eng)
+                                                    }
+                                                    if (bilingualData.fre) {
+                                                        formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
+                                                    }
+                                                } else {
+                                                    formData.append(`${template}[data][${fieldId}]`, newFieldData)
+                                                }
+                                            } else {
+                                                formData.append(`${template}[data][${fieldId}]`, '');
+                                            }
+                                        }
+                                    })
+                                })
+                                newFieldData.shift();
+                                insertItemCount++;
+                            } else {
+                                let found = false;
+                                oldFieldData.forEach((ofd, index) => {
+                                    if (ofd.itemId === nfd.itemId) {
+                                        formData.append(`${template}[itemId]`, ofd.itemId)
+                                        found = true;
+                                        if (JSON.stringify(ofd) !== JSON.stringify(nfd)) {
+                                            formData.append(`${template}[action]`, `update`)
+                                            console.log(" update form data", nfd);
+                                        } else {
+                                            console.log(" no change form data", nfd);
+                                            formData.append(`${template}[action]`, `none`)
+                                        }
+                                        const subsectionFields = field.fields;
+                                        Object.keys(subsectionFields).forEach(fieldId => {
+                                            const subsectionField = subsectionFields[fieldId];
+                                            Object.keys(nfd).forEach(nfdId => {
+                                                const newFieldData = nfd[nfdId];
+                                                if (nfdId === subsectionField.name) {
+                                                    if (newFieldData) {
+                                                        if (subsectionField.type === 'lov') {
+                                                            const subsectionLovData = JSON.parse(newFieldData);
+                                                            subsectionLovData.forEach(data => {
+                                                                formData.append(`${template}[data][${fieldId}][]`, data)
+                                                            })
+                                                        } else if (subsectionField.type === 'reftable') {
+                                                            const subsectionLovData = JSON.parse(newFieldData);
+                                                            formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
+                                                            formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
+                                                        } else if (subsectionField.type === 'bilingual') {
+                                                            const bilingualData = bilingualValueParser(subsectionField, newFieldData, true, false);
+                                                            if (bilingualData.eng) {
+                                                                formData.append(`${template}[data][${fieldId}][english]`, bilingualData.eng)
+                                                            }
+                                                            if (bilingualData.fre) {
+                                                                formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
+                                                            }
+                                                        } else {
+                                                            formData.append(`${template}[data][${fieldId}]`, newFieldData)
+                                                        }
+                                                    } else {
+                                                        formData.append(`${template}[data][${fieldId}]`, '');
+                                                    }
+                                                }
+                                            })
+                                        })
+                                        newFieldData.shift();
+                                        oldFieldDataIndexTracker = index;
+                                    }
+                                })
+                                if (oldFieldDataIndexTracker !== -1) {
+                                    oldFieldData.splice(oldFieldDataIndexTracker, 1);
+                                }
+                                if (!found) {
+                                    console.error("cannot find newdata itemId from old data", nfd, oldFieldData);
+                                    newFieldData.shift();
+                                }
+                            }
+                            processCount++;
+                        }
+                        if (oldFieldData.length > 0) {
+                            const template = `data[${field.id}][${processCount}]`;
+
+                            // console.log(" delete data", oldFieldData)
+                            oldFieldData.forEach(ofd => {
+                                formData.append(`${template}[itemId]`, ofd.itemId)
+                                formData.append(`${template}[action]`, `delete`)
+
+                                const subsectionFields = field.fields;
+                                Object.keys(subsectionFields).forEach(fieldId => {
+                                    const subsectionField = subsectionFields[fieldId];
+                                    Object.keys(ofd).forEach(nfdId => {
+                                        const oldFieldData = ofd[nfdId];
+                                        if (nfdId === subsectionField.name) {
+                                            if (oldFieldData) {
+                                                if (subsectionField.type === 'lov') {
+                                                    const subsectionLovData = JSON.parse(oldFieldData);
+                                                    subsectionLovData.forEach(data => {
+                                                        formData.append(`${template}[data][${fieldId}][]`, data)
+                                                    })
+                                                } else if (subsectionField.type === 'reftable') {
+                                                    const subsectionLovData = JSON.parse(oldFieldData);
+                                                    formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
+                                                    formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
+                                                } else if (subsectionField.type === 'bilingual') {
+                                                    const bilingualData = bilingualValueParser(subsectionField, oldFieldData, true, false);
+                                                    if (bilingualData.eng) {
+                                                        formData.append(`${template}[data][${fieldId}][english]`, bilingualData.eng)
+                                                    }
+                                                    if (bilingualData.fre) {
+                                                        formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
+                                                    }
+                                                } else {
+                                                    formData.append(`${template}[data][${fieldId}]`, oldFieldData)
+                                                }
+                                            } else {
+                                                formData.append(`${template}[data][${fieldId}]`, '');
+                                            }
+                                        }
+                                    })
+                                })
+                                newFieldData.shift();
+                                processCount++;
+                            })
+
+                        }
+                        break;
+                    }
+                    default:
+                        console.warn("unhandled field type when send formdata", field);
+                        formData.append(`data[${field.id}]`, "")
+                        break;
+                }
+            })
+            formData.append('contentType', 'members');
+            formData.append('contentId', '1');
+            formData.append('viewType', 'cv');
+            formData.append('sectionId', state.form.sectionId);
+            formData.append('itemId', state.form.itemId);
+            if (state.form.parentItemId) {
+                formData.append('parentItemId', state.form.parentItemId);
+            }
+            if (state.form.parentFieldId) {
+                formData.append('parentFieldId', state.form.parentFieldId);
+            }
+
+            api.post('http://127.0.0.1:8000/profiles.php', formData, {
+                headers: {'Content-Type': 'application/json'}
+            }).then((response) => {
+                if (!response.data.error) {
+                    const formSchema = SchemaParser({sections: [response.data]}, false);
+                    const newSection = [...state.sections];
+                    const targetForm = getFormRecur(state.sections, state.form.structureChain);
+                    if (targetForm) {
+                        targetForm.section_data = formSchema[0].section_data;
+                        setState({
+                            ...state,
+                            sections: newSection,
+                            shouldModalOpen: false,
+                            form: null,
+                        })
+                    } else {
+                        console.error("cannot find target form")
+                    }
+                } else {
+                    console.error(response)
+                    setState({
+                        ...state,
+                        shouldModalOpen: false,
+                        form: null
+                    })
+                }
+            }, (error) => {
+                console.error(error);
+                setState({
+                    ...state,
+                    shouldModalOpen: false,
+                    form: null
+                })
+            });
+        }
     }
 
     const handleFormEditCancel = () => {
@@ -85,45 +388,40 @@ export function SectionPageBuilder(props) {
         })
     }
 
-    const handleFormEditDelete = (formDependent) => {
-        console.log("on form delete", formDependent);
+    const handleFormEditDelete = () => {
+        console.log("on form delete", state);
         setState({
             ...state,
             ready: false
         })
     }
 
-    const handleOnItemClick = (section, itemId, parentItemId, parentFieldId) => {
-        // console.log(section, itemId, parentItemId, parentFieldId);
-        props.fetchFormSchema(section, itemId, parentItemId, parentFieldId, (res) => {
+    const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
+        // console.log(sectionId, itemId, parentItemId, parentFieldId);
+
+        props.fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             // console.log(lovSubtypeIDs);
             props.fetchLovOptions(lovSubtypeIDs, (optRes => {
                 // console.log(optRes);
-                const formSchema = SchemaParser(res, true, optRes);
-                // console.log(formSchema)
+                const formSchema = SchemaParser(res, true);
+                // console.log(res)
                 setState({
                     ...state,
-                    schema: formSchema,
-                    formName: formSchema.formSchema.id,
-                    itemId: itemId,
+                    form: {
+                        schema: formSchema,
+                        id: formSchema.formSchema.id,
+                        sectionData: formSchema.dataSchema,
+                        lovOptions: optRes,
+                        sectionId: sectionId,
+                        itemId: itemId,
+                        structureChain: structureChain,
+                        parentItemId: parentItemId,
+                        parentFieldId: parentFieldId
+                    },
                     shouldModalOpen: true
                 })
             }))
-
-            // if (res) {
-            //     console.log("+++")
-            //
-            //     const formSchema = SchemaParser(res, true,props.fetchLovOptions);
-            //     // console.log(formSchema)
-            //     setState({
-            //         ...state,
-            //         schema: formSchema,
-            //         formName: formSchema.formSchema.id,
-            //         itemId: itemId,
-            //         shouldModalOpen: true
-            //     })
-            // }
         })
     }
 
@@ -172,40 +470,36 @@ export function SectionPageBuilder(props) {
                         <p className="ml-3 hover:text-yellow-700">{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
-                                                  handleOnItemClick(section.section_id, 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
+                                                  handleOnItemClick(section.section_id, 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                               }}
                             /> :
                             <FiEdit size={"1.1rem"}
                                     onClick={() => {
-                                        handleOnItemClick(section.section_id, section.section_data[0].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
+                                        handleOnItemClick(section.section_id, section.section_data[0].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                     }}
                             />}
                         </p>
                     </div>
-                    {state.shouldModalOpen === true && state.itemId === 0 && state.formName === section.name ?
+                    {state.shouldModalOpen === true && state.form && state.form.itemId === 0 && state.form.id === section.name ?
                         <ModalFullScreen
                             content={
-                                state.schema ? (
+                                state.form.schema ? (
                                         <FormBuilder
                                             formID={"user-profile-form"}
                                             resourceURL={"form/"}
                                             HTTPMethod={"PATCH"}
                                             language={props.language}
-                                            formSchema={state.schema.formSchema}
-                                            uiSchema={state.schema.uiSchema}
-                                            formData={state.schema.dataSchema}
-                                            validations={state.schema.validations}
+                                            formSchema={state.form.schema.formSchema}
+                                            uiSchema={state.form.schema.uiSchema}
+                                            formData={state.form.schema.dataSchema}
+                                            validations={state.form.schema.validations}
                                             onFormEditSubmit={handleFormEditSubmit}
                                             onFormEditCancel={handleFormEditCancel}
                                             onFormEditDelete={handleFormEditDelete}
-                                            formDependent={{
-                                                section: null,
-                                                form: null,
-                                                index: NaN
-                                            }}
                                             formContext={{
                                                 api: api,
                                                 app: "CV",
+                                                lovOptions: state.form.lovOptions,
                                                 structureChain: structureChain
                                             }}
                                         />
@@ -238,7 +532,7 @@ export function SectionPageBuilder(props) {
                                                 <div className="hover:text-yellow-700">
                                                     <FiEdit size={"1.1rem"}
                                                             onClick={() => {
-                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null)
+                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                                             }}
                                                     />
                                                 </div> : null}
@@ -246,31 +540,27 @@ export function SectionPageBuilder(props) {
                                         </div>
                                         }
                                         <div>
-                                            {state.shouldModalOpen === true && state.formName === section.name && state.itemId === section.section_data[itemIndex].id &&
+                                            {state.shouldModalOpen === true && state.form && state.form.id === section.name && state.form.itemId === section.section_data[itemIndex].id &&
                                             // console.log(section)
                                             <ModalFullScreen
                                                 content={
-                                                    state.schema ? (
+                                                    state.form.schema ? (
                                                             <FormBuilder
                                                                 formID={"user-profile-form"}
                                                                 resourceURL={"form/"}
                                                                 HTTPMethod={"PATCH"}
                                                                 language={props.language}
-                                                                formSchema={state.schema.formSchema}
-                                                                uiSchema={state.schema.uiSchema}
-                                                                formData={state.schema.dataSchema}
-                                                                validations={state.schema.validations}
+                                                                formSchema={state.form.schema.formSchema}
+                                                                uiSchema={state.form.schema.uiSchema}
+                                                                formData={state.form.schema.dataSchema}
+                                                                validations={state.form.schema.validations}
                                                                 onFormEditSubmit={handleFormEditSubmit}
                                                                 onFormEditCancel={handleFormEditCancel}
                                                                 onFormEditDelete={handleFormEditDelete}
-                                                                formDependent={{
-                                                                    section: null,
-                                                                    form: null,
-                                                                    index: NaN
-                                                                }}
                                                                 formContext={{
                                                                     api: api,
                                                                     app: "CV",
+                                                                    lovOptions: state.form.lovOptions,
                                                                     structureChain: structureChain
                                                                 }}
                                                             />

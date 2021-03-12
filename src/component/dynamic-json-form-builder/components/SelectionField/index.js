@@ -30,7 +30,8 @@ const dayOpts = (monthOpts, monthIndex) => {
 };
 
 const handleChange = (value, onChange) => {
-    onChange(!value ? undefined : value.value)
+    onChange(!value ? undefined : JSON.stringify(value.value))
+    // onChange(!value ? undefined : value.value)
 }
 
 export function SingleSelectionWidget(props) {
@@ -97,25 +98,50 @@ export function MultiColSelectionWidget(props) {
 }
 
 export function SingleLargeSelectionWidget(props) {
-    const {options, value} = props;
+    // console.log("SingleLargeSelectionWidget", props)
+    const {value} = props;
+    const lovOptions = props.formContext.lovOptions[props.schema.subtype_id].map(opt => {
+        return {label: opt.toString(), value: opt}
+    });
+    const lovValue = value ? JSON.parse(value) : undefined;
+    // console.log(lovOptions, value);
     return (
         <WindowedSelect id={props.schema.id}
                         getOptionLabel={option => option.value[1] ?? option.label}
                         className={"singleFieldSelect"}
-                        options={options.enumOptions}
-                        defaultValue={value ?
-                            options.enumOptions[options.enumOptions.map(element =>
+                        options={lovOptions}
+                        defaultValue={lovValue ?
+                            lovOptions[lovOptions.map(element =>
                                 element.value.toString()
-                            ).indexOf(value.toString())]
+                            ).indexOf(lovValue.toString())]
                             : null}
                         onChange={value => handleChange(value, props.onChange)}
-                        isClearable={true}/>
-    );
+                        isClearable={true}/>);
+
+    // const {options, value} = props;
+    // return (
+    //     <WindowedSelect id={props.schema.id}
+    //                     getOptionLabel={option => option.value[1] ?? option.label}
+    //                     className={"singleFieldSelect"}
+    //                     options={options.enumOptions}
+    //                     defaultValue={value ?
+    //                         options.enumOptions[options.enumOptions.map(element =>
+    //                             element.value.toString()
+    //                         ).indexOf(value.toString())]
+    //                         : null}
+    //                     onChange={value => handleChange(value, props.onChange)}
+    //                     isClearable={true}/>
+    // );
 }
 
 export function MultiColLargeSelectionWidget(props) {
     console.log("MultiColLargeSelectionWidget", props)
-    const {options, value} = props;
+    const {value} = props;
+
+    const lovOptions = props.formContext.lovOptions[props.schema.subtype_id].map(opt => {
+        return {label: opt.toString(), value: opt}
+    });
+    const lovValue = value ? JSON.parse(value) : undefined;
 
     const formatOptionLabel = ({label, value}) => (
         <table className={"table w-full border-b"}>
@@ -151,7 +177,7 @@ export function MultiColLargeSelectionWidget(props) {
             id={props.schema.id}
             components={{SingleValue}}
             className={"singleFieldSelect"}
-            options={options.enumOptions}
+            options={lovOptions}
             // styles={customStyles}
             onChange={value => handleChange(value, props.onChange)}
             // defaultValue={value ?
@@ -163,10 +189,10 @@ export function MultiColLargeSelectionWidget(props) {
             //         }
             //     ).indexOf(value.toString())]
             //     : null}
-            defaultValue={value ?
-                options.enumOptions[options.enumOptions.map(element =>
+            defaultValue={lovValue ?
+                lovOptions[lovOptions.map(element =>
                     element.value.toString()
-                ).indexOf(value.toString())]
+                ).indexOf(lovValue.toString())]
                 : null}
             formatOptionLabel={formatOptionLabel}
             isClearable={true}
