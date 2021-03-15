@@ -167,7 +167,7 @@ const formDataSchemaGen = (schema) => {
         const field = fields[fieldName];
         // console.log(field)
         if (field.type === "section") {
-            console.log(field)
+            // console.log(field)
             if (field.rawValue) {
                 const values = [];
                 field.rawValue.forEach(val => {

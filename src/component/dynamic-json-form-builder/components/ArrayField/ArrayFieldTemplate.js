@@ -14,7 +14,7 @@ const descriptions = {
 }
 
 export function ReorderableArrayFieldTemplate(props) {
-    console.log("ReorderableArrayFieldTemplate", props);
+    // console.log("ReorderableArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
     const [state, setState] = useState(
@@ -135,27 +135,31 @@ export function ReorderableArrayFieldTemplate(props) {
                                                         {(provided) => (
                                                             <li {...provided.draggableProps} {...provided.dragHandleProps}
                                                                 ref={provided.innerRef}
-                                                                className={`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 ? "border-b" : ""}`}
+                                                                className={`flex mx-1 py-1 pl-1 justify-between ${index < items.length - 1 ? "border-b" : ""}`}
                                                             >
-                                                                <Formatter app={"CV"}
-                                                                           structureChain={[...formContext.structureChain, schema.name]}
-                                                                           isFullScreenViewMode={false}
-                                                                           schema={schema}
-                                                                           rawData={item}
-                                                                />
-                                                                <BiPencil
-                                                                    className="cursor-pointer mx-1"
-                                                                    onClick={() => {
-                                                                        const itemIndex = formData.findIndex(data => data.order === item.order);
-                                                                        setState({
-                                                                            ...state,
-                                                                            open: true,
-                                                                            edit: true,
-                                                                            index: itemIndex,
-                                                                            dataPrev: formData[itemIndex]
-                                                                        })
-                                                                    }}
-                                                                />
+                                                                <div>
+                                                                    <Formatter app={"CV"}
+                                                                               structureChain={[...formContext.structureChain, schema.name]}
+                                                                               isFullScreenViewMode={false}
+                                                                               schema={schema}
+                                                                               rawData={item}
+                                                                    />
+                                                                </div>
+                                                                <div className='mt-0.5'>
+                                                                    <BiPencil
+                                                                        className="cursor-pointer mx-1"
+                                                                        onClick={() => {
+                                                                            const itemIndex = formData.findIndex(data => data.order === item.order);
+                                                                            setState({
+                                                                                ...state,
+                                                                                open: true,
+                                                                                edit: true,
+                                                                                index: itemIndex,
+                                                                                dataPrev: formData[itemIndex]
+                                                                            })
+                                                                        }}
+                                                                    />
+                                                                </div>
                                                             </li>
                                                         )}
                                                     </Draggable>
@@ -263,26 +267,30 @@ export function ArrayFieldTemplate(props) {
                                 formData.map((item, index) => {
                                     return (
                                         <li key={index}
-                                            className={`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 ? "border-b" : ""}`}
+                                            className={`flex mx-1 py-1 pl-1 justify-between ${index < items.length - 1 ? "border-b" : ""}`}
                                         >
-                                            <Formatter app={"CV"}
-                                                       structureChain={[...formContext.structureChain, schema.name]}
-                                                       isFullScreenViewMode={false}
-                                                       schema={schema}
-                                                       rawData={item}
-                                            />
-                                            <BiPencil
-                                                className="cursor-pointer mx-1"
-                                                onClick={() => {
-                                                    setState({
-                                                        ...state,
-                                                        open: true,
-                                                        edit: true,
-                                                        index: index,
-                                                        dataPrev: formData[index]
-                                                    })
-                                                }}
-                                            />
+                                            <div>
+                                                <Formatter app={"CV"}
+                                                           structureChain={[...formContext.structureChain, schema.name]}
+                                                           isFullScreenViewMode={false}
+                                                           schema={schema}
+                                                           rawData={item}
+                                                />
+                                            </div>
+                                            <div className='mt-0.5'>
+                                                <BiPencil
+                                                    className="cursor-pointer mx-1 align-top"
+                                                    onClick={() => {
+                                                        setState({
+                                                            ...state,
+                                                            open: true,
+                                                            edit: true,
+                                                            index: index,
+                                                            dataPrev: formData[index]
+                                                        })
+                                                    }}
+                                                />
+                                            </div>
                                         </li>
                                     )
                                 })

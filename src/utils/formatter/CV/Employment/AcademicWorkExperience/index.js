@@ -14,18 +14,6 @@ export default function AcademicWorkExperience(props) {
     const formData = rawData.values;
     const schema = props.schema;
 
-    const subsections = {
-        // "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-        //                                              isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                              rawData={props.rawData}/>,
-        // "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-        //                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                               rawData={props.rawData}/>,
-    }
-
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
@@ -54,11 +42,12 @@ export default function AcademicWorkExperience(props) {
             <div>
                 {any(pty, pti, ps, sd, ed) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([pty, pti, ps, sd, ed], null, ['s', 's','s','s','s'], [', ',', '],[[2,3,4,<strong> (</strong>],[3,3,4,<strong> - </strong>],[4,3,4,<strong>)</strong>]])}
+                    {singleLineMultiFieldValueFormatter([pty, pti, ps, sd, ed], null, ['s', 's', 's', 's', 's'], [', ', ', '], [[2, 3, 4,
+                        <strong> (</strong>], [3, 3, 4, <strong> - </strong>], [4, 3, 4, <strong>)</strong>]])}
                 </p>}
                 {any(ar, ts, tsd, ted) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([ar, ts, tsd, ted], null, null, [', '],[[1,2,3,' ('],[2,2,3,' - '],[3,2,3,')']])}
+                    {singleLineMultiFieldValueFormatter([ar, ts, tsd, ted], null, null, [', '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
@@ -99,14 +88,45 @@ export default function AcademicWorkExperience(props) {
                 }
             </div>
         )
-    }
-else
-    {
-        return (
-            <React.Fragment>
-                awe
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
-        )
+    } else {
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            research_discipline: rd,
+            area_of_research: aor,
+            field_of_application: foa
+        } = ft.getFields();
+
+        if (subsection) {
+            let formattedValue = null;
+            switch (subsection) {
+                case 'research_disciplines':
+                    formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'areas_of_research':
+                    formattedValue = <p>{reftableValueParser(aor.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'fields_of_application':
+                    formattedValue = <p>{reftableValueParser(foa.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                default:
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }

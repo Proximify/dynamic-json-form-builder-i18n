@@ -40,7 +40,7 @@ export default function Degree(props) {
             <div>
                 {any(dt, dsd, drd, ded) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([dt, dsd, drd, ded], null, ['s'], [' '],[[0,1,3,' ('],[1,1,3,' - '],[3,1,3,')']])}
+                    {singleLineMultiFieldValueFormatter([dt, dsd, drd, ded], null, ['s'], [' '], [[0, 1, 3, ' ('], [1, 1, 3, ' - '], [3, 1, 3, ')']])}
                 </p>}
                 {any(dn, spe, ds) && <p>
                     {dn.val && <>{dn.val.eng} {dn.val.fre &&
@@ -63,7 +63,7 @@ export default function Degree(props) {
                     {any(sup) &&
                     <div><p>{sup.lbl}</p> <p>{sup.val.map((val, index) => {
                         return <span key={index}>
-                            {singleLineMultiFieldValueFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' '], [[0,1,2,' ('],[1,1,2,' - '],[2,1,2,')']])}
+                            {singleLineMultiFieldValueFormatter([val.supervisor_name, val.start_date, val.end_date], null, null, [' '], [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
                             {index < sup.val.length - 1 && ', '}
                         </span>
                     })}</p></div>}
@@ -86,10 +86,50 @@ export default function Degree(props) {
             </div>
         )
     } else {
-        return (
-            <React.Fragment>
-                Degree
-            </React.Fragment>
-        )
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            supervisor_name: sn,
+            start_date: sd,
+            end_date: ed,
+            research_discipline: rd,
+            area_of_research: aor,
+            field_of_application: foa
+        } = ft.getFields();
+        if (subsection) {
+            let formattedValue = null;
+            switch (subsection) {
+                case 'supervisors':
+                    formattedValue =
+                        <p>{singleLineMultiFieldValueFormatter([sn, sd, ed], null, null, [' '], [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}</p>;
+                    break;
+                case 'research_disciplines':
+                    formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'areas_of_research':
+                    formattedValue = <p>{reftableValueParser(aor.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'fields_of_application':
+                    formattedValue = <p>{reftableValueParser(foa.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                default:
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }

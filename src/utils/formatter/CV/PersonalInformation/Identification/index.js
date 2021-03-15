@@ -1,5 +1,4 @@
 import React from "react";
-import CountryOfCitizenship from "./CountryOfCitizenship";
 import {
     FieldValueMapper,
     FormatterTracker,
@@ -11,14 +10,8 @@ import {
 
 export default function Identification(props) {
     // console.log("Identification", props)
-    const {rawData,schema} = props;
+    const {rawData, schema} = props;
     const formData = rawData.values;
-
-    const subsections = {
-        "country_of_citizenship": <CountryOfCitizenship structureChain={props.structureChain}
-                                                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                        rawData={props.rawData}/>
-    }
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -39,12 +32,12 @@ export default function Identification(props) {
             sex: s,
             title: t,
         } = ft.getFields();
-        console.log(ft.getFields())
+        // console.log(rawData, mappedValue, ft.getFields())
         return (
             <div>
                 {any(t, fin, mn, fan) &&
                 <p className="text-lg">
-                    {singleLineMultiFieldValueFormatter([t, fin, mn, fan], null, ['s', 's', 's','s'], [' ', ' ', ' '])}
+                    {singleLineMultiFieldValueFormatter([t, fin, mn, fan], null, ['s', 's', 's', 's'], [' ', ' ', ' '])}
                 </p>}
                 {any(pfan) &&
                 <p>{pfan.lbl}: {pfan.val}</p>}
@@ -69,11 +62,30 @@ export default function Identification(props) {
             </div>
         )
     } else {
-        return (
-            <React.Fragment>
-                {JSON.stringify(props.rawData)}
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
-        )
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            country_of_citizenship: coc
+        } = ft.getFields();
+        // console.log(mappedValue, coc)
+        if (subsection) {
+            let formattedValue;
+            switch (subsection) {
+                case 'country_of_citizenship':
+                    formattedValue = <p>{singleFieldSubsectionFormatter(coc.val, true)}</p>;
+                    break;
+                default:
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }

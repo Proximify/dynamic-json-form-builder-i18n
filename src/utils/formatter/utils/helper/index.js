@@ -105,51 +105,70 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
             })
         })
     } else {
-        isInViewMode ? result.push(format(fieldValue)) : result.push(format(fieldValue.slice(1)))
+        isInViewMode ? result.push(format(fieldValue)) : result.push(format(JSON.parse(fieldValue).slice(1)))
     }
     return result
 }
 
-export const reftableValueFormatter = (fieldValue, index) => {
+export const reftableValueFormatter = (fieldValue, index, isInFormFormatter = false) => {
     // console.log(fieldValue)
     if (!fieldValue)
         return;
     if (!Array.isArray(fieldValue))
         return <span key={index} className="baseValue">{fieldValue}</span>
+    if (isInFormFormatter){
+        return <span key={index}><strong className="mainValue block">{fieldValue[0]}</strong><span
+            className="baseValue">{fieldValue.slice(1)}</span></span>;
+    }
     return <span key={index}><strong className="mainValue">{fieldValue[0]}</strong><span
         className="baseValue">{fieldValue.slice(1)}</span></span>;
 }
 
-export const singleFieldSubsectionFormatter = (fieldValue, isBilingualItem = false) => {
+export const singleFieldSubsectionFormatter = (fieldValue,isInFormFormatter = false, isBilingualField = false) => {
     const result = [];
-    if (fieldValue && fieldValue[0].order) {
-        fieldValue.sort((a, b) => a.order > b.order ? 1 : -1);
-    }
-    fieldValue.forEach((val, index) => {
-        const {order, ...field} = val;
-        Object.values(field).forEach(subField => {
-            subField.count++;
-            if (subField.type === 'bilingual') {
-                const bilingualData = [];
-                Object.values(subField.val).forEach(biliData => {
-                    if (biliData) {
-                        bilingualData.push(biliData)
+    if (!isInFormFormatter){
+        if (fieldValue && fieldValue[0].order) {
+            fieldValue.sort((a, b) => a.order > b.order ? 1 : -1);
+        }
+        fieldValue.forEach((val, index) => {
+            const {order, ...field} = val;
+            Object.values(field).forEach(subField => {
+                subField.count++;
+                if (subField.type === 'bilingual') {
+                    const bilingualData = [];
+                    Object.values(subField.val).forEach(biliData => {
+                        if (biliData) {
+                            bilingualData.push(biliData)
+                        }
+                    })
+                    if (bilingualData.length > 1) {
+                        result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
+                            className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
+                            className="secondLang">({bilingualData[1]})</span>, </>}</span>)
+                    } else {
+                        result.push(<span
+                            key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
                     }
-                })
-                if (bilingualData.length > 1) {
-                    result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
-                        className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
-                        className="secondLang">({bilingualData[1]})</span>, </>}</span>)
                 } else {
                     result.push(<span
-                        key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
+                        key={index}>{index === fieldValue.length - 1 ? `${subField.val}` : `${subField.val}, `}</span>)
                 }
-            } else {
-                result.push(<span
-                    key={index}>{index === fieldValue.length - 1 ? `${subField.val}` : `${subField.val}, `}</span>)
-            }
+            })
         })
-    })
+    }else {
+        if (isBilingualField){
+            const bilingualData = [];
+            Object.values(fieldValue).forEach(biliData => {
+                if (biliData) {
+                    bilingualData.push(biliData)
+                }
+            })
+            result.push(<span key={result.length}>{bilingualData[0]} <span
+                className="secondLang">({bilingualData[1]})</span></span>)
+        }else {
+            result.push(<span key={result.length}>{fieldValue}</span>)
+        }
+    }
     return result
 }
 
@@ -349,10 +368,11 @@ export class FormatterTracker {
         if (field.type) {
             switch (field.type) {
                 case 'lov':
+                    const fieldValue = this.#isSubsectionFormatter ? JSON.parse(field.value) : field.value;
                     if (field.subtype && field.subtype === "Yes-No") {
-                        return field.value[1] === "Yes" ? field.label.replace('?', '') : null
+                        return fieldValue[1] === "Yes" ? field.label.replace('?', '') : null
                     } else {
-                        return field.value[1];
+                        return fieldValue[1];
                     }
                 case "string":
                 case "elapsed-time":

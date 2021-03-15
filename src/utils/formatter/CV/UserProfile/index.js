@@ -8,61 +8,12 @@ import {
     singleFieldSubsectionFormatter,
     singleLineMultiFieldValueFormatter
 } from "../../utils/helper";
-import ResearchDisciplines from "./ResearchDisciplines";
-import AreaOfResearch from "./AreasOfResearch";
-import ResearchCentres from "./ResearchCentres";
-import ResearchSpecializationKeywords from "./ResearchSpecializationKeywords";
-import GeographicalRegions from "./GeographicalRegions";
-import FieldsOfApplication from "./FieldsOfApplication";
-import Countries from "./Countries";
-import DisciplinesTrainedIn from "./DisciplinesTrainedIn";
-import TechnologicalApplications from "./TechnologicalApplications";
-import TemporalPeriods from "./TemporalPeriods";
 
 export default function UserProfile(props) {
     // console.log("UserProfile", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
-    const subsections = {
-        "research_specialization_keywords": <ResearchSpecializationKeywords structureChain={props.structureChain}
-                                                                            isFullScreenViewMode={props.isFullScreenViewMode}
-                                                                            schema={props.schema}
-                                                                            rawData={props.rawData}/>,
-        "research_centres": <ResearchCentres structureChain={props.structureChain}
-                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                             rawData={props.rawData}/>,
-        "technological_applications": <TechnologicalApplications structureChain={props.structureChain}
-                                                                 isFullScreenViewMode={props.isFullScreenViewMode}
-                                                                 schema={props.schema}
-                                                                 rawData={props.rawData}/>,
-        "disciplines_trained_in": <DisciplinesTrainedIn structureChain={props.structureChain}
-                                                        isFullScreenViewMode={props.isFullScreenViewMode}
-                                                        schema={props.schema}
-                                                        rawData={props.rawData}/>,
-        "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-                                                     isFullScreenViewMode={props.isFullScreenViewMode}
-                                                     schema={props.schema}
-                                                     rawData={props.rawData}/>,
-        "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                             rawData={props.rawData}/>,
-        "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-                                                      isFullScreenViewMode={props.isFullScreenViewMode}
-                                                      schema={props.schema}
-                                                      rawData={props.rawData}/>,
-        "temporal_periods": <TemporalPeriods structureChain={props.structureChain}
-                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                             rawData={props.rawData}/>,
-        "geographical_regions": <GeographicalRegions structureChain={props.structureChain}
-                                                     isFullScreenViewMode={props.isFullScreenViewMode}
-                                                     schema={props.schema}
-                                                     rawData={props.rawData}/>,
-        "countries": <Countries structureChain={props.structureChain}
-                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                rawData={props.rawData}/>,
-    }
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -127,7 +78,7 @@ export default function UserProfile(props) {
                 </>}
                 <div className="viewModeSubsection">
                     {any(rsk) &&
-                    <div><p>{rsk.lbl}</p> <p>{singleFieldSubsectionFormatter(rsk.val, true)}</p></div>}
+                    <div><p>{rsk.lbl}</p> <p>{singleFieldSubsectionFormatter(rsk.val)}</p></div>}
                     {any(rc) && <div><p>{rc.lbl}</p>
                         {reftableValueParser(rc.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
@@ -169,11 +120,82 @@ export default function UserProfile(props) {
             </div>
         )
     } else {
-        return (
-            <React.Fragment>
-                User Profile
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
-        )
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            research_specialization_keywords: rsk,
+            research_centre: rc,
+            technological_application: ta,
+            discipline_trained_in: dti,
+            research_discipline: rd,
+            area_of_research: aor,
+            field_of_application: foa,
+            from_year: fy,
+            from_year_period: fyp,
+            to_year: ty,
+            to_year_period: typ,
+            geographical_region: gr,
+            country: co
+        } = ft.getFields();
+        // console.log(ft.getFields())
+        if (subsection) {
+            let formattedValue = null;
+            switch (subsection) {
+                case 'research_specialization_keywords':
+                    formattedValue = <p>{singleFieldSubsectionFormatter(rsk.val, true, true)}</p>;
+                    break;
+                case 'research_centres':
+                    formattedValue = <p>{reftableValueParser(rc.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'technological_applications':
+                    formattedValue = <p>{reftableValueParser(ta.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'disciplines_trained_in':
+                    formattedValue = <p>{reftableValueParser(dti.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'research_disciplines':
+                    formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'areas_of_research':
+                    formattedValue = <p>{reftableValueParser(aor.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'fields_of_application':
+                    formattedValue = <p>{reftableValueParser(foa.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'temporal_periods':
+                    formattedValue =
+                        <p>{singleLineMultiFieldValueFormatter([fy, fyp, ty, typ], null, null, [' ', ['(', ')'], ' ', ['(', ')']], [[1, 0, 3, ' - ']])}</p>;
+                    break;
+                case 'geographical_regions':
+                    formattedValue = <p>{singleFieldSubsectionFormatter(gr.val, true)}</p>;
+                    break;
+                case 'countries':
+                    formattedValue = <p>{singleFieldSubsectionFormatter(co.val, true)}</p>;
+                    break;
+                default:
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }

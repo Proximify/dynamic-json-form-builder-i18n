@@ -124,7 +124,7 @@ export default function ResearchFundingHistory(props) {
                     <div><p>{fby.lbl}</p>
                         <div>{fby.val.map((val, index) => {
                             return <div key={index}>
-                                <p>{singleLineMultiFieldValueFormatter([val.start_date, val.end_date], null, null, [['(', ''], ')'], [[0, ' - ']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.start_date, val.end_date], null, null, [['(', ''], ')'], [[0,1,2, ' - ']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.total_funding, val.currency_of_total_funding], [true], null, [' ', ['(', ')']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.portion_of_funding_received, val.currency_of_portion_of_funding_received], [true], null, [' ', ['(', ')']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.time_commitment], [true], null, null)}</p>
@@ -159,7 +159,6 @@ export default function ResearchFundingHistory(props) {
                                 <p>{singleLineMultiFieldValueFormatter([val.funding_renewable], null, null)}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.funding_competitive], null, null)}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.converted_total_funding], null, null)}</p>
-                                <p>{singleLineMultiFieldValueFormatter([val.converted_total_funding], null, null)}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.converted_portion_of_funding_received], null, null)}</p>
                             </div>
                         })}</div>
@@ -171,10 +170,117 @@ export default function ResearchFundingHistory(props) {
             </div>
         )
     } else {
-        return (
-            <React.Fragment>
-                {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
-            </React.Fragment>
-        )
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            stakeholder: st,
+            location: lo,
+            setting_type: sty,
+            technological_application: ta,
+            discipline_trained_in: dti,
+            research_discipline: rd,
+            area_of_research: aor,
+            field_of_application: foa,
+            investigator_name:ina,
+            role:ro
+        } = ft.getFields();
+        console.log(ft.getFields())
+        if (subsection) {
+            let formattedValue = null;
+            switch (subsection) {
+                case 'research_uptake_stakeholders':
+                    formattedValue = <p>{singleFieldSubsectionFormatter(st.val, true)}</p>;
+                    break;
+                case 'research_settings':
+                    formattedValue = <p>{reftableValueParser(lo.val, false, false, true).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}{lo.val && sty.val ? ', ' : ''}{singleFieldSubsectionFormatter(sty.val, true)}</p>
+                    break;
+                case 'funding_sources': {
+                    const {
+                        funding_organization: fo,
+                        other_funding_organization: ofo,
+                        funding_start_date: fsd,
+                        funding_end_date: fed,
+                        program_name: pn,
+                        funding_reference_number: frn,
+                        total_funding: tf,
+                        currency_of_total_funding: cotf,
+                        'total_funding_(can$)': tfc,
+                        portion_of_funding_received: pofr,
+                        'portion_of_funding_received_(can$)': pofrc,
+                        currency_of_portion_of_funding_received: copofr,
+                        funding_renewable: fr,
+                        funding_competitive: fc,
+                        converted_total_funding: ctf,
+                        converted_portion_of_funding_received: cpofr,
+
+                    } = ft.getFields();
+
+                    ctf.val = ctf.val.toString();
+                    cpofr.val = cpofr.val.toString();
+                    formattedValue = <div className='space-y-1.5'>
+                        <p>{singleLineMultiFieldValueFormatter([fo, ofo, fsd, fed], null, ['s'], [' '], [[1, 1, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([pn, frn], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([tf, cotf, tfc], [true], null, [' ', ['(', ')'], ['(', ')  CAN']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([pofr, pofrc, copofr], [true], null, [' ', ['(', ')  CAN'], ['(', ')']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([fr], null, null)}</p>
+                        <p>{singleLineMultiFieldValueFormatter([fc], null, null)}</p>
+                        <p>{singleLineMultiFieldValueFormatter([ctf], [true], null)}</p>
+                        <p>{singleLineMultiFieldValueFormatter([cpofr], [true], null)}</p>
+                    </div>
+                    break;
+                }
+                case 'funding_by_year': {
+                    const {
+                        total_funding: tf,
+                        start_date: sd,
+                        end_date: ed,
+                        currency_of_total_funding:cotf,
+                        portion_of_funding_received:pofr,
+                        currency_of_portion_of_funding_received:copofr,
+                        time_commitment:tc
+                    } = ft.getFields();
+                    formattedValue = <div className='space-y-1.5'>
+                        <p>{singleLineMultiFieldValueFormatter([sd,ed], null, null, [['(', ''], ')'], [[0,1,2, ' - ']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([tf,cotf], [true], null, [' ', ['(', ')']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([pofr, copofr], [true], null, [' ', ['(', ')']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([tc], [true], null, null)}</p>
+                    </div>
+                    break;
+                }
+
+                case 'research_disciplines':
+                    formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'areas_of_research':
+                    formattedValue = <p>{reftableValueParser(aor.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'fields_of_application':
+                    formattedValue = <p>{reftableValueParser(foa.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'other_investigators':
+                    formattedValue =
+                        <p>{singleLineMultiFieldValueFormatter([ina, ro], null, null, [' ', ['(', ')']])}</p>;
+                    break;
+                default:
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }
