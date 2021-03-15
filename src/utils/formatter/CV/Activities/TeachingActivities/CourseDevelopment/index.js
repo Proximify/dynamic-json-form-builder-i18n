@@ -13,18 +13,6 @@ export default function CourseDevelopment(props) {
     const formData = rawData.values;
     const schema = props.schema;
 
-    const subsections = {
-        // "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-        //                                              isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                              rawData={props.rawData}/>,
-        // "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-        //                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                               rawData={props.rawData}/>,
-    }
-
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
@@ -56,14 +44,6 @@ export default function CourseDevelopment(props) {
                     {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
                 </p>}
                 {any(cl) && <p>{cl.lbl}: {cl.val}</p>}
-                {any(cd) &&
-                <div><p>{cd.lbl}: </p><p>
-                    {cd.val.map((val, index) => {
-                        return <span key={index}>
-                                {singleLineMultiFieldValueFormatter([val.first_name, val.family_name], null, null, [' ', ' '])}
-                            </span>
-                    })}
-                </p></div>}
                 {any(dft) && <p>{dft.lbl}: {dft.val}</p>}
                 {any(cdesc) && <>
                     {cdesc.val.eng && <div className="bilingualItem">
@@ -75,17 +55,47 @@ export default function CourseDevelopment(props) {
                         <p>{cdesc.val.fre}</p>
                     </div>}
                 </>}
+                {any(cd) &&
+                <div>
+                    <p><strong>{cd.lbl}: </strong></p>
+                    <p>
+                        {cd.val.map((val, index) => {
+                            return <span key={index}>
+                                {singleLineMultiFieldValueFormatter([val.first_name, val.family_name], null, null, [' ', ' '])}
+                            </span>
+                        })}
+                    </p></div>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
                 }
             </div>
         )
     } else {
-        return (
-            <React.Fragment>
-                CourseTaught
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
-        )
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            first_name: fin,
+            family_name: fan
+        } = ft.getFields();
+        if (subsection) {
+            let formattedValue = null;
+            switch (subsection) {
+                case 'co-developers':
+                    formattedValue =
+                        <p>{singleLineMultiFieldValueFormatter([fin, fan], null, null, [' '])}</p>;
+                    break;
+                default:
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }

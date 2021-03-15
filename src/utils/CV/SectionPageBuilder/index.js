@@ -8,21 +8,26 @@ import Formatter from "../../formatter";
 import SchemaParser, {getLovSubtypeId, bilingualValueParser} from "../SchemaParser";
 
 export function SectionPageBuilder(props) {
-
-    /*
-          schema: null,
-        formName: null,
-        itemId: null,
-        lovOptions: null,
-     */
     const schema = [...props.schema];
     const [state, setState] = useState({
         sections: [],
         form: null,
         shouldModalOpen: false,
+        scrollY: 0,
         ready: false,
     })
-    console.log("SectionPageBuilder", state)
+    // console.log("SectionPageBuilder", state)
+
+    useEffect(() => {
+        if (state.shouldModalOpen === true) {
+            document.body.style.position = 'fixed';
+        } else {
+            console.log('end',state.scrollY)
+            document.body.style.position = '';
+            document.body.style.top = '';
+            window.scrollTo(0, state.scrollY);
+        }
+    }, [state.shouldModalOpen])
 
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
@@ -122,47 +127,6 @@ export function SectionPageBuilder(props) {
                             if (bilingualData.fre) {
                                 formData.append(`data[${field.id}][french]`, bilingualData.fre)
                             }
-                            // const bilingualData = JSON.parse(fieldData);
-                            // if (!field.constraints){
-                            //     if (bilingualData.english){
-                            //         formData.append(`data[${field.id}][english]`, bilingualData.english)
-                            //     }
-                            //     if (bilingualData.french){
-                            //         formData.append(`data[${field.id}][french]`, bilingualData.french)
-                            //     }
-                            // }else if (field.constraints.richText) {
-                            //     if (bilingualData.english){
-                            //         let engData = bilingualData.english;
-                            //         console.log(engData)
-                            //
-                            //         engData = engData.replace(/<p>/g,'');
-                            //         engData = engData.replace(/<\/p>/g,'');
-                            //         engData = engData.replace(/<strong>/g,'<b>');
-                            //         engData = engData.replace(/<\/strong>/g,'</b>');
-                            //         engData = engData.replace(/<em>/g,'<i>');
-                            //         engData = engData.replace(/<\/em>/g,'</i>');
-                            //         engData = engData.replace(/<ins>/g,'<u>');
-                            //         engData = engData.replace(/<\/ins>/g,'</u>');
-                            //         engData = engData.replace('\n','');
-                            //         // engData = engData.replace(/<\/em>/g,'</i>');
-                            //         console.log(engData)
-                            //         formData.append(`data[${field.id}][english]`, engData)
-                            //     }
-                            //     if (bilingualData.french){
-                            //         let freData = bilingualData.french;
-                            //
-                            //         freData = freData.replace(/<p>/g,'');
-                            //         freData = freData.replace(/<\/p>/g,'');
-                            //         freData = freData.replace(/<strong>/g,'<b>');
-                            //         freData = freData.replace(/<\/strong>/g,'</b>');
-                            //         freData = freData.replace(/<em>/g,'<i>');
-                            //         freData = freData.replace(/<\/em>/g,'</i>');
-                            //         freData = freData.replace(/<ins>/g,'<u>');
-                            //         freData = freData.replace(/<\/ins>/g,'</u>');
-                            //         freData = freData.replace('\n','');
-                            //         formData.append(`data[${field.id}][french]`, freData)
-                            //     }
-                            // }
                         } else {
                             formData.append(`data[${field.id}]`, "")
                         }
@@ -399,6 +363,8 @@ export function SectionPageBuilder(props) {
     const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
         // console.log(sectionId, itemId, parentItemId, parentFieldId);
 
+        console.log('start',window.scrollY)
+
         props.fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             // console.log(lovSubtypeIDs);
@@ -419,7 +385,8 @@ export function SectionPageBuilder(props) {
                         parentItemId: parentItemId,
                         parentFieldId: parentFieldId
                     },
-                    shouldModalOpen: true
+                    shouldModalOpen: true,
+                    scrollY: window.scrollY
                 })
             }))
         })
@@ -472,11 +439,13 @@ export function SectionPageBuilder(props) {
                                               onClick={() => {
                                                   handleOnItemClick(section.section_id, 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                               }}
+                                              onDoubleClick={() => {console.log('double clicked')}}
                             /> :
                             <FiEdit size={"1.1rem"}
                                     onClick={() => {
                                         handleOnItemClick(section.section_id, section.section_data[0].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                     }}
+                                    onDoubleClick={() => {console.log('double clicked')}}
                             />}
                         </p>
                     </div>
@@ -534,6 +503,7 @@ export function SectionPageBuilder(props) {
                                                             onClick={() => {
                                                                 handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                                             }}
+                                                            onDoubleClick={(e) => {e.preventDefault(); console.log('double clicked')}}
                                                     />
                                                 </div> : null}
 

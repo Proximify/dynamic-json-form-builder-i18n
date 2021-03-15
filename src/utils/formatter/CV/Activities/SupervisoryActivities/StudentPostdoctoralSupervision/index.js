@@ -15,45 +15,6 @@ export default function StudentPostdoctoralSupervision(props) {
     const formData = rawData.values;
     const schema = props.schema;
 
-    const subsections = {
-        // "research_specialization_keywords": <ResearchSpecializationKeywords structureChain={props.structureChain}
-        //                                                                     isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                                                     schema={props.schema}
-        //                                                                     rawData={props.rawData}/>,
-        // "research_centres": <ResearchCentres structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "technological_applications": <TechnologicalApplications structureChain={props.structureChain}
-        //                                                          isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                                          schema={props.schema}
-        //                                                          rawData={props.rawData}/>,
-        // "disciplines_trained_in": <DisciplinesTrainedIn structureChain={props.structureChain}
-        //                                                 isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                                 schema={props.schema}
-        //                                                 rawData={props.rawData}/>,
-        // "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-        //                                              isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                              schema={props.schema}
-        //                                              rawData={props.rawData}/>,
-        // "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-        //                                               isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                               schema={props.schema}
-        //                                               rawData={props.rawData}/>,
-        // "temporal_periods": <TemporalPeriods structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "geographical_regions": <GeographicalRegions structureChain={props.structureChain}
-        //                                              isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                              schema={props.schema}
-        //                                              rawData={props.rawData}/>,
-        // "countries": <Countries structureChain={props.structureChain}
-        //                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                         rawData={props.rawData}/>,
-    }
-
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
 
@@ -167,12 +128,13 @@ export default function StudentPostdoctoralSupervision(props) {
                     {any(str) &&
                     <div><p>{str.lbl}</p>
                         <div>{str.val.map((val, index) => {
+                            val.organization.val && val.organization.count++;
                             return <div key={index}>
                                 <p>{singleLineMultiFieldValueFormatter([val.recognition_type, val.recognition_name, val.start_date, val.end_date], null, null, [', '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
                                 <p>{val.organization.val && reftableValueParser(val.organization.val, false, true).map((val, index) => {
                                     return reftableValueFormatter(val, index)
                                 })}
-                                    {singleLineMultiFieldValueFormatter([val.organization, val.other_organization_type, val.other_organization_location, val.other_organization], null, null, [' ', ', ', ', '])}
+                                    {singleLineMultiFieldValueFormatter([val.other_organization, val.other_organization_type, val.other_organization_location], null, null, [', ', ', '])}
                                 </p>
                                 <p>{singleLineMultiFieldValueFormatter([val['amount_(can$)'], val.amount, val.currency], [true], null, [' ', ['(', ') ']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.converted_amount], [true], null, null)}</p>
@@ -186,10 +148,102 @@ export default function StudentPostdoctoralSupervision(props) {
             </div>
         )
     } else {
-        return (
-            <React.Fragment>
-                {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
-            </React.Fragment>
-        )
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            student_country_of_citizenship: scoc,
+            research_discipline: rd,
+            area_of_research: aor,
+            field_of_application: foa
+        } = ft.getFields();
+        // console.log(ft.getFields())
+        if (subsection) {
+            let formattedValue = null;
+            switch (subsection) {
+                case 'student_country_of_citizenship':
+                    formattedValue = <p>{singleFieldSubsectionFormatter(scoc.val, true)}</p>;
+                    break;
+                case 'project_funding_sources': {
+                    const {
+                        funding_reference_number: frn,
+                        amount: am,
+                        currency: cu,
+                        funding_organization: fori,
+                        other_funding_organization: ofori,
+                        converted_amount: cam
+                    } = ft.getFields();
+                    formattedValue = <div className='space-y-1.5'>
+                        <p>{singleLineMultiFieldValueFormatter([frn, am, cu], [true, true], null, [', ', ', ', ['(', ')']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([fori, ofori], null, null, [' ', ' '])}</p>
+                        {(cam.val || cam.val === 0) && <p>{cam.lbl}: {cam.val}</p>}
+                    </div>
+                    break;
+                }
+                case 'student_recognitions': {
+                    const {
+                        recognition_type: rt,
+                        recognition_name: rn,
+                        start_date: sd,
+                        end_date: ed,
+                        organization: ori,
+                        other_organization_type: oorit,
+                        other_organization_location: ooril,
+                        other_organization: oori,
+                        'amount_(can$)': amc,
+                        amount: am,
+                        currency: cur,
+                        converted_amount: cam
+                    } = ft.getFields();
+
+                    formattedValue = <div className='space-y-1.5'>
+                        <p>{singleLineMultiFieldValueFormatter([rt, rn, sd, ed], null, null, [', '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
+                        <p>{reftableValueParser(ori.val).map((val, index) => {
+                            return reftableValueFormatter(val, index, true)
+                        })}
+                            {singleLineMultiFieldValueFormatter([oori, oorit, ooril], null, null, [', ', ', '])}
+                        </p>
+                        <p>{singleLineMultiFieldValueFormatter([amc, am, cur], [true], null, [' ', ['(', ') ']])}</p>
+                        {(cam.val || cam.val === 0) && <p>{cam.lbl}: {cam.val}</p>}
+                    </div>
+                    break;
+                }
+                case 'other_supervisors':
+                    const {
+                        family_name: fan,
+                        first_name: fin,
+                        role: ro
+                    } = ft.getFields();
+                    formattedValue =
+                        <p>{singleLineMultiFieldValueFormatter([fin, fan, ro], null, null, [' ', ' ', ['(', ')']])}</p>
+                    break;
+                case 'research_disciplines':
+                    formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'areas_of_research':
+                    formattedValue = <p>{reftableValueParser(aor.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                case 'fields_of_application':
+                    formattedValue = <p>{reftableValueParser(foa.val).map((val, index) => {
+                        return reftableValueFormatter(val, index, true)
+                    })}</p>
+                    break;
+                default:
+                    formattedValue = <p>{JSON.stringify(props.rawData)}</p>
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }

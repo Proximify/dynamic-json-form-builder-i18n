@@ -87,7 +87,7 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
     }
 
     if (!fieldValue) {
-        return null;
+        return [];
     }
     const result = [];
     if (isViewModeSubsectionField) {
@@ -107,6 +107,7 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
     } else {
         isInViewMode ? result.push(format(fieldValue)) : result.push(format(JSON.parse(fieldValue).slice(1)))
     }
+    // console.log(result)
     return result
 }
 
@@ -116,7 +117,7 @@ export const reftableValueFormatter = (fieldValue, index, isInFormFormatter = fa
         return;
     if (!Array.isArray(fieldValue))
         return <span key={index} className="baseValue">{fieldValue}</span>
-    if (isInFormFormatter){
+    if (isInFormFormatter) {
         return <span key={index}><strong className="mainValue block">{fieldValue[0]}</strong><span
             className="baseValue">{fieldValue.slice(1)}</span></span>;
     }
@@ -124,9 +125,9 @@ export const reftableValueFormatter = (fieldValue, index, isInFormFormatter = fa
         className="baseValue">{fieldValue.slice(1)}</span></span>;
 }
 
-export const singleFieldSubsectionFormatter = (fieldValue,isInFormFormatter = false, isBilingualField = false) => {
+export const singleFieldSubsectionFormatter = (fieldValue, isInFormFormatter = false, isBilingualField = false) => {
     const result = [];
-    if (!isInFormFormatter){
+    if (!isInFormFormatter) {
         if (fieldValue && fieldValue[0].order) {
             fieldValue.sort((a, b) => a.order > b.order ? 1 : -1);
         }
@@ -155,8 +156,8 @@ export const singleFieldSubsectionFormatter = (fieldValue,isInFormFormatter = fa
                 }
             })
         })
-    }else {
-        if (isBilingualField){
+    } else {
+        if (isBilingualField) {
             const bilingualData = [];
             Object.values(fieldValue).forEach(biliData => {
                 if (biliData) {
@@ -165,7 +166,7 @@ export const singleFieldSubsectionFormatter = (fieldValue,isInFormFormatter = fa
             })
             result.push(<span key={result.length}>{bilingualData[0]} <span
                 className="secondLang">({bilingualData[1]})</span></span>)
-        }else {
+        } else {
             result.push(<span key={result.length}>{fieldValue}</span>)
         }
     }
@@ -277,7 +278,7 @@ export class FormatterTracker {
     fieldsLoader = (fields) => {
         const fie = {};
         Object.keys(fields).forEach(key => {
-            if (key !== 'itemId'){
+            if (key !== 'itemId') {
                 const field = fields[key];
                 const value = field.value;
                 if (field.type === 'section') {
@@ -389,9 +390,9 @@ export class FormatterTracker {
                 }
                 case "yearmonth":
                     const date = field.value.split("/").filter(time => /\d/.test(time));
-                    if (date.length === 3){
+                    if (date.length === 3) {
                         return Months[date[1] - 1] + " " + date[2] + ", " + date[0];
-                    }else {
+                    } else {
                         return Months[date[1] - 1] + " " + date[0];
                     }
                 case "monthday":

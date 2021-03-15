@@ -15,45 +15,6 @@ export default function ResearchFundingHistory(props) {
     const formData = rawData.values;
     const schema = props.schema;
 
-    const subsections = {
-        // "research_specialization_keywords": <ResearchSpecializationKeywords structureChain={props.structureChain}
-        //                                                                     isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                                                     schema={props.schema}
-        //                                                                     rawData={props.rawData}/>,
-        // "research_centres": <ResearchCentres structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "technological_applications": <TechnologicalApplications structureChain={props.structureChain}
-        //                                                          isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                                          schema={props.schema}
-        //                                                          rawData={props.rawData}/>,
-        // "disciplines_trained_in": <DisciplinesTrainedIn structureChain={props.structureChain}
-        //                                                 isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                                 schema={props.schema}
-        //                                                 rawData={props.rawData}/>,
-        // "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-        //                                              isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                              schema={props.schema}
-        //                                              rawData={props.rawData}/>,
-        // "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-        //                                               isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                               schema={props.schema}
-        //                                               rawData={props.rawData}/>,
-        // "temporal_periods": <TemporalPeriods structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "geographical_regions": <GeographicalRegions structureChain={props.structureChain}
-        //                                              isFullScreenViewMode={props.isFullScreenViewMode}
-        //                                              schema={props.schema}
-        //                                              rawData={props.rawData}/>,
-        // "countries": <Countries structureChain={props.structureChain}
-        //                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                         rawData={props.rawData}/>,
-    }
-
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
 
@@ -124,7 +85,7 @@ export default function ResearchFundingHistory(props) {
                     <div><p>{fby.lbl}</p>
                         <div>{fby.val.map((val, index) => {
                             return <div key={index}>
-                                <p>{singleLineMultiFieldValueFormatter([val.start_date, val.end_date], null, null, [['(', ''], ')'], [[0,1,2, ' - ']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.start_date, val.end_date], null, null, [['(', ''], ')'], [[0, 1, 2, ' - ']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.total_funding, val.currency_of_total_funding], [true], null, [' ', ['(', ')']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.portion_of_funding_received, val.currency_of_portion_of_funding_received], [true], null, [' ', ['(', ')']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.time_commitment], [true], null, null)}</p>
@@ -178,15 +139,13 @@ export default function ResearchFundingHistory(props) {
             stakeholder: st,
             location: lo,
             setting_type: sty,
-            technological_application: ta,
-            discipline_trained_in: dti,
             research_discipline: rd,
             area_of_research: aor,
             field_of_application: foa,
-            investigator_name:ina,
-            role:ro
+            investigator_name: ina,
+            role: ro
         } = ft.getFields();
-        console.log(ft.getFields())
+        // console.log(ft.getFields())
         if (subsection) {
             let formattedValue = null;
             switch (subsection) {
@@ -216,11 +175,8 @@ export default function ResearchFundingHistory(props) {
                         funding_competitive: fc,
                         converted_total_funding: ctf,
                         converted_portion_of_funding_received: cpofr,
-
                     } = ft.getFields();
 
-                    ctf.val = ctf.val.toString();
-                    cpofr.val = cpofr.val.toString();
                     formattedValue = <div className='space-y-1.5'>
                         <p>{singleLineMultiFieldValueFormatter([fo, ofo, fsd, fed], null, ['s'], [' '], [[1, 1, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pn, frn], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
@@ -228,8 +184,8 @@ export default function ResearchFundingHistory(props) {
                         <p>{singleLineMultiFieldValueFormatter([pofr, pofrc, copofr], [true], null, [' ', ['(', ')  CAN'], ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([fr], null, null)}</p>
                         <p>{singleLineMultiFieldValueFormatter([fc], null, null)}</p>
-                        <p>{singleLineMultiFieldValueFormatter([ctf], [true], null)}</p>
-                        <p>{singleLineMultiFieldValueFormatter([cpofr], [true], null)}</p>
+                        {(ctf.val || ctf.val === 0) && <p>{ctf.lbl}: {ctf.val}</p>}
+                        {(cpofr.val || cpofr.val === 0) && <p>{cpofr.lbl}: {cpofr.val}</p>}
                     </div>
                     break;
                 }
@@ -238,20 +194,19 @@ export default function ResearchFundingHistory(props) {
                         total_funding: tf,
                         start_date: sd,
                         end_date: ed,
-                        currency_of_total_funding:cotf,
-                        portion_of_funding_received:pofr,
-                        currency_of_portion_of_funding_received:copofr,
-                        time_commitment:tc
+                        currency_of_total_funding: cotf,
+                        portion_of_funding_received: pofr,
+                        currency_of_portion_of_funding_received: copofr,
+                        time_commitment: tc
                     } = ft.getFields();
                     formattedValue = <div className='space-y-1.5'>
-                        <p>{singleLineMultiFieldValueFormatter([sd,ed], null, null, [['(', ''], ')'], [[0,1,2, ' - ']])}</p>
-                        <p>{singleLineMultiFieldValueFormatter([tf,cotf], [true], null, [' ', ['(', ')']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([sd, ed], null, null, [['(', ''], ')'], [[0, 1, 2, ' - ']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([tf, cotf], [true], null, [' ', ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pofr, copofr], [true], null, [' ', ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([tc], [true], null, null)}</p>
                     </div>
                     break;
                 }
-
                 case 'research_disciplines':
                     formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {
                         return reftableValueFormatter(val, index, true)
@@ -272,6 +227,7 @@ export default function ResearchFundingHistory(props) {
                         <p>{singleLineMultiFieldValueFormatter([ina, ro], null, null, [' ', ['(', ')']])}</p>;
                     break;
                 default:
+                    formattedValue = <p>{JSON.stringify(props.rawData)}</p>
                     break;
             }
             return formattedValue
