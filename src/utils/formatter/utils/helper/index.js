@@ -25,6 +25,7 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false, o
         result[field.name]["type"] = field["type"];
         result[field.name]["subtype"] = field["subtype"];
         result[field.name]["label"] = field["label"];
+        result[field.name]["constraints"] = field["constraints"];
         if (field.name === 'order' && order) {
             result[field.name]['value'] = order;
         }
@@ -32,6 +33,9 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false, o
             if (value[fieldKey]) {
                 // console.log(fieldKey, value[fieldKey]);
                 if (field["type"] !== "section") {
+                    // if (field.type === 'bilingual'){
+                    //     result[field.name]['isRichText'] = !!(field.constraints && field.constraints.richText === true);
+                    // }
                     result[field.name]["value"] = value[fieldKey];
                 } else {
                     result[field.name]["value"] = [];
@@ -289,6 +293,7 @@ export class FormatterTracker {
                         subtype: field.subtype ?? undefined,
                         rawValue: value ?? undefined,
                         name: key,
+                        constraints: field.constraints ?? undefined,
                         count: 0
                     }
                 } else {
@@ -299,6 +304,7 @@ export class FormatterTracker {
                         subtype: field.subtype ?? undefined,
                         rawValue: value ?? undefined,
                         name: key,
+                        constraints: field.constraints ?? undefined,
                         count: 0
                     }
                 }

@@ -1,5 +1,6 @@
 import FormValidationGenerator from "./FormValidationGenerator";
 import {FieldValueMapper, FormatterTracker} from "../../../formatter/utils/helper";
+import {bilingualValueParser} from '../../SchemaParser/index'
 import GenericFieldTemplate
     from "../../../../component/dynamic-json-form-builder/components/utils/GenericFieldTemplate";
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate}
@@ -197,7 +198,9 @@ const formDataSchemaGen = (schema) => {
             }
         } else {
             if (field.type === "bilingual") {
-                dataSchema[fieldName] = JSON.stringify(field.rawValue);
+                // console.log("bilingualfields: ",bilingualValueParser(field,field.rawValue,false,true))
+
+                dataSchema[fieldName] = JSON.stringify(bilingualValueParser(field,field.rawValue,false,true));
             } else if (field.type === "reftable") {
                 dataSchema[fieldName] = field.rawValue && field.rawValue.length ? JSON.stringify([field.rawValue[0]].concat(field.rawValue[1].split("|"))) : undefined;
             } else if (field.type === 'lov') {

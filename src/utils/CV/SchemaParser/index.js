@@ -66,9 +66,9 @@ const sectionParser = (section, parent_id) => {
 export const bilingualValueParser = (field, fieldData, dataToServer = false, dataFromServer = false) => {
     const result = {};
     if (dataToServer) {
-        console.log(fieldData);
+        // console.log(fieldData);
         const bilingualData = JSON.parse(fieldData);
-        console.log(bilingualData);
+        // console.log(bilingualData);
 
         if (!field.constraints) {
             if (bilingualData.english) {
@@ -81,13 +81,16 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
             }
         } else if (field.constraints.richText) {
             if (bilingualData.english) {
-                let engData = bilingualData.english;
-                engData = engData.replace('&nbsp;', ' ');
-                engData = engData.replace('\n', '');
-                engData = engData.replace('↵', '');
-                engData = engData.replace(/^<p>/g, '');
+                let engData = JSON.stringify(bilingualData.english);
+                engData = engData.replace(/^\"/g, '');
+                engData = engData.replace(/\"$/g, '');
+                engData = engData.replace(/\\n$/g, '');
+                engData = engData.replace(/<p>/g, '');
                 engData = engData.replace(/<\/p>/g, '');
-                engData = engData.replace(/<p>/g, '<br>');
+                engData = engData.replace(/\\n/g, '<br>');
+                // engData = engData.replace(/\\n/g, '<br>');
+                engData = engData.replace(/<br><br>/g, '<br>');
+                // <br><br>-><br>??
                 engData = engData.replace(/<strong>/g, '<b>');
                 engData = engData.replace(/<\/strong>/g, '</b>');
                 engData = engData.replace(/<em>/g, '<i>');
@@ -95,35 +98,73 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
                 engData = engData.replace(/<ins>/g, '<u>');
                 engData = engData.replace(/<\/ins>/g, '</u>');
 
-
-                // engData = engData.replace(/<\/em>/g,'</i>');
                 result['eng'] = engData;
-
-                // formData.append(`data[${field.id}][english]`, engData)
             }
             if (bilingualData.french) {
-                let freData = bilingualData.french;
+                let freData = JSON.stringify(bilingualData.french);
 
+                freData = freData.replace(/^\"/g, '');
+                freData = freData.replace(/\"$/g, '');
+                freData = freData.replace(/\\n$/g, '');
                 freData = freData.replace(/<p>/g, '');
                 freData = freData.replace(/<\/p>/g, '');
+                freData = freData.replace(/\\n/g, '<br>');
+                // freData = freData.replace(/\\n/g, '<br>');
+                freData = freData.replace(/<br><br>/g, '<br>');
+                // <br><br>-><br>??
                 freData = freData.replace(/<strong>/g, '<b>');
                 freData = freData.replace(/<\/strong>/g, '</b>');
                 freData = freData.replace(/<em>/g, '<i>');
                 freData = freData.replace(/<\/em>/g, '</i>');
                 freData = freData.replace(/<ins>/g, '<u>');
                 freData = freData.replace(/<\/ins>/g, '</u>');
-                freData = freData.replace('\n', '');
-                freData = freData.replace('↵', '');
 
                 result['fre'] = freData;
-
-                // formData.append(`data[${field.id}][french]`, freData)
             }
         }
-    }else if (dataFromServer){
+    } else if (dataFromServer) {
+        // console.log(fieldData);
+        const bilingualData = fieldData;
 
+        if (!field.constraints) {
+            if (bilingualData.english) {
+                result['english'] = bilingualData.english;
+                // formData.append(`data[${field.id}][english]`, bilingualData.english)
+            }
+            if (bilingualData.french) {
+                result['french'] = bilingualData.french;
+                // formData.append(`data[${field.id}][french]`, bilingualData.french)
+            }
+        }else if (field.constraints.richText) {
+            if (bilingualData.english) {
+                let engData = bilingualData.english;
+                engData = '<p>'+engData + '</p>';
+                engData = engData.replace(/<br>/g, '</p>\n<p>');
+                engData = engData.replace(/<b>/g, '<strong>');
+                engData = engData.replace(/<\/b>/g, '</strong>');
+                engData = engData.replace(/<i>/g, '<em>');
+                engData = engData.replace(/<\/i>/g, '</em>');
+                engData = engData.replace(/<u>/g, '<ins>');
+                engData = engData.replace(/<\/u>/g, '</ins>');
+                result['english'] = engData;
+            }
+            if (bilingualData.french) {
+                let freData = (bilingualData.french);
+                freData = '<p>'+freData + '</p>';
+                freData = freData.replace(/<br>/g, '</p>\n<p>');
+                freData = freData.replace(/<b>/g, '<strong>');
+                freData = freData.replace(/<\/b>/g, '</strong>');
+                freData = freData.replace(/<i>/g, '<em>');
+                freData = freData.replace(/<\/i>/g, '</em>');
+                freData = freData.replace(/<u>/g, '<ins>');
+                freData = freData.replace(/<\/u>/g, '</ins>');
+                // console.log(freData)
+
+                result['french'] = freData;
+            }
+        }
     }
-    console.log(result)
+    // console.log(result)
     return result
 
 }
