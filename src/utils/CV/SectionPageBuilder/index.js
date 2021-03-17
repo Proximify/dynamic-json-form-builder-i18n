@@ -6,6 +6,11 @@ import {AiOutlineFileAdd} from 'react-icons/ai'
 import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
 import Formatter from "../../formatter";
 import SchemaParser, {getLovSubtypeId, bilingualValueParser} from "../SchemaParser";
+import {
+    handleOnPrimaryItemCancelBtnClick,
+    handleOnPrimaryItemChangeBtnClick,
+    handleOnPrimaryItemSetBtnClick
+} from './sectionPageBuilderHelper'
 
 export function SectionPageBuilder(props) {
     const schema = [...props.schema];
@@ -16,7 +21,7 @@ export function SectionPageBuilder(props) {
         scrollY: 0,
         ready: false,
     })
-    // console.log("SectionPageBuilder", state)
+    console.log("SectionPageBuilder", state)
 
     useEffect(() => {
         if (state.shouldModalOpen === true) {
@@ -32,6 +37,10 @@ export function SectionPageBuilder(props) {
     // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
         if (section["type"] === "form") {
+            if (section.primary_item === '1') {
+                section["primaryItemUpdate"] = false;
+            }
+            // console.log("--",section)
             // if (section.section_data.length > 0) {
             //     let opens = [];
             //     for (let i = 0; i < section.section_data.length; i++) {
@@ -482,7 +491,7 @@ export function SectionPageBuilder(props) {
             }).then((response) => {
                 if (!response.data.error) {
                     const newSection = [...state.sections];
-                    const targetForm = getFormRecur(state.sections, state.form.structureChain);
+                    const targetForm = getFormRecur(newSection, state.form.structureChain);
                     const newData = response.data.items;
                     if (targetForm) {
                         if (state.form.itemId !== 0) {
@@ -647,14 +656,32 @@ export function SectionPageBuilder(props) {
                                     <div key={itemIndex}>
                                         {!state.shouldModalOpen &&
                                         <>
-                                            {/*TODO: primary component*/}
                                             {(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true) &&
-                                            <div>Primary</div>}
+                                            <div className='flex space-x-2 ml-2 text-sm'>
+                                                <p className='text-yellow-700'>Primary</p>
+                                                <button
+                                                    className='text-blue-700 hover:text-blue-400 hover:underline'
+                                                    onClick={() => {
+                                                    handleOnPrimaryItemChangeBtnClick(state, setState, structureChain, getFormRecur)
+                                                }}>Change
+                                                </button>
+                                                <button className={`${section.primaryItemUpdate ? '' : 'hidden'} text-gray-500 hover:text-gray-700 hover:underline`}
+                                                        onClick={() => {
+                                                            handleOnPrimaryItemCancelBtnClick(state, setState, structureChain, getFormRecur)
+                                                        }}>Cancel
+                                                </button>
+                                            </div>}
 
                                             <div className={`mx-3 mb-1 px-2 text-sm flex justify-between`}>
+                                                <input
+                                                    className={`${section.primaryItemUpdate ? '' : 'hidden'} mt-1 cursor-pointer p-0`}
+                                                    type='radio'
+                                                    checked={!!(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true)}
+                                                        onClick={() => {
+                                                            handleOnPrimaryItemSetBtnClick(state, setState, structureChain, getFormRecur, itemIndex, api);
+                                                        }}>
+                                                </input>
                                                 <div className="w-11/12">
-                                                    {/*section={section.section_id} &itemId={section.section_data[itemIndex].id} &*/}
-                                                    {/*parentItemId={parentSection ? parentSection.section_data[0].id : "null"} &parentFieldId={parentSection ? getParentFieldID(section, parentSection) : "null"}*/}
                                                     <Formatter app={"CV"}
                                                                structureChain={[...structureChain]}
                                                                isFullScreenViewMode={true}
@@ -713,16 +740,16 @@ export function SectionPageBuilder(props) {
                                     </div>
                                 )
                             }) : null}
-                </div>
-            )
-        } else if (section.type === "section") {
-            return (
-                <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
+                        </div>
+                        )
+                        } else if (section.type === "section") {
+                    return (
+                    <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
                     <p className={`${titleCSS[layer]}`}>{section.title}</p>
-                    {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
-                </div>)
-        }
-    }
+                {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
+                    </div>)
+                }
+                    }
 
     return (
         <>
@@ -732,4 +759,4 @@ export function SectionPageBuilder(props) {
             })}
         </>
     )
-}
+    }

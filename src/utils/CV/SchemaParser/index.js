@@ -47,6 +47,7 @@ const sectionParser = (section, parent_id) => {
     result["name"] = section.name;
     result["description"] = section.description;
     result["disabled"] = section.disabled;
+    result["primary_item"] = section.primary_item;
     if (section.has_fields) {
         if (section.has_fields === "0") {
             result["type"] = "section";
@@ -177,7 +178,7 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
  * @constructor
  */
 export default function SchemaParser(schema, singleForm = false) {
-    console.log(schema)
+    // console.log(schema)
     const sections = schema.sections;
     // const selectionOptions = schema.default.selectionOptions;
 
