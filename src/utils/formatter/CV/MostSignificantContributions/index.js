@@ -43,7 +43,7 @@ export default function MostSignificantContributions(props) {
                     </div>}
                     {dcvi.val.fre && <div className="bilingualItem">
                         <p className="mainValue">{dcvi.lbl} (French)</p>
-                        <p>{dcvi.val.eng}</p>
+                        <p>{dcvi.val.fre}</p>
                     </div>}
                 </>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?

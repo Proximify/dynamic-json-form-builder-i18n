@@ -68,6 +68,8 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
     if (dataToServer) {
         console.log(fieldData);
         const bilingualData = JSON.parse(fieldData);
+        console.log(bilingualData);
+
         if (!field.constraints) {
             if (bilingualData.english) {
                 result['eng'] = bilingualData.english;
@@ -80,16 +82,20 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
         } else if (field.constraints.richText) {
             if (bilingualData.english) {
                 let engData = bilingualData.english;
-
-                engData = engData.replace(/<p>/g, '');
+                engData = engData.replace('&nbsp;', ' ');
+                engData = engData.replace('\n', '');
+                engData = engData.replace('↵', '');
+                engData = engData.replace(/^<p>/g, '');
                 engData = engData.replace(/<\/p>/g, '');
+                engData = engData.replace(/<p>/g, '<br>');
                 engData = engData.replace(/<strong>/g, '<b>');
                 engData = engData.replace(/<\/strong>/g, '</b>');
                 engData = engData.replace(/<em>/g, '<i>');
                 engData = engData.replace(/<\/em>/g, '</i>');
                 engData = engData.replace(/<ins>/g, '<u>');
                 engData = engData.replace(/<\/ins>/g, '</u>');
-                engData = engData.replace('\n', '');
+
+
                 // engData = engData.replace(/<\/em>/g,'</i>');
                 result['eng'] = engData;
 
@@ -107,12 +113,17 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
                 freData = freData.replace(/<ins>/g, '<u>');
                 freData = freData.replace(/<\/ins>/g, '</u>');
                 freData = freData.replace('\n', '');
+                freData = freData.replace('↵', '');
+
                 result['fre'] = freData;
 
                 // formData.append(`data[${field.id}][french]`, freData)
             }
         }
+    }else if (dataFromServer){
+
     }
+    console.log(result)
     return result
 
 }

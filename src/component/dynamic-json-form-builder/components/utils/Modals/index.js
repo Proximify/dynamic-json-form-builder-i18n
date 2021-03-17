@@ -105,7 +105,7 @@ export function ModalArrayItem(props) {
     );
 }
 
-export function ModalConfirm(props){
+export function ModalDeleteConfirm(props){
     const {state, changeState} = props;
     return (
         <div className="fixed z-10 inset-0 overflow-y-auto">

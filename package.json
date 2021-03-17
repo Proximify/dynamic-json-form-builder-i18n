@@ -37,6 +37,7 @@
     "react-popper-tooltip": "^3.1.1",
     "react-scripts": "4.0.1",
     "react-select": "^3.1.1",
+    "react-textarea-autosize": "^8.3.2",
     "react-toastify": "^6.2.0",
     "react-windowed-select": "^2.0.4",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",

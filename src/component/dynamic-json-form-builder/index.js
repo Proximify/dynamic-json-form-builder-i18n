@@ -21,13 +21,15 @@ import {
     SingleLargeSelectionWidget,
     MultiColLargeSelectionWidget, DOBSelectionWidget
 } from "./components/SelectionField";
-import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
-import HiddenFieldWidget from "./components/HiddenField";
-
-import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
-import {ModalConfirm} from "./components/utils/Modals";
+import {ModalDeleteConfirm} from "./components/utils/Modals";
+import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
+import HiddenFieldWidget from "./components/HiddenField";
+import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
+
+import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
+
 
 const customWidgets = {
     fundFieldWidget: FundFieldWidget,
@@ -51,7 +53,8 @@ const customWidgets = {
     multiColLargeSelectionWidget: MultiColLargeSelectionWidget,
     dobSelectionWidget: DOBSelectionWidget,
 
-    hiddenFieldWidget: HiddenFieldWidget
+    hiddenFieldWidget: HiddenFieldWidget,
+    readOnlyFieldWidget:ReadOnlyFieldWidget
 };
 
 const customTemplates = {
@@ -68,7 +71,7 @@ class FormBuilder extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {shouldDeleteConfirmModalOpen: false, shouldDeleteForm: false};
+        this.state = {shouldDeleteConfirmModalOpen: false, shouldDeleteForm: false, formData: null};
         this.handleStateChange = this.handleStateChange.bind(this);
         document.addEventListener("keydown", this._handleKeyDown.bind(this));
     }
@@ -84,7 +87,7 @@ class FormBuilder extends Component {
 
     componentDidUpdate() {
         if (this.state.shouldDeleteForm){
-            this.props.onFormEditDelete()
+            this.props.onFormEditDelete(this.props.formData)
         }
     }
 
@@ -181,6 +184,7 @@ class FormBuilder extends Component {
                     showErrorList={false}
                     liveValidate
                     onChange={({formData}) => {
+                        // this.setState({...this.state, formData: formData})
                         console.log("data changed", formData)
                     }}
                     validate={this.validation}
@@ -220,7 +224,7 @@ class FormBuilder extends Component {
                     </div>
                 </Form>
                 {this.state.shouldDeleteConfirmModalOpen &&
-                <ModalConfirm state={this.state} changeState={this.handleStateChange}/>}
+                <ModalDeleteConfirm state={this.state} changeState={this.handleStateChange}/>}
             </>
         );
     }

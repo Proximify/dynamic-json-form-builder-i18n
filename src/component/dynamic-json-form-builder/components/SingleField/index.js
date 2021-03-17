@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import NumberFormat from "react-number-format";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import TextareaAutosize from 'react-textarea-autosize';
 
 const months = {
     en: [
@@ -55,12 +56,12 @@ const locale = (local) => {
 }
 
 const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime = false) => {
+    // console.log(value)
     if (!rawErrors || rawErrors.length === 0) {
         setValue(value);
     } else {
         setValue(value);
         if (!isElapsedTime) {
-            console.log("++++", value)
             onChange(value ?? undefined)
         } else {
             if (!value.Min && !value.Sec) {
@@ -77,10 +78,13 @@ export function StringInputWidget(props) {
     // console.log(props)
     const [value, setValue] = useState(props.value ?? "");
     return (
-        <input
+        <TextareaAutosize
             className={"singleFieldInput"}
-            type={"text"}
+            style={{resize: 'none'}}
+            minRows={1}
+            // type={"textarea"}
             maxLength={props.schema.max_char_count ?? undefined}
+            // onKeyDown={event => {(event.key === 'Enter') ?}}
             id={props.schema.id}
             value={value}
             required={props.required}

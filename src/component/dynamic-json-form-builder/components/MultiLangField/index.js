@@ -9,6 +9,8 @@ import htmlToDraft from "html-to-draftjs";
 import draftToHtml from "draftjs-to-html";
 import {Editor} from "react-draft-wysiwyg";
 import {ToolbarStyleCompact} from "../../../../RichTextToolBarStyle";
+import TextareaAutosize from 'react-textarea-autosize';
+
 
 export function MultiLangFieldWidget(props) {
     // console.log("MultiLangRichTextWidget", props)
@@ -353,8 +355,9 @@ export function MultiLangFieldWidget(props) {
                         }}
                     /> :
                     <>
-                        <input
+                        <TextareaAutosize
                             className="multiLangFieldInput"
+                            style={{resize: 'none'}}
                             type="text"
                             id={props.schema.id}
                             value={state.primaryContent ?? undefined}
@@ -391,8 +394,9 @@ export function MultiLangFieldWidget(props) {
                             }}
                         /> :
                         <>
-                            <input
+                            <TextareaAutosize
                                 className="multiLangFieldInput"
+                                style={{resize: 'none'}}
                                 type="text"
                                 value={state.secondaryContent ?? undefined}
                                 onChange={(event) => {

@@ -161,7 +161,7 @@ export function MultiColLargeSelectionWidget(props) {
     const SingleValue = ({children, ...props}) => {
         const value = [...props.data.value];
         value.shift();
-        return (<div className={`py-${3 * (value.length - 1)}`}>
+        return (<div className={`py-${3 * (value.length - 1)} my-1`}>
             <components.SingleValue {...props}>
                 {value.map((val, index) => {
                     return <p key={index}>{val}</p>

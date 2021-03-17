@@ -31,21 +31,20 @@ export default function Address(props) {
 
         return (
             <div>
-                {/*TODO: Primary value?*/}
                 {any(at, al1, asd, aed) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([at, al1, asd, aed], null, ['s'], [': '],[[1,2,3,' ('],[2,2,3,' - '],[3,2,3,')']])}
+                    {singleLineMultiFieldValueFormatter([at, al1, asd, aed], null, ['s'], [': '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}
                 </p>}
                 {any(l2) && <p>{l2.val}</p>}
                 {any(l3) && <p>{l3.val}</p>}
                 {any(l4) && <p>{l4.val}</p>}
                 {any(l5) && <p>{l5.val}</p>}
-                {any(ci, lo) && <p><span>{ci.val}</span>
-                    {lo.val && <><span>, </span>
-                        {reftableValueParser(lo.val, false, true).map((val, index) => {
+                {any(ci, lo) && <p>{ci.val && <span>{ci.val}{lo.val && ', '}</span>}
+                    {lo.val && <span>
+                        {reftableValueParser(lo.val, false, true,true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}
-                    </>}</p>}
+                    </span>}</p>}
                 {any(pzc) && <p>{pzc.val}</p>}
                 {Object.keys(ft.getUnFormattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null

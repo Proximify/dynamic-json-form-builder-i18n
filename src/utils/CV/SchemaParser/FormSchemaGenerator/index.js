@@ -10,7 +10,6 @@ import HiddenFieldTemplate
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
  * @param schema: schema for the form
- * @param lovOptions
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}}
  * @constructor
  */
@@ -33,24 +32,21 @@ export const SchemaGenerator = (schema) => {
 }
 
 /**
- * This function generate the form structure schema
+ * This function generate the form structure schema with order
  * @param schema
- * @param lovOptions
  * @returns {{id, type: string, required: [], properties: {}}}
  */
 const formStrSchemaGen = (schema) => {
+    // console.log("--",schema)
     const required = [];
     const properties = {};
     const fields = schema.fields;
-    Object.keys(fields).forEach(fieldKey => {
-        const field = fields[fieldKey]
+    const sortedFields = Object.entries(fields).sort(([, a], [, b]) => a.order_number - b.order_number)
+
+    sortedFields.forEach(([, field]) => {
         if (field["not_null"] === "1") {
             required.push(field.name)
         }
-        // const fieldSchema = fieldStrSchemaGen(field, schema, selectionOpts);
-        // if (fieldSchema){
-        //     properties[field.name] = fieldSchema;
-        // }
         properties[field.name] = fieldStrSchemaGen(field, schema);
     })
     return {
@@ -66,7 +62,6 @@ const formStrSchemaGen = (schema) => {
  * This function generate the field structure schema
  * @param field: field schema
  * @param schema
- * @param lovOptions
  * @returns {{}}
  */
 const fieldStrSchemaGen = (field, schema) => {
@@ -309,6 +304,11 @@ const formUISchemaGen = (schema) => {
                     "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
                     "ui:widget": "hiddenFieldWidget"
                 }
+            } else if (field.constraints && field.constraints.autofill) {
+                result[fieldName] = {
+                    "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+                    "ui:widget": "readOnlyFieldWidget"
+                }
             } else {
                 result[fieldName] = fieldTypeWidgetMapper[field.type];
             }
@@ -316,3 +316,5 @@ const formUISchemaGen = (schema) => {
     })
     return result;
 }
+
+//readOnlyFieldWidget

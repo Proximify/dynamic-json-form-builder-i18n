@@ -46,7 +46,7 @@ export default function Recognitions(props) {
                 {any(efd, end, ori, otori, otorit, otoril) &&
                 <p>
                     {any(efd, end) && <span>
-                        {singleLineMultiFieldValueFormatter([efd, end], null, null, [['(','']], [[0, 0, 1, ' - '],  [1, 0, 1, ') ']])}
+                        {singleLineMultiFieldValueFormatter([efd, end], null, null, [['(', '']], [[0, 0, 1, ' - '], [1, 0, 1, ') ']])}
                     </span>}
                     <span>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                         return reftableValueFormatter(val, index)
@@ -56,7 +56,8 @@ export default function Recognitions(props) {
                         {otoril.val && <span>{otoril.val}</span>}
                     </span>
                 </p>}
-                {any(am, cur, amc) && <p>{am.val && `${am.lbl}: ${am.val} ${cur.val} ${amc.val}`}</p>}
+                {any(am, cur, amc) &&
+                <p>{singleLineMultiFieldValueFormatter([am, cur, amc], [true], null, [[' ', ' ']])}</p>}
                 {any(desc) && <>
                     {desc.val.eng && <div className="bilingualItem">
                         <p className="mainValue">{desc.lbl}</p>
