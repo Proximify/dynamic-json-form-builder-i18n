@@ -1,5 +1,32 @@
 import {language, LanguageContext} from './language-context';
 import React from "react";
+import tw, {theme} from 'twin.macro'
+import {css} from 'styled-components/macro'
+import styled, {ThemeProvider} from "styled-components";
+
+// const Button = styled.button`
+//   background: ${props => props.theme.background};
+//   color: ${props => props.theme.color};
+//   font-size: ${props => props.theme.fontSize};
+//   font-family: ${props => props.theme.fontFamily};
+// `;
+//
+// Button.defaultProps = {
+//     theme: {
+//         color: 'black',
+//         fontSize:`20px`,
+//         fontFamily: 'Times New Roman',
+//         background: 'aliceblue'
+//     }
+// }
+//
+// const customTheme = {
+//     fontFamily: `${theme`fontFamily.title`}`,
+//     fontSize: `${theme`fontSize.title`}`,
+//     background: `${theme`colors.color-info`}`
+//
+// };
+
 
 function LanguageTogglerButton(props) {
     const languages = {
@@ -7,23 +34,28 @@ function LanguageTogglerButton(props) {
         FR: "French",
         SP: "Spanish"
     }
+    // className={"text-color-secondary"}
 
     return (
         <LanguageContext.Consumer>
             {({language, toggleLanguage}) => (
-                <div className="btn-group">
-                    <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
+                <div>
+                    <button>
                         Change Language:
                     </button>
-
-                    <div className="dropdown-menu">
+                    {/*<ThemeProvider theme={customTheme}>*/}
+                        <button>
+                            Change Language:
+                        </button>
+                    {/*</ThemeProvider>*/}
+                    <div tw="flex space-x-2">
                         {
                             props.pageLanguages.map((value, index) => {
                                 return (
-                                    <a className={`dropdown-item ${value === language.language.toUpperCase() ? "active" : ""}`}
-                                       href="#" key={index}
-                                       onClick={() => toggleLanguage(value)}>{languages[value]}</a>
+                                    <a
+                                        href="#" key={index}
+                                        tw="text-color-action"
+                                        onClick={() => toggleLanguage(value)}>{languages[value]}</a>
                                 )
                             })
                         }

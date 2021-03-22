@@ -11,6 +11,52 @@ import {
     handleOnPrimaryItemChangeBtnClick,
     handleOnPrimaryItemSetBtnClick
 } from './sectionPageBuilderHelper'
+import styled, {ThemeProvider} from "styled-components";
+import {theme} from "twin.macro";
+
+const TopSectionLabel = styled.p`
+  background: ${props => props.theme.background};
+  color: ${props => props.theme.color};
+  font-size: ${props => props.theme.fontSize};
+  font-family: ${props => props.theme.fontFamily};
+`;
+
+// TopSectionLabel.defaultProps = {
+//     theme: {
+//         color: 'black',
+//         fontSize: `20px`,
+//         fontFamily: 'Times New Roman',
+//         background: 'aliceblue'
+//     }
+// }
+
+const TopSectionLabelTheme = {
+    background: `${theme`colors.color-primary`}`,
+    color: `${theme`colors.color-transparent`}`,
+    fontSize: `${theme`fontSize.TopSectionLabel`}`,
+    fontFamily: `${theme`fontFamily.TopSectionLabel`}`
+};
+
+const SectionLabel = styled.p`
+  color: ${props => props.theme.color};
+  font-size: ${props => props.theme.fontSize};
+  font-family: ${props => props.theme.fontFamily};
+`;
+
+SectionLabel.defaultProps = {
+    theme: {
+        color: 'black',
+        fontSize: `20px`,
+        fontFamily: 'Times New Roman',
+    }
+}
+
+const SectionLabelTheme = {
+    color: `${theme`colors.color-secondary`}`,
+    fontSize: `${theme`fontSize.SectionLabel`}`,
+    fontFamily: `${theme`fontFamily.SectionLabel`}`
+};
+
 
 export function SectionPageBuilder(props) {
     const schema = [...props.schema];
@@ -587,7 +633,7 @@ export function SectionPageBuilder(props) {
 
     const sectionBuilder = (section, sectionIndex, layer, structureChain, parentSection = null) => {
         const titleCSS = {
-            3: "my-2 py-0.5 px-1 inline-block bg-blue-400 border rounded-md font-bold", //section title
+            3: "my-2 py-0.5 px-1 inline-block border rounded-md font-bold", //section title
             2: "my-1 inline-block text-yellow-600 font-semibold", //subsection title
             1: "my-0.5 inline-block text-yellow-700" //subsection title of subsection
         }
@@ -601,7 +647,13 @@ export function SectionPageBuilder(props) {
             return (
                 <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
                     <div className="flex items-center">
-                        <p className={`${titleCSS[layer]}`}>{section.title}</p>
+
+                        {layer === 3 ? <ThemeProvider
+                                theme={TopSectionLabelTheme}><TopSectionLabel>{section.title}</TopSectionLabel></ThemeProvider> :
+                            <ThemeProvider
+                                theme={SectionLabelTheme}><SectionLabel>{section.title}</SectionLabel></ThemeProvider>
+                            // <p className={`${titleCSS[layer]}`}>{section.title}</p>
+                        }
                         <p className="ml-3 hover:text-yellow-700">{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
@@ -662,13 +714,14 @@ export function SectionPageBuilder(props) {
                                                 <button
                                                     className='text-blue-700 hover:text-blue-400 hover:underline'
                                                     onClick={() => {
-                                                    handleOnPrimaryItemChangeBtnClick(state, setState, structureChain, getFormRecur)
-                                                }}>Change
+                                                        handleOnPrimaryItemChangeBtnClick(state, setState, structureChain, getFormRecur)
+                                                    }}>Change
                                                 </button>
-                                                <button className={`${section.primaryItemUpdate ? '' : 'hidden'} text-gray-500 hover:text-gray-700 hover:underline`}
-                                                        onClick={() => {
-                                                            handleOnPrimaryItemCancelBtnClick(state, setState, structureChain, getFormRecur)
-                                                        }}>Cancel
+                                                <button
+                                                    className={`${section.primaryItemUpdate ? '' : 'hidden'} text-gray-500 hover:text-gray-700 hover:underline`}
+                                                    onClick={() => {
+                                                        handleOnPrimaryItemCancelBtnClick(state, setState, structureChain, getFormRecur)
+                                                    }}>Cancel
                                                 </button>
                                             </div>}
 
@@ -677,9 +730,10 @@ export function SectionPageBuilder(props) {
                                                     className={`${section.primaryItemUpdate ? '' : 'hidden'} mt-1 cursor-pointer p-0`}
                                                     type='radio'
                                                     checked={!!(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true)}
-                                                        onClick={() => {
-                                                            handleOnPrimaryItemSetBtnClick(state, setState, structureChain, getFormRecur, itemIndex, api);
-                                                        }}>
+                                                    onChange={() => {
+                                                        handleOnPrimaryItemSetBtnClick(state, setState, structureChain, getFormRecur, itemIndex, api);
+                                                    }}>
+
                                                 </input>
                                                 <div className="w-11/12">
                                                     <Formatter app={"CV"}
@@ -740,16 +794,24 @@ export function SectionPageBuilder(props) {
                                     </div>
                                 )
                             }) : null}
-                        </div>
-                        )
-                        } else if (section.type === "section") {
-                    return (
-                    <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
-                    <p className={`${titleCSS[layer]}`}>{section.title}</p>
-                {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
-                    </div>)
-                }
+                </div>
+            )
+        } else if (section.type === "section") {
+            return (
+                <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
+
+                    {/*<p className={`${titleCSS[layer]}`}>{section.title}</p>*/}
+                    {layer === 3 ? <ThemeProvider
+                            theme={TopSectionLabelTheme}><TopSectionLabel>{section.title}</TopSectionLabel></ThemeProvider> :
+                        <ThemeProvider
+                            theme={SectionLabelTheme}><SectionLabel>{section.title}</SectionLabel></ThemeProvider>
+                        // <p className={`${titleCSS[layer]}`}>{section.title}</p>
                     }
+
+                    {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
+                </div>)
+        }
+    }
 
     return (
         <>
@@ -759,4 +821,4 @@ export function SectionPageBuilder(props) {
             })}
         </>
     )
-    }
+}
