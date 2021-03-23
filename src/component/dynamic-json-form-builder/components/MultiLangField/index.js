@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {BsCaretDownFill, BsTrashFill} from 'react-icons/bs';
 import './MultiLangField.css';
-import {useTranslation} from 'react-i18next';
 import {Menu, Transition} from "@headlessui/react";
 import {ContentState, convertToRaw, EditorState} from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -15,7 +14,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 export function MultiLangFieldWidget(props) {
     // console.log("MultiLangRichTextWidget", props)
     const {value, schema} = props;
-    const {t} = useTranslation();
+    // const {t} = useTranslation();
 
     const isRichText = schema.constraints ? !!schema.constraints.richText : false;
     const [state, setState] = useState({
@@ -415,7 +414,7 @@ export function MultiLangFieldWidget(props) {
                 <a className={`undoBtn undoBtn ${(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? "hidden" : ""}`}
                    onClick={() => {
                        handleOnBilingual()
-                   }}>{t('btn-undo')}
+                   }}>undo
                 </a>
             </div>
         </React.Fragment>

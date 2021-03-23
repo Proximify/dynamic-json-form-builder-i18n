@@ -3,22 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^6.0.0",
-    "@headlessui/react": "^0.2.0",
     "@rjsf/core": "^2.4.2",
+    "@headlessui/react": "^0.2.0",
+    "@craco/craco": "^6.1.1",
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.2",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
     "autoprefixer": "^9",
     "axios": "^0.21.0",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "html-to-draftjs": "^1.5.0",
-    "i18next": "^19.8.4",
-    "i18next-browser-languagedetector": "^6.0.1",
-    "i18next-locize-backend": "^4.1.8",
     "js-file-download": "^0.4.12",
     "node-sass": "4.14.1",
     "postcss": "^7",
@@ -75,6 +69,10 @@
     ]
   },
   "devDependencies": {
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10"
   }
 }

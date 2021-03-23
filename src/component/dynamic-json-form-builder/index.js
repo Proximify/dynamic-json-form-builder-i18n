@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import Form from "@rjsf/core";
-import './i18n';
 import './index.css';
-import {withTranslation} from 'react-i18next';
 
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
 import {
@@ -54,7 +52,7 @@ const customWidgets = {
     dobSelectionWidget: DOBSelectionWidget,
 
     hiddenFieldWidget: HiddenFieldWidget,
-    readOnlyFieldWidget:ReadOnlyFieldWidget
+    readOnlyFieldWidget: ReadOnlyFieldWidget
 };
 
 const customTemplates = {
@@ -86,7 +84,7 @@ class FormBuilder extends Component {
     }
 
     componentDidUpdate() {
-        if (this.state.shouldDeleteForm){
+        if (this.state.shouldDeleteForm) {
             this.props.onFormEditDelete(this.props.formData)
         }
     }
@@ -164,11 +162,7 @@ class FormBuilder extends Component {
 
     render() {
         // const {isLoaded, loadingError, FormSchema, FormData, FormContext, FormID, validation} = this.state;
-        const {t, i18n} = this.props;
 
-        if (this.props.language && i18n.language !== this.props.language.toLowerCase()) {
-            i18n.changeLanguage(this.props.language.toLowerCase());
-        }
         // console.log(this.props.formData)
         return (
             <>
@@ -213,11 +207,11 @@ class FormBuilder extends Component {
                                         onClick={() => {
                                             this.props.onFormEditCancel();
                                         }}>
-                                    {t('btn-cancel')}
+                                    Cancel
                                 </button>
                                 <button className="py-1 px-2 border bg-green-400 rounded"
                                         type="submit">
-                                    {t('btn-save')}
+                                    Save
                                 </button>
                             </div>
                         </div>
@@ -230,4 +224,4 @@ class FormBuilder extends Component {
     }
 }
 
-export default withTranslation()(FormBuilder);
+export default FormBuilder;

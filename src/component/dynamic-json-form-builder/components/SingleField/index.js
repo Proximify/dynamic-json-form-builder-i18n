@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import './SingleField.css'
-import {useTranslation} from 'react-i18next';
 import NumberFormat from "react-number-format";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -183,7 +182,6 @@ export function ElapsedTimeWidget(props) {
 export function DateInputWidget(props) {
     const {value} = props;
     const [date, setDate] = useState(value ? new Date(value.split('-')[0], value.split('-')[1] - 1, value.split('-')[2]) : null);
-    const {i18n} = useTranslation();
 
     const handleChange = (dateValue) => {
         if (!dateValue) {
@@ -203,8 +201,10 @@ export function DateInputWidget(props) {
                         return handleChange(date);
                     }}
                     dateFormat="yyyy/MM/dd"
-                    locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    placeholderText={i18n.language === "fr" ? "aaaa/m/j" : "yyyy/mm/dd"}
+                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                    // placeholderText={i18n.language === "fr" ? "aaaa/m/j" : "yyyy/mm/dd"}
+                    locale={'en'}
+                    placeholderText={'yyyy/mm/dd'}
                     dropdownMode="scroll"
                     showMonthDropdown={true}
                     showYearDropdown={true}
@@ -219,7 +219,7 @@ export function MonthDayInputWidget(props) {
     // const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
     const {value} = props;
     const [date, setDate] = useState(value ? new Date(1000, value.split('/')[0] - 1, value.split('/')[1]) : null);
-    const {i18n} = useTranslation();
+    // const {i18n} = useTranslation();
 
     const handleChange = (dateValue) => {
         if (!dateValue) {
@@ -239,8 +239,10 @@ export function MonthDayInputWidget(props) {
                     }}
                     dateFormat="MM/dd"
                     dateFormatCalendar="MMM"
-                    locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
+                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                    // placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
+                    locale={'en'}
+                    placeholderText={'mm/dd'}
                     showMonthDropdown={true}
         />
     );
@@ -259,11 +261,8 @@ export function YearMonthInputWidget(props) {
         }
     );
 
-
-    //
     // const date = props.value ? props.value.split("/") : null;
     // const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
-    const {i18n} = useTranslation();
 
     // const handleChange = (dateValue) => {
     //     if (!dateValue) {
@@ -340,8 +339,10 @@ export function YearMonthInputWidget(props) {
                         handleChange(date, state.hasDate);
                     }}
                     dateFormat={!state.hasDate ? `yyyy/MM` : 'yyyy/MM/dd'}
-                    locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    placeholderText={i18n.language === "fr" ? "aaaa/m" : "yyyy/mm"}
+                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                    // placeholderText={i18n.language === "fr" ? "aaaa/m" : "yyyy/mm"}
+                    locale={'en'}
+                    placeholderText={'yyyy/mm'}
                     showMonthYearPicker={!state.hasDate}
         />
     );
@@ -365,7 +366,6 @@ export function YearInputWidget(props) {
             }
         }
     );
-    const {i18n} = useTranslation();
     // console.log(date, value.split('/')[0], hasMonth, hasDate)
     const handleChange = (dateValue, hasMonth, hasDate) => {
         // console.log("handle change", dateValue, hasMonth, hasDate)
@@ -436,8 +436,10 @@ export function YearInputWidget(props) {
                         handleChange(date, state.hasMonth, state.hasDate);
                     }}
                     dateFormat={state.hasMonth ? (state.hasDate ? "yyyy/MM/dd" : `yyyy/MM`) : `yyyy`}
-                    locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    placeholderText={i18n.language === "fr" ? "aaaa" : "yyyy"}
+                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                    // placeholderText={i18n.language === "fr" ? "aaaa" : "yyyy"}
+                    locale={'en'}
+                    placeholderText={'yyyy'}
                     showYearPicker={!state.hasMonth}
                     showMonthYearPicker={!state.hasDate}
                     showMonthDropdown={state.hasMonth}

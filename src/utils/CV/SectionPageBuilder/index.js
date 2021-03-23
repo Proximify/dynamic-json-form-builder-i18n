@@ -21,15 +21,6 @@ const TopSectionLabel = styled.p`
   font-family: ${props => props.theme.fontFamily};
 `;
 
-// TopSectionLabel.defaultProps = {
-//     theme: {
-//         color: 'black',
-//         fontSize: `20px`,
-//         fontFamily: 'Times New Roman',
-//         background: 'aliceblue'
-//     }
-// }
-
 const TopSectionLabelTheme = {
     background: `${theme`colors.color-primary`}`,
     color: `${theme`colors.color-transparent`}`,
