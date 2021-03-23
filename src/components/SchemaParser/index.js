@@ -124,9 +124,10 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
             }
         }
     } else if (dataFromServer) {
-        // console.log(fieldData);
+        if (fieldData === undefined || Object.keys(fieldData).length < 1){
+            return undefined;
+        }
         const bilingualData = fieldData;
-
         if (!field.constraints) {
             if (bilingualData.english) {
                 result['english'] = bilingualData.english;
@@ -165,7 +166,7 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
             }
         }
     }
-    // console.log(result)
+    console.log(result)
     return result
 
 }

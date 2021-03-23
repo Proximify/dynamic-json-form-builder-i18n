@@ -1,16 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import FormBuilder from '../dynamic-json-form-builder';
-import api from "../../api";
+import FormBuilder from '../FormBuilder';
+import api, {fetchFormSchema, fetchLovOptions} from "./helper/api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
-import {ModalFullScreen} from "../dynamic-json-form-builder/components/utils/Modals";
-import Formatter from "../formatter";
+import {ModalFullScreen} from "../FormBuilder/components/utils/Modals";
+import Formatter from "../Formatter";
 import SchemaParser, {getLovSubtypeId, bilingualValueParser} from "../SchemaParser";
 import {
     handleOnPrimaryItemCancelBtnClick,
     handleOnPrimaryItemChangeBtnClick,
     handleOnPrimaryItemSetBtnClick
-} from './sectionPageBuilderHelper'
+} from './helper/sectionPageBuilderHelper'
 import styled, {ThemeProvider} from "styled-components";
 import {theme} from "twin.macro";
 
@@ -172,6 +172,9 @@ export function SectionPageBuilder(props) {
                             if (bilingualData.fre) {
                                 formData.append(`data[${field.id}][french]`, bilingualData.fre)
                             }
+                            if (Object.keys(bilingualData).length === 0){
+                                formData.append(`data[${field.id}]`, "")
+                            }
                         } else {
                             formData.append(`data[${field.id}]`, "")
                         }
@@ -215,6 +218,9 @@ export function SectionPageBuilder(props) {
                                                         }
                                                         if (bilingualData.fre) {
                                                             formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
+                                                        }
+                                                        if (Object.keys(bilingualData).length === 0){
+                                                            formData.append(`${template}[data][${fieldId}]`, '');
                                                         }
                                                     } else {
                                                         formData.append(`${template}[data][${fieldId}]`, newFieldData)
@@ -363,7 +369,7 @@ export function SectionPageBuilder(props) {
                     const targetForm = getFormRecur(state.sections, state.form.structureChain);
                     const newData = formSchema[0].section_data;
                     if (targetForm) {
-                        // console.log("----", targetForm, state.form.itemId, newData)
+                        console.log("----", targetForm, state.form.itemId, newData)
                         // targetForm.section_data = formSchema[0].section_data;
                         if (state.form.itemId !== 0) {
                             const index = targetForm.section_data.findIndex(data => data.id === newData[0].id)
@@ -568,12 +574,12 @@ export function SectionPageBuilder(props) {
     const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
         // console.log(sectionId, itemId, parentItemId, parentFieldId);
 
-        console.log('start', window.scrollY)
+        // console.log('start', window.scrollY)
 
-        props.fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
+        fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             // console.log(lovSubtypeIDs);
-            props.fetchLovOptions(lovSubtypeIDs, (optRes => {
+            fetchLovOptions(lovSubtypeIDs, (optRes => {
                 // console.log(optRes);
                 const formSchema = SchemaParser(res, true);
                 // console.log(res)

@@ -3,7 +3,7 @@ import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import {BiPencil} from 'react-icons/bi';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import ModalArrayItem from "../utils/Modals";
-import Formatter from "../../../formatter";
+import Formatter from "../../../Formatter";
 import './ArrayField.css'
 import Tooltip from "../../../Tooltip";
 
