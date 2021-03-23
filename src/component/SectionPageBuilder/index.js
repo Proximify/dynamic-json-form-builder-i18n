@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import FormBuilder from '../../../component/dynamic-json-form-builder';
-import api from "../../../api";
+import FormBuilder from '../dynamic-json-form-builder';
+import api from "../../api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
-import {ModalFullScreen} from "../../../component/dynamic-json-form-builder/components/utils/Modals";
-import Formatter from "../../formatter";
+import {ModalFullScreen} from "../dynamic-json-form-builder/components/utils/Modals";
+import Formatter from "../formatter";
 import SchemaParser, {getLovSubtypeId, bilingualValueParser} from "../SchemaParser";
 import {
     handleOnPrimaryItemCancelBtnClick,

@@ -2,17 +2,12 @@ import React, {Component, Suspense} from 'react';
 import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
-import {SectionPageBuilder} from "./utils/CV/SectionPageBuilder";
+import {SectionPageBuilder} from "./component/SectionPageBuilder";
 import api from "./api";
-import SchemaParser from "./utils/CV/SchemaParser";
+import SchemaParser from "./component/SchemaParser";
 import axios from "axios";
-
-// if (navigator.serviceWorker) {
-//     console.log("service worker supported");
-//     window.addEventListener('load', () => {
-//         navigator.serviceWorker.register('sw_cv_schemaParser.js').then(reg => console.log("Registered")).catch(err => console.log("Register Error", err));
-//     })
-// }
+import {css} from 'styled-components/macro'
+import tw, {theme} from 'twin.macro'
 
 class App extends Component {
     constructor(props) {
@@ -89,29 +84,27 @@ class App extends Component {
 
     render() {
         return (
-            <Suspense fallback={<div className="App theme-light">{<div>loading...</div>}</div>}>
-                <LanguageContext.Provider value={this.state}>
-                    <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
-                    <div className="bg-gray-200 py-4">
-                        <div className="container mx-auto">
-                            <div className="flex justify-center">
-                                <div
-                                    className="bg-white" style={{maxWidth: "40rem"}}>
-                                    {this.state.isReady &&
-                                    <SectionPageBuilder
-                                        schema={SchemaParser(this.state.schema)}
-                                        data={this.state.data}
-                                        language={this.state.language.language}
-                                        fetchFormSchema={this.fetchFormSchema}
-                                        fetchLovOptions={this.fetchLovOptions}
-                                    />}
-                                    {this.state.rawError && <div>{JSON.stringify(this.state.rawError)}</div>}
-                                </div>
+            <LanguageContext.Provider value={this.state}>
+                <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
+                <div className="bg-gray-200 py-4">
+                    <div className="container mx-auto">
+                        <div className="flex justify-center">
+                            <div
+                                className="bg-white" style={{maxWidth: "40rem"}}>
+                                {this.state.isReady &&
+                                <SectionPageBuilder
+                                    schema={SchemaParser(this.state.schema)}
+                                    data={this.state.data}
+                                    language={this.state.language.language}
+                                    fetchFormSchema={this.fetchFormSchema}
+                                    fetchLovOptions={this.fetchLovOptions}
+                                />}
+                                {this.state.rawError && <div>{JSON.stringify(this.state.rawError)}</div>}
                             </div>
                         </div>
                     </div>
-                </LanguageContext.Provider>
-            </Suspense>
+                </div>
+            </LanguageContext.Provider>
         );
     }
 }

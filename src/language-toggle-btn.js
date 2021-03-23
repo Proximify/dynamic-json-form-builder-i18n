@@ -48,13 +48,13 @@ function LanguageTogglerButton(props) {
                             Change Language:
                         </button>
                     {/*</ThemeProvider>*/}
-                    <div tw="flex space-x-2">
+                    <div css={[tw`flex space-x-2`]}>
                         {
                             props.pageLanguages.map((value, index) => {
                                 return (
                                     <a
                                         href="#" key={index}
-                                        tw="text-color-action"
+                                        css={[tw`text-red-300`]}
                                         onClick={() => toggleLanguage(value)}>{languages[value]}</a>
                                 )
                             })

@@ -1,12 +1,12 @@
 import FormValidationGenerator from "./FormValidationGenerator";
-import {FieldValueMapper, FormatterTracker} from "../../../formatter/utils/helper";
-import {bilingualValueParser} from '../../SchemaParser/index'
+import {FieldValueMapper, FormatterTracker} from "../../formatter/utils/helper";
+import {bilingualValueParser} from '../index'
 import GenericFieldTemplate
-    from "../../../../component/dynamic-json-form-builder/components/utils/GenericFieldTemplate";
+    from "../../dynamic-json-form-builder/components/utils/GenericFieldTemplate";
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate}
-    from "../../../../component/dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate";
+    from "../../dynamic-json-form-builder/components/ArrayField/ArrayFieldTemplate";
 import HiddenFieldTemplate
-    from "../../../../component/dynamic-json-form-builder/components/HiddenField/HiddenFieldTemplate";
+    from "../../dynamic-json-form-builder/components/HiddenField/HiddenFieldTemplate";
 
 /**
  * This function use the given form schema, generate structure schema, data schema and UI schema
