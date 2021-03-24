@@ -415,6 +415,8 @@ export class FormatterTracker {
                 case "integer":
                     const integer = Number(field.value);
                     return isNaN(integer) ? field.value : integer
+                case "systable":
+                    return this.#isSubsectionFormatter ? field.value : field.value.slice(1);
                 case "reftable":
                     return this.#isSubsectionFormatter ? field.value : field.value[1].split('|');
                 case "bilingual":

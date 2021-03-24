@@ -25,11 +25,6 @@ class App extends Component {
             language: language.EN,
             pageLanguages: ["EN", "FR", "SP"],
             toggleLanguage: this.toggleLanguage,
-            isReady: false,
-
-            schema: null,
-            rawError: null,
-            formSchema: null
         };
         // this.fetchFormSchema = this.fetchFormSchema.bind(this);
         // this.fetchLovOptions = this.fetchLovOptions.bind(this);
@@ -40,16 +35,16 @@ class App extends Component {
     //     fetchCVSchema(this.state, (newState) => {
     //         this.setState(newState)
     //     })
-        // api.get("profiles.php?action=display&editable=true&contentType=members&contentId=1&viewType=cv&withFormat=true", {
-        //     headers: {'Content-Type': 'application/json'}
-        // }).then(res => {
-        //     this.setState({...this.state, schema: res.data, isReady: true})
-        //     console.log("load success", res)
-        // }).catch(err => {
-        //     this.setState({...this.state, isReady: false, rawError: err})
-        //     console.log("loading err", err);
-        // })
- //   }
+    // api.get("profiles.php?action=display&editable=true&contentType=members&contentId=1&viewType=cv&withFormat=true", {
+    //     headers: {'Content-Type': 'application/json'}
+    // }).then(res => {
+    //     this.setState({...this.state, schema: res.data, isReady: true})
+    //     console.log("load success", res)
+    // }).catch(err => {
+    //     this.setState({...this.state, isReady: false, rawError: err})
+    //     console.log("loading err", err);
+    // })
+    //   }
 
     // fetchFormSchema(section, itemId, parentItemId, parentFieldId, callback) {
     //     const url = `profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv${section !== null ? '&section=' + section : ""}${itemId !== null ? '&itemId=' + itemId : ""}${parentItemId !== null ? '&parentItemId=' + parentItemId : ""}${parentFieldId !== null ? '&parentFieldId=' + parentFieldId : ""}`;
@@ -85,20 +80,15 @@ class App extends Component {
     // }
 
     render() {
-        if (!this.state.isReady) {
-            return <div>loading...</div>
-        }
         return (
             <LanguageContext.Provider value={this.state}>
                 <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
                 <div css={[tw`flex justify-center bg-gray-200 pt-3`]}>
                     <div
                         css={"background: white; max-width: 40rem"}>
-                        {this.state.isReady &&
                         <SectionPageBuilder
                             language={this.state.language.language}
-                        />}
-                        {this.state.rawError && <div>{JSON.stringify(this.state.rawError)}</div>}
+                        />
                     </div>
                 </div>
             </LanguageContext.Provider>

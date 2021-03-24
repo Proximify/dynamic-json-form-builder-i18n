@@ -19,22 +19,33 @@ export default function CommitteeMemberships(props) {
         const ft = new FormatterTracker(mappedValue);
         const {
             role: ro,
-            membership_start_date:msd,
-            membership_end_date:med,
-            committee_name:cn,
+            geographical_scope: gs,
+            membership_start_date: msd,
+            membership_end_date: med,
+            committee_name: cn,
             organization: ori,
             other_organization: otori,
             other_organization_type: otorit,
             other_organization_location: otoril,
-            description: desc
+            description: desc,
+            faculty: fa,
+            department_division: dd
         } = ft.getFields();
 
+        console.log(ft.getFields())
         return (
             <div>
-                {any(ro, msd, med) && <p>
-                    {singleLineMultiFieldValueFormatter([ro, msd, med], null, ['s'], null, [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
+                {any(ro, gs, msd, med) && <p>
+                    {singleLineMultiFieldValueFormatter([ro, gs, msd, med], [false, true], ['s'], [', '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}
                 </p>}
-                {any(cn)&& <p>{cn.val}</p>}
+                {any(fa) && <p>{fa.lbl}: {fa.val}</p>}
+                {any(cn) && <p>{cn.val}</p>}
+
+                {any(dd) &&
+                <p>{reftableValueParser(dd.val, false, true).map((val, index) => {
+                    return reftableValueFormatter(val, index)
+                })}</p>}
+
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)

@@ -86,15 +86,17 @@ const fieldStrSchemaGen = (field, schema) => {
         //     result["enum"] = lovOptions[subtype_id] ?? []
         //     break;
         // }
-        case "lov": {
-            // const subtype_id = field.subtype_id;
-            result["type"] = "string";
-            // result["options"] = lovOptions[subtype_id] ?? []; // should be url
-            result['subtype_id'] = field.subtype_id;
-            // result["enum"] = lovOptions[subtype_id] ?? []
-            break;
-        }
-        case "reftable": {
+        case "lov":
+        //     {
+        //     // const subtype_id = field.subtype_id;
+        //     result["type"] = "string";
+        //     // result["options"] = lovOptions[subtype_id] ?? []; // should be url
+        //     result['subtype_id'] = field.subtype_id;
+        //     // result["enum"] = lovOptions[subtype_id] ?? []
+        //     break;
+        // }
+        case "reftable":
+        case "systable": {
             // const subtype_id = field.subtype_id;
             // result["enum"] = lovOptions[subtype_id] ?? []
             result["type"] = "string";
@@ -177,7 +179,7 @@ const formDataSchemaGen = (schema) => {
                                 subFieldDataSchema[subFieldName] = JSON.stringify(val[subFieldName].value);
                             } else if (subField.type === "reftable") {
                                 subFieldDataSchema[subFieldName] = val[subFieldName].value && val[subFieldName].value.length ? JSON.stringify([val[subFieldName].value[0]].concat(val[subFieldName].value[1].split("|"))) : undefined;
-                            } else if (subField.type === 'lov') {
+                            } else if (subField.type === 'lov' || subField.type === "systable") {
                                 subFieldDataSchema[subFieldName] = val[subFieldName].value ? JSON.stringify(val[subFieldName].value) : undefined
                             }
                                 // else if (subField.type === "reftable") {
@@ -203,7 +205,7 @@ const formDataSchemaGen = (schema) => {
                 dataSchema[fieldName] = JSON.stringify(bilingualValueParser(field,field.rawValue,false,true));
             } else if (field.type === "reftable") {
                 dataSchema[fieldName] = field.rawValue && field.rawValue.length ? JSON.stringify([field.rawValue[0]].concat(field.rawValue[1].split("|"))) : undefined;
-            } else if (field.type === 'lov') {
+            } else if (field.type === 'lov' || field.type === "systable") {
                 dataSchema[fieldName] = field.rawValue ? JSON.stringify(field.rawValue) : undefined
             }
                 // else if (field.type === "reftable") {
@@ -253,6 +255,10 @@ const fieldTypeWidgetMapper = {
         "ui:widget": "dateInputWidget"
     },
     "reftable": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "multiColLargeSelectionWidget"
+    },
+    "systable": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "multiColLargeSelectionWidget"
     },

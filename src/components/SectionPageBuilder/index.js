@@ -86,14 +86,14 @@ export function SectionPageBuilder(props) {
                 setState({
                     ...state,
                     ready: true,
-                    loadingErr: `error occurs when fetch cv section data, error: ${err}`
+                    loadingErr: `error occurs when fetch cv section data, error: ${JSON.stringify(err)}`
                 })
                 console.warn("error occurs when fetch cv section data", err)
             } else {
                 setState({
                     ...state,
                     ready: true,
-                    loadingErr: `unhandled response from server on cv page, response: ${res} \n error: ${err}`
+                    loadingErr: `unhandled response from server on cv page, response: ${res} \n error: ${JSON.stringify(err)}`
                 })
                 console.warn("unhandled response from server on cv page", res, err)
             }
@@ -159,7 +159,6 @@ export function SectionPageBuilder(props) {
 
     const handleFormEditSubmit = (data) => {
         console.log("received form data", data, state);
-        console.log("should fetch data");
 
         if (state.form && state.form.schema && state.form.schema.formSchema) {
             const formData = new FormData();
@@ -178,6 +177,7 @@ export function SectionPageBuilder(props) {
                         formData.append(`data[${field.id}]`, fieldData ?? "");
                         break;
                     case 'lov':
+                    case 'systable':
                     case 'reftable':
                         if (fieldData) {
                             const lovData = JSON.parse(fieldData);
@@ -237,7 +237,7 @@ export function SectionPageBuilder(props) {
                                                         subsectionLovData.forEach(data => {
                                                             formData.append(`${template}[data][${fieldId}][]`, data)
                                                         })
-                                                    } else if (subsectionField.type === 'reftable') {
+                                                    } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
                                                         const subsectionLovData = JSON.parse(newFieldData);
                                                         formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
                                                         formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
@@ -288,7 +288,7 @@ export function SectionPageBuilder(props) {
                                                                 subsectionLovData.forEach(data => {
                                                                     formData.append(`${template}[data][${fieldId}][]`, data)
                                                                 })
-                                                            } else if (subsectionField.type === 'reftable') {
+                                                            } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
                                                                 const subsectionLovData = JSON.parse(newFieldData);
                                                                 formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
                                                                 formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
@@ -343,7 +343,7 @@ export function SectionPageBuilder(props) {
                                                         subsectionLovData.forEach(data => {
                                                             formData.append(`${template}[data][${fieldId}][]`, data)
                                                         })
-                                                    } else if (subsectionField.type === 'reftable') {
+                                                    } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
                                                         const subsectionLovData = JSON.parse(oldFieldData);
                                                         formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
                                                         formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
@@ -379,7 +379,7 @@ export function SectionPageBuilder(props) {
                 }
             })
             formData.append('contentType', 'members');
-            formData.append('contentId', '1');
+            formData.append('contentId', '3');
             formData.append('viewType', 'cv');
             formData.append('sectionId', state.form.sectionId);
             formData.append('itemId', state.form.itemId);
@@ -440,7 +440,8 @@ export function SectionPageBuilder(props) {
     const handleFormEditCancel = () => {
         setState({
             ...state,
-            ready: false
+            shouldModalOpen: false,
+            form: null
         })
     }
 
@@ -463,6 +464,7 @@ export function SectionPageBuilder(props) {
                         formData.append(`data[${field.id}]`, fieldData ?? "");
                         break;
                     case 'lov':
+                    case 'systable':
                     case 'reftable':
                         if (fieldData) {
                             const lovData = JSON.parse(fieldData);
@@ -514,7 +516,7 @@ export function SectionPageBuilder(props) {
                                                         subsectionLovData.forEach(data => {
                                                             formData.append(`${template}[data][${fieldId}][]`, data)
                                                         })
-                                                    } else if (subsectionField.type === 'reftable') {
+                                                    } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
                                                         const subsectionLovData = JSON.parse(oldFieldData);
                                                         formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
                                                         formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
@@ -548,7 +550,7 @@ export function SectionPageBuilder(props) {
                 }
             })
             formData.append('contentType', 'members');
-            formData.append('contentId', '1');
+            formData.append('contentId', '3');
             formData.append('viewType', 'cv');
             formData.append('sectionId', state.form.sectionId);
             formData.append('itemId', state.form.itemId);
@@ -602,10 +604,6 @@ export function SectionPageBuilder(props) {
     }
 
     const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
-        // console.log(sectionId, itemId, parentItemId, parentFieldId);
-
-        // console.log('start', window.scrollY)
-
         fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             // console.log(lovSubtypeIDs);
@@ -684,6 +682,7 @@ export function SectionPageBuilder(props) {
                         <p className="ml-3 hover:text-yellow-700">{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
+                                                  // console.log(section.section_id, 0, parentSection,getParentFieldID(section, parentSection), structureChain)
                                                   handleOnItemClick(section.section_id, 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                               }}
                                               onDoubleClick={() => {

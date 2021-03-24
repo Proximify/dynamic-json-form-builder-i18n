@@ -11,8 +11,13 @@ export const fetchCVSchema = (callback) => {
     }).then(res => {
         // setState({...state, schema: res.data, isReady: true})
         // callback({...state, schema: res.data, isReady: true})
-        callback(res, null)
-        console.log("load success", res)
+        if (!res.data.error && res.data.sections) {
+            callback(res, null)
+            console.log("load success", res)
+        } else {
+            callback(null, res.data)
+            console.log("loading err", res.data);
+        }
     }).catch(err => {
         // setState({...state, isReady: false, rawError: err})
         // callback({...state, isReady: false, rawError: err})

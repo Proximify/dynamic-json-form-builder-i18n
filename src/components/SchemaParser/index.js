@@ -8,7 +8,7 @@ const getLovSubtypeIdHelper = (sectionSchema) => {
         const lovSubtypeIds = [];
         Object.keys(sectionSchema.fields).forEach(fieldID => {
             const field = sectionSchema.fields[fieldID];
-            if (field.type === "lov") {
+            if (field.type === "lov" || field.type === 'systable') {
                 lovSubtypeIds.push(field.subtype_id);
             } else if (field.type === "reftable") {
                 lovSubtypeIds.push([field.subtype_id, field.dependencies]);
