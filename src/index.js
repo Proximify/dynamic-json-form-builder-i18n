@@ -36,10 +36,10 @@ class App extends Component {
     }
 
     // http://127.0.0.1:8000/profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv&section=2&itemId=2&parentItemId=1&parentFieldId=46
-    componentDidMount() {
-        fetchCVSchema(this.state, (newState) => {
-            this.setState(newState)
-        })
+    // componentDidMount() {
+    //     fetchCVSchema(this.state, (newState) => {
+    //         this.setState(newState)
+    //     })
         // api.get("profiles.php?action=display&editable=true&contentType=members&contentId=1&viewType=cv&withFormat=true", {
         //     headers: {'Content-Type': 'application/json'}
         // }).then(res => {
@@ -49,7 +49,7 @@ class App extends Component {
         //     this.setState({...this.state, isReady: false, rawError: err})
         //     console.log("loading err", err);
         // })
-    }
+ //   }
 
     // fetchFormSchema(section, itemId, parentItemId, parentFieldId, callback) {
     //     const url = `profiles.php?action=edit&editable=true&contentType=members&contentId=1&viewType=cv${section !== null ? '&section=' + section : ""}${itemId !== null ? '&itemId=' + itemId : ""}${parentItemId !== null ? '&parentItemId=' + parentItemId : ""}${parentFieldId !== null ? '&parentFieldId=' + parentFieldId : ""}`;
@@ -96,7 +96,6 @@ class App extends Component {
                         css={"background: white; max-width: 40rem"}>
                         {this.state.isReady &&
                         <SectionPageBuilder
-                            schema={SchemaParser(this.state.schema)}
                             language={this.state.language.language}
                         />}
                         {this.state.rawError && <div>{JSON.stringify(this.state.rawError)}</div>}

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import FormBuilder from '../FormBuilder';
-import api, {fetchFormSchema, fetchLovOptions} from "./helper/api";
+import api, {fetchFormSchema, fetchLovOptions, fetchCVSchema} from "./helper/api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
 import {ModalFullScreen} from "../FormBuilder/components/utils/Modals";
@@ -50,17 +50,60 @@ const SectionLabelTheme = {
 
 
 export function SectionPageBuilder(props) {
-    const schema = [...props.schema];
     const [state, setState] = useState({
         sections: [],
         form: null,
         shouldModalOpen: false,
         scrollY: 0,
         ready: false,
+        loadingErr: ""
     })
     console.log("SectionPageBuilder", state)
 
     useEffect(() => {
+        if (state.ready)
+            return;
+        fetchCVSchema((res, err) => {
+            if (res && !err) {
+                const resData = res.data;
+                const cvSections = SchemaParser(resData);
+                if (cvSections.length > 0) {
+                    cvSections.forEach(section => sectionSchemaBuilder(section, section.section_data, section.fields));
+                    setState({
+                        ...state,
+                        sections: cvSections,
+                        ready: true
+                    })
+                } else {
+                    setState({
+                        ...state,
+                        ready: true,
+                        loadingErr: `error occurs when parse cvSections, response data: ${resData} \n parsed cv sections: ${cvSections}`
+                    })
+                    console.warn("error occurs when parse cvSections", resData, cvSections)
+                }
+            } else if (!res && err) {
+                setState({
+                    ...state,
+                    ready: true,
+                    loadingErr: `error occurs when fetch cv section data, error: ${err}`
+                })
+                console.warn("error occurs when fetch cv section data", err)
+            } else {
+                setState({
+                    ...state,
+                    ready: true,
+                    loadingErr: `unhandled response from server on cv page, response: ${res} \n error: ${err}`
+                })
+                console.warn("unhandled response from server on cv page", res, err)
+            }
+        })
+
+    }, [state.ready])
+
+    useEffect(() => {
+        if (!state.ready)
+            return;
         if (state.shouldModalOpen === true) {
             document.body.style.position = 'fixed';
         } else {
@@ -113,20 +156,7 @@ export function SectionPageBuilder(props) {
             })
         }
     }
-
-    useEffect(() => {
-        if (state.ready)
-            return;
-        schema.forEach(section => sectionSchemaBuilder(section, section.section_data, section.fields));
-        setState({
-            ...state,
-            sections: schema,
-            shouldModalOpen: false,
-            ready: true,
-            form: null,
-        })
-    }, [state.ready])
-
+    
     const handleFormEditSubmit = (data) => {
         console.log("received form data", data, state);
         console.log("should fetch data");
@@ -172,7 +202,7 @@ export function SectionPageBuilder(props) {
                             if (bilingualData.fre) {
                                 formData.append(`data[${field.id}][french]`, bilingualData.fre)
                             }
-                            if (Object.keys(bilingualData).length === 0){
+                            if (Object.keys(bilingualData).length === 0) {
                                 formData.append(`data[${field.id}]`, "")
                             }
                         } else {
@@ -219,7 +249,7 @@ export function SectionPageBuilder(props) {
                                                         if (bilingualData.fre) {
                                                             formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
                                                         }
-                                                        if (Object.keys(bilingualData).length === 0){
+                                                        if (Object.keys(bilingualData).length === 0) {
                                                             formData.append(`${template}[data][${fieldId}]`, '');
                                                         }
                                                     } else {
@@ -812,10 +842,9 @@ export function SectionPageBuilder(props) {
 
     return (
         <>
-            {state.ready && state.sections.map((section, index) => {
-                // console.log(section)
+            {state.ready ? (state.loadingErr === "" || !state.loadingErr ? state.sections.map((section, index) => {
                 return sectionBuilder(section, index, 3, [section.name])
-            })}
+            }) : <div>{state.loadingErr}</div>) : <div>Loading...</div>}
         </>
     )
 }
