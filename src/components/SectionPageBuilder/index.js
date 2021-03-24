@@ -156,7 +156,7 @@ export function SectionPageBuilder(props) {
             })
         }
     }
-    
+
     const handleFormEditSubmit = (data) => {
         console.log("received form data", data, state);
         console.log("should fetch data");
