@@ -4,6 +4,8 @@ import NumberFormat from "react-number-format";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TextareaAutosize from 'react-textarea-autosize';
+import {handleOnPrimaryItemSetBtnClick} from "../../../SectionPageBuilder/helper/sectionPageBuilderHelper";
+import api from "../../../SectionPageBuilder/helper/api";
 
 const months = {
     en: [
@@ -201,8 +203,8 @@ export function DateInputWidget(props) {
                         return handleChange(date);
                     }}
                     dateFormat="yyyy/MM/dd"
-                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    // placeholderText={i18n.language === "fr" ? "aaaa/m/j" : "yyyy/mm/dd"}
+            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+            // placeholderText={i18n.language === "fr" ? "aaaa/m/j" : "yyyy/mm/dd"}
                     locale={'en'}
                     placeholderText={'yyyy/mm/dd'}
                     dropdownMode="scroll"
@@ -239,8 +241,8 @@ export function MonthDayInputWidget(props) {
                     }}
                     dateFormat="MM/dd"
                     dateFormatCalendar="MMM"
-                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    // placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
+            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+            // placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
                     locale={'en'}
                     placeholderText={'mm/dd'}
                     showMonthDropdown={true}
@@ -261,20 +263,6 @@ export function YearMonthInputWidget(props) {
         }
     );
 
-    // const date = props.value ? props.value.split("/") : null;
-    // const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
-
-    // const handleChange = (dateValue) => {
-    //     if (!dateValue) {
-    //         props.onChange(undefined);
-    //     } else {
-    //         const year = dateValue.getFullYear();
-    //         const month = dateValue.getMonth() + 1;
-    //         // const date = dateValue.getDate();
-    //         props.onChange(year + '/' + month);
-    //     }
-    // }
-
     const handleChange = (dateValue, hasDate) => {
         // console.log("handle change", dateValue, hasDate)
         if (!dateValue) {
@@ -290,10 +278,6 @@ export function YearMonthInputWidget(props) {
 
     return (
         <DatePicker selected={state.date}
-            // onChange={(date) => {
-            //     setDate(date);
-            //     return handleChange(date);
-            // }}
                     onChangeRaw={event => {
                         if (event.target.value === undefined) {
                             return;
@@ -339,8 +323,8 @@ export function YearMonthInputWidget(props) {
                         handleChange(date, state.hasDate);
                     }}
                     dateFormat={!state.hasDate ? `yyyy/MM` : 'yyyy/MM/dd'}
-                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    // placeholderText={i18n.language === "fr" ? "aaaa/m" : "yyyy/mm"}
+            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+            // placeholderText={i18n.language === "fr" ? "aaaa/m" : "yyyy/mm"}
                     locale={'en'}
                     placeholderText={'yyyy/mm'}
                     showMonthYearPicker={!state.hasDate}
@@ -350,11 +334,6 @@ export function YearMonthInputWidget(props) {
 
 export function YearInputWidget(props) {
     const {value} = props;
-    // const hasMonth = value ? value.split('/').length >= 2 : false;
-    // const hasDate = value ? value.split('/').length >= 3 : false;
-    // const [date, setDate] = useState(value ? new Date(value.split('/')[0], hasMonth ? value.split('/')[1] - 1 : 1, hasDate ? value.split('/')[2] : null) : null);
-
-    // const year = props.value ?? null;
     const [state, setState] = useState(
         () => {
             const hasMonth = value ? value.split('/').length >= 2 : false;
@@ -377,7 +356,6 @@ export function YearInputWidget(props) {
             const date = dateValue.getDate();
             props.onChange(`${year}${hasMonth ? `/${month + 1}` : ''}${hasDate ? `/${date}` : ''}`);
         }
-
     }
 
     return (
@@ -436,8 +414,8 @@ export function YearInputWidget(props) {
                         handleChange(date, state.hasMonth, state.hasDate);
                     }}
                     dateFormat={state.hasMonth ? (state.hasDate ? "yyyy/MM/dd" : `yyyy/MM`) : `yyyy`}
-                    // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-                    // placeholderText={i18n.language === "fr" ? "aaaa" : "yyyy"}
+            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+            // placeholderText={i18n.language === "fr" ? "aaaa" : "yyyy"}
                     locale={'en'}
                     placeholderText={'yyyy'}
                     showYearPicker={!state.hasMonth}
@@ -447,4 +425,19 @@ export function YearInputWidget(props) {
                     scrollableYearDropdown={state.hasMonth}
         />
     );
+}
+
+export function BooleanInputWidget(props) {
+    const {value, id, onChange} = props;
+
+    const onChangeValue = (event) => {
+        onChange(event.target.value)
+    }
+
+    return <div className="singleFieldInput flex space-x-5" onChange={onChangeValue}>
+        <input type="radio" value="0" name={`${id}`} checked={value ? value === "0" : false}/> No
+        <input type="radio" value="1" name={`${id}`} checked={value ? value === "1" : false}/> Yes
+    </div>
+
+
 }

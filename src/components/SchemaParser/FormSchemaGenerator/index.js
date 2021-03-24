@@ -28,7 +28,7 @@ export const SchemaGenerator = (schema) => {
         result.uiSchema = formUISchemaGen(schema);
         result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
     }
-    // console.log(result);
+    console.log(result);
     return result;
 }
 
@@ -66,10 +66,6 @@ const formStrSchemaGen = (schema) => {
  * @returns {{}}
  */
 const fieldStrSchemaGen = (field, schema) => {
-    // if (field.name === "order" && schema.asc_item_order === "1"){
-    //     return null;
-    // }
-    // console.log(field.name, field, schema)
     const result = {}
     result["name"] = field.name ?? null;
     result["id"] = field.field_id ?? null;
@@ -81,11 +77,6 @@ const fieldStrSchemaGen = (field, schema) => {
     result["exclusive_with"] = field.exclusive_with;
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
     switch (field.type) {
-        // case "lov": {
-        //     const subtype_id = field.subtype_id;
-        //     result["enum"] = lovOptions[subtype_id] ?? []
-        //     break;
-        // }
         case "lov":
         //     {
         //     // const subtype_id = field.subtype_id;
@@ -108,6 +99,7 @@ const fieldStrSchemaGen = (field, schema) => {
             result["max_char_count"] = field.max_char_count;
             break;
         case "integer":
+        case 'boolean':
             result["type"] = "string";
             break;
         case "elapsed-time":
@@ -202,7 +194,7 @@ const formDataSchemaGen = (schema) => {
             if (field.type === "bilingual") {
                 // console.log("bilingualfields: ",bilingualValueParser(field,field.rawValue,false,true))
 
-                dataSchema[fieldName] = JSON.stringify(bilingualValueParser(field,field.rawValue,false,true));
+                dataSchema[fieldName] = JSON.stringify(bilingualValueParser(field, field.rawValue, false, true));
             } else if (field.type === "reftable") {
                 dataSchema[fieldName] = field.rawValue && field.rawValue.length ? JSON.stringify([field.rawValue[0]].concat(field.rawValue[1].split("|"))) : undefined;
             } else if (field.type === 'lov' || field.type === "systable") {
@@ -269,12 +261,15 @@ const fieldTypeWidgetMapper = {
     "integer": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "numberInputWidget",
-        // "ui:readonly": true
     },
     "elapsed-time": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "elapsedTimeWidget",
-    }
+    },
+    "boolean": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "booleanInputWidget"
+    },
 }
 
 

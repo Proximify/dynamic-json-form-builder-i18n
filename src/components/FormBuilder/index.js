@@ -11,7 +11,8 @@ import {
     DateInputWidget,
     MonthDayInputWidget,
     YearMonthInputWidget,
-    YearInputWidget
+    YearInputWidget,
+    BooleanInputWidget
 } from "./components/SingleField";
 import {
     SingleSelectionWidget,
@@ -43,7 +44,7 @@ const customWidgets = {
     monthDayInputWidget: MonthDayInputWidget,
     yearMonthInputWidget: YearMonthInputWidget,
     yearInputWidget: YearInputWidget,
-
+    booleanInputWidget: BooleanInputWidget,
 
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
