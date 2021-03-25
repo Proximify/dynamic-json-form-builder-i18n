@@ -25,8 +25,8 @@ export default function Telephone(props) {
                 <p>
                     {singleLineMultiFieldValueFormatter([pt, cc, ac, tn, ex, tsd, ted], null, ['s'], [': ', ['+', ' '], ['(', ') '], ' ', ['x ', ' ']],[[4,5,6,'| ('],[5,5,6,' - '],[6,5,6,')']])}
                 </p>}
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )

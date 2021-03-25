@@ -45,8 +45,8 @@ export default function Affiliations(props) {
                 </p>}
                 {any(de) && <p>{de.val}</p>}
                 {any(ad) && <p>{ad.val}</p>}
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )

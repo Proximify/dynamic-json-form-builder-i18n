@@ -15,6 +15,20 @@ export default function UserProfile(props) {
     const formData = rawData.values;
     const schema = props.schema;
 
+
+    const unformattedFieldFormatter = (unformattedFields) => {
+        if (Object.keys(unformattedFields).length < 1) {
+            return null;
+        } else {
+            return <div>
+                {Object.keys(unformattedFields).map(unformattedFieldKey => {
+                    const unformattedField = unformattedFields[unformattedFieldKey];
+                    return <p>{unformattedField.lbl}: {JSON.stringify(unformattedField.val)}</p>
+                })}
+            </div>
+        }
+    }
+
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
@@ -114,9 +128,10 @@ export default function UserProfile(props) {
                     {any(gr) && <div><p>{gr.lbl}</p> <p>{singleFieldSubsectionFormatter(gr.val)}</p></div>}
                     {any(co) && <div><p>{co.lbl}</p> <p>{singleFieldSubsectionFormatter(co.val)}</p></div>}
                 </div>
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
-                }
+                {/*{Object.keys(ft.getUnformattedField()).length > 0 ?*/}
+                {/*    JSON.stringify(ft.getUnformattedField()) : null*/}
+                {/*}*/}
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

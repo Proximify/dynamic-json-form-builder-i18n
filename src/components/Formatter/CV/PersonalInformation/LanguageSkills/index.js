@@ -26,8 +26,8 @@ export default function LanguageSkills(props) {
                     {any(rd, wr, sp, und, pv) &&
                     <span>({singleLineMultiFieldValueFormatter([rd, wr, sp, und, pv], null, null, [', ', ', ', ', ', ', '])})</span>}
                 </p>}
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )

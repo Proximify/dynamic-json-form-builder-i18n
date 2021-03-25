@@ -113,7 +113,7 @@ export default function ResearchFundingHistory(props) {
                     <div><p>{fso.lbl}</p>
                         <div>{fso.val.map((val, index) => {
                             return <div key={index}>
-                                <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_start_date, val.funding_end_date], null, ['s'], [' '], [[1, 1, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.organization_type, val.funding_organization, val.other_funding_organization, val.funding_start_date, val.funding_end_date], null, ['s'], [', '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.program_name, val.funding_reference_number], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.total_funding, val.currency_of_total_funding, val['total_funding_(can$)']], [true], null, [' ', ['(', ')'], ['(', ')  CAN']])}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.portion_of_funding_received, val['portion_of_funding_received_(can$)'], val.currency_of_portion_of_funding_received], [true], null, [' ', ['(', ')  CAN'], ['(', ')']])}</p>
@@ -121,12 +121,13 @@ export default function ResearchFundingHistory(props) {
                                 <p>{singleLineMultiFieldValueFormatter([val.funding_competitive], null, null)}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.converted_total_funding], null, null)}</p>
                                 <p>{singleLineMultiFieldValueFormatter([val.converted_portion_of_funding_received], null, null)}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.internally_funded], null, null)}</p>
                             </div>
                         })}</div>
                     </div>}
                 </div>
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )
@@ -159,6 +160,7 @@ export default function ResearchFundingHistory(props) {
                     break;
                 case 'funding_sources': {
                     const {
+                        organization_type: ot,
                         funding_organization: fo,
                         other_funding_organization: ofo,
                         funding_start_date: fsd,
@@ -173,17 +175,19 @@ export default function ResearchFundingHistory(props) {
                         currency_of_portion_of_funding_received: copofr,
                         funding_renewable: fr,
                         funding_competitive: fc,
+                        internally_funded: inf,
                         converted_total_funding: ctf,
                         converted_portion_of_funding_received: cpofr,
                     } = ft.getFields();
 
                     formattedValue = <div className='space-y-1.5'>
-                        <p>{singleLineMultiFieldValueFormatter([fo, ofo, fsd, fed], null, ['s'], [' '], [[1, 1, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([ot, fo, ofo, fsd, fed], null, ['s'], [' '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pn, frn], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([tf, cotf, tfc], [true], null, [' ', ['(', ')'], ['(', ')  CAN']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pofr, pofrc, copofr], [true], null, [' ', ['(', ')  CAN'], ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([fr], null, null)}</p>
                         <p>{singleLineMultiFieldValueFormatter([fc], null, null)}</p>
+                        <p>{singleLineMultiFieldValueFormatter([inf], null, null)}</p>
                         {(ctf.val || ctf.val === 0) && <p>{ctf.lbl}: {ctf.val}</p>}
                         {(cpofr.val || cpofr.val === 0) && <p>{cpofr.lbl}: {cpofr.val}</p>}
                     </div>

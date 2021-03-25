@@ -71,8 +71,8 @@ export default function NonAcademicWorkExperience(props) {
                             return reftableValueFormatter(val, index)
                         })}</div>}
                 </div>
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )

@@ -39,8 +39,8 @@ export default function Credentials(props) {
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
                 })}
-                    {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
-                    {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                    {otori.val && <span>{otori.val}{otori.val && ', '}</span>}
+                    {otorit.val && <span>{otorit.val}{otorit.val && ', '}</span>}
                     {otoril.val && <span>{otoril.val}</span>}
                 </p>}
                 {any(desc) && <>
@@ -67,8 +67,8 @@ export default function Credentials(props) {
                             return reftableValueFormatter(val, index)
                         })}</div>}
                 </div>
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )

@@ -59,17 +59,37 @@ export default function Workload(props) {
                         <p dangerouslySetInnerHTML={{__html: ac.val.fre}}/>
                     </div>}
                 </>}
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )
     } else {
-        return (
-            <React.Fragment>
-                Workload
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
-        )
+        const mappedValue = FieldValueMapper(rawData, schema, true);
+        const ft = new FormatterTracker(mappedValue, true);
+        const subsection = props.structureChain[0];
+
+        const {
+            institution_or_faculty: iof,
+            external_workload: ew
+        } = ft.getFields();
+        if (subsection) {
+            let formattedValue = null;
+            switch (subsection) {
+                case 'external_teaching':
+                    formattedValue =
+                        <p>{singleLineMultiFieldValueFormatter([iof, ew], null, null, [' '])}</p>;
+                    break;
+                default:
+                    break;
+            }
+            return formattedValue
+        } else {
+            return (
+                <React.Fragment>
+                    {JSON.stringify(props.rawData)}
+                </React.Fragment>
+            )
+        }
     }
 }

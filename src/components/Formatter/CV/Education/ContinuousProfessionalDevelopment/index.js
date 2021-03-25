@@ -1,15 +1,13 @@
 import React from "react";
 import {
-    any,
     FieldValueMapper,
     FormatterTracker,
+    any,
     reftableValueParser,
-    reftableValueFormatter,
-    singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
 
-export default function LeavesOfAbsenceAndImpactOnResearch(props) {
-    // console.log("Recognitions", props);
+export default function ContinuousProfessionalDevelopment(props) {
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -17,38 +15,44 @@ export default function LeavesOfAbsenceAndImpactOnResearch(props) {
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
+
         const {
-            leave_type: lt,
+            title_position: tp,
+            subject:su,
             start_date: sd,
             end_date: ed,
+            department:dp,
+            supervisor:sup,
             organization: ori,
             other_organization: otori,
-            other_organization_type: otorit,
             other_organization_location: otoril,
-            absence_and_impact_description: aaid
+            description: desc,
         } = ft.getFields();
         return (
             <div>
-                {any(lt, sd, ed) &&
+                {any(tp,su,sd,ed) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([lt, sd, ed], null, ['s', 's', 's'], [' '],[[0,1,2,<strong> (</strong>],[1,1,2,<strong> - </strong>],[2,1,2,<strong>)</strong>]])}
+                    {singleLineMultiFieldValueFormatter([tp,su,sd,ed], null, ['s'], [', ', ' '],[[1,2,3,'('],[2,2,3,' - '],[3,2,3,')']])}
                 </p>}
-                {any(ori, otori, otorit, otoril) &&
+                {any(dp,sup) &&
+                <p>
+                    {singleLineMultiFieldValueFormatter([dp,sup], null, null, [', '])}
+                </p>}
+                {any(ori, otori, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
                 })}
-                    {otori.val && <span>{otori.val}{otorit.val && ', '}</span>}
-                    {otorit.val && <span>{otorit.val}{otoril.val && ', '}</span>}
+                    {otori.val && <span>{otori.val}{otori.val && ', '}</span>}
                     {otoril.val && <span>{otoril.val}</span>}
                 </p>}
-                {any(aaid) && <>
-                    {aaid.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{aaid.lbl}</p>
-                        <p dangerouslySetInnerHTML={{__html: aaid.val.eng}}/>
+                {any(desc) && <>
+                    {desc.val.eng && <div className="bilingualItem">
+                        <p className="mainValue">{desc.lbl}</p>
+                        <p dangerouslySetInnerHTML={{__html: desc.val.eng}}/>
                     </div>}
-                    {aaid.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{aaid.lbl} (French)</p>
-                        <p dangerouslySetInnerHTML={{__html: aaid.val.fre}}/>
+                    {desc.val.fre && <div className="bilingualItem">
+                        <p className="mainValue">{desc.lbl} (French)</p>
+                        <p dangerouslySetInnerHTML={{__html: desc.val.fre}}/>
                     </div>}
                 </>}
                 {Object.keys(ft.getUnformattedField()).length > 0 ?
@@ -59,7 +63,7 @@ export default function LeavesOfAbsenceAndImpactOnResearch(props) {
     } else {
         return (
             <React.Fragment>
-                affiliations
+                ContinuousProfessionalDevelopment
                 {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
             </React.Fragment>
         )

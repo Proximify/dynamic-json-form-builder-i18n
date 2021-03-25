@@ -31,8 +31,8 @@ export default function StaffSupervision(props) {
                 {any(nohqpirt) && <p>{nohqpirt.lbl}: {nohqpirt.val}</p>}
                 {any(nop) && <p>{nop.lbl}: {nop.val}</p>}
                 {any(nov) && <p>{nov.lbl}: {nov.val}</p>}
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )

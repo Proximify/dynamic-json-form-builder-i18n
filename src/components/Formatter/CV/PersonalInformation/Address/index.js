@@ -46,8 +46,8 @@ export default function Address(props) {
                         })}
                     </span>}</p>}
                 {any(pzc) && <p>{pzc.val}</p>}
-                {Object.keys(ft.getUnFormattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnFormattedField())}</p> : null
+                {Object.keys(ft.getUnformattedField()).length > 0 ?
+                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
             </div>
         )

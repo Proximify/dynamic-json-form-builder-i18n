@@ -317,7 +317,7 @@ export class FormatterTracker {
         return this.#fields;
     }
 
-    getUnFormattedField() {
+    getUnformattedField() {
         // Object.keys(this.#fields).forEach(key => {
         //     const field = this.#fields[key];
         //     if (field.count === 0 && field.rawValue && field.name !== "order") {
@@ -425,6 +425,8 @@ export class FormatterTracker {
                     return {eng: eng, fre: fre}
                 case "slider":
                     return field.value + '%';
+                case 'boolean':
+                    return field.value === "1" ? field.label : "";
                 default:
                     return "unhandled format type of field:" + JSON.stringify(field)
             }
