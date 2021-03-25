@@ -1,3 +1,5 @@
+import React from "react";
+
 export const Months = [
     'January',
     'February',
@@ -255,6 +257,20 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
         })
     }</>
 }
+
+export const unformattedFieldFormatter = (unformattedFields) => {
+    if (Object.keys(unformattedFields).length < 1) {
+        return null;
+    } else {
+        return <div>
+            {Object.keys(unformattedFields).map(unformattedFieldKey => {
+                const unformattedField = unformattedFields[unformattedFieldKey];
+                return <p>{unformattedField.lbl}: {typeof unformattedField.val === 'object' ? JSON.stringify(unformattedField.val) : unformattedField.val}</p>
+            })}
+        </div>
+    }
+}
+
 
 export class FormatterTracker {
     #fields = {}

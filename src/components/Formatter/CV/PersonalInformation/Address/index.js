@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../../utils/helper";
 
 export default function Address(props) {
@@ -46,9 +46,8 @@ export default function Address(props) {
                         })}
                     </span>}</p>}
                 {any(pzc) && <p>{pzc.val}</p>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
+
             </div>
         )
     } else {

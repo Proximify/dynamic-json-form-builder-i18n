@@ -5,7 +5,7 @@ import {
     FormatterTracker,
     reftableValueParser,
     reftableValueFormatter,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../utils/helper";
 
 export default function Recognitions(props) {
@@ -83,9 +83,8 @@ export default function Recognitions(props) {
                         })}</div>}
                 </div>
                 {any(ca) && <p>{ca.lbl}: {ca.val}</p>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
+
             </div>
         )
     } else {

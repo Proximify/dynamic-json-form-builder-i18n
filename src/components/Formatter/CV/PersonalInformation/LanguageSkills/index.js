@@ -1,5 +1,11 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any, singleLineMultiFieldValueFormatter} from "../../../utils/helper";
+import {
+    FieldValueMapper,
+    FormatterTracker,
+    any,
+    singleLineMultiFieldValueFormatter,
+    unformattedFieldFormatter
+} from "../../../utils/helper";
 
 export default function LanguageSkills(props) {
     // console.log("LanguageSkill", props);
@@ -26,9 +32,7 @@ export default function LanguageSkills(props) {
                     {any(rd, wr, sp, und, pv) &&
                     <span>({singleLineMultiFieldValueFormatter([rd, wr, sp, und, pv], null, null, [', ', ', ', ', ', ', '])})</span>}
                 </p>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

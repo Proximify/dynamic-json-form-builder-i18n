@@ -5,7 +5,8 @@ import {
     FormatterTracker,
     reftableValueParser,
     reftableValueFormatter,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter,
+    unformattedFieldFormatter
 } from "../../../../utils/helper";
 
 export default function CourseTaught(props) {
@@ -19,6 +20,7 @@ export default function CourseTaught(props) {
         const ft = new FormatterTracker(mappedValue);
         const {
             role: ro,
+            geographical_scope: gs,
             course_code: cc,
             academic_session: as,
             start_date: sd,
@@ -38,7 +40,8 @@ export default function CourseTaught(props) {
             lecture_hours_per_week: lehpw,
             lab_hours_per_week: lahpw,
             tutorial_hours_per_week: thpw,
-            'co-instructors': ci
+            'co-instructors': ci,
+            student_rating_of_instruction: sroi
         } = ft.getFields();
 
         return (
@@ -77,9 +80,18 @@ export default function CourseTaught(props) {
                             </span>
                     })}
                 </p></div>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {any(sroi) &&
+                <div>
+                    <p><strong>{sroi.lbl}: </strong></p>
+                    {sroi.val.map((val, index) => {
+                        return <div key={index}>
+                            <p>{singleLineMultiFieldValueFormatter([val.course_code, val['term_or_full-year']], null, null, [', '])}</p>
+                            <p>{singleLineMultiFieldValueFormatter([val.teaching_effectiveness_rating, val.department_mean_for_teaching_effectiveness], [true, true], null, [', '])}</p>
+                            <p>{singleLineMultiFieldValueFormatter([val.number_of_students, val.response_ratio], [true, true], null, [', '])}</p>
+                        </div>
+                    })}
+                </div>}
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
@@ -97,6 +109,22 @@ export default function CourseTaught(props) {
                 case 'co-instructors':
                     formattedValue =
                         <p>{singleLineMultiFieldValueFormatter([fin, fan], null, null, [' '])}</p>;
+                    break;
+                case 'student_rating_of_instruction':
+                    const {
+                        course_code:cc,
+                        'term_or_full-year':tofy,
+                        teaching_effectiveness_rating: ter,
+                        department_mean_for_teaching_effectiveness:dmfte,
+                        number_of_students:nos,
+                        response_ratio: rr
+                    } = ft.getFields();
+
+                    formattedValue = <div className='space-y-1.5'>
+                        <p>{singleLineMultiFieldValueFormatter([cc, tofy], null, null, [', '])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([ter, dmfte], [true, true], null, [', '])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([nos,rr], [true, true], null, [', '])}</p>
+                    </div>
                     break;
                 default:
                     break;

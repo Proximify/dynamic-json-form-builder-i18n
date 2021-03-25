@@ -6,7 +6,7 @@ import {
     reftableValueFormatter,
     reftableValueParser,
     singleFieldSubsectionFormatter,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../utils/helper";
 
 export default function ResearchFundingHistory(props) {
@@ -126,9 +126,8 @@ export default function ResearchFundingHistory(props) {
                         })}</div>
                     </div>}
                 </div>
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
+
             </div>
         )
     } else {

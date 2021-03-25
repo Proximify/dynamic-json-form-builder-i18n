@@ -5,7 +5,7 @@ import {
     any,
     reftableValueParser,
     singleFieldSubsectionFormatter,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../../utils/helper";
 
 export default function Identification(props) {
@@ -56,9 +56,7 @@ export default function Identification(props) {
                 {any(afpr) && <p>{afpr.lbl}</p>}
                 {any(coc) &&
                 <p>{coc.lbl}: {singleFieldSubsectionFormatter(coc.val)}</p>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

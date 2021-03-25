@@ -6,7 +6,8 @@ import {
     reftableValueFormatter,
     reftableValueParser,
     singleFieldSubsectionFormatter,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter,
+    unformattedFieldFormatter
 } from "../../utils/helper";
 
 export default function UserProfile(props) {
@@ -14,20 +15,6 @@ export default function UserProfile(props) {
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
-
-    const unformattedFieldFormatter = (unformattedFields) => {
-        if (Object.keys(unformattedFields).length < 1) {
-            return null;
-        } else {
-            return <div>
-                {Object.keys(unformattedFields).map(unformattedFieldKey => {
-                    const unformattedField = unformattedFields[unformattedFieldKey];
-                    return <p>{unformattedField.lbl}: {JSON.stringify(unformattedField.val)}</p>
-                })}
-            </div>
-        }
-    }
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);

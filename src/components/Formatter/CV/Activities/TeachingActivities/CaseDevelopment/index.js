@@ -1,7 +1,14 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any, unformattedFieldFormatter} from "../../../utils/helper";
+import {
+    any,
+    FieldValueMapper,
+    FormatterTracker,
+    reftableValueParser,
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+} from "../../../../utils/helper";
 
-export default function Website(props) {
+export default function CaseDevelopment(props) {
+    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -10,26 +17,19 @@ export default function Website(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            url: u,
-            website_type: wt
+
         } = ft.getFields();
 
         return (
             <div>
-                {any(u, wt) &&
-                <p>
-                    <>{wt.val && <strong>{`${wt.val}: `}</strong>}</>
-                    <a href={u} className="text-blue-500 hover:underline"> {u.val}</a>
-                </p>}
                 {unformattedFieldFormatter(ft.getUnformattedField())}
-
             </div>
         )
     } else {
         return (
-            <React.Fragment>
-                Email
-            </React.Fragment>
+            <p>
+                CaseDevelopment
+            </p>
         )
     }
 }

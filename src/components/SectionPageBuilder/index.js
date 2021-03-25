@@ -685,7 +685,7 @@ export function SectionPageBuilder(props) {
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
                                                   // console.log(section.section_id, 0, parentSection,getParentFieldID(section, parentSection), structureChain)
-                                                  handleOnItemClick(section.section_id, 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                                  handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                               }}
                                               onDoubleClick={() => {
                                                   console.log('double clicked')

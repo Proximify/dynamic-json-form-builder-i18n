@@ -1,5 +1,5 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any, unformattedFieldFormatter} from "../../../utils/helper";
 
 export default function Email(props) {
     const rawData = props.rawData;
@@ -23,9 +23,7 @@ export default function Email(props) {
                     <>{et.val && <strong>{`${et.val}: `}</strong>}{ea.val}</>
                     {any(eed, esd) && <span> ({esd.val} - {eed.val})</span>}
                 </p>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

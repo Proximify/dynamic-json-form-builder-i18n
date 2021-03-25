@@ -1,5 +1,11 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any, singleLineMultiFieldValueFormatter} from "../../../utils/helper";
+import {
+    FieldValueMapper,
+    FormatterTracker,
+    any,
+    singleLineMultiFieldValueFormatter,
+    unformattedFieldFormatter
+} from "../../../utils/helper";
 
 export default function Telephone(props) {
     const rawData = props.rawData;
@@ -25,9 +31,8 @@ export default function Telephone(props) {
                 <p>
                     {singleLineMultiFieldValueFormatter([pt, cc, ac, tn, ex, tsd, ted], null, ['s'], [': ', ['+', ' '], ['(', ') '], ' ', ['x ', ' ']],[[4,5,6,'| ('],[5,5,6,' - '],[6,5,6,')']])}
                 </p>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
+
             </div>
         )
     } else {
