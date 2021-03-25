@@ -2,7 +2,7 @@ import React from "react";
 import '../SingleField/SingleField.css'
 
 export default function ReadOnlyFieldWidget(props) {
-    // console.log(props)
+    console.log(props)
     return (
         <input
             className={"singleFieldInput bg-gray-200"}

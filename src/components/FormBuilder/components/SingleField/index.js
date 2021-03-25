@@ -428,16 +428,36 @@ export function YearInputWidget(props) {
 }
 
 export function BooleanInputWidget(props) {
-    const {value, id, onChange} = props;
+    const {value, schema, onChange} = props;
 
-    const onChangeValue = (event) => {
+    const onValueChange = (event) => {
         onChange(event.target.value)
     }
-
-    return <div className="singleFieldInput flex space-x-5" onChange={onChangeValue}>
-        <input type="radio" value="0" name={`${id}`} checked={value ? value === "0" : false}/> No
-        <input type="radio" value="1" name={`${id}`} checked={value ? value === "1" : false}/> Yes
+    return <div className="singleFieldInput flex space-x-5" onChange={onValueChange}>
+        <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false}/> No
+        <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false}/> Yes
     </div>
+}
 
+export function SliderInputWidget(props) {
+    const [value, setValue] = useState(props.value ?? "");
+    const MAX_VAL = 100;
+    const MIN_VAL = 0;
+    const withValueLimit = (inputObj) => {
+        const {value} = inputObj;
+        if (value >= MIN_VAL && value <= MAX_VAL) return inputObj;
+    };
 
+    return (
+        <div className={"singleFieldInput"}>
+            <NumberFormat
+                id={props.schema.id}
+                value={value}
+                required={props.required}
+                isAllowed={withValueLimit}
+                onChange={event => handleValueChange(event.target.value, props.rawErrors, setValue, props.onChange)}
+                onBlur={() => props.onChange(value !== "" ? value : undefined)}
+            />%
+        </div>
+    );
 }

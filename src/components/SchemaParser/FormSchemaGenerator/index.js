@@ -99,7 +99,8 @@ const fieldStrSchemaGen = (field, schema) => {
             result["max_char_count"] = field.max_char_count;
             break;
         case "integer":
-        case 'boolean':
+        case "boolean":
+        case "slider":
             result["type"] = "string";
             break;
         case "elapsed-time":
@@ -270,6 +271,10 @@ const fieldTypeWidgetMapper = {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
         "ui:widget": "booleanInputWidget"
     },
+    "slider": {
+        "ui:FieldTemplate": customTemplates.genericFieldTemplate,
+        "ui:widget": "sliderInputWidget"
+    }
 }
 
 
@@ -308,7 +313,7 @@ const formUISchemaGen = (schema) => {
                     "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
                     "ui:widget": "hiddenFieldWidget"
                 }
-            } else if (field.constraints && field.constraints.autofill) {
+            } else if (field.constraints && (field.constraints.autofill || field.constraints.autoSum || field.constraints.readOnly)) {
                 result[fieldName] = {
                     "ui:FieldTemplate": customTemplates.genericFieldTemplate,
                     "ui:widget": "readOnlyFieldWidget"

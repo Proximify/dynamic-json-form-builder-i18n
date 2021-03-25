@@ -170,6 +170,7 @@ export function SectionPageBuilder(props) {
                     case 'string':
                     case 'integer':
                     case 'elaelapsed-time':
+                    case 'slider':
                     case "monthday":
                     case "yearmonth":
                     case "year":
@@ -457,6 +458,7 @@ export function SectionPageBuilder(props) {
                     case 'string':
                     case 'integer':
                     case 'elaelapsed-time':
+                    case 'slider':
                     case "monthday":
                     case "yearmonth":
                     case "year":

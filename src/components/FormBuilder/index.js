@@ -12,7 +12,8 @@ import {
     MonthDayInputWidget,
     YearMonthInputWidget,
     YearInputWidget,
-    BooleanInputWidget
+    BooleanInputWidget,
+    SliderInputWidget
 } from "./components/SingleField";
 import {
     SingleSelectionWidget,
@@ -35,7 +36,6 @@ const customWidgets = {
     currencyFieldWidget: CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
 
-
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
     phoneInputWidget: PhoneInputWidget,
@@ -45,6 +45,7 @@ const customWidgets = {
     yearMonthInputWidget: YearMonthInputWidget,
     yearInputWidget: YearInputWidget,
     booleanInputWidget: BooleanInputWidget,
+    sliderInputWidget:SliderInputWidget,
 
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
@@ -173,13 +174,17 @@ class FormBuilder extends Component {
                     uiSchema={this.props.uiSchema ?? undefined}
                     formData={this.props.formData ?? undefined}
                     formContext={
-                        {...this.props.formContext, submitAction: this.onSubmit} ?? undefined
+                        {...this.props.formContext} ?? undefined
                     }
                     widgets={customWidgets}
                     showErrorList={false}
                     liveValidate
                     onChange={({formData}) => {
                         // this.setState({...this.state, formData: formData})
+                        // TODO generic
+                        if (formData.hasOwnProperty('total_workload')){
+                            formData.total_workload = (Number(formData.undergraduate_teaching) + Number(formData.graduate_professional_teaching)).toString();
+                        }
                         console.log("data changed", formData)
                     }}
                     validate={this.validation}

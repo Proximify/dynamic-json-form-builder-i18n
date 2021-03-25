@@ -65,19 +65,23 @@ const fieldConstraintsHandler = (field, fields) => {
                         }
                     };
                     break;
-                // case "exclusive_with": {
-                //     const dependantField = getFieldById(fields, constraint["exclusive_with"].toString());
+                // case "autoSum":{
                 //     validations[validations.length] = {
                 //         validateMethod: (formData) => {
-                //             return formData === undefined || (!(formData[field.name] && formData[field.name].length && formData[dependantField.name] && formData[dependantField.name] !== ''));
+                //             if (formData[field.name]) {
+                //                 formData[field.name] = "50";
+                //
+                //                 return Number(formData[field.name]) < 100;
+                //             } else {
+                //                 return true;
+                //             }
                 //         },
-                //         getErrMsg: (formData) => {
-                //             return `This field has error`
+                //         getErrMsg: () => {
+                //             return `auto sum less than 100`
                 //         }
                 //     };
                 //     break;
                 // }
-                //TODO: missing autoSum
                 default:
                     // console.log("unhandled constraint", constraintName);
                     break;

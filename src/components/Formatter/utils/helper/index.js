@@ -423,6 +423,8 @@ export class FormatterTracker {
                     const eng = field.value["english"] ?? undefined;
                     const fre = field.value["french"] ?? undefined;
                     return {eng: eng, fre: fre}
+                case "slider":
+                    return field.value + '%';
                 default:
                     return "unhandled format type of field:" + JSON.stringify(field)
             }
