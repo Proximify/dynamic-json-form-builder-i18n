@@ -258,6 +258,7 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
     }</>
 }
 
+// TODO: handle special type of field
 export const unformattedFieldFormatter = (unformattedFields) => {
     if (Object.keys(unformattedFields).length < 1) {
         return null;
@@ -265,7 +266,9 @@ export const unformattedFieldFormatter = (unformattedFields) => {
         return <div>
             {Object.keys(unformattedFields).map((unformattedFieldKey,index) => {
                 const unformattedField = unformattedFields[unformattedFieldKey];
-                return <p key={index}>{unformattedField.lbl}: {typeof unformattedField.val === 'object' ? JSON.stringify(unformattedField.val) : unformattedField.val}</p>
+                if (unformattedField.val){
+                    return <p key={index}>{unformattedField.lbl}: {typeof unformattedField.val === 'object' ? JSON.stringify(unformattedField.val) : unformattedField.val}</p>
+                }
             })}
         </div>
     }
@@ -442,7 +445,7 @@ export class FormatterTracker {
                 case "slider":
                     return field.value + '%';
                 case 'boolean':
-                    return field.value === "1" ? field.label : "";
+                    return field.value === "1" ? field.label.replace('?', '') : null;
                 default:
                     return "unhandled format type of field:" + JSON.stringify(field)
             }

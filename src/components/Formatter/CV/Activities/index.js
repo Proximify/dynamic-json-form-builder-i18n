@@ -8,37 +8,62 @@ import ParticipationActivities from "./ParticipationActivities";
 import CommunityAndVolunteerActivities from "./CommunityAndVolunteerActivities";
 import KnowledgeAndTechnologyTranslation from "./KnowledgeAndTechnologyTranslation";
 import InternationalCollaborationActivities from "./InternationalCollaborationActivities";
+import ScholarlyActivities from "./ScholarlyActivities";
+import OtherProfessionalResearchActivities from "./OtherProfessionalResearchActivities";
+import Goals from "./Goals";
 
 
 export default function Activities(props) {
     const subsections = {
         "teaching_activities": <TeachingActivities structureChain={props.structureChain}
-                                          isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                          rawData={props.rawData}/>,
-        "supervisory_activities": <SupervisoryActivities structureChain={props.structureChain}
-                                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                               rawData={props.rawData}/>,
-        "administrative_activities": <AdministrativeActivities structureChain={props.structureChain}
-                                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                   isFullScreenViewMode={props.isFullScreenViewMode}
+                                                   schema={props.schema}
                                                    rawData={props.rawData}/>,
+        "supervisory_activities": <SupervisoryActivities structureChain={props.structureChain}
+                                                         isFullScreenViewMode={props.isFullScreenViewMode}
+                                                         schema={props.schema}
+                                                         rawData={props.rawData}/>,
+        "administrative_activities": <AdministrativeActivities structureChain={props.structureChain}
+                                                               isFullScreenViewMode={props.isFullScreenViewMode}
+                                                               schema={props.schema}
+                                                               rawData={props.rawData}/>,
         "advisory_activities": <AdvisoryActivities structureChain={props.structureChain}
-                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                           rawData={props.rawData}/>,
+                                                   isFullScreenViewMode={props.isFullScreenViewMode}
+                                                   schema={props.schema}
+                                                   rawData={props.rawData}/>,
         "assessment_and_review_activities": <AssessmentAndReviewActivities structureChain={props.structureChain}
-                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                            rawData={props.rawData}/>,
-        "participation_activities": <ParticipationActivities structureChain={props.structureChain}
-                                                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                                           isFullScreenViewMode={props.isFullScreenViewMode}
+                                                                           schema={props.schema}
                                                                            rawData={props.rawData}/>,
-        "community_and_volunteer_activities": <CommunityAndVolunteerActivities structureChain={props.structureChain}
-                                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+        "participation_activities": <ParticipationActivities structureChain={props.structureChain}
+                                                             isFullScreenViewMode={props.isFullScreenViewMode}
+                                                             schema={props.schema}
                                                              rawData={props.rawData}/>,
-        "knowledge_and_technology_translation": <KnowledgeAndTechnologyTranslation structureChain={props.structureChain}
-                                                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+        "community_and_volunteer_activities": <CommunityAndVolunteerActivities structureChain={props.structureChain}
+                                                                               isFullScreenViewMode={props.isFullScreenViewMode}
+                                                                               schema={props.schema}
                                                                                rawData={props.rawData}/>,
-        "international_collaboration_activities": <InternationalCollaborationActivities structureChain={props.structureChain}
-                                                                                   isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                                                   rawData={props.rawData}/>
+        "knowledge_and_technology_translation": <KnowledgeAndTechnologyTranslation structureChain={props.structureChain}
+                                                                                   isFullScreenViewMode={props.isFullScreenViewMode}
+                                                                                   schema={props.schema}
+                                                                                   rawData={props.rawData}/>,
+        "international_collaboration_activities": <InternationalCollaborationActivities
+            structureChain={props.structureChain}
+            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+            rawData={props.rawData}/>,
+        "scholarly_activities": <ScholarlyActivities structureChain={props.structureChain}
+                                                     isFullScreenViewMode={props.isFullScreenViewMode}
+                                                     schema={props.schema}
+                                                     rawData={props.rawData}/>,
+        "other_professional_research_activities": <OtherProfessionalResearchActivities
+            structureChain={props.structureChain}
+            isFullScreenViewMode={props.isFullScreenViewMode}
+            schema={props.schema}
+            rawData={props.rawData}/>,
+        "goals": <Goals structureChain={props.structureChain}
+                        isFullScreenViewMode={props.isFullScreenViewMode}
+                        schema={props.schema}
+                        rawData={props.rawData}/>,
     }
 
     return (

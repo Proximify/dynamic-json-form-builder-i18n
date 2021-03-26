@@ -4,11 +4,11 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../../../utils/helper";
 
 export default function EventParticipation(props) {
-    // console.log("Recognitions", props);
+    console.log("EventParticipation", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -27,7 +27,7 @@ export default function EventParticipation(props) {
             event_start_date:esd,
             event_end_date:eed
         } = ft.getFields();
-
+        console.log(ft.getFields())
         return (
             <div>
                 {any(ro, et, en, sd, ed) && <p>
@@ -48,9 +48,7 @@ export default function EventParticipation(props) {
                         <p dangerouslySetInnerHTML={{__html: ad.val.fre}}/>
                     </div>}
                 </>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
