@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../../../utils/helper";
 
 export default function OrganizationalReviewActivities(props) {
@@ -49,9 +49,7 @@ export default function OrganizationalReviewActivities(props) {
                         <p dangerouslySetInnerHTML={{__html: ad.val.fre}}/>
                     </div>}
                 </>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

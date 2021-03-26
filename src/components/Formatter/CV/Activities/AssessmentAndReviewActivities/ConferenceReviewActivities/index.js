@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../../../utils/helper";
 
 export default function ConferenceReviewActivities(props) {
@@ -33,10 +33,7 @@ export default function ConferenceReviewActivities(props) {
                 </p>}
                 {any(ch) && <p>{ch.val}</p>}
                 {any(nowrr) && <p>{nowrr.lbl}: {nowrr.val}</p>}
-
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../../../utils/helper";
 
 export default function EventAdministration(props) {
@@ -50,9 +50,7 @@ export default function EventAdministration(props) {
                     -
                     {eed.val && <span>{eed.lbl}: {eed.val}</span>})
                 </p>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

@@ -434,8 +434,8 @@ export function BooleanInputWidget(props) {
         onChange(event.target.value)
     }
     return <div className="singleFieldInput flex space-x-5" onChange={onValueChange}>
-        <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false}/> No
-        <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false}/> Yes
+        <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false} onChange={()=> {}}/> No
+        <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false} onChange={()=>{}}/> Yes
     </div>
 }
 

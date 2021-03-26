@@ -174,6 +174,7 @@ export function SectionPageBuilder(props) {
                     case "monthday":
                     case "yearmonth":
                     case "year":
+                    case "boolean":
                     case "date":
                         formData.append(`data[${field.id}]`, fieldData ?? "");
                         break;
@@ -682,23 +683,32 @@ export function SectionPageBuilder(props) {
                             // <p className={`${titleCSS[layer]}`}>{section.title}</p>
                         }
                         <p className="ml-3 hover:text-yellow-700">{section.multiplicity === "multiple" ?
-                            <AiOutlineFileAdd size={"1.1rem"}
-                                              onClick={() => {
-                                                  // console.log(section.section_id, 0, parentSection,getParentFieldID(section, parentSection), structureChain)
-                                                  handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
-                                              }}
-                                              onDoubleClick={() => {
-                                                  console.log('double clicked')
-                                              }}
-                            /> :
-                            <FiEdit size={"1.1rem"}
-                                    onClick={() => {
-                                        handleOnItemClick(section.section_id, section.section_data[0].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
-                                    }}
-                                    onDoubleClick={() => {
-                                        console.log('double clicked')
-                                    }}
-                            />}
+                            <>
+                                <AiOutlineFileAdd size={"1.1rem"}
+                                                  onClick={() => {
+                                                      // console.log(section.section_id, 0, parentSection,getParentFieldID(section, parentSection), structureChain)
+                                                      handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                                  }}
+                                                  onDoubleClick={() => {
+                                                      console.log('double clicked')
+                                                  }}
+                                />
+                                <span>{section.section_id}-{0}-{parentSection ? parentSection.section_data.length : "null"}</span>
+                            </> :
+                            <>
+                                <FiEdit size={"1.1rem"}
+                                        onClick={() => {
+                                            console.log(section, parentSection)
+                                            handleOnItemClick(section.section_id, section.section_data.length > 0 ? section.section_data[0].id : 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                        }}
+                                        onDoubleClick={() => {
+                                            console.log('double clicked')
+                                        }}
+                                />
+                                <span>{section.section_id}-{section.section_data.length}-{parentSection ? parentSection.section_data.length : "null"}</span>
+
+                            </>
+                        }
                         </p>
                     </div>
                     {state.shouldModalOpen === true && state.form && state.form.itemId === 0 && state.form.id === section.name ?
@@ -775,6 +785,14 @@ export function SectionPageBuilder(props) {
                                                     <div className="hover:text-yellow-700">
                                                         <FiEdit size={"1.1rem"}
                                                                 onClick={() => {
+                                                                    if (!section.section_data[itemIndex]) {
+                                                                        console.error("unable to get item id", section);
+                                                                        return;
+                                                                    }
+                                                                    if (parentSection && parentSection.section_data.length < 1){
+                                                                        console.error("unable to get parent section item id")
+                                                                        return;
+                                                                    }
                                                                     handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                                                 }}
                                                                 onDoubleClick={(e) => {
@@ -782,6 +800,8 @@ export function SectionPageBuilder(props) {
                                                                     console.log('double clicked')
                                                                 }}
                                                         />
+                                                        <p>{section.section_id}-{section.section_data.length}-{parentSection ? parentSection.section_data.length : "null"}</p>
+
                                                     </div> : null}
 
                                             </div>

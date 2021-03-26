@@ -263,9 +263,9 @@ export const unformattedFieldFormatter = (unformattedFields) => {
         return null;
     } else {
         return <div>
-            {Object.keys(unformattedFields).map(unformattedFieldKey => {
+            {Object.keys(unformattedFields).map((unformattedFieldKey,index) => {
                 const unformattedField = unformattedFields[unformattedFieldKey];
-                return <p>{unformattedField.lbl}: {typeof unformattedField.val === 'object' ? JSON.stringify(unformattedField.val) : unformattedField.val}</p>
+                return <p key={index}>{unformattedField.lbl}: {typeof unformattedField.val === 'object' ? JSON.stringify(unformattedField.val) : unformattedField.val}</p>
             })}
         </div>
     }

@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
 } from "../../../../utils/helper";
 
 export default function EditorialActivities(props) {
@@ -59,9 +59,7 @@ export default function EditorialActivities(props) {
                             return reftableValueFormatter(val, index)
                         })}</div>}
                 </div>
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {unformattedFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

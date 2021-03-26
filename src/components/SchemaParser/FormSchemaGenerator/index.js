@@ -313,7 +313,7 @@ const formUISchemaGen = (schema) => {
                     "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
                     "ui:widget": "hiddenFieldWidget"
                 }
-            } else if (field.constraints && (field.constraints.autofill || field.constraints.autoSum || field.constraints.readOnly)) {
+            } else if (field.constraints && (field.constraints.autofill || field.constraints.autoSum)) {
                 result[fieldName] = {
                     "ui:FieldTemplate": customTemplates.genericFieldTemplate,
                     "ui:widget": "readOnlyFieldWidget"
