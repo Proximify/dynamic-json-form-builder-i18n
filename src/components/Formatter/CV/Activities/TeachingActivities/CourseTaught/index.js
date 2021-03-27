@@ -6,7 +6,7 @@ import {
     reftableValueParser,
     reftableValueFormatter,
     singleLineMultiFieldValueFormatter,
-    unformattedFieldFormatter
+    genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function CourseTaught(props) {
@@ -91,7 +91,7 @@ export default function CourseTaught(props) {
                         </div>
                     })}
                 </div>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

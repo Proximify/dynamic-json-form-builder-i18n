@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function ProgramDevelopment(props) {
@@ -72,7 +72,7 @@ export default function ProgramDevelopment(props) {
                     })}</p></div>}
                     {any(dft) && <div><p>{dft.lbl}: </p><p>{dft.val}</p></div>}
                 </div>
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
 
             </div>
         )

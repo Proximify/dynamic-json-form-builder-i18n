@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function ResearchFundingApplicationAssessmentActivities(props) {
@@ -66,7 +66,7 @@ export default function ResearchFundingApplicationAssessmentActivities(props) {
                             return reftableValueFormatter(val, index)
                         })}</div>}
                 </div>
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

@@ -7,7 +7,7 @@ import {
     reftableValueParser,
     singleFieldSubsectionFormatter,
     singleLineMultiFieldValueFormatter,
-    unformattedFieldFormatter
+    genericFieldFormatter
 } from "../../utils/helper";
 
 export default function UserProfile(props) {
@@ -118,7 +118,7 @@ export default function UserProfile(props) {
                 {/*{Object.keys(ft.getUnformattedField()).length > 0 ?*/}
                 {/*    JSON.stringify(ft.getUnformattedField()) : null*/}
                 {/*}*/}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

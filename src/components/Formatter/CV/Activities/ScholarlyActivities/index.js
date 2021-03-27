@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
 
 export default function ScholarlyActivities(props) {
@@ -22,7 +22,7 @@ export default function ScholarlyActivities(props) {
 
         return (
             <div>
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

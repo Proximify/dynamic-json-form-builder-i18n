@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function BroadcastInterviews(props) {
@@ -30,8 +30,8 @@ export default function BroadcastInterviews(props) {
 
         return (
             <div>
-                {any(to,int,pro,net,fbd,ed) && <p>
-                    {singleLineMultiFieldValueFormatter([to,int,pro,net,fbd,ed], null, ['s'], [', ', ', ',', '], [[3,4,5,' ('], [4,4,5,' - '], [5,4,5,')']])}
+                {any(to, int, pro, net, fbd, ed) && <p>
+                    {singleLineMultiFieldValueFormatter([to, int, pro, net, fbd, ed], null, ['s'], [', ', ', ', ', '], [[3, 4, 5, ' ('], [4, 4, 5, ' - '], [5, 4, 5, ')']])}
                 </p>}
                 {any(dcv) && <>
                     {dcv.val.eng && <div className="bilingualItem">
@@ -56,9 +56,7 @@ export default function BroadcastInterviews(props) {
                         })}
                     </div>}
                 </div>
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
@@ -81,6 +79,7 @@ export default function BroadcastInterviews(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField())
                     break;
             }
             return formattedValue

@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function JournalReviewActivities(props) {
@@ -33,7 +33,7 @@ export default function JournalReviewActivities(props) {
                 </p>}
                 {any(pr) && <p>{pr.val}</p>}
                 {any(nowrr) && <p>{nowrr.lbl}: {nowrr.val}</p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

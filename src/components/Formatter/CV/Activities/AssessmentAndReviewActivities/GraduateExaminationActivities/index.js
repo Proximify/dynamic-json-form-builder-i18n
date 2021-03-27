@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function GraduateExaminationActivities(props) {
@@ -42,7 +42,7 @@ export default function GraduateExaminationActivities(props) {
                 </p>}
                 {any(dp) &&<p>{dp.val}</p>}
                 {any(sn) && <p>{sn.val}</p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

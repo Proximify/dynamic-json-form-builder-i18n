@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
 
 export default function Address(props) {
@@ -46,8 +46,7 @@ export default function Address(props) {
                         })}
                     </span>}</p>}
                 {any(pzc) && <p>{pzc.val}</p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
-
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

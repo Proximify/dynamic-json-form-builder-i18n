@@ -1,5 +1,5 @@
 import React from "react";
-import {FieldValueMapper, FormatterTracker, any, unformattedFieldFormatter} from "../../../utils/helper";
+import {FieldValueMapper, FormatterTracker, any, genericFieldFormatter} from "../../../utils/helper";
 
 export default function Website(props) {
     const rawData = props.rawData;
@@ -21,7 +21,7 @@ export default function Website(props) {
                     <>{wt.val && <strong>{`${wt.val}: `}</strong>}</>
                     <a href={u} className="text-blue-500 hover:underline"> {u.val}</a>
                 </p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
 
             </div>
         )

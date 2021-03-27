@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
 
 export default function Credentials(props) {
@@ -67,9 +67,7 @@ export default function Credentials(props) {
                             return reftableValueFormatter(val, index)
                         })}</div>}
                 </div>
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

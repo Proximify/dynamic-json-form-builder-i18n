@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function StaffSupervision(props) {
@@ -31,7 +31,7 @@ export default function StaffSupervision(props) {
                 {any(nohqpirt) && <p>{nohqpirt.lbl}: {nohqpirt.val}</p>}
                 {any(nop) && <p>{nop.lbl}: {nop.val}</p>}
                 {any(nov) && <p>{nov.lbl}: {nov.val}</p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

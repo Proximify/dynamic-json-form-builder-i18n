@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
 
 export default function ContinuousProfessionalDevelopment(props) {
@@ -55,9 +55,7 @@ export default function ContinuousProfessionalDevelopment(props) {
                         <p dangerouslySetInnerHTML={{__html: desc.val.fre}}/>
                     </div>}
                 </>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker, reftableValueFormatter,
     reftableValueParser,
-    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function MentoringActivities(props) {
@@ -54,7 +54,7 @@ export default function MentoringActivities(props) {
                         <p dangerouslySetInnerHTML={{__html: ad.val.fre}}/>
                     </div>}
                 </>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

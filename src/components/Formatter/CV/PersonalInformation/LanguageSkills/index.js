@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     singleLineMultiFieldValueFormatter,
-    unformattedFieldFormatter
+    genericFieldFormatter
 } from "../../../utils/helper";
 
 export default function LanguageSkills(props) {
@@ -32,7 +32,7 @@ export default function LanguageSkills(props) {
                     {any(rd, wr, sp, und, pv) &&
                     <span>({singleLineMultiFieldValueFormatter([rd, wr, sp, und, pv], null, null, [', ', ', ', ', ', ', '])})</span>}
                 </p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

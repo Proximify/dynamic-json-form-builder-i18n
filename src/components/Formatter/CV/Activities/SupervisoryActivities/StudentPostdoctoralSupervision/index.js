@@ -6,7 +6,7 @@ import {
     reftableValueFormatter,
     reftableValueParser,
     singleFieldSubsectionFormatter,
-    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function StudentPostdoctoralSupervision(props) {
@@ -142,7 +142,7 @@ export default function StudentPostdoctoralSupervision(props) {
                         })}</div>
                     </div>}
                 </div>
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

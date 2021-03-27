@@ -5,7 +5,7 @@ import {
     any,
     reftableValueParser,
     reftableValueFormatter,
-    singleLineMultiFieldValueFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
 
 export default function Degree(props) {
@@ -80,9 +80,7 @@ export default function Degree(props) {
                             return reftableValueFormatter(val, index)
                         })}</div>}
                 </div>
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

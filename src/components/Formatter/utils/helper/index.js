@@ -1,4 +1,5 @@
 import React from "react";
+import {bilingualValueParser} from "../../../SchemaParser";
 
 export const Months = [
     'January',
@@ -258,16 +259,34 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
     }</>
 }
 
-// TODO: handle special type of field
-export const unformattedFieldFormatter = (unformattedFields) => {
+export const genericFieldFormatter = (unformattedFields) => {
     if (Object.keys(unformattedFields).length < 1) {
         return null;
     } else {
         return <div>
-            {Object.keys(unformattedFields).map((unformattedFieldKey,index) => {
+            {Object.keys(unformattedFields).map((unformattedFieldKey, index) => {
                 const unformattedField = unformattedFields[unformattedFieldKey];
-                if (unformattedField.val){
-                    return <p key={index}>{unformattedField.lbl}: {typeof unformattedField.val === 'object' ? JSON.stringify(unformattedField.val) : unformattedField.val}</p>
+                console.log(unformattedField)
+
+                if (unformattedField.val || unformattedField.value) {
+                    switch (unformattedField.type) {
+                        case 'section':
+                            console.log("---", unformattedField.rawValue)
+                            return <div key={index}>{unformattedField.rawValue.map((subsection, i) => {
+                                return <div key={i}><p>{unformattedField.lbl}</p>{genericFieldFormatter(subsection)}
+                                </div>
+                            })}</div>
+                        case 'bilingual':
+                            return <p
+                                key={index}>{unformattedField.lbl ?? unformattedField.label}: <>{Object.values(unformattedField.val ?? unformattedField.value).map((bilingualValue, bilingualValueIndex) => bilingualValue && <span key={bilingualValueIndex}>{bilingualValueIndex > 0 && ', '}
+                                <span dangerouslySetInnerHTML={{__html: bilingualValue}}/></span>)}</></p>
+                        case 'reftable':
+                        case 'systable':
+                            return <p key={index}>{unformattedField.lbl ?? unformattedField.label}: {(unformattedField.val ?? unformattedField.value).join(' - ')}</p>
+                        default:
+                            return <p
+                                key={index}>{unformattedField.lbl ?? unformattedField.label}: {unformattedField.val ?? unformattedField.value}</p>
+                    }
                 }
             })}
         </div>

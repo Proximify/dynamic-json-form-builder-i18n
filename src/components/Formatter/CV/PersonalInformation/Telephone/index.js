@@ -4,7 +4,7 @@ import {
     FormatterTracker,
     any,
     singleLineMultiFieldValueFormatter,
-    unformattedFieldFormatter
+    genericFieldFormatter
 } from "../../../utils/helper";
 
 export default function Telephone(props) {
@@ -31,7 +31,7 @@ export default function Telephone(props) {
                 <p>
                     {singleLineMultiFieldValueFormatter([pt, cc, ac, tn, ex, tsd, ted], null, ['s'], [': ', ['+', ' '], ['(', ') '], ' ', ['x ', ' ']],[[4,5,6,'| ('],[5,5,6,' - '],[6,5,6,')']])}
                 </p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
 
             </div>
         )

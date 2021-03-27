@@ -5,7 +5,7 @@ import {
     FormatterTracker,
     reftableValueParser,
     reftableValueFormatter,
-    singleLineMultiFieldValueFormatter, unformattedFieldFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../utils/helper";
 
 export default function Recognitions(props) {
@@ -83,7 +83,7 @@ export default function Recognitions(props) {
                         })}</div>}
                 </div>
                 {any(ca) && <p>{ca.lbl}: {ca.val}</p>}
-                {unformattedFieldFormatter(ft.getUnformattedField())}
+                {genericFieldFormatter(ft.getUnformattedField())}
 
             </div>
         )
