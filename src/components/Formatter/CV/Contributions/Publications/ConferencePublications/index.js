@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function ConferencePublications(props) {
@@ -93,9 +93,7 @@ export default function ConferencePublications(props) {
                         </p>
                     })}
                 </div>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

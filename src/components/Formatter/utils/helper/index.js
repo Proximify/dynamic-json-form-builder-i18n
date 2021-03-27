@@ -266,12 +266,10 @@ export const genericFieldFormatter = (unformattedFields) => {
         return <div>
             {Object.keys(unformattedFields).map((unformattedFieldKey, index) => {
                 const unformattedField = unformattedFields[unformattedFieldKey];
-                console.log(unformattedField)
-
-                if (unformattedField.val || unformattedField.value) {
+                if ((unformattedField.val || unformattedField.value) && unformattedFieldKey !== 'order' && unformattedField !== 'itemId') {
                     switch (unformattedField.type) {
                         case 'section':
-                            console.log("---", unformattedField.rawValue)
+                            console.log(unformattedField)
                             return <div key={index}>{unformattedField.rawValue.map((subsection, i) => {
                                 return <div key={i}><p>{unformattedField.lbl}</p>{genericFieldFormatter(subsection)}
                                 </div>
@@ -282,7 +280,10 @@ export const genericFieldFormatter = (unformattedFields) => {
                                 <span dangerouslySetInnerHTML={{__html: bilingualValue}}/></span>)}</></p>
                         case 'reftable':
                         case 'systable':
-                            return <p key={index}>{unformattedField.lbl ?? unformattedField.label}: {(unformattedField.val ?? unformattedField.value).join(' - ')}</p>
+                            return <p key={index}>{unformattedField.lbl ?? unformattedField.label}: {(unformattedField.val ?? unformattedField.value.slice(1)).join(' - ')}</p>
+                        case 'lov':
+                            return <p
+                                key={index}>{unformattedField.lbl ?? unformattedField.label}: {unformattedField.val ?? unformattedField.value.slice(1)}</p>
                         default:
                             return <p
                                 key={index}>{unformattedField.lbl ?? unformattedField.label}: {unformattedField.val ?? unformattedField.value}</p>

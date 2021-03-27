@@ -20,6 +20,10 @@ import OnlineResources from "./OnlineResources";
 import Tests from "./Tests";
 import ClinicalCareGuidelines from "./ClinicalCareGuidelines";
 import ConferencePublications from "./ConferencePublications";
+import Bibliographies from "./Bibliographies";
+import TrainingMaterials from "./TrainingMaterials";
+import PublishedAbstract from "./PublishedAbstract";
+import PeerReviewedLetters from "./PeerReviewedLetters";
 
 export default function Publications(props) {
     const subsections = {
@@ -86,7 +90,19 @@ export default function Publications(props) {
                         rawData={props.rawData}/>,
         "conference_publications": <ConferencePublications structureChain={props.structureChain}
                                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                                            rawData={props.rawData}/>
+                                                            rawData={props.rawData}/>,
+        "bibliographies": <Bibliographies structureChain={props.structureChain}
+                                             isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                             rawData={props.rawData}/>,
+        "training_materials": <TrainingMaterials structureChain={props.structureChain}
+                        isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                        rawData={props.rawData}/>,
+        "published_abstract": <PublishedAbstract structureChain={props.structureChain}
+                                                            isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                            rawData={props.rawData}/>,
+        "peer_reviewed_letters": <PeerReviewedLetters structureChain={props.structureChain}
+                                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                           rawData={props.rawData}/>
     }
 
     return (

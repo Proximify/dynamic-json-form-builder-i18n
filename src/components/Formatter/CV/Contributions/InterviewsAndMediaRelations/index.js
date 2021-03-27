@@ -1,6 +1,7 @@
 import React from "react";
 import BroadcastInterviews from "./BroadcastInterviews";
 import TextInterviews from "./TextInterviews";
+import BroadcastNarratives from "./BroadcastNarratives";
 
 export default function InterviewsAndMediaRelations(props) {
 
@@ -10,7 +11,10 @@ export default function InterviewsAndMediaRelations(props) {
                                                                             rawData={props.rawData}/>,
         "text_interviews": <TextInterviews structureChain={props.structureChain}
                                                isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                               rawData={props.rawData}/>
+                                               rawData={props.rawData}/>,
+        "broadcast_narratives": <BroadcastNarratives structureChain={props.structureChain}
+                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                           rawData={props.rawData}/>
     }
 
     return (

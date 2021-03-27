@@ -4,7 +4,7 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
 export default function JournalArticles(props) {
@@ -12,18 +12,6 @@ export default function JournalArticles(props) {
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
-    const subsections = {
-        // "research_disciplines": <ResearchDisciplines structureChain={props.structureChain}
-        //                                              isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                              rawData={props.rawData}/>,
-        // "areas_of_research": <AreaOfResearch structureChain={props.structureChain}
-        //                                      isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                      rawData={props.rawData}/>,
-        // "fields_of_application": <FieldsOfApplication structureChain={props.structureChain}
-        //                                               isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-        //                                               rawData={props.rawData}/>,
-    }
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -99,9 +87,7 @@ export default function JournalArticles(props) {
                         </p>
                     })}
                 </div>}
-                {Object.keys(ft.getUnformattedField()).length > 0 ?
-                    <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
-                }
+                {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {

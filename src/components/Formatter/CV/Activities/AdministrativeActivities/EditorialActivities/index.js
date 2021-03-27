@@ -49,7 +49,6 @@ export default function EditorialActivities(props) {
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-
                     {any(aor) && <div><p>{aor.lbl}</p>
                         {reftableValueParser(aor.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)

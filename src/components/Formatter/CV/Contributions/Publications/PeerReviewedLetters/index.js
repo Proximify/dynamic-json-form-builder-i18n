@@ -7,7 +7,7 @@ import {
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 
-export default function TextInterviews(props) {
+export default function PeerReviewedLetters(props) {
     // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
@@ -17,43 +17,11 @@ export default function TextInterviews(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            topic: to,
-            interviewer: int,
-            forum: fo,
-            publication_date:pd,
-            description_contribution_value: dcv,
-            url: u,
-            funding_sources: fs
+
         } = ft.getFields();
 
         return (
             <div>
-                {any(to,int,fo,pd) && <p>
-                    {singleLineMultiFieldValueFormatter([to,int,fo,pd], null, ['s'], [', ', ', ', ' ', ['(',')']], )}
-                </p>}
-                {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
-                        <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
-                        <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
-                </>}
-                {any(u) && <p>
-                    <a href={u} className="text-blue-500 hover:underline"> {u.val}</a>
-                </p>}
-                <div className="viewModeSubsection">
-                    {any(fs) &&
-                    <div><p>{fs.lbl}</p>
-                        {fs.val.map((val, index) => {
-                            return <p key={index}>
-                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                            </p>
-                        })}
-                    </div>}
-                </div>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
