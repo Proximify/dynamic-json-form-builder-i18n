@@ -18,6 +18,12 @@ import MuseumExhibitions from "./MuseumExhibitions";
 import PerformanceArt from "./PerformanceArt";
 import Poetry from "./Poetry";
 import OtherArtisticContributions from "./OtherArtisticContributions";
+import {
+    FieldValueMapper,
+    FormatterTracker,
+    genericFieldFormatter,
+    singleLineMultiFieldValueFormatter
+} from "../../../utils/helper";
 
 export default function ArtisticContributions(props) {
     const subsections = {
@@ -87,9 +93,45 @@ export default function ArtisticContributions(props) {
 
     }
 
+    const genericFormFormatter = () => {
+        const rawData = props.rawData;
+        const formData = rawData.values;
+        const schema = props.schema;
+
+        if (props.isFullScreenViewMode === true) {
+            const mappedValue = FieldValueMapper(formData, schema);
+            const ft = new FormatterTracker(mappedValue);
+            return (
+                <div>
+                    {genericFieldFormatter(ft.getUnformattedField())}
+                </div>
+            )
+        } else {
+            const mappedValue = FieldValueMapper(rawData, schema, true);
+            const ft = new FormatterTracker(mappedValue, true);
+            const subsection = props.structureChain[0];
+
+            if (subsection) {
+                let formattedValue = null;
+                switch (subsection) {
+                    default:
+                        formattedValue = genericFieldFormatter(ft.getUnformattedField());
+                        break;
+                }
+                return formattedValue
+            } else {
+                return (
+                    <React.Fragment>
+                        {JSON.stringify(props.rawData)}
+                    </React.Fragment>
+                )
+            }
+        }
+    }
+    
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : genericFormFormatter()}
         </React.Fragment>
     )
 }

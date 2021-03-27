@@ -169,7 +169,7 @@ export function SectionPageBuilder(props) {
                 switch (field.field_type) {
                     case 'string':
                     case 'integer':
-                    case 'elaelapsed-time':
+                    case 'elapsed-time':
                     case 'slider':
                     case "monthday":
                     case "yearmonth":
@@ -458,7 +458,7 @@ export function SectionPageBuilder(props) {
                 switch (field.field_type) {
                     case 'string':
                     case 'integer':
-                    case 'elaelapsed-time':
+                    case 'elapsed-time':
                     case 'slider':
                     case "monthday":
                     case "yearmonth":
