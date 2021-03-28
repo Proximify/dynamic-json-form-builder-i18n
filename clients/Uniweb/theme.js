@@ -1,9 +1,9 @@
 module.exports = {
     "colors": {
-        "color-primary": "#ff0000",
-        "color-secondary": "#f8d808",
-        "color-info": "#ececec",
-        "color-action": "#36c",
+        "color-primary": "#26a0f1",
+        "color-secondary": "#9b6904",
+        "color-info": "#36c",
+        "color-action": "#c66216",
         "color-transparent": "#ffffff"
     },
     "fontFamily": {

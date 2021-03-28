@@ -1,3 +1,7 @@
+const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
+const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
+const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
+
 export const handleOnPrimaryItemChangeBtnClick = (state, setState, structureChain, getFormFn) => {
     const newSection = [...state.sections];
     const targetForm = getFormFn(newSection, structureChain);
@@ -34,9 +38,9 @@ export const handleOnPrimaryItemSetBtnClick = (state, setState, structureChain, 
         formData.append('action', 'setPrimaryItem');
         formData.append('data[itemId]', targetForm.section_data[itemIndex].id);
         formData.append('data[sectionId]', targetForm.section_id);
-        formData.append('contentType', 'members');
-        formData.append('contentId', '1');
-        formData.append('viewType', 'cv');
+        formData.append('contentType', contentType);
+        formData.append('contentId', contentId);
+        formData.append('viewType', viewType);
 
         api.post('http://127.0.0.1:8000/profiles.php', formData, {
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}

@@ -1,12 +1,17 @@
 import axios from 'axios';
 
+const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
+const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
+const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
+const withFormat = process.env.react_app_with_format ?? 'true';
+
 const api = axios.create({
     baseURL:
         'http://127.0.0.1:8000/'
 });
 export default api;
 export const fetchCVSchema = (callback) => {
-    api.get("profiles.php?action=display&editable=true&contentType=members&contentId=3&viewType=cv&withFormat=true", {
+    api.get(`profiles.php?action=display&editable=true&contentType=${contentType}&contentId=${contentId}&viewType=${viewType}&withFormat=${withFormat}`, {
         headers: {'Content-Type': 'application/json'}
     }).then(res => {
         // setState({...state, schema: res.data, isReady: true})
@@ -28,7 +33,7 @@ export const fetchCVSchema = (callback) => {
 }
 
 export const fetchFormSchema = (section, itemId, parentItemId, parentFieldId, callback) => {
-    const url = `profiles.php?action=edit&editable=true&contentType=members&contentId=3&viewType=cv${section !== null ? '&section=' + section : ""}${itemId !== null ? '&itemId=' + itemId : ""}${parentItemId !== null ? '&parentItemId=' + parentItemId : ""}${parentFieldId !== null ? '&parentFieldId=' + parentFieldId : ""}`;
+    const url = `profiles.php?action=edit&editable=true&contentType=${contentType}&contentId=${contentId}&viewType=${viewType}${section !== null ? '&section=' + section : ""}${itemId !== null ? '&itemId=' + itemId : ""}${parentItemId !== null ? '&parentItemId=' + parentItemId : ""}${parentFieldId !== null ? '&parentFieldId=' + parentFieldId : ""}`;
     api.get(url, {
         headers: {'Content-Type': 'application/json'}
     }).then(res => {
@@ -40,7 +45,7 @@ export const fetchFormSchema = (section, itemId, parentItemId, parentFieldId, ca
 }
 
 export const fetchLovOptions = (subtypeIds, callback) => {
-    const urlTemplate = 'profiles.php?action=subtypeOptions&contentType=members&subtypeId=';
+    const urlTemplate = `profiles.php?action=subtypeOptions&contentType=${contentType}&subtypeId=`;
     const urls = []
     subtypeIds.forEach(id => {
         if (Array.isArray(id)) {

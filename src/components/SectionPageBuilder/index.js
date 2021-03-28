@@ -11,43 +11,14 @@ import {
     handleOnPrimaryItemChangeBtnClick,
     handleOnPrimaryItemSetBtnClick
 } from './helper/sectionPageBuilderHelper'
-import styled, {ThemeProvider} from "styled-components";
-import {theme} from "twin.macro";
+import {SectionLabel, StyledSectionContainer} from "./StyledComponents";
+import styled from "styled-components";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 
-const TopSectionLabel = styled.p`
-  background: ${props => props.theme.background};
-  color: ${props => props.theme.color};
-  font-size: ${props => props.theme.fontSize};
-  font-family: ${props => props.theme.fontFamily};
-`;
-
-const TopSectionLabelTheme = {
-    background: `${theme`colors.color-primary`}`,
-    color: `${theme`colors.color-transparent`}`,
-    fontSize: `${theme`fontSize.TopSectionLabel`}`,
-    fontFamily: `${theme`fontFamily.TopSectionLabel`}`
-};
-
-const SectionLabel = styled.p`
-  color: ${props => props.theme.color};
-  font-size: ${props => props.theme.fontSize};
-  font-family: ${props => props.theme.fontFamily};
-`;
-
-SectionLabel.defaultProps = {
-    theme: {
-        color: 'black',
-        fontSize: `20px`,
-        fontFamily: 'Times New Roman',
-    }
-}
-
-const SectionLabelTheme = {
-    color: `${theme`colors.color-secondary`}`,
-    fontSize: `${theme`fontSize.SectionLabel`}`,
-    fontFamily: `${theme`fontFamily.SectionLabel`}`
-};
-
+const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
+const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
+const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
 
 export function SectionPageBuilder(props) {
     const [state, setState] = useState({
@@ -120,18 +91,7 @@ export function SectionPageBuilder(props) {
             if (section.primary_item === '1') {
                 section["primaryItemUpdate"] = false;
             }
-            // console.log("--",section)
-            // if (section.section_data.length > 0) {
-            //     let opens = [];
-            //     for (let i = 0; i < section.section_data.length; i++) {
-            //         opens.push(false)
-            //     }
-            //     section["open"] = opens;
-            // } else {
-            //     section["open"] = []
-            // }
         } else if (section["type"] === "section") {
-            // console.log(section)
             Object.keys(section["subsections"]).forEach(key => {
                 const subsection = section["subsections"][key];
                 const dataArray = [];
@@ -141,11 +101,9 @@ export function SectionPageBuilder(props) {
                     if (field["subsection_id"] === subsection["section_id"]) {
                         const field_id = field["field_id"];
                         subsection["section_data"] = []
-
                         dataArray.forEach(data => {
                             Object.keys(data).forEach(dataKey => {
                                 if (dataKey === field_id) {
-                                    // console.log(data[dataKey])
                                     subsection["section_data"] = data[dataKey]
                                 }
                             })
@@ -159,7 +117,6 @@ export function SectionPageBuilder(props) {
 
     const handleFormEditSubmit = (data) => {
         console.log("received form data", data, state);
-
         if (state.form && state.form.schema && state.form.schema.formSchema) {
             const formData = new FormData();
             formData.append('action', state.form.itemId !== 0 ? 'update' : 'insert');
@@ -380,9 +337,9 @@ export function SectionPageBuilder(props) {
                         break;
                 }
             })
-            formData.append('contentType', 'members');
-            formData.append('contentId', '3');
-            formData.append('viewType', 'cv');
+            formData.append('contentType', contentType);
+            formData.append('contentId', contentId);
+            formData.append('viewType', viewType);
             formData.append('sectionId', state.form.sectionId);
             formData.append('itemId', state.form.itemId);
             if (state.form.parentItemId) {
@@ -552,9 +509,9 @@ export function SectionPageBuilder(props) {
                         break;
                 }
             })
-            formData.append('contentType', 'members');
-            formData.append('contentId', '3');
-            formData.append('viewType', 'cv');
+            formData.append('contentType', contentType);
+            formData.append('contentId', contentId);
+            formData.append('viewType', viewType);
             formData.append('sectionId', state.form.sectionId);
             formData.append('itemId', state.form.itemId);
             if (state.form.parentItemId) {
@@ -609,11 +566,8 @@ export function SectionPageBuilder(props) {
     const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
         fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
-            // console.log(lovSubtypeIDs);
             fetchLovOptions(lovSubtypeIDs, (optRes => {
-                // console.log(optRes);
                 const formSchema = SchemaParser(res, true);
-                // console.log(res)
                 setState({
                     ...state,
                     form: {
@@ -648,7 +602,6 @@ export function SectionPageBuilder(props) {
             Object.keys(sections).forEach(key => {
                 if (sections[key].name === structureChain[0]) {
                     subSections = sections[key]
-                    // console.log("found", subSections)
                 }
             })
             return subSections === null ? null : getFormRecur(subSections.subsections, structureChain.slice(1))
@@ -660,54 +613,30 @@ export function SectionPageBuilder(props) {
     }
 
     const sectionBuilder = (section, sectionIndex, layer, structureChain, parentSection = null) => {
-        const titleCSS = {
-            3: "my-2 py-0.5 px-1 inline-block border rounded-md font-bold", //section title
-            2: "my-1 inline-block text-yellow-600 font-semibold", //subsection title
-            1: "my-0.5 inline-block text-yellow-700" //subsection title of subsection
-        }
-        const sectionCSS = {
-            3: "mb-6 mt-1 mx-3", //section
-            2: "mb-2 pl-4 py-1", //subsection
-            1: "mb-1 pl-4 py-1" // subsection of subsection
-        }
-
         if (section.type === "form" && (section.disabled && section.disabled !== "1")) {
             return (
-                <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
-                    <div className="flex items-center">
-
-                        {layer === 3 ? <ThemeProvider
-                                theme={TopSectionLabelTheme}><TopSectionLabel>{section.title}</TopSectionLabel></ThemeProvider> :
-                            <ThemeProvider
-                                theme={SectionLabelTheme}><SectionLabel>{section.title}</SectionLabel></ThemeProvider>
-                            // <p className={`${titleCSS[layer]}`}>{section.title}</p>
-                        }
-                        <p className="ml-3 hover:text-yellow-700">{section.multiplicity === "multiple" ?
-                            <>
-                                <AiOutlineFileAdd size={"1.1rem"}
-                                                  onClick={() => {
-                                                      // console.log(section.section_id, 0, parentSection,getParentFieldID(section, parentSection), structureChain)
-                                                      handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
-                                                  }}
-                                                  onDoubleClick={() => {
-                                                      console.log('double clicked')
-                                                  }}
-                                />
-                                <span>{section.section_id}-{0}-{parentSection ? parentSection.section_data.length : "null"}</span>
-                            </> :
-                            <>
-                                <FiEdit size={"1.1rem"}
-                                        onClick={() => {
-                                            console.log(section, parentSection)
-                                            handleOnItemClick(section.section_id, section.section_data.length > 0 ? section.section_data[0].id : 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
-                                        }}
-                                        onDoubleClick={() => {
-                                            console.log('double clicked')
-                                        }}
-                                />
-                                <span>{section.section_id}-{section.section_data.length}-{parentSection ? parentSection.section_data.length : "null"}</span>
-
-                            </>
+                <StyledSectionContainer key={sectionIndex} layer={layer}>
+                    <div css={[tw`flex items-center`]}>
+                        <SectionLabel TopSectionLabel={layer === 3}>{section.title}</SectionLabel>
+                        <p css={[tw`ml-1 text-color-info`]}>{section.multiplicity === "multiple" ?
+                            <AiOutlineFileAdd size={"1.1rem"}
+                                              onClick={() => {
+                                                  handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                              }}
+                                              onDoubleClick={() => {
+                                                  console.log('double clicked')
+                                              }}
+                            />
+                            :
+                            <FiEdit size={"1.1rem"}
+                                    onClick={() => {
+                                        console.log(section, parentSection)
+                                        handleOnItemClick(section.section_id, section.section_data.length > 0 ? section.section_data[0].id : 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                    }}
+                                    onDoubleClick={() => {
+                                        console.log('double clicked')
+                                    }}
+                            />
                         }
                         </p>
                     </div>
@@ -747,33 +676,32 @@ export function SectionPageBuilder(props) {
                                         {!state.shouldModalOpen &&
                                         <>
                                             {(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true) &&
-                                            <div className='flex space-x-2 ml-2 text-sm'>
-                                                <p className='text-yellow-700'>Primary</p>
+                                            <div css={[tw`flex space-x-2 ml-2 text-sm`]}>
+                                                <p css={[tw`text-yellow-700 text-base`]}>Primary</p>
                                                 <button
-                                                    className='text-blue-700 hover:text-blue-400 hover:underline'
+                                                    css={[tw`text-blue-500 hover:text-blue-400 hover:underline`]}
                                                     onClick={() => {
                                                         handleOnPrimaryItemChangeBtnClick(state, setState, structureChain, getFormRecur)
                                                     }}>Change
                                                 </button>
                                                 <button
-                                                    className={`${section.primaryItemUpdate ? '' : 'hidden'} text-gray-500 hover:text-gray-700 hover:underline`}
+                                                    css={section.primaryItemUpdate ? [tw`text-gray-500 hover:text-gray-700 hover:underline`] : [tw`hidden`]}
                                                     onClick={() => {
                                                         handleOnPrimaryItemCancelBtnClick(state, setState, structureChain, getFormRecur)
                                                     }}>Cancel
                                                 </button>
                                             </div>}
 
-                                            <div className={`mx-3 mb-1 px-2 text-sm flex justify-between`}>
+                                            <div css={[tw`mx-3 mb-1 px-2 text-sm flex justify-between`]}>
                                                 <input
-                                                    className={`${section.primaryItemUpdate ? '' : 'hidden'} mt-1 cursor-pointer p-0`}
+                                                    css={section.primaryItemUpdate ? [tw`mt-1 cursor-pointer p-0`] : [tw`hidden`]}
                                                     type='radio'
                                                     checked={!!(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true)}
                                                     onChange={() => {
                                                         handleOnPrimaryItemSetBtnClick(state, setState, structureChain, getFormRecur, itemIndex, api);
                                                     }}>
-
                                                 </input>
-                                                <div className="w-11/12">
+                                                <div css={[tw`w-11/12`]}>
                                                     <Formatter app={"CV"}
                                                                structureChain={[...structureChain]}
                                                                isFullScreenViewMode={true}
@@ -782,14 +710,14 @@ export function SectionPageBuilder(props) {
                                                     />
                                                 </div>
                                                 {section.multiplicity === "multiple" ?
-                                                    <div className="hover:text-yellow-700">
+                                                    <div css={[tw`text-color-info`]}>
                                                         <FiEdit size={"1.1rem"}
                                                                 onClick={() => {
                                                                     if (!section.section_data[itemIndex]) {
                                                                         console.error("unable to get item id", section);
                                                                         return;
                                                                     }
-                                                                    if (parentSection && parentSection.section_data.length < 1){
+                                                                    if (parentSection && parentSection.section_data.length < 1) {
                                                                         console.error("unable to get parent section item id")
                                                                         return;
                                                                     }
@@ -800,8 +728,6 @@ export function SectionPageBuilder(props) {
                                                                     console.log('double clicked')
                                                                 }}
                                                         />
-                                                        <p>{section.section_id}-{section.section_data.length}-{parentSection ? parentSection.section_data.length : "null"}</p>
-
                                                     </div> : null}
 
                                             </div>
@@ -842,22 +768,17 @@ export function SectionPageBuilder(props) {
                                     </div>
                                 )
                             }) : null}
-                </div>
+                </StyledSectionContainer>
             )
         } else if (section.type === "section") {
             return (
-                <div key={sectionIndex} className={`${sectionCSS[layer]}`}>
-
-                    {/*<p className={`${titleCSS[layer]}`}>{section.title}</p>*/}
-                    {layer === 3 ? <ThemeProvider
-                            theme={TopSectionLabelTheme}><TopSectionLabel>{section.title}</TopSectionLabel></ThemeProvider> :
-                        <ThemeProvider
-                            theme={SectionLabelTheme}><SectionLabel>{section.title}</SectionLabel></ThemeProvider>
-                        // <p className={`${titleCSS[layer]}`}>{section.title}</p>
-                    }
+                <StyledSectionContainer key={sectionIndex} layer={layer}>
+                    {/*{layer === 3 ? <TopSectionLabel>{section.title}</TopSectionLabel> :*/}
+                    {/*    <SectionLabel>{section.title}</SectionLabel>}*/}
+                    <SectionLabel TopSectionLabel={layer === 3}>{section.title}</SectionLabel>
 
                     {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
-                </div>)
+                </StyledSectionContainer>)
         }
     }
 
