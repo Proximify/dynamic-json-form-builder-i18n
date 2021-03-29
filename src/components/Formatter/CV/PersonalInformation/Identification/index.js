@@ -7,6 +7,8 @@ import {
     singleFieldSubsectionFormatter,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 
 export default function Identification(props) {
     // console.log("Identification", props)
@@ -36,7 +38,7 @@ export default function Identification(props) {
         return (
             <div>
                 {any(t, fin, mn, fan) &&
-                <p className="text-lg">
+                <p css={[tw`text-base`]}>
                     {singleLineMultiFieldValueFormatter([t, fin, mn, fan], null, ['s', 's', 's', 's'], [' ', ' ', ' '])}
                 </p>}
                 {any(pfan) &&

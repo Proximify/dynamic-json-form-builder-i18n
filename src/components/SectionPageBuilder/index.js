@@ -11,7 +11,8 @@ import {
     handleOnPrimaryItemChangeBtnClick,
     handleOnPrimaryItemSetBtnClick
 } from './helper/sectionPageBuilderHelper'
-import {SectionLabel, StyledSectionContainer} from "./StyledComponents";
+import {SectionLabel, StyledSectionContainer} from "./styledComponents";
+import './index.css'
 import styled from "styled-components";
 import {css} from 'styled-components/macro'
 import tw from "twin.macro";
@@ -773,10 +774,7 @@ export function SectionPageBuilder(props) {
         } else if (section.type === "section") {
             return (
                 <StyledSectionContainer key={sectionIndex} layer={layer}>
-                    {/*{layer === 3 ? <TopSectionLabel>{section.title}</TopSectionLabel> :*/}
-                    {/*    <SectionLabel>{section.title}</SectionLabel>}*/}
                     <SectionLabel TopSectionLabel={layer === 3}>{section.title}</SectionLabel>
-
                     {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
                 </StyledSectionContainer>)
         }

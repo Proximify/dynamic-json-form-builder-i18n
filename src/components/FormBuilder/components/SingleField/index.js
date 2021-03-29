@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import './SingleField.css'
-import NumberFormat from "react-number-format";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import TextareaAutosize from 'react-textarea-autosize';
-import {handleOnPrimaryItemSetBtnClick} from "../../../SectionPageBuilder/helper/sectionPageBuilderHelper";
+import {StyledTextarea, StyledNumberInput, StyledMultiFieldNumberInput} from "../utils/styledComponents";
+import styled from "styled-components";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
+import './SingleField.css'
 import api from "../../../SectionPageBuilder/helper/api";
 
 const months = {
@@ -79,8 +80,7 @@ export function StringInputWidget(props) {
     // console.log(props)
     const [value, setValue] = useState(props.value ?? "");
     return (
-        <TextareaAutosize
-            className={"singleFieldInput"}
+        <StyledTextarea
             style={{resize: 'none'}}
             minRows={1}
             // type={"textarea"}
@@ -98,9 +98,7 @@ export function StringInputWidget(props) {
 export function NumberInputWidget(props) {
     const [value, setValue] = useState(props.value ?? undefined);
     return (
-        <NumberFormat
-            className={"singleFieldInput"}
-            type="text"
+        <StyledNumberInput
             id={props.schema.id}
             value={value}
             isAllowed={(values) => values.value >= 0 ? values : null}
@@ -114,8 +112,7 @@ export function NumberInputWidget(props) {
 export function PhoneInputWidget(props) {
     const [value, setValue] = useState(props.value ?? undefined);
     return (
-        <NumberFormat
-            className={"singleFieldInput"}
+        <StyledNumberInput
             type="text"
             id={props.schema.id}
             value={value}
@@ -134,7 +131,8 @@ export function ElapsedTimeWidget(props) {
     } : {Min: undefined, Sec: undefined});
 
     return (
-        <div className="flex space-x-4"
+        <div css={[tw`flex space-x-4 max-w-lg`]}
+             style={{minWidth: '16rem'}}
              onBlur={() => {
                  if (!value.Min && !value.Sec) {
                      if (props.value !== undefined)
@@ -145,9 +143,7 @@ export function ElapsedTimeWidget(props) {
                          props.onChange(time)
                  }
              }}>
-            <NumberFormat
-                className={"multiFieldInput w-1/2"}
-                type="text"
+            <StyledMultiFieldNumberInput
                 suffix={" Min"}
                 decimalScale={0}
                 id={`${props.schema.id}`}
@@ -161,9 +157,7 @@ export function ElapsedTimeWidget(props) {
                     }, props.rawErrors, setValue, props.onChange, true)
                 }}
             />
-            <NumberFormat
-                className={"multiFieldInput w-1/2"}
-                type="text"
+            <StyledMultiFieldNumberInput
                 suffix={" Sec"}
                 decimalScale={0}
                 id={props.schema.id}
@@ -434,8 +428,10 @@ export function BooleanInputWidget(props) {
         onChange(event.target.value)
     }
     return <div className="singleFieldInput flex space-x-5" onChange={onValueChange}>
-        <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false} onChange={()=> {}}/> No
-        <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false} onChange={()=>{}}/> Yes
+        <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false} onChange={() => {
+        }}/> No
+        <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false} onChange={() => {
+        }}/> Yes
     </div>
 }
 
@@ -449,15 +445,14 @@ export function SliderInputWidget(props) {
     };
 
     return (
-        <div className={"singleFieldInput"}>
-            <NumberFormat
-                id={props.schema.id}
-                value={value}
-                required={props.required}
-                isAllowed={withValueLimit}
-                onChange={event => handleValueChange(event.target.value, props.rawErrors, setValue, props.onChange)}
-                onBlur={() => props.onChange(value !== "" ? value : undefined)}
-            />%
-        </div>
+        <StyledNumberInput
+            id={props.schema.id}
+            value={value}
+            suffix={'%'}
+            required={props.required}
+            isAllowed={withValueLimit}
+            onChange={event => handleValueChange(event.target.value.replace('%',''), props.rawErrors, setValue, props.onChange)}
+            onBlur={() => props.onChange(value !== "" ? value : undefined)}
+        />
     );
 }

@@ -1,6 +1,5 @@
 import React from "react";
 import CVFormatter from './CV';
-import './index.css'
 /**
  * Entry file for formatter
  * @param props

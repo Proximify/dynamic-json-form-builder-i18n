@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import Form from "@rjsf/core";
-import './index.css';
-
 import GenericFieldTemplate from './components/utils/GenericFieldTemplate';
 import {
     NumberInputWidget,
@@ -19,7 +17,7 @@ import {
     SingleSelectionWidget,
     MultiColSelectionWidget,
     SingleLargeSelectionWidget,
-    MultiColLargeSelectionWidget, DOBSelectionWidget
+    MultiColLargeSelectionWidget
 } from "./components/SelectionField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
 import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
@@ -27,15 +25,13 @@ import {ModalDeleteConfirm} from "./components/utils/Modals";
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
-
-import {CurrencyFieldWidget, FundFieldWidget} from "./components/FundField";
-
+import styled from "styled-components";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
+// import './index.css'
 
 const customWidgets = {
-    fundFieldWidget: FundFieldWidget,
-    currencyFieldWidget: CurrencyFieldWidget,
     multiLangFieldWidget: MultiLangFieldWidget,
-
     stringInputWidget: StringInputWidget,
     numberInputWidget: NumberInputWidget,
     phoneInputWidget: PhoneInputWidget,
@@ -45,14 +41,11 @@ const customWidgets = {
     yearMonthInputWidget: YearMonthInputWidget,
     yearInputWidget: YearInputWidget,
     booleanInputWidget: BooleanInputWidget,
-    sliderInputWidget:SliderInputWidget,
-
+    sliderInputWidget: SliderInputWidget,
     singleSelectionWidget: SingleSelectionWidget,
     multiColSelectionWidget: MultiColSelectionWidget,
     singleLargeSelectionWidget: SingleLargeSelectionWidget,
     multiColLargeSelectionWidget: MultiColLargeSelectionWidget,
-    dobSelectionWidget: DOBSelectionWidget,
-
     hiddenFieldWidget: HiddenFieldWidget,
     readOnlyFieldWidget: ReadOnlyFieldWidget
 };
@@ -71,7 +64,7 @@ class FormBuilder extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {shouldDeleteConfirmModalOpen: false, shouldDeleteForm: false, formData: null};
+        this.state = {shouldDeleteConfirmModalOpen: false, shouldDeleteForm: false, formData: this.props.formData ?? undefined, newForm: Object.keys(this.props.formData).length === 0};
         this.handleStateChange = this.handleStateChange.bind(this);
         document.addEventListener("keydown", this._handleKeyDown.bind(this));
     }
@@ -80,14 +73,14 @@ class FormBuilder extends Component {
      * This function handle the form submit event
      * @param data
      */
-    onFormSubmit = (data) => {
+    onFormSubmit = () => {
         this.onErrorMsgChange(null);
-        this.props.onFormEditSubmit(data);
+        this.props.onFormEditSubmit(this.state.formData);
     }
 
     componentDidUpdate() {
         if (this.state.shouldDeleteForm) {
-            this.props.onFormEditDelete(this.props.formData)
+            this.props.onFormEditDelete(this.state.formData)
         }
     }
 
@@ -121,7 +114,6 @@ class FormBuilder extends Component {
     }
 
     validation = (formData, errors) => {
-        // console.log(this.props.validations);
         const validations = this.props.validations;
         Object.keys(validations).forEach(fieldName => {
             const fieldValidations = validations[fieldName];
@@ -149,30 +141,18 @@ class FormBuilder extends Component {
             }
         })
 
-        // if (formData.sex && JSON.stringify(formData.sex) !== JSON.stringify(["1038", "Male"])){
-        //     errors.sex.addError("sex don't male");
-        // }
-        // formData.country_of_citizenship.forEach((subsection,index) => {
-        //     console.log(subsection)
-        //     if (subsection.country_of_citizenship && JSON.stringify(subsection.country_of_citizenship) !== JSON.stringify(["12", "American Samoa"])){
-        //         errors.country_of_citizenship[index].addError("not america");
-        //     }
-        // })
-
         return errors;
     }
 
     render() {
-        // const {isLoaded, loadingError, FormSchema, FormData, FormContext, FormID, validation} = this.state;
-
-        // console.log(this.props.formData)
+        console.log(this.state)
         return (
             <>
                 <Form
                     id={this.props.formID ?? null}
                     schema={this.props.formSchema ?? undefined}
                     uiSchema={this.props.uiSchema ?? undefined}
-                    formData={this.props.formData ?? undefined}
+                    formData={this.state.formData}
                     formContext={
                         {...this.props.formContext} ?? undefined
                     }
@@ -180,42 +160,42 @@ class FormBuilder extends Component {
                     showErrorList={false}
                     liveValidate
                     onChange={({formData}) => {
-                        // this.setState({...this.state, formData: formData})
+                        this.setState({...this.state, formData: formData})
                         // TODO generic
-                        if (formData.hasOwnProperty('total_workload')){
+                        if (formData.hasOwnProperty('total_workload')) {
                             formData.total_workload = (Number(formData.undergraduate_teaching) + Number(formData.graduate_professional_teaching)).toString();
                         }
-                        console.log("data changed", formData)
+                        console.log("data changed", formData);
+
                     }}
                     validate={this.validation}
                     // noValidate={true}
                     onError={(errors) => {
                         this.onErrorMsgChange(errors);
                     }}
-                    onSubmit={({formData}) => this.onFormSubmit(formData)}>
-                    <div className="my-4 mb-20 mx-1.5">
+                    onSubmit={this.onFormSubmit}>
+                    <div css={[tw`my-4 mb-20 mx-1.5`]}>
                         <div id={`${this.props.formID}-errorMsg`}>
                         </div>
-                        <div className="flex justify-between">
-                            <div>
-                                <button className="py-1 px-2 border bg-red-500 rounded text-white"
+                        <div css={[tw`flex justify-between`]}>
+                            <div css={[this.state.newForm ? tw`invisible`: tw``]}>
+                                <button css={[tw`py-1 px-2 ml-16 border bg-red-500 rounded text-white`]}
                                         type="button"
                                         onClick={() => {
-                                            // this.props.onFormEditDelete();
-                                            this.setState({shouldDeleteConfirmModalOpen: true})
+                                            this.setState({...this.state, shouldDeleteConfirmModalOpen: true})
                                         }}
                                 >Delete
                                 </button>
                             </div>
                             <div>
-                                <button className="py-1 px-2 mr-4 border bg-gray-300 rounded text-black"
+                                <button css={[tw`py-1 px-2 mr-4 border bg-gray-300 rounded text-black`]}
                                         type="button"
                                         onClick={() => {
                                             this.props.onFormEditCancel();
                                         }}>
                                     Cancel
                                 </button>
-                                <button className="py-1 px-2 border bg-green-400 rounded"
+                                <button css={[tw`py-1 px-2 border bg-green-400 rounded`]}
                                         type="submit">
                                     Save
                                 </button>

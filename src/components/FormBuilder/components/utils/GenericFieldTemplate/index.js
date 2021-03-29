@@ -1,7 +1,8 @@
 import React from 'react';
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
-import './GenericFieldTemplate.css'
 import Tooltip from "../../../../Tooltip";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -11,15 +12,13 @@ const descriptions = {
 
 const GenericFieldTemplate = (props) => {
     const {label, children, required, rawErrors, schema} = props;
-    // console.log("GenericFieldTemplate", props);
-
 
     return (
-        <div className="flex flex-wrap justify-center my-3 space-x-6">
-            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end">
-                <div className="flex items-center">
+        <div css={[tw` my-3 flex flex-wrap justify-center space-x-6`]}>
+            <div css={[tw`w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end`]}>
+                <div css={[tw`flex items-center`]}>
                     {label && <label>{label}</label>}
-                    {required && <p className="text-red-700 mx-0.5">*</p>}
+                    {required && <p css={[tw`text-red-700 mx-0.5`]}>*</p>}
                     {<Tooltip
                         placement="right-start"
                         trigger="hover"
@@ -41,15 +40,15 @@ const GenericFieldTemplate = (props) => {
                             }
                         ]}
                     >
-                        <AiOutlineQuestionCircle className="text-gray-400 mx-1" size={'1.1em'}/>
+                        <AiOutlineQuestionCircle css={[tw`text-gray-400 mx-1`]} size={'1.1em'}/>
                     </Tooltip>}
                 </div>
             </div>
-            <div className="flex-grow" style={{maxWidth: "20rem"}}>
+            <div style={{maxWidth: "20rem"}} css={[tw`flex-grow`]}>
                 {children}
-                <div className={`${!rawErrors ? 'hidden' : ''} `}>
+                <div css={[rawErrors ? tw`` : tw`hidden`]}>
                     {rawErrors ? rawErrors.map((error, index) => {
-                        return (<li className="text-red-600 text-sm" key={index}>{error}</li>)
+                        return (<li key={index} css={[tw`text-red-600 text-sm`]}>{error}</li>)
                     }) : null}
                 </div>
             </div>
