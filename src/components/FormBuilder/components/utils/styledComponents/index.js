@@ -7,13 +7,13 @@ import {CalendarContainer} from "react-datepicker";
 import Select from "react-select";
 import WindowedSelect from "react-windowed-select";
 
-
 const baseFieldStyles = css`
   min-width: 16rem;
   ${tw`max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded`};
 `
 
 export const StyledTextarea = styled(TextareaAutosize)`
+  ${tw`resize-none`};
   ${baseFieldStyles}
 `;
 
@@ -169,4 +169,9 @@ export const StyledDatePickerWrapper = createGlobalStyle`
       }
     }
   }
+`
+
+export const StyledSubsectionDataContainer = styled.div`
+  min-width: 16rem;
+  ${tw`max-w-lg block w-full focus:ring-indigo-500 focus:border-indigo-500 h-full`}
 `

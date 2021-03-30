@@ -4,8 +4,10 @@ import {BiPencil} from 'react-icons/bi';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import ModalArrayItem from "../utils/Modals";
 import Formatter from "../../../Formatter";
-import './ArrayField.css'
 import Tooltip from "../../../Tooltip";
+import {StyledSubsectionDataContainer} from "../utils/styledComponents";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -14,7 +16,6 @@ const descriptions = {
 }
 
 export function ReorderableArrayFieldTemplate(props) {
-    // console.log("ReorderableArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
     const [state, setState] = useState(
@@ -47,10 +48,7 @@ export function ReorderableArrayFieldTemplate(props) {
                 const newData = formData[shiftItemIndex];
                 newData['order'] = (Number(formData[shiftItemIndex]["order"]) + 1).toString();
                 items[shiftItemIndex].children.props.onChange(newData);
-
-                // formData[shiftItemIndex]["order"] = (Number(formData[shiftItemIndex]["order"]) + 1).toString();
             }
-            // formData[sItemIndex]["order"] = destOrder.toString();
             const newData = formData[sItemIndex];
             newData['order'] = destOrder.toString()
             items[sItemIndex].children.props.onChange(newData);
@@ -63,23 +61,20 @@ export function ReorderableArrayFieldTemplate(props) {
                 const newData = formData[shiftItemIndex];
                 newData['order'] = (Number(formData[shiftItemIndex]["order"]) - 1).toString();
                 items[shiftItemIndex].children.props.onChange(newData);
-
-                // formData[shiftItemIndex]["order"] = (Number(formData[shiftItemIndex]["order"] - 1)).toString();
             }
             const newData = formData[sItemIndex];
             newData['order'] = destOrder.toString()
             items[sItemIndex].children.props.onChange(newData);
-            // formData[sItemIndex]["order"] = destOrder.toString();
         }
     }
 
     return (
-        <div className="flex flex-wrap justify-center my-3 space-x-6">
-            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end">
+        <div css={[tw`flex flex-wrap justify-center my-3 space-x-6`]}>
+            <div css={[tw`w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end`]}>
                 <div>
-                    <div className="flex items-center">
+                    <div css={[tw`flex items-center`]}>
                         {title && <label>{title}</label>}
-                        {required && <p className="text-red-700 ml-1 mr-2">*</p>}
+                        {required && <p css={[tw`text-red-700 ml-1 mr-2`]}>*</p>}
                         {schema.description && <Tooltip
                             placement="right-start"
                             trigger="hover"
@@ -101,15 +96,16 @@ export function ReorderableArrayFieldTemplate(props) {
                                 }
                             ]}
                         >
-                            <AiOutlineQuestionCircle className="text-gray-400 mx-1" size={'1.1em'}/>
+                            <AiOutlineQuestionCircle size={'1.1em'} css={[tw`text-gray-400 mx-1`]}/>
                         </Tooltip>}
                     </div>
                 </div>
             </div>
-            <div className="flex-grow" style={{maxWidth: "20rem"}}>
-                <div className="sectionData">
+            <div style={{maxWidth: "20rem"}} css={[tw`flex-grow`]}>
+                <StyledSubsectionDataContainer>
                     {canAdd &&
-                    <a type="button" className="text-blue-600"
+                    <a type="button"
+                       css={[tw`text-blue-600`]}
                        onClick={() => {
                            setState({
                                ...state,
@@ -122,7 +118,7 @@ export function ReorderableArrayFieldTemplate(props) {
                        }}
                     >< AiOutlinePlusCircle size={"1.2em"}/></a>}
                     <div
-                        className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1 text-sm" : "hidden"}`}>
+                        css={[formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`]}>
                         <DragDropContext onDragEnd={handleOnDragEnd}>
                             <Droppable droppableId={title}>
                                 {(provided) => (
@@ -135,7 +131,7 @@ export function ReorderableArrayFieldTemplate(props) {
                                                         {(provided) => (
                                                             <li {...provided.draggableProps} {...provided.dragHandleProps}
                                                                 ref={provided.innerRef}
-                                                                className={`flex mx-1 py-1 pl-1 justify-between ${index < items.length - 1 ? "border-b" : ""}`}
+                                                                css={[index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`]}
                                                             >
                                                                 <div>
                                                                     <Formatter app={"CV"}
@@ -145,9 +141,9 @@ export function ReorderableArrayFieldTemplate(props) {
                                                                                rawData={item}
                                                                     />
                                                                 </div>
-                                                                <div className='mt-0.5'>
+                                                                <div css={[tw`mt-0.5`]}>
                                                                     <BiPencil
-                                                                        className="cursor-pointer mx-1"
+                                                                        css={[tw`cursor-pointer mx-1`]}
                                                                         onClick={() => {
                                                                             const itemIndex = formData.findIndex(data => data.order === item.order);
                                                                             setState({
@@ -172,25 +168,25 @@ export function ReorderableArrayFieldTemplate(props) {
                             </Droppable>
                         </DragDropContext>
                     </div>
-                </div>
+                </StyledSubsectionDataContainer>
                 {
                     formData.length > 0 && state.open && state.index >= 0 &&
                     formData.map((item, index) => {
                         if (index === state.index) {
                             if (!state.edit) {
-                                // TODO: investigate why order += 2
                                 formData[index]["order"] = (Math.max(...formData.map(data => data.order ?? 0)) + 1).toString();
                             }
                         }
                         return index === state.index &&
-                            <ModalArrayItem key={index} state={state}
-                                            setState={setState}
-                                            index={index}
-                                            children={items[index].children}
-                                            context={formContext}
-                                            dropItem={items[index].onDropIndexClick(index)}
-                                            title={title}
-                                            fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/>
+                            <ModalArrayItem
+                                key={index} state={state}
+                                setState={setState}
+                                index={index}
+                                children={items[index].children}
+                                context={formContext}
+                                dropItem={items[index].onDropIndexClick(index)}
+                                title={title}
+                            />
 
                     })
                 }
@@ -213,12 +209,12 @@ export function ArrayFieldTemplate(props) {
     )
 
     return (
-        <div className="flex flex-wrap justify-center my-3 space-x-6">
-            <div className="w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end">
+        <div css={[tw`flex flex-wrap justify-center my-3 space-x-6`]}>
+            <div css={[tw`w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end`]}>
                 <div>
-                    <div className="flex items-center">
+                    <div css={[tw`flex items-center`]}>
                         {title && <label>{title}</label>}
-                        {required && <p className="text-red-700 ml-1 mr-2">*</p>}
+                        {required && <p css={[tw`text-red-700 ml-1 mr-2`]}>*</p>}
                         {schema.description && <Tooltip
                             placement="right-start"
                             trigger="hover"
@@ -240,15 +236,16 @@ export function ArrayFieldTemplate(props) {
                                 }
                             ]}
                         >
-                            <AiOutlineQuestionCircle className="text-gray-400 mx-1" size={"1.1em"}/>
+                            <AiOutlineQuestionCircle size={"1.1em"} css={[tw`text-gray-400 mx-1`]}/>
                         </Tooltip>}
                     </div>
                 </div>
             </div>
-            <div className="flex-grow" style={{maxWidth: "20rem"}}>
-                <div className="sectionData">
+            <div style={{maxWidth: "20rem"}} css={[tw`flex-grow`]}>
+                <StyledSubsectionDataContainer>
                     {canAdd &&
-                    <a type="button" className="text-blue-600"
+                    <a type="button"
+                       css={[tw`text-blue-600`]}
                        onClick={() => {
                            setState({
                                ...state,
@@ -261,13 +258,13 @@ export function ArrayFieldTemplate(props) {
                        }}
                     >< AiOutlinePlusCircle size={"1.2em"}/></a>}
                     <div
-                        className={`${formData && formData.length > 0 ? "border border-gray-300 rounded mt-1 text-sm" : "hidden"}`}>
+                        css={[formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`]}>
                         <ul>
                             {
                                 formData.map((item, index) => {
                                     return (
                                         <li key={index}
-                                            className={`flex mx-1 py-1 pl-1 justify-between ${index < items.length - 1 ? "border-b" : ""}`}
+                                            css={[index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`]}
                                         >
                                             <div>
                                                 <Formatter app={"CV"}
@@ -277,9 +274,9 @@ export function ArrayFieldTemplate(props) {
                                                            rawData={item}
                                                 />
                                             </div>
-                                            <div className='mt-0.5'>
+                                            <div css={[tw`mt-0.5`]}>
                                                 <BiPencil
-                                                    className="cursor-pointer mx-1 align-top"
+                                                    css={[tw`cursor-pointer mx-1 align-top`]}
                                                     onClick={() => {
                                                         setState({
                                                             ...state,
@@ -297,18 +294,19 @@ export function ArrayFieldTemplate(props) {
                             }
                         </ul>
                     </div>
-                </div>
+                </StyledSubsectionDataContainer>
                 {
                     formData.length > 0 && state.open && state.index >= 0 &&
                     formData.map((item, index) => {
                         return index === state.index &&
-                            <ModalArrayItem key={index} state={state}
-                                            setState={setState}
-                                            index={index}
-                                            children={items[index].children} context={formContext}
-                                            dropItem={items[index].onDropIndexClick(index)}
-                                            title={title}
-                                            fullScreen={!!(schema.hasOwnProperty("fullScreen") && schema.fullScreen)}/>
+                            <ModalArrayItem
+                                key={index} state={state}
+                                setState={setState}
+                                index={index}
+                                children={items[index].children} context={formContext}
+                                dropItem={items[index].onDropIndexClick(index)}
+                                title={title}
+                            />
 
                     })
                 }

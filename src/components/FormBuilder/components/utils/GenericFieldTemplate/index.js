@@ -14,7 +14,7 @@ const GenericFieldTemplate = (props) => {
     const {label, children, required, rawErrors, schema} = props;
 
     return (
-        <div css={[tw` my-3 flex flex-wrap justify-center space-x-6`]}>
+        <div css={[tw`my-3 flex flex-wrap justify-center space-x-6`]}>
             <div css={[tw`w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end`]}>
                 <div css={[tw`flex items-center`]}>
                     {label && <label>{label}</label>}

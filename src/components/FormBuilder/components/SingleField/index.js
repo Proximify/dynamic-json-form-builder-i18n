@@ -9,7 +9,6 @@ import {
     StyledDatePickerWrapper,
     StyledDatePickerCalendarContainer
 } from "../utils/styledComponents";
-import styled from "styled-components";
 import {css} from 'styled-components/macro'
 import tw from "twin.macro";
 
@@ -84,7 +83,6 @@ export function StringInputWidget(props) {
     const [value, setValue] = useState(props.value ?? "");
     return (
         <StyledTextarea
-            style={{resize: 'none'}}
             minRows={1}
             maxLength={props.schema.max_char_count ?? undefined}
             id={props.schema.id}

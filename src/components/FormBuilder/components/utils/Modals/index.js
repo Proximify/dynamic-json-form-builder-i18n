@@ -12,7 +12,7 @@ export function ModalArrayItem(props) {
             <div
                 css={[tw`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed z-50 inset-0 outline-none focus:outline-none bg-gray-300 bg-opacity-70`]}>
                 <div
-                    css={[tw`relative w-full my-6 mx-auto max-w-2xl`]}
+                    css={[tw`relative w-full my-6 mx-auto max-w-3xl`]}
                 >
                     <div
                         css={[tw`border rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none`]}
