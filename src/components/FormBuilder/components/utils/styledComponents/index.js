@@ -175,3 +175,18 @@ export const StyledSubsectionDataContainer = styled.div`
   min-width: 16rem;
   ${tw`max-w-lg block w-full focus:ring-indigo-500 focus:border-indigo-500 h-full`}
 `
+
+export const StyledMultiLangFieldContainer = styled.div`
+  min-width: 16rem;
+  ${tw`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm flex`}
+`
+
+export const StyledMultiLangFieldTextarea = styled(TextareaAutosize)`
+  width: calc(100% - 2.3rem);
+  ${tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border border-gray-300 rounded-l align-middle h-full resize-none`}
+`
+
+export const StyledMultiLangBtnContainer = styled.div`
+  width: 2.3rem;
+  ${tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border border-l-0 border-gray-300 rounded-r align-middle text-gray-500`}
+`
