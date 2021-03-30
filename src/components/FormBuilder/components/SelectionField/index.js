@@ -1,7 +1,14 @@
-import React, {useState, useEffect, useRef} from 'react';
-import Select from "react-select";
-import WindowedSelect, {components} from "react-windowed-select";
-import './SelectionField.css'
+import React from 'react';
+import {components} from "react-windowed-select";
+import {
+    StyledSelect,
+    StyledWindowedSelect,
+    StyledMultiColWindowedSelect,
+    StyledMultiColWindowedSelectMenuItem,
+    StyledMultiColWindowedSelectValueContainer
+} from "../utils/styledComponents";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 
 const handleChange = (value, onChange) => {
     onChange(!value ? undefined : JSON.stringify(value.value))
@@ -10,10 +17,9 @@ const handleChange = (value, onChange) => {
 export function SingleSelectionWidget(props) {
     const {options, value} = props;
     return (
-        <Select
+        <StyledSelect
             id={props.schema.id}
             getOptionLabel={option => option.value[1] ?? option.label}
-            className={"singleFieldSelect"}
             options={options.enumOptions}
             defaultValue={value ?
                 options.enumOptions[options.enumOptions.map(element =>
@@ -29,13 +35,13 @@ export function SingleSelectionWidget(props) {
 export function MultiColSelectionWidget(props) {
     const {options, value} = props;
     const formatOptionLabel = ({label, value}) => (
-        <table className={"table"}>
+        <table>
             <tbody>
             <tr>
                 {
                     value.map((val, index) => {
                         return index > 0 ?
-                            <td className="w-40 p-1" key={index}>{val}</td>
+                            <td key={index} css={[tw`w-40 p-1`]}>{val}</td>
                             : null
                     })
                 }
@@ -45,8 +51,7 @@ export function MultiColSelectionWidget(props) {
     );
 
     return (
-        <Select
-            className={"singleFieldSelect"}
+        <StyledSelect
             id={props.schema.id}
             options={options.enumOptions}
             onChange={value => handleChange(value, props.onChange)}
@@ -68,17 +73,19 @@ export function SingleLargeSelectionWidget(props) {
     });
     const lovValue = value ? JSON.parse(value) : undefined;
     return (
-        <WindowedSelect id={props.schema.id}
-                        getOptionLabel={option => option.value[1] ?? option.label}
-                        className={"singleFieldSelect"}
-                        options={lovOptions}
-                        defaultValue={lovValue ?
-                            lovOptions[lovOptions.map(element =>
-                                element.value.toString()
-                            ).indexOf(lovValue.toString())]
-                            : null}
-                        onChange={value => handleChange(value, props.onChange)}
-                        isClearable={true}/>);
+        <StyledWindowedSelect
+            className='react-select-container'
+            classNamePrefix="react-select"
+            id={props.schema.id}
+            getOptionLabel={option => option.value[1] ?? option.label}
+            options={lovOptions}
+            defaultValue={lovValue ?
+                lovOptions[lovOptions.map(element =>
+                    element.value.toString()
+                ).indexOf(lovValue.toString())]
+                : null}
+            onChange={value => handleChange(value, props.onChange)}
+            isClearable={true}/>);
 }
 
 export function MultiColLargeSelectionWidget(props) {
@@ -89,13 +96,16 @@ export function MultiColLargeSelectionWidget(props) {
     const lovValue = value ? JSON.parse(value) : undefined;
 
     const formatOptionLabel = ({label, value}) => (
-        <table className={"table w-full border-b"}>
+        <table css={[tw`w-full border-b`]}>
             <tbody>
-            <tr className="flex">
+            <tr css={[tw`flex`]}>
                 {
                     value.map((val, index) => {
                         return index > 0 &&
-                            <td className={`w-1/${value.length - 1} flex-grow`} key={index}>{val}</td>
+                            <StyledMultiColWindowedSelectMenuItem
+                                key={index}
+                                numberOfCol={value.length - 1}>{val}
+                            </StyledMultiColWindowedSelectMenuItem>
                     })
                 }
             </tr>
@@ -106,21 +116,21 @@ export function MultiColLargeSelectionWidget(props) {
     const SingleValue = ({children, ...props}) => {
         const value = [...props.data.value];
         value.shift();
-        return (<div className={`py-${3 * (value.length - 1)} my-1`}>
+        return (<StyledMultiColWindowedSelectValueContainer numberOfCol={value.length - 1}>
             <components.SingleValue {...props}>
                 {value.map((val, index) => {
-                    return <p key={index}>{val}</p>
+                    return <p key={index} css={[tw`overflow-scroll`]}>{val}</p>
                 })}
             </components.SingleValue>
-        </div>)
-
+        </StyledMultiColWindowedSelectValueContainer>)
     };
 
     return (
-        <WindowedSelect
+        <StyledMultiColWindowedSelect
+            className='react-select-container'
+            classNamePrefix="react-select"
             id={props.schema.id}
             components={{SingleValue}}
-            className={"singleFieldSelect"}
             options={lovOptions}
             onChange={value => handleChange(value, props.onChange)}
             defaultValue={lovValue ?

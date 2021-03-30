@@ -1,12 +1,17 @@
-import React, {useState} from 'react';
-import DatePicker from "react-datepicker";
+import React, {forwardRef, useState} from 'react';
+import DatePicker, {CalendarContainer} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {StyledTextarea, StyledNumberInput, StyledMultiFieldNumberInput} from "../utils/styledComponents";
+import {
+    StyledTextarea,
+    StyledNumberInput,
+    StyledMultiNumberInput,
+    StyledBooleanFieldContainer,
+    StyledDatePickerWrapper,
+    StyledDatePickerCalendarContainer
+} from "../utils/styledComponents";
 import styled from "styled-components";
 import {css} from 'styled-components/macro'
 import tw from "twin.macro";
-import './SingleField.css'
-import api from "../../../SectionPageBuilder/helper/api";
 
 const months = {
     en: [
@@ -58,7 +63,6 @@ const locale = (local) => {
 }
 
 const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime = false) => {
-    // console.log(value)
     if (!rawErrors || rawErrors.length === 0) {
         setValue(value);
     } else {
@@ -77,15 +81,12 @@ const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime =
 }
 
 export function StringInputWidget(props) {
-    // console.log(props)
     const [value, setValue] = useState(props.value ?? "");
     return (
         <StyledTextarea
             style={{resize: 'none'}}
             minRows={1}
-            // type={"textarea"}
             maxLength={props.schema.max_char_count ?? undefined}
-            // onKeyDown={event => {(event.key === 'Enter') ?}}
             id={props.schema.id}
             value={value}
             required={props.required}
@@ -113,7 +114,6 @@ export function PhoneInputWidget(props) {
     const [value, setValue] = useState(props.value ?? undefined);
     return (
         <StyledNumberInput
-            type="text"
             id={props.schema.id}
             value={value}
             format={"+# (###) ###-####"}
@@ -143,7 +143,7 @@ export function ElapsedTimeWidget(props) {
                          props.onChange(time)
                  }
              }}>
-            <StyledMultiFieldNumberInput
+            <StyledMultiNumberInput
                 suffix={" Min"}
                 decimalScale={0}
                 id={`${props.schema.id}`}
@@ -157,7 +157,7 @@ export function ElapsedTimeWidget(props) {
                     }, props.rawErrors, setValue, props.onChange, true)
                 }}
             />
-            <StyledMultiFieldNumberInput
+            <StyledMultiNumberInput
                 suffix={" Sec"}
                 decimalScale={0}
                 id={props.schema.id}
@@ -191,31 +191,36 @@ export function DateInputWidget(props) {
     }
 
     return (
-        <DatePicker selected={date}
-                    onChange={(date) => {
-                        setDate(date);
-                        return handleChange(date);
-                    }}
-                    dateFormat="yyyy/MM/dd"
-            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-            // placeholderText={i18n.language === "fr" ? "aaaa/m/j" : "yyyy/mm/dd"}
-                    locale={'en'}
-                    placeholderText={'yyyy/mm/dd'}
-                    dropdownMode="scroll"
-                    showMonthDropdown={true}
-                    showYearDropdown={true}
-                    scrollableYearDropdown={true}
-                    todayButton="Today"
-        />
+        <>
+            <DatePicker
+                wrapperClassName='date_picker'
+                calendarContainer={({children}) =>
+                    <StyledDatePickerCalendarContainer>{children}</StyledDatePickerCalendarContainer>}
+                isClearable={true}
+                selected={date}
+                onChange={(date) => {
+                    setDate(date);
+                    return handleChange(date);
+                }}
+                dateFormat="yyyy/MM/dd"
+                // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                // placeholderText={i18n.language === "fr" ? "aaaa/m/j" : "yyyy/mm/dd"}
+                locale={'en'}
+                placeholderText={'yyyy/mm/dd'}
+                dropdownMode="scroll"
+                showMonthDropdown={true}
+                showYearDropdown={true}
+                scrollableYearDropdown={true}
+                todayButton="Today"
+            />
+            <StyledDatePickerWrapper/>
+        </>
     );
 }
 
 export function MonthDayInputWidget(props) {
-    // const date = props.value ? props.value.split("/") : null;
-    // const [state, setState] = useState(date ? {date: new Date(new Date().getFullYear(), date[0], date[1])} : {date: undefined});
     const {value} = props;
     const [date, setDate] = useState(value ? new Date(1000, value.split('/')[0] - 1, value.split('/')[1]) : null);
-    // const {i18n} = useTranslation();
 
     const handleChange = (dateValue) => {
         if (!dateValue) {
@@ -228,25 +233,29 @@ export function MonthDayInputWidget(props) {
     }
 
     return (
-        <DatePicker selected={date}
-                    onChange={(date) => {
-                        setDate(date);
-                        return handleChange(date);
-                    }}
-                    dateFormat="MM/dd"
-                    dateFormatCalendar="MMM"
-            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-            // placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
-                    locale={'en'}
-                    placeholderText={'mm/dd'}
-                    showMonthDropdown={true}
-        />
+        <>
+            <DatePicker
+                wrapperClassName='date_picker'
+                selected={date}
+                onChange={(date) => {
+                    setDate(date);
+                    return handleChange(date);
+                }}
+                dateFormat="MM/dd"
+                dateFormatCalendar="MMM"
+                // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                // placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
+                locale={'en'}
+                placeholderText={'mm/dd'}
+                showMonthDropdown={true}
+            />
+            <StyledDatePickerWrapper/>
+        </>
     );
 }
 
 export function YearMonthInputWidget(props) {
     const {value} = props;
-    // const [date, setDate] = useState(value ? new Date(value.split('/')[0], value.split('/')[1] - 1) : null);
     const [state, setState] = useState(
         () => {
             const hasDate = value ? value.split('/').length >= 3 : false;
@@ -258,7 +267,6 @@ export function YearMonthInputWidget(props) {
     );
 
     const handleChange = (dateValue, hasDate) => {
-        // console.log("handle change", dateValue, hasDate)
         if (!dateValue) {
             props.onChange(undefined);
         } else {
@@ -269,60 +277,61 @@ export function YearMonthInputWidget(props) {
         }
     }
 
-
     return (
-        <DatePicker selected={state.date}
-                    onChangeRaw={event => {
-                        if (event.target.value === undefined) {
-                            return;
-                        }
-                        if (event.target.value === '') {
+        <>
+            <DatePicker
+                wrapperClassName='date_picker'
+                selected={state.date}
+                onChangeRaw={event => {
+                    if (event.target.value === undefined) {
+                        return;
+                    }
+                    if (event.target.value === '') {
+                        setState({
+                            ...state,
+                            date: null,
+                            hasDate: false
+                        })
+                        handleChange(undefined);
+                    } else {
+                        const newHasMonth = event.target.value.split('/').length > 2 || (event.target.value.split('/').length === 2 && event.target.value.slice(-1) !== '/');
+                        const newHasDate = event.target.value.split('/').length >= 3 && event.target.value.slice(-1) !== '/';
+                        const newDate = new Date(event.target.value.split('/')[0], newHasMonth ? event.target.value.split('/')[1] - 1 : 0, newHasDate ? event.target.value.split('/')[2] : 1);
+
+                        if (newHasDate !== state.hasDate) {
                             setState({
                                 ...state,
-                                date: null,
-                                hasDate: false
+                                date: newDate,
+                                hasDate: newHasDate
                             })
-                            handleChange(undefined);
+                            handleChange(newDate, newHasDate);
                         } else {
-                            const newHasMonth = event.target.value.split('/').length > 2 || (event.target.value.split('/').length === 2 && event.target.value.slice(-1) !== '/');
-                            const newHasDate = event.target.value.split('/').length >= 3 && event.target.value.slice(-1) !== '/';
-                            const newDate = new Date(event.target.value.split('/')[0], newHasMonth ? event.target.value.split('/')[1] - 1 : 0, newHasDate ? event.target.value.split('/')[2] : 1);
-
-                            if (newHasDate !== state.hasDate) {
-                                console.log("monthday state change", state, newHasMonth, newHasDate);
+                            if (JSON.stringify(newDate) !== JSON.stringify(state.date)) {
                                 setState({
                                     ...state,
                                     date: newDate,
-                                    hasDate: newHasDate
                                 })
                                 handleChange(newDate, newHasDate);
-                            } else {
-                                // console.log(`date is ${JSON.stringify(newDate) === JSON.stringify(state.date) ? 'same' : "not same"}`)
-                                if (JSON.stringify(newDate) !== JSON.stringify(state.date)) {
-                                    // console.log(newDate.getFullYear(), newDate.getMonth(), newDate.getDay(), newDate)
-                                    setState({
-                                        ...state,
-                                        date: newDate,
-                                    })
-                                    handleChange(newDate, newHasDate);
-                                }
                             }
                         }
-                    }}
-                    onSelect={(date) => {
-                        setState({
-                            ...state,
-                            date: date
-                        })
-                        handleChange(date, state.hasDate);
-                    }}
-                    dateFormat={!state.hasDate ? `yyyy/MM` : 'yyyy/MM/dd'}
-            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-            // placeholderText={i18n.language === "fr" ? "aaaa/m" : "yyyy/mm"}
-                    locale={'en'}
-                    placeholderText={'yyyy/mm'}
-                    showMonthYearPicker={!state.hasDate}
-        />
+                    }
+                }}
+                onSelect={(date) => {
+                    setState({
+                        ...state,
+                        date: date
+                    })
+                    handleChange(date, state.hasDate);
+                }}
+                dateFormat={!state.hasDate ? `yyyy/MM` : 'yyyy/MM/dd'}
+                // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                // placeholderText={i18n.language === "fr" ? "aaaa/m" : "yyyy/mm"}
+                locale={'en'}
+                placeholderText={'yyyy/mm'}
+                showMonthYearPicker={!state.hasDate}
+            />
+            <StyledDatePickerWrapper/>
+        </>
     );
 }
 
@@ -339,9 +348,8 @@ export function YearInputWidget(props) {
             }
         }
     );
-    // console.log(date, value.split('/')[0], hasMonth, hasDate)
+
     const handleChange = (dateValue, hasMonth, hasDate) => {
-        // console.log("handle change", dateValue, hasMonth, hasDate)
         if (!dateValue) {
             props.onChange(undefined);
         } else {
@@ -353,86 +361,92 @@ export function YearInputWidget(props) {
     }
 
     return (
-        <DatePicker selected={state.date}
-                    onChangeRaw={event => {
-                        const value = event.target.value;
-                        if (value === undefined) {
-                            return;
-                        }
-                        if (value === '') {
-                            setState({
-                                ...state,
-                                date: null,
-                                hasMonth: false,
-                                hasDate: false
-                            })
-                            handleChange(undefined);
-                        } else {
-                            const regExp = new RegExp('^([0-9]{2,4}/?)([0-9]{0,2}/?)([0-9]{0,2})$');
+        <>
+            <DatePicker
+                wrapperClassName='date_picker'
+                selected={state.date}
+                onChangeRaw={event => {
+                    const value = event.target.value;
+                    if (value === undefined) {
+                        return;
+                    }
+                    if (value === '') {
+                        setState({
+                            ...state,
+                            date: null,
+                            hasMonth: false,
+                            hasDate: false
+                        })
+                        handleChange(undefined);
+                    } else {
+                        const regExp = new RegExp('^([0-9]{2,4}/?)([0-9]{0,2}/?)([0-9]{0,2})$');
+                        if (regExp.test(value)) {
                             if (regExp.test(value)) {
-                                if (regExp.test(value)) {
-                                    const newHasMonth = value.split('/').length > 2 || (value.split('/').length === 2 && value.slice(-1) !== '/');
-                                    const newHasDate = value.split('/').length >= 3 && value.slice(-1) !== '/';
-                                    const newDate = new Date(value.split('/')[0], newHasMonth ? value.split('/')[1] - 1 : 0, newHasDate ? value.split('/')[2] : 1);
+                                const newHasMonth = value.split('/').length > 2 || (value.split('/').length === 2 && value.slice(-1) !== '/');
+                                const newHasDate = value.split('/').length >= 3 && value.slice(-1) !== '/';
+                                const newDate = new Date(value.split('/')[0], newHasMonth ? value.split('/')[1] - 1 : 0, newHasDate ? value.split('/')[2] : 1);
 
-                                    if (newHasMonth !== state.hasMonth || newHasDate !== state.hasDate) {
-                                        console.log("monthday state change", state, newHasMonth, newHasDate);
+                                if (newHasMonth !== state.hasMonth || newHasDate !== state.hasDate) {
+                                    setState({
+                                        ...state,
+                                        date: newDate,
+                                        hasMonth: newHasMonth,
+                                        hasDate: newHasDate
+                                    })
+                                    handleChange(newDate, newHasMonth, newHasDate);
+                                } else {
+                                    if (JSON.stringify(newDate) !== JSON.stringify(state.date)) {
                                         setState({
                                             ...state,
                                             date: newDate,
-                                            hasMonth: newHasMonth,
-                                            hasDate: newHasDate
                                         })
                                         handleChange(newDate, newHasMonth, newHasDate);
-                                    } else {
-                                        // console.log(`date is ${JSON.stringify(newDate) === JSON.stringify(state.date) ? 'same' : "not same"}`)
-                                        if (JSON.stringify(newDate) !== JSON.stringify(state.date)) {
-                                            // console.log(newDate.getFullYear(), newDate.getMonth(), newDate.getDay(), newDate)
-                                            setState({
-                                                ...state,
-                                                date: newDate,
-                                            })
-                                            handleChange(newDate, newHasMonth, newHasDate);
-                                        }
                                     }
                                 }
                             }
-
                         }
-                    }}
-                    onSelect={(date) => {
-                        setState({
-                            ...state,
-                            date: date
-                        })
-                        handleChange(date, state.hasMonth, state.hasDate);
-                    }}
-                    dateFormat={state.hasMonth ? (state.hasDate ? "yyyy/MM/dd" : `yyyy/MM`) : `yyyy`}
-            // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
-            // placeholderText={i18n.language === "fr" ? "aaaa" : "yyyy"}
-                    locale={'en'}
-                    placeholderText={'yyyy'}
-                    showYearPicker={!state.hasMonth}
-                    showMonthYearPicker={!state.hasDate}
-                    showMonthDropdown={state.hasMonth}
-                    showYearDropdown={state.hasMonth}
-                    scrollableYearDropdown={state.hasMonth}
-        />
+
+                    }
+                }}
+                onSelect={(date) => {
+                    setState({
+                        ...state,
+                        date: date
+                    })
+                    handleChange(date, state.hasMonth, state.hasDate);
+                }}
+                dateFormat={state.hasMonth ? (state.hasDate ? "yyyy/MM/dd" : `yyyy/MM`) : `yyyy`}
+                // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
+                // placeholderText={i18n.language === "fr" ? "aaaa" : "yyyy"}
+                locale={'en'}
+                placeholderText={'yyyy'}
+                showYearPicker={!state.hasMonth}
+                showMonthYearPicker={!state.hasDate}
+                showMonthDropdown={state.hasMonth}
+                showYearDropdown={state.hasMonth}
+                scrollableYearDropdown={state.hasMonth}
+            />
+            <StyledDatePickerWrapper/>
+
+        </>
     );
 }
 
 export function BooleanInputWidget(props) {
     const {value, schema, onChange} = props;
-
     const onValueChange = (event) => {
         onChange(event.target.value)
     }
-    return <div className="singleFieldInput flex space-x-5" onChange={onValueChange}>
-        <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false} onChange={() => {
-        }}/> No
+
+    return <StyledBooleanFieldContainer onChange={onValueChange}>
+        <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false}
+               onChange={() => {
+               }}/>
+        <span css={[tw`ml-1.5 mr-3`]}>No</span>
         <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false} onChange={() => {
-        }}/> Yes
-    </div>
+        }}/>
+        <span css={[tw`ml-1.5`]}>Yes</span>
+    </StyledBooleanFieldContainer>
 }
 
 export function SliderInputWidget(props) {
@@ -451,7 +465,7 @@ export function SliderInputWidget(props) {
             suffix={'%'}
             required={props.required}
             isAllowed={withValueLimit}
-            onChange={event => handleValueChange(event.target.value.replace('%',''), props.rawErrors, setValue, props.onChange)}
+            onChange={event => handleValueChange(event.target.value.replace('%', ''), props.rawErrors, setValue, props.onChange)}
             onBlur={() => props.onChange(value !== "" ? value : undefined)}
         />
     );

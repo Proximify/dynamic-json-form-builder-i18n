@@ -1,5 +1,4 @@
 import React from "react";
-import '../SingleField/SingleField.css'
 
 export default function ReadOnlyFieldWidget(props) {
     return (
