@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
 export default function TrainingMaterials(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -16,9 +16,7 @@ export default function TrainingMaterials(props) {
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
-        const {
-
-        } = ft.getFields();
+        const {} = ft.getFields();
 
         return (
             <div>
@@ -27,9 +25,7 @@ export default function TrainingMaterials(props) {
         )
     } else {
         return (
-            <p>
-                BroadcastNarratives
-            </p>
+            GenericSubsectionFormatter(props)
         )
     }
 }

@@ -6,13 +6,12 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter
 } from "../../utils/helper";
+import {StyledBilingualItemContainer} from "../../utils/styledComponents";
 
 export default function MostSignificantContributions(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -26,25 +25,25 @@ export default function MostSignificantContributions(props) {
         return (
             <div>
                 {any(ti) && <>
-                    {ti.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ti.lbl}</p>
+                    {ti.val.eng && <StyledBilingualItemContainer>
+                        <p>{ti.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: ti.val.eng}}/>
-                    </div>}
-                    {ti.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ti.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ti.val.fre && <StyledBilingualItemContainer>
+                        <p>{ti.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: ti.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(cd) && <p>({cd.val})</p>}
                 {any(dcvi) && <>
-                    {dcvi.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcvi.lbl}</p>
+                    {dcvi.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcvi.lbl}</p>
                         <p>{dcvi.val.eng}</p>
-                    </div>}
-                    {dcvi.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcvi.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcvi.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcvi.lbl} (French)</p>
                         <p>{dcvi.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {Object.keys(ft.getUnformattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnformattedField())}</p> : null

@@ -6,13 +6,13 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function CommitteeMemberships(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -32,7 +32,6 @@ export default function CommitteeMemberships(props) {
             department_division: dd
         } = ft.getFields();
 
-        console.log(ft.getFields())
         return (
             <div>
                 {any(ro, gs, msd, med) && <p>
@@ -40,12 +39,10 @@ export default function CommitteeMemberships(props) {
                 </p>}
                 {any(fa) && <p>{fa.lbl}: {fa.val}</p>}
                 {any(cn) && <p>{cn.val}</p>}
-
                 {any(dd) &&
                 <p>{reftableValueParser(dd.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
                 })}</p>}
-
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
                     return reftableValueFormatter(val, index)
@@ -53,23 +50,21 @@ export default function CommitteeMemberships(props) {
                     {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
                 </p>}
                 {any(desc) && <>
-                    {desc.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl}</p>
+                    {desc.val.eng && <StyledBilingualItemContainer>
+                        <p>{desc.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: desc.val.eng}}/>
-                    </div>}
-                    {desc.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {desc.val.fre && <StyledBilingualItemContainer>
+                        <p>{desc.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: desc.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
         return (
-            <React.Fragment>
-                EventAdministration
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

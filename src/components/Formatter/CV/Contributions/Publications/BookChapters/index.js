@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function BookChapters(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -21,11 +25,11 @@ export default function BookChapters(props) {
             publishing_status: ps,
             contribution_role: cr,
             authors: au,
-            chapter_title:ct,
+            chapter_title: ct,
             book_title: bt,
             edition: edi,
             volume: vo,
-            page_range:pr,
+            page_range: pr,
             publisher: pub,
             publication_location: pl,
             publication_city: pc,
@@ -46,47 +50,48 @@ export default function BookChapters(props) {
                     {singleLineMultiFieldValueFormatter([ref, ps, cr], null, ['s', '', 's'], [', ', ', '])}
                 </p>}
                 {any(au, ct, bt, edi, vo, pr, pub, pl) && <p>
-                    {singleLineMultiFieldValueFormatter([au, ct, bt, edi, vo, pr, pub, pl], [false, false,false, true, true, true], ['', 's', 'i', '', '','', 'i'], [', ', ', ', ', ', ', ', ', ', ', ',', '])}
+                    {singleLineMultiFieldValueFormatter([au, ct, bt, edi, vo, pr, pub, pl], [false, false, false, true, true, true], ['', 's', 'i', '', '', '', 'i'], [', ', ', ', ', ', ', ', ', ', ', ', ', '])}
                 </p>}
                 {any(pc, da, u, d, cp) && <p>
                     {singleLineMultiFieldValueFormatter([pc, da], null, null, [', '])}
                     {any(u, d, cp) && <span>, </span>}
-                    {u.val && <span><a href={u}
-                                       className="text-blue-500 hover:underline">{u.val}</a>{any(d, cp) && ', '}</span>}
+                    {u.val && <span><StyledLink href={u}>{u.val}</StyledLink>{any(d, cp) && ', '}</span>}
                     {d.val &&
-                    <span><a href={d} className="text-blue-500 hover:underline">{d.val}</a>{cp.val ? ', ' : ''}</span>}
+                    <span><StyledLink href={d}>{d.val}</StyledLink>{cp.val ? ', ' : ''}</span>}
                     {cp.val && <span>{cp.val}</span>}
                 </p>}
                 {any(noc) && <p><strong>{noc.lbl}</strong>: {noc.val}</p>}
                 {any(ed) && <p>{ed.lbl}: {ed.val}</p>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(docr) && <>
-                    {docr.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{docr.lbl}</p>
+                    {docr.val.eng && <StyledBilingualItemContainer>
+                        <p>{docr.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: docr.val.eng}}/>
-                    </div>}
-                    {docr.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{docr.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {docr.val.fre && <StyledBilingualItemContainer>
+                        <p>{docr.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: docr.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -110,6 +115,7 @@ export default function BookChapters(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

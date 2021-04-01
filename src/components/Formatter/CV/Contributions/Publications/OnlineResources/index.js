@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function OnlineResources(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -18,7 +22,7 @@ export default function OnlineResources(props) {
         const ft = new FormatterTracker(mappedValue);
         const {
             title: ti,
-            date_posted_online:dpo,
+            date_posted_online: dpo,
             contribution_role: cr,
             authors: au,
             editors: ed,
@@ -33,14 +37,13 @@ export default function OnlineResources(props) {
 
         return (
             <div>
-                {any(ti,dpo) && <p>
-                    {singleLineMultiFieldValueFormatter([ti,dpo], null, ['s'], [' ',['(',')']])}
+                {any(ti, dpo) && <p>
+                    {singleLineMultiFieldValueFormatter([ti, dpo], null, ['s'], [' ', ['(', ')']])}
                 </p>}
                 {any(u, d, cp) && <p>
-                    {u.val && <span><a href={u}
-                                       className="text-blue-500 hover:underline">{u.val}</a>{any(d, cp) && ', '}</span>}
+                    {u.val && <span><StyledLink href={u}>{u.val}</StyledLink>{any(d, cp) && ', '}</span>}
                     {d.val &&
-                    <span><a href={d} className="text-blue-500 hover:underline">{d.val}</a>{cp.val ? ', ' : ''}</span>}
+                    <span><StyledLink href={d}>{d.val}</StyledLink>{cp.val ? ', ' : ''}</span>}
                     {cp.val && <span>{cp.val}</span>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
@@ -48,33 +51,35 @@ export default function OnlineResources(props) {
                 {any(au) && <p><strong>{au.lbl}</strong>: {au.val}</p>}
                 {any(ed) && <p><strong>{ed.lbl}</strong>: {ed.val}</p>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(docr) && <>
-                    {docr.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{docr.lbl}</p>
+                    {docr.val.eng && <StyledBilingualItemContainer>
+                        <p>{docr.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: docr.val.eng}}/>
-                    </div>}
-                    {docr.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{docr.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {docr.val.fre && <StyledBilingualItemContainer>
+                        <p>{docr.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: docr.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
 
             </div>
@@ -99,6 +104,7 @@ export default function OnlineResources(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

@@ -16,9 +16,7 @@ export default function Goals(props) {
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
-        const {
-
-        } = ft.getFields();
+        const {} = ft.getFields();
 
         return (
             <div>
@@ -27,7 +25,7 @@ export default function Goals(props) {
         )
     } else {
         return (
-        GenericSubsectionFormatter(props)
+            GenericSubsectionFormatter(props)
         )
     }
 }

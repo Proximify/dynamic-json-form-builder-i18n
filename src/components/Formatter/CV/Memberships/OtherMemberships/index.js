@@ -6,13 +6,13 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function OtherMemberships(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -40,23 +40,21 @@ export default function OtherMemberships(props) {
                     {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
                 </p>}
                 {any(desc) && <>
-                    {desc.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl}</p>
+                    {desc.val.eng && <StyledBilingualItemContainer>
+                        <p>{desc.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: desc.val.eng}}/>
-                    </div>}
-                    {desc.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {desc.val.fre && <StyledBilingualItemContainer>
+                        <p>{desc.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: desc.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
         return (
-            <React.Fragment>
-                EventAdministration
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

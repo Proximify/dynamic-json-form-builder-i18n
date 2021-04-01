@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function Litigations(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -38,60 +42,51 @@ export default function Litigations(props) {
                     {singleLineMultiFieldValueFormatter([cn,paf,co,lo,sd,ed], null, ['s'], [', ', ', ',', '], [[3,4,5,' ('], [4,4,5,' - '], [5,4,5,')']])}
                 </p>}
                 {any(kle) && <>
-                    {kle.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{kle.lbl}</p>
+                    {kle.val.eng && <StyledBilingualItemContainer>
+                        <p>{kle.lbl}</p>
                         <p>{kle.val.eng}</p>
-                    </div>}
-                    {kle.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{kle.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {kle.val.fre && <StyledBilingualItemContainer>
+                        <p>{kle.lbl} (French)</p>
                         <p>{kle.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(u, d, cp) && <p>
-                    {u.val && <span><a href={u}
-                                       className="text-blue-500 hover:underline">{u.val}</a>{any(d, cp) && ', '}</span>}
+                    {u.val && <span><StyledLink href={u}>{u.val}</StyledLink>{any(d, cp) && ', '}</span>}
                     {d.val &&
-                    <span><a href={d} className="text-blue-500 hover:underline">{d.val}</a>{cp.val ? ', ' : ''}</span>}
+                    <span><StyledLink href={d}>{d.val}</StyledLink>{cp.val ? ', ' : ''}</span>}
                     {cp.val && <span>{cp.val}</span>}
                 </p>}
-                {any(d) && <>
-                    {d.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{d.lbl}</p>
-                        <p>{d.val.eng}</p>
-                    </div>}
-                    {d.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{d.lbl} (French)</p>
-                        <p>{d.val.fre}</p>
-                    </div>}
-                </>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(docr) && <>
-                    {docr.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{docr.lbl}</p>
+                    {docr.val.eng && <StyledBilingualItemContainer>
+                        <p>{docr.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: docr.val.eng}}/>
-                    </div>}
-                    {docr.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{docr.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {docr.val.fre && <StyledBilingualItemContainer>
+                        <p>{docr.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: docr.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -115,6 +110,7 @@ export default function Litigations(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

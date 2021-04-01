@@ -2,6 +2,7 @@ import React from "react";
 import BroadcastInterviews from "./BroadcastInterviews";
 import TextInterviews from "./TextInterviews";
 import BroadcastNarratives from "./BroadcastNarratives";
+import {GenericFormFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function InterviewsAndMediaRelations(props) {
 
@@ -19,7 +20,7 @@ export default function InterviewsAndMediaRelations(props) {
 
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }

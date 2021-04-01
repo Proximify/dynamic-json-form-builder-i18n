@@ -8,7 +8,6 @@ import {
 } from "../../../../utils/helper";
 
 export default function PeerReviewedLetters(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -16,9 +15,7 @@ export default function PeerReviewedLetters(props) {
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
-        const {
-
-        } = ft.getFields();
+        const {} = ft.getFields();
 
         return (
             <div>
@@ -45,6 +42,7 @@ export default function PeerReviewedLetters(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

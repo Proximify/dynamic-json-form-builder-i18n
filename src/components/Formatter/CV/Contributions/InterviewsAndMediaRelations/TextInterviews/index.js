@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function TextInterviews(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -32,19 +36,19 @@ export default function TextInterviews(props) {
                     {singleLineMultiFieldValueFormatter([to,int,fo,pd], null, ['s'], [', ', ', ', ' ', ['(',')']], )}
                 </p>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(u) && <p>
-                    <a href={u} className="text-blue-500 hover:underline"> {u.val}</a>
+                    <StyledLink> {u.val}</StyledLink>
                 </p>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(fs) &&
                     <div><p>{fs.lbl}</p>
                         {fs.val.map((val, index) => {
@@ -53,7 +57,7 @@ export default function TextInterviews(props) {
                             </p>
                         })}
                     </div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -77,6 +81,7 @@ export default function TextInterviews(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue
