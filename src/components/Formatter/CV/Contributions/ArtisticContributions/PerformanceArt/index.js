@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function PerformanceArt(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -17,53 +21,55 @@ export default function PerformanceArt(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            performance_title:pt,
-            venue:ve,
+            performance_title: pt,
+            venue: ve,
             description_contribution_value: dcv,
             url: u,
             contribution_role: cr,
             number_of_contributors: noc,
-            contributors:co,
-            performance_date:pd,
+            contributors: co,
+            performance_date: pd,
             funding_sources: fs
         } = ft.getFields();
 
         return (
             <div>
-                {any(pt,ve) && <p>
-                    {singleLineMultiFieldValueFormatter([pt,ve], null, ['s'], [', '])}
+                {any(pt, ve) && <p>
+                    {singleLineMultiFieldValueFormatter([pt, ve], null, ['s'], [', '])}
                 </p>}
                 {any(u) && <p>
-                    {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
+                    {<StyledLink href={u}>{u.val}</StyledLink>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
                 {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(pd) && <div><p><strong>{fs.lbl}</strong></p>
-                    {pd.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.performance_dates], null, null, null)}
-                        </p>
-                    })}
-                </div>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(pd) && <div><p>{pd.lbl}</p>
+                        {pd.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.performance_dates], null, null, null)}
+                            </p>
+                        })}
+                    </div>}
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -87,7 +93,7 @@ export default function PerformanceArt(props) {
                     </p>
                     break;
                 default:
-                    formattedValue = genericFieldFormatter(ft.getUnformattedField())
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

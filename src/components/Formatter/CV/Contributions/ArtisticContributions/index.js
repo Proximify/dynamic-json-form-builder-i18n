@@ -24,6 +24,8 @@ import {
     genericFieldFormatter,
     singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
+import {GenericFormFormatter} from "../../../utils/GenericFormFormatter";
+import SoundRecording from "./SoundRecording";
 
 export default function ArtisticContributions(props) {
     const subsections = {
@@ -90,48 +92,14 @@ export default function ArtisticContributions(props) {
         "other_artistic_contributions": <OtherArtisticContributions structureChain={props.structureChain}
                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
                           rawData={props.rawData}/>,
-
-    }
-
-    const genericFormFormatter = () => {
-        const rawData = props.rawData;
-        const formData = rawData.values;
-        const schema = props.schema;
-
-        if (props.isFullScreenViewMode === true) {
-            const mappedValue = FieldValueMapper(formData, schema);
-            const ft = new FormatterTracker(mappedValue);
-            return (
-                <div>
-                    {genericFieldFormatter(ft.getUnformattedField())}
-                </div>
-            )
-        } else {
-            const mappedValue = FieldValueMapper(rawData, schema, true);
-            const ft = new FormatterTracker(mappedValue, true);
-            const subsection = props.structureChain[0];
-
-            if (subsection) {
-                let formattedValue = null;
-                switch (subsection) {
-                    default:
-                        formattedValue = genericFieldFormatter(ft.getUnformattedField());
-                        break;
-                }
-                return formattedValue
-            } else {
-                return (
-                    <React.Fragment>
-                        {JSON.stringify(props.rawData)}
-                    </React.Fragment>
-                )
-            }
-        }
+        "sound_recording": <SoundRecording structureChain={props.structureChain}
+                                                                    isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
+                                                                    rawData={props.rawData}/>
     }
     
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : genericFormFormatter()}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }

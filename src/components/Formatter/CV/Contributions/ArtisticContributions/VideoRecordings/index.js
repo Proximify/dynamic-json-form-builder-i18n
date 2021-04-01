@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function VideoRecordings(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -17,48 +17,50 @@ export default function VideoRecordings(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            title:ti,
-            director:dir,
-            producer:pr,
-            distributor:di,
-            release_date:rd,
+            title: ti,
+            director: dir,
+            producer: pr,
+            distributor: di,
+            release_date: rd,
             description_contribution_value: dcv,
             url: u,
             contribution_role: cr,
             number_of_contributors: noc,
-            contributors:co,
+            contributors: co,
             funding_sources: fs
         } = ft.getFields();
 
         return (
             <div>
-                {any(ti,dir,pr,di,rd) && <p>
-                    {singleLineMultiFieldValueFormatter([ti,dir,pr,di,rd], [false,true,true,true], ['s'], [', ', ', ', ', ',' ',['(',')']])}
+                {any(ti, dir, pr, di, rd) && <p>
+                    {singleLineMultiFieldValueFormatter([ti, dir, pr, di, rd], [false, true, true, true], ['s'], [', ', ', ', ', ', ' ', ['(', ')']])}
                 </p>}
                 {any(u) && <p>
-                    {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
+                    {<a href={u}>{u.val}</a>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
                 {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -82,6 +84,7 @@ export default function VideoRecordings(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

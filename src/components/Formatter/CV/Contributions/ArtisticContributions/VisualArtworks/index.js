@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function VisualArtworks(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -17,45 +21,47 @@ export default function VisualArtworks(props) {
         const mappedValue = FieldValueMapper(formData, schema);
         const ft = new FormatterTracker(mappedValue);
         const {
-            artwork_title:at,
-            publication_date:pd,
+            artwork_title: at,
+            publication_date: pd,
             description_contribution_value: dcv,
             url: u,
             contribution_role: cr,
             number_of_contributors: noc,
-            contributors:co,
+            contributors: co,
             funding_sources: fs
         } = ft.getFields();
 
         return (
             <div>
-                {any(at,pd) && <p>
-                    {singleLineMultiFieldValueFormatter([at,pd], null, ['s'], [' ',['(',')']])}
+                {any(at, pd) && <p>
+                    {singleLineMultiFieldValueFormatter([at, pd], null, ['s'], [' ', ['(', ')']])}
                 </p>}
                 {any(u) && <p>
-                    {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
+                    {<StyledLink href={u}>{u.val}</StyledLink>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
                 {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    <div>{fs.val.map((val, index) => {
-                        return <div key={index}>
-                            <p>{singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}</p>
-                        </div>
-                    })}</div>
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -79,6 +85,7 @@ export default function VisualArtworks(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

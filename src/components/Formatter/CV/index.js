@@ -45,7 +45,7 @@ export default function CVFormatter(props) {
                                                                         rawData={props.rawData}/>,
         "contributions": <Contributions structureChain={props.structureChain}
                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
-                                        rawData={props.rawData}/>,
+                                        rawData={props.rawData}/>
     }
 
     return (

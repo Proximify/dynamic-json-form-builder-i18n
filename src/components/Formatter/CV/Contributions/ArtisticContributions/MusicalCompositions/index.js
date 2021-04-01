@@ -6,6 +6,11 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function MusicalCompositions(props) {
     // console.log("Recognitions", props);
@@ -18,12 +23,12 @@ export default function MusicalCompositions(props) {
         const ft = new FormatterTracker(mappedValue);
         const {
             composition_title: ct,
-            instrumentation_tags:it,
-            number_of_pages:nop,
-            duration:du,
-            publisher:pub,
-            publication_date:pd,
-            publication_location:pl,
+            instrumentation_tags: it,
+            number_of_pages: nop,
+            duration: du,
+            publisher: pub,
+            publication_date: pd,
+            publication_location: pl,
             description_contribution_value: dcv,
             url: u,
             contribution_role: cr,
@@ -35,35 +40,37 @@ export default function MusicalCompositions(props) {
         return (
             <div>
                 {any(ct, it, nop, du) && <p>
-                    {singleLineMultiFieldValueFormatter([ct, it, nop,du], [false,false,true,true], ['s'], [', ', ', ',', '])}
+                    {singleLineMultiFieldValueFormatter([ct, it, nop, du], [false, false, true, true], ['s'], [', ', ', ', ', '])}
                 </p>}
                 {any(pub, pl, pd) && <p>
-                    {singleLineMultiFieldValueFormatter([pub, pl, pd], null, ['i'], [' ', ' ', ['(',')']])}
+                    {singleLineMultiFieldValueFormatter([pub, pl, pd], null, ['i'], [' ', ' ', ['(', ')']])}
                 </p>}
                 {any(u) && <p>
-                    {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
+                    {<StyledLink href={u}>{u.val}</StyledLink>}
                 </p>}
                 {any(cr) && <p><strong>{cr.val}</strong></p>}
                 {any(co) && <p>{co.lbl}: {co.val}</p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.eng}}/>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcv.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -87,6 +94,7 @@ export default function MusicalCompositions(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

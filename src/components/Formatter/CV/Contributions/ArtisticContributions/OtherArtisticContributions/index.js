@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function OtherArtisticContributions(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -30,50 +34,52 @@ export default function OtherArtisticContributions(props) {
         return (
             <div>
                 {any(ti) && <>
-                    {ti.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ti.lbl}</p>
+                    {ti.val.eng && <StyledBilingualItemContainer>
+                        <p>{ti.lbl}</p>
                         <p><strong>{ti.val.eng}</strong></p>
-                    </div>}
-                    {ti.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ti.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ti.val.fre && <StyledBilingualItemContainer>
+                        <p>{ti.lbl} (French)</p>
                         <p><strong>{ti.val.fre}</strong></p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(ve, da) && <p>
                     {singleLineMultiFieldValueFormatter([ve, da], null, null, [', ', ['(', ')']])}
                 </p>}
                 {any(u) && <p>
-                    {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
+                    {<StyledLink href={u}>{u.val}</StyledLink>}
                 </p>}
                 {any(noc) && <p>{noc.lbl}: {noc.val}</p>}
                 {any(cr) && <>
-                    {cr.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{cr.lbl}</p>
+                    {cr.val.eng && <StyledBilingualItemContainer>
+                        <p>{cr.lbl}</p>
                         <p>{cr.val.eng}</p>
-                    </div>}
-                    {cr.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{cr.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {cr.val.fre && <StyledBilingualItemContainer>
+                        <p>{cr.lbl} (French)</p>
                         <p>{cr.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(dcv) && <>
-                    {dcv.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl}</p>
+                    {dcv.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl}</p>
                         <p>{dcv.val.eng}</p>
-                    </div>}
-                    {dcv.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcv.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcv.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcv.lbl} (French)</p>
                         <p>{dcv.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -97,6 +103,7 @@ export default function OtherArtisticContributions(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

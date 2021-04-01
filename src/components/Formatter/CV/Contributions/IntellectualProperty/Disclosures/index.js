@@ -6,9 +6,13 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {
+    StyledBilingualItemContainer,
+    StyledLink,
+    StyledSubsectionFormatterContainer
+} from "../../../../utils/styledComponents";
 
 export default function Disclosures(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -36,26 +40,28 @@ export default function Disclosures(props) {
                     ({singleLineMultiFieldValueFormatter([fd, di, ed], [true, true, true], null, [' - ', ' - '])})
                 </p>}
                 {any(u) && <p>
-                    {<a href={u} className="text-blue-500 hover:underline">{u.val}</a>}
+                    {<StyledLink href={u}>{u.val}</StyledLink>}
                 </p>}
                 {any(dcvi) && <>
-                    {dcvi.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dcvi.lbl}</p>
+                    {dcvi.val.eng && <StyledBilingualItemContainer>
+                        <p>{dcvi.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: dcvi.val.eng}}/>
-                    </div>}
-                    {dcvi.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dcvi.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dcvi.val.fre && <StyledBilingualItemContainer>
+                        <p>{dcvi.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: dcvi.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                {any(fs) &&
-                <div><p><strong>{fs.lbl}</strong></p>
-                    {fs.val.map((val, index) => {
-                        return <p key={index}>
-                            {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
-                        </p>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(fs) &&
+                    <div><p>{fs.lbl}</p>
+                        {fs.val.map((val, index) => {
+                            return <p key={index}>
+                                {singleLineMultiFieldValueFormatter([val.funding_organization, val.other_funding_organization, val.funding_reference_number], [false, false, true], null, null, [[1, 2, 2, ' ('], [2, 2, 2, ')']])}
+                            </p>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -79,6 +85,7 @@ export default function Disclosures(props) {
                     </p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

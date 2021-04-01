@@ -4,6 +4,7 @@ import License from "./Licenses";
 import Disclosures from "./Disclosures";
 import RegisteredCopyrights from "./RegisteredCopyrights";
 import Trademarks from "./Trademarks";
+import {GenericFormFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function IntellectualProperty(props) {
 
@@ -27,7 +28,7 @@ export default function IntellectualProperty(props) {
 
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }
