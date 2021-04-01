@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
 export default function StaffSupervision(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -36,9 +36,7 @@ export default function StaffSupervision(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                StaffSupervision
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

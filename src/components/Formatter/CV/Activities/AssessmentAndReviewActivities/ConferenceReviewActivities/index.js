@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
 export default function ConferenceReviewActivities(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -38,9 +38,7 @@ export default function ConferenceReviewActivities(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                JournalReviewActivities
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

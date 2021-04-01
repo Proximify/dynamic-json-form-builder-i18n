@@ -11,6 +11,7 @@ import InternationalCollaborationActivities from "./InternationalCollaborationAc
 import ScholarlyActivities from "./ScholarlyActivities";
 import OtherProfessionalResearchActivities from "./OtherProfessionalResearchActivities";
 import Goals from "./Goals";
+import {GenericFormFormatter} from "../../utils/GenericFormFormatter";
 
 
 export default function Activities(props) {
@@ -68,7 +69,7 @@ export default function Activities(props) {
 
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }

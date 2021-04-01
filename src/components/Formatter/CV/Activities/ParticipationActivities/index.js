@@ -1,10 +1,9 @@
 import React from "react";
 import EventParticipation from "./EventParticipation";
+import {GenericFormFormatter} from "../../../utils/GenericFormFormatter";
 
 
 export default function ParticipationActivities(props) {
-    // console.log("PersonalInformation", props);
-
     const subsections = {
         "event_participation": <EventParticipation structureChain={props.structureChain}
                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
@@ -13,7 +12,7 @@ export default function ParticipationActivities(props) {
 
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }

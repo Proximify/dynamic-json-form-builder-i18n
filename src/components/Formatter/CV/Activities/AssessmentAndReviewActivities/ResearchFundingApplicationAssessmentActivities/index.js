@@ -6,6 +6,7 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function ResearchFundingApplicationAssessmentActivities(props) {
     // console.log("Recognitions", props);
@@ -51,7 +52,7 @@ export default function ResearchFundingApplicationAssessmentActivities(props) {
                 {any(noaa, sd,ed) && <p>
                     {singleLineMultiFieldValueFormatter([noaa, sd,ed], null, null, null,[[0,1,2,' ('],[1,1,2,' - '],[2,1,2,')']])}
                 </p>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
@@ -65,7 +66,7 @@ export default function ResearchFundingApplicationAssessmentActivities(props) {
                         {reftableValueParser(foa.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -99,6 +100,7 @@ export default function ResearchFundingApplicationAssessmentActivities(props) {
                     })}</p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

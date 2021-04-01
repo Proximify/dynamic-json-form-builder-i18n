@@ -1,4 +1,6 @@
 import React from "react";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 import {
     any,
     FieldValueMapper,
@@ -8,9 +10,9 @@ import {
     singleFieldSubsectionFormatter,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function StudentPostdoctoralSupervision(props) {
-    // console.log("StudentPostdoctoralSupervision", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -49,8 +51,6 @@ export default function StudentPostdoctoralSupervision(props) {
             <div>
                 {any(sur, ssd, sed) && <p>
                     {singleLineMultiFieldValueFormatter([sur, ssd, sed], null, ['s'], [' '], [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
-                    {/*{sur.val && <strong>{sur.val} </strong>}*/}
-                    {/*{any(ssd, sed) && <span>({ssd.val} - {sed.val})</span>}*/}
                 </p>}
                 {any(sn, spl, sds, sdsd, sdrd, sded) && <p>
                     {singleLineMultiFieldValueFormatter([sn, spl, sds, sdsd, sdrd, sded], null, ['s', '', 's'], [', ', ', '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}
@@ -59,24 +59,24 @@ export default function StudentPostdoctoralSupervision(props) {
                     {singleLineMultiFieldValueFormatter([si, po], null, null, [', '])}
                 </p>}
                 {any(dn) && <>
-                    {dn.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{dn.lbl}</p>
+                    {dn.val.eng && <StyledBilingualItemContainer>
+                        <p>{dn.lbl}</p>
                         <p>{dn.val.eng}</p>
-                    </div>}
-                    {dn.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{dn.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {dn.val.fre && <StyledBilingualItemContainer>
+                        <p>{dn.lbl} (French)</p>
                         <p>{dn.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(sp) && <>
-                    {sp.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{sp.lbl}</p>
+                    {sp.val.eng && <StyledBilingualItemContainer>
+                        <p>{sp.lbl}</p>
                         <p>{sp.val.eng}</p>
-                    </div>}
-                    {sp.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{sp.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {sp.val.fre && <StyledBilingualItemContainer>
+                        <p>{sp.lbl} (French)</p>
                         <p>{sp.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(scrs) && <p>{scrs.lbl}: {scrs.val}</p>}
                 {any(scoc) && <div><p>{scoc.lbl}:</p> <p>{singleFieldSubsectionFormatter(scoc.val)}</p></div>}
@@ -92,16 +92,16 @@ export default function StudentPostdoctoralSupervision(props) {
                     })}</p>
                 </div>}
                 {any(pd) && <>
-                    {pd.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{pd.lbl}</p>
+                    {pd.val.eng && <StyledBilingualItemContainer>
+                        <p>{pd.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: pd.val.eng}}/>
-                    </div>}
-                    {pd.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{pd.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {pd.val.fre && <StyledBilingualItemContainer>
+                        <p>{pd.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: pd.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
@@ -141,7 +141,7 @@ export default function StudentPostdoctoralSupervision(props) {
                             </div>
                         })}</div>
                     </div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -156,7 +156,6 @@ export default function StudentPostdoctoralSupervision(props) {
             area_of_research: aor,
             field_of_application: foa
         } = ft.getFields();
-        // console.log(ft.getFields())
         if (subsection) {
             let formattedValue = null;
             switch (subsection) {
@@ -172,7 +171,7 @@ export default function StudentPostdoctoralSupervision(props) {
                         other_funding_organization: ofori,
                         converted_amount: cam
                     } = ft.getFields();
-                    formattedValue = <div className='space-y-1.5'>
+                    formattedValue = <div css={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([frn, am, cu], [true, true], null, [', ', ', ', ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([fori, ofori], null, null, [' ', ' '])}</p>
                         {(cam.val || cam.val === 0) && <p>{cam.lbl}: {cam.val}</p>}
@@ -195,7 +194,7 @@ export default function StudentPostdoctoralSupervision(props) {
                         converted_amount: cam
                     } = ft.getFields();
 
-                    formattedValue = <div className='space-y-1.5'>
+                    formattedValue = <div css={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([rt, rn, sd, ed], null, null, [', '], [[1, 2, 3, ' ('], [2, 2, 3, ' - '], [3, 2, 3, ')']])}</p>
                         <p>{reftableValueParser(ori.val).map((val, index) => {
                             return reftableValueFormatter(val, index, true)
@@ -232,7 +231,7 @@ export default function StudentPostdoctoralSupervision(props) {
                     })}</p>
                     break;
                 default:
-                    formattedValue = <p>{JSON.stringify(props.rawData)}</p>
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

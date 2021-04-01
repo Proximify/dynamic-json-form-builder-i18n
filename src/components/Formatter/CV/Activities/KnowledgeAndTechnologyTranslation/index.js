@@ -6,13 +6,13 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function KnowledgeAndTechnologyTranslation(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -27,8 +27,7 @@ export default function KnowledgeAndTechnologyTranslation(props) {
             references_citations_web_sites:rcws,
             outcome_deliverable:od,
             evidence_of_uptake_impact:eoui,
-            activity_description: ad,
-
+            activity_description: ad
         } = ft.getFields();
 
         return (
@@ -40,43 +39,41 @@ export default function KnowledgeAndTechnologyTranslation(props) {
                     {singleLineMultiFieldValueFormatter([ts,rcws], null, null, [', '])}
                 </p>}
                 {any(od) && <>
-                    {od.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{od.lbl}</p>
+                    {od.val.eng && <StyledBilingualItemContainer>
+                        <p>{od.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: od.val.eng}}/>
-                    </div>}
-                    {od.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{od.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {od.val.fre && <StyledBilingualItemContainer>
+                        <p>{od.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: od.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(eoui) && <>
-                    {eoui.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{eoui.lbl}</p>
+                    {eoui.val.eng && <StyledBilingualItemContainer>
+                        <p>{eoui.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: eoui.val.eng}}/>
-                    </div>}
-                    {eoui.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{eoui.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {eoui.val.fre && <StyledBilingualItemContainer>
+                        <p>{eoui.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: eoui.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(ad) && <>
-                    {ad.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ad.lbl}</p>
+                    {ad.val.eng && <StyledBilingualItemContainer>
+                        <p>{ad.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: ad.val.eng}}/>
-                    </div>}
-                    {ad.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ad.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ad.val.fre && <StyledBilingualItemContainer>
+                        <p>{ad.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: ad.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
         return (
-            <React.Fragment>
-                EventAdministration
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

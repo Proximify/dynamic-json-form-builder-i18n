@@ -2,10 +2,9 @@ import React from "react";
 import EventAdministration from "./EventAdministration";
 import EditorialActivities from "./EditorialActivities";
 import OtherAdministrativeActivities from "./OtherAdministrativeActivities";
+import {GenericFormFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function AdministrativeActivities(props) {
-    // console.log("PersonalInformation", props);
-
     const subsections = {
         "event_administration": <EventAdministration structureChain={props.structureChain}
                                         isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
@@ -20,7 +19,7 @@ export default function AdministrativeActivities(props) {
 
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }

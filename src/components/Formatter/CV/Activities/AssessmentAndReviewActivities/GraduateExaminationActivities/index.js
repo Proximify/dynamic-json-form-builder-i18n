@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
 export default function GraduateExaminationActivities(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -30,9 +30,9 @@ export default function GraduateExaminationActivities(props) {
 
         return (
             <div>
-                {any(gear, sd,ed) &&
+                {any(gear, sd, ed) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([gear,sd,ed], null, ['s'], null,[[0,1,2,' ('],[1,1,2,' - '],[2,1,2,')']])}
+                    {singleLineMultiFieldValueFormatter([gear, sd, ed], null, ['s'], null, [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
@@ -40,16 +40,14 @@ export default function GraduateExaminationActivities(props) {
                 })}
                     {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
                 </p>}
-                {any(dp) &&<p>{dp.val}</p>}
+                {any(dp) && <p>{dp.val}</p>}
                 {any(sn) && <p>{sn.val}</p>}
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
         return (
-            <React.Fragment>
-                GraduateExaminationActivities
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

@@ -6,13 +6,14 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
+import GenericFieldTemplate from "../../../../../FormBuilder/components/utils/GenericFieldTemplate";
 
 export default function EventAdministration(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -36,14 +37,14 @@ export default function EventAdministration(props) {
                 </p>}
                 {any(peo) && <p>{peo.val}</p>}
                 {any(ad) && <>
-                    {ad.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ad.lbl}</p>
+                    {ad.val.eng && <StyledBilingualItemContainer>
+                        <p>{ad.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: ad.val.eng}}/>
-                    </div>}
-                    {ad.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ad.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ad.val.fre && <StyledBilingualItemContainer>
+                        <p>{ad.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: ad.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(esd, eed) && <p>
                     ({esd.val && <span>{esd.lbl}: {esd.val}</span>}
@@ -55,9 +56,7 @@ export default function EventAdministration(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                EventAdministration
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

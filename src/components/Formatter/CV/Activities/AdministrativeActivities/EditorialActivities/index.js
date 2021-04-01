@@ -6,13 +6,12 @@ import {
     reftableValueParser,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function EditorialActivities(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
-
 
     if (props.isFullScreenViewMode === true) {
         const mappedValue = FieldValueMapper(formData, schema);
@@ -35,16 +34,16 @@ export default function EditorialActivities(props) {
                     {singleLineMultiFieldValueFormatter([ro, pt, pn, sd, ed], null, ['s'], [', ', ', '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}
                 </p>}
                 {any(ad) && <>
-                    {ad.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ad.lbl}</p>
+                    {ad.val.eng && <StyledBilingualItemContainer>
+                        <p>{ad.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: ad.val.eng}}/>
-                    </div>}
-                    {ad.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ad.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ad.val.fre && <StyledBilingualItemContainer>
+                        <p>{ad.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: ad.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
@@ -57,7 +56,7 @@ export default function EditorialActivities(props) {
                         {reftableValueParser(foa.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -91,6 +90,7 @@ export default function EditorialActivities(props) {
                     })}</p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue
