@@ -6,9 +6,10 @@ import {
     reftableValueParser,
     reftableValueFormatter
 } from "../../../utils/helper";
+import {StyledSecondLangText} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function Affiliations(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -32,7 +33,7 @@ export default function Affiliations(props) {
                 {any(pti, sd, ed) &&
                 <p>
                     {pti.val && <strong>{pti.val.eng} {pti.val.fre &&
-                    <span className="secondLang">{`(${pti.val.fre}) `}</span>}</strong>}
+                    <StyledSecondLangText>{`(${pti.val.fre}) `}</StyledSecondLangText>}</strong>}
                     {any(sd, ed) && <strong>({sd.val} - {ed.val})</strong>}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
@@ -52,10 +53,7 @@ export default function Affiliations(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                affiliations
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

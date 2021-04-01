@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../../utils/styledComponents";
 
 export default function CourseDevelopment(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -46,14 +46,14 @@ export default function CourseDevelopment(props) {
                 {any(cl) && <p>{cl.lbl}: {cl.val}</p>}
                 {any(dft) && <p>{dft.lbl}: {dft.val}</p>}
                 {any(cdesc) && <>
-                    {cdesc.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{cdesc.lbl}</p>
+                    {cdesc.val.eng && <StyledBilingualItemContainer>
+                        <p>{cdesc.lbl}</p>
                         <p>{cdesc.val.eng}</p>
-                    </div>}
-                    {cdesc.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{cdesc.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {cdesc.val.fre && <StyledBilingualItemContainer>
+                        <p>{cdesc.lbl} (French)</p>
                         <p>{cdesc.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(cd) &&
                 <div>
@@ -86,6 +86,7 @@ export default function CourseDevelopment(props) {
                         <p>{singleLineMultiFieldValueFormatter([fin, fan], null, null, [' '])}</p>;
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

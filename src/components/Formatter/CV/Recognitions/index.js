@@ -7,9 +7,9 @@ import {
     reftableValueFormatter,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../utils/styledComponents";
 
 export default function Recognitions(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -59,16 +59,16 @@ export default function Recognitions(props) {
                 {any(am, cur, amc) &&
                 <p>{singleLineMultiFieldValueFormatter([am, cur, amc], [true], null, [[' ', ' ']])}</p>}
                 {any(desc) && <>
-                    {desc.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl}</p>
+                    {desc.val.eng && <StyledBilingualItemContainer>
+                        <p>{desc.lbl}</p>
                         <p>{desc.val.eng}</p>
-                    </div>}
-                    {desc.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {desc.val.fre && <StyledBilingualItemContainer>
+                        <p>{desc.lbl} (French)</p>
                         <p>{desc.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
@@ -81,7 +81,7 @@ export default function Recognitions(props) {
                         {reftableValueParser(foa.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {any(ca) && <p>{ca.lbl}: {ca.val}</p>}
                 {genericFieldFormatter(ft.getUnformattedField())}
 
@@ -117,6 +117,7 @@ export default function Recognitions(props) {
                     })}</p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

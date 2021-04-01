@@ -6,6 +6,7 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../utils/styledComponents";
 
 export default function Credentials(props) {
     const rawData = props.rawData;
@@ -33,7 +34,7 @@ export default function Credentials(props) {
             <div>
                 {any(ti, efd, end) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([ti, efd, end], null, ['s'], [' '],[[0,1,2,' ('],[1,1,2,' - '],[2,1,2,')']])}
+                    {singleLineMultiFieldValueFormatter([ti, efd, end], null, ['s'], [' '], [[0, 1, 2, ' ('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
@@ -44,16 +45,16 @@ export default function Credentials(props) {
                     {otoril.val && <span>{otoril.val}</span>}
                 </p>}
                 {any(desc) && <>
-                    {desc.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl}</p>
+                    {desc.val.eng && <StyledBilingualItemContainer>
+                        <p>{desc.lbl}</p>
                         <p>{desc.val.eng}</p>
-                    </div>}
-                    {desc.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {desc.val.fre && <StyledBilingualItemContainer>
+                        <p>{desc.lbl} (French)</p>
                         <p>{desc.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
@@ -66,7 +67,7 @@ export default function Credentials(props) {
                         {reftableValueParser(foa.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )

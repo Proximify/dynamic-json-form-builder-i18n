@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function ProgramDevelopment(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -42,27 +42,27 @@ export default function ProgramDevelopment(props) {
                     {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
                 </p>}
                 {any(pd) && <>
-                    {pd.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{pd.lbl}</p>
+                    {pd.val.eng && <StyledBilingualItemContainer>
+                        <p>{pd.lbl}</p>
                         <p>{pd.val.eng}</p>
-                    </div>}
-                    {pd.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{pd.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {pd.val.fre && <StyledBilingualItemContainer>
+                        <p>{pd.lbl} (French)</p>
                         <p>{pd.val.fre}</p>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(dp) && <p>{dp.val}</p>}
                 {any(uic) && <>
-                    {uic.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{uic.lbl}</p>
+                    {uic.val.eng && <StyledBilingualItemContainer>
+                        <p>{uic.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: uic.val.eng}}/>
-                    </div>}
-                    {uic.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{uic.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {uic.val.fre && <StyledBilingualItemContainer>
+                        <p>{uic.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: uic.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(cl) && <div><p>{cl.lbl}: </p><p>{cl.val}</p></div>}
                     {any(cd) &&
                     <div><p>{cd.lbl}: </p> <p>{cd.val.map((val, index) => {
@@ -71,7 +71,7 @@ export default function ProgramDevelopment(props) {
                             </span>
                     })}</p></div>}
                     {any(dft) && <div><p>{dft.lbl}: </p><p>{dft.val}</p></div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
 
             </div>
@@ -93,6 +93,7 @@ export default function ProgramDevelopment(props) {
                         <p>{singleLineMultiFieldValueFormatter([fin, fan], null, null, [' '])}</p>;
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

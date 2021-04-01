@@ -9,9 +9,9 @@ import {
     singleLineMultiFieldValueFormatter,
     genericFieldFormatter
 } from "../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../utils/styledComponents";
 
 export default function UserProfile(props) {
-    // console.log("UserProfile", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -48,36 +48,36 @@ export default function UserProfile(props) {
                 </p>}
                 {any(eicr) && <p>{eicr.val}</p>}
                 {any(ktm) && <>
-                    {ktm.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ktm.lbl}</p>
+                    {ktm.val.eng && <StyledBilingualItemContainer>
+                        <p>{ktm.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: ktm.val.eng}}/>
-                    </div>}
-                    {ktm.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ktm.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ktm.val.fre && <StyledBilingualItemContainer>
+                        <p>{ktm.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: ktm.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(ri) && <>
-                    {ri.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ri.lbl}</p>
+                    {ri.val.eng && <StyledBilingualItemContainer>
+                        <p>{ri.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: ri.val.eng}}/>
-                    </div>}
-                    {ri.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ri.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ri.val.fre && <StyledBilingualItemContainer>
+                        <p>{ri.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: ri.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(res) && <>
-                    {res.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{res.lbl}</p>
+                    {res.val.eng && <StyledBilingualItemContainer>
+                        <p>{res.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: res.val.eng}}/>
-                    </div>}
-                    {res.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{res.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {res.val.fre && <StyledBilingualItemContainer>
+                        <p>{res.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: res.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(rsk) &&
                     <div><p>{rsk.lbl}</p> <p>{singleFieldSubsectionFormatter(rsk.val)}</p></div>}
                     {any(rc) && <div><p>{rc.lbl}</p>
@@ -114,10 +114,7 @@ export default function UserProfile(props) {
                         })}</p></div>}
                     {any(gr) && <div><p>{gr.lbl}</p> <p>{singleFieldSubsectionFormatter(gr.val)}</p></div>}
                     {any(co) && <div><p>{co.lbl}</p> <p>{singleFieldSubsectionFormatter(co.val)}</p></div>}
-                </div>
-                {/*{Object.keys(ft.getUnformattedField()).length > 0 ?*/}
-                {/*    JSON.stringify(ft.getUnformattedField()) : null*/}
-                {/*}*/}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -141,7 +138,6 @@ export default function UserProfile(props) {
             geographical_region: gr,
             country: co
         } = ft.getFields();
-        // console.log(ft.getFields())
         if (subsection) {
             let formattedValue = null;
             switch (subsection) {
@@ -189,6 +185,7 @@ export default function UserProfile(props) {
                     formattedValue = <p>{singleFieldSubsectionFormatter(co.val, true)}</p>;
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

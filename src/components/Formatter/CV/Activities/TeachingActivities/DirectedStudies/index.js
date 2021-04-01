@@ -6,6 +6,7 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function DirectedStudies(props) {
     // console.log("Recognitions", props);
@@ -35,16 +36,18 @@ export default function DirectedStudies(props) {
                     {singleLineMultiFieldValueFormatter([otori, otorit, otoril], null, null, [', ', ', '])}
                 </p>}
                 {any(cl) && <p>{cl.lbl}: {cl.val}</p>}
-                {any(ci) &&
-                <div>
-                    <p><strong>{ci.lbl}: </strong></p>
-                    <p>
-                        {ci.val.map((val, index) => {
-                            return <span key={index}>
+                <StyledSubsectionFormatterContainer>
+                    {any(ci) &&
+                    <div>
+                        <p>{ci.lbl}: </p>
+                        <p>
+                            {ci.val.map((val, index) => {
+                                return <span key={index}>
                                 {singleLineMultiFieldValueFormatter([val.first_name, val.family_name], null, null, [' ', ' '])}
                             </span>
-                        })}
-                    </p></div>}
+                            })}
+                        </p></div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -65,6 +68,7 @@ export default function DirectedStudies(props) {
                         <p>{singleLineMultiFieldValueFormatter([fin, fan], null, null, [' '])}</p>;
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

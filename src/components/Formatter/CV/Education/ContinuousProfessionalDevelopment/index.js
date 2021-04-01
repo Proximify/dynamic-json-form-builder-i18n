@@ -6,6 +6,8 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function ContinuousProfessionalDevelopment(props) {
     const rawData = props.rawData;
@@ -46,24 +48,21 @@ export default function ContinuousProfessionalDevelopment(props) {
                     {otoril.val && <span>{otoril.val}</span>}
                 </p>}
                 {any(desc) && <>
-                    {desc.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl}</p>
+                    {desc.val.eng && <StyledBilingualItemContainer>
+                        <p>{desc.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: desc.val.eng}}/>
-                    </div>}
-                    {desc.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{desc.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {desc.val.fre && <StyledBilingualItemContainer>
+                        <p>{desc.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: desc.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
     } else {
         return (
-            <React.Fragment>
-                ContinuousProfessionalDevelopment
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
+           GenericSubsectionFormatter(props)
         )
     }
 }

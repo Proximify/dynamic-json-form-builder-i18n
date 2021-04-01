@@ -1,5 +1,6 @@
 import React from "react";
 import {FieldValueMapper, FormatterTracker, any, genericFieldFormatter} from "../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function Email(props) {
     const rawData = props.rawData;
@@ -28,9 +29,7 @@ export default function Email(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                Email
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

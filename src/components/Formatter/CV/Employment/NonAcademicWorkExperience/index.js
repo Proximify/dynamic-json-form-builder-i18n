@@ -4,8 +4,9 @@ import {
     FieldValueMapper,
     FormatterTracker,
     reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter
+    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../utils/styledComponents";
 
 export default function NonAcademicWorkExperience(props) {
     // console.log("Recognitions", props);
@@ -47,17 +48,17 @@ export default function NonAcademicWorkExperience(props) {
                     {otoril.val && <span>{otoril.val}</span>}
                 </p>}
                 {any(wd) && <>
-                    {wd.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{wd.lbl}</p>
+                    {wd.val.eng && <StyledBilingualItemContainer>
+                        <p>{wd.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: wd.val.eng}}/>
-                    </div>}
-                    {wd.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{wd.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {wd.val.fre && <StyledBilingualItemContainer>
+                        <p>{wd.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: wd.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(ud) && <p>{ud.val}</p>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(rd) && <div><p>{rd.lbl}</p>
                         {reftableValueParser(rd.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
@@ -70,7 +71,7 @@ export default function NonAcademicWorkExperience(props) {
                         {reftableValueParser(foa.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {Object.keys(ft.getUnformattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
                 }
@@ -106,6 +107,7 @@ export default function NonAcademicWorkExperience(props) {
                     })}</p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

@@ -28,7 +28,6 @@ import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
 import styled from "styled-components";
 import {css} from 'styled-components/macro'
 import tw from "twin.macro";
-// import './index.css'
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,

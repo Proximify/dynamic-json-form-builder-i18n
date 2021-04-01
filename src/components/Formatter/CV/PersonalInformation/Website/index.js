@@ -1,5 +1,7 @@
 import React from "react";
 import {FieldValueMapper, FormatterTracker, any, genericFieldFormatter} from "../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
+import {StyledLink} from "../../../utils/styledComponents";
 
 export default function Website(props) {
     const rawData = props.rawData;
@@ -19,7 +21,7 @@ export default function Website(props) {
                 {any(u, wt) &&
                 <p>
                     <>{wt.val && <strong>{`${wt.val}: `}</strong>}</>
-                    <a href={u} className="text-blue-500 hover:underline"> {u.val}</a>
+                    <StyledLink href={u}>{u.val}</StyledLink>
                 </p>}
                 {genericFieldFormatter(ft.getUnformattedField())}
 
@@ -27,9 +29,7 @@ export default function Website(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                Email
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

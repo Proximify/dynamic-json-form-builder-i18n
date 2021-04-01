@@ -7,6 +7,7 @@ import {
     reftableValueFormatter,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {StyledSecondLangText, StyledSubsectionFormatterContainer} from "../../../utils/styledComponents";
 
 export default function Degree(props) {
     const rawData = props.rawData;
@@ -44,9 +45,9 @@ export default function Degree(props) {
                 </p>}
                 {any(dn, spe, ds) && <p>
                     {dn.val && <>{dn.val.eng} {dn.val.fre &&
-                    <span className="secondLang">{`(${dn.val.fre})`}</span>}</>}
+                    <StyledSecondLangText>{`(${dn.val.fre})`}</StyledSecondLangText>}</>}
                     {spe.val && <>, {spe.val.eng} {spe.val.fre &&
-                    <span className="secondLang">{`(${spe.val.fre})`}</span>}</>}
+                    <StyledSecondLangText>{`(${spe.val.fre})`}</StyledSecondLangText>}</>}
                     {ds.val && <span> ({ds.val})</span>}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
@@ -59,7 +60,7 @@ export default function Degree(props) {
                 </p>}
                 {any(tt) && <p>{tt.val}</p>}
                 {any(ttpwcm) && <p>{ttpwcm.val}</p>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(sup) &&
                     <div><p>{sup.lbl}</p> <p>{sup.val.map((val, index) => {
                         return <span key={index}>
@@ -79,7 +80,7 @@ export default function Degree(props) {
                         {reftableValueParser(foa.val, true).map((val, index) => {
                             return reftableValueFormatter(val, index)
                         })}</div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -119,6 +120,7 @@ export default function Degree(props) {
                     })}</p>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

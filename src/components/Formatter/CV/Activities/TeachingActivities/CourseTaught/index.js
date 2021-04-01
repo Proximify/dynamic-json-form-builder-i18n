@@ -8,9 +8,11 @@ import {
     singleLineMultiFieldValueFormatter,
     genericFieldFormatter
 } from "../../../../utils/helper";
+import tw from "twin.macro";
+import {css} from 'styled-components/macro'
+import {StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function CourseTaught(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -80,17 +82,19 @@ export default function CourseTaught(props) {
                             </span>
                     })}
                 </p></div>}
-                {any(sroi) &&
-                <div>
-                    <p><strong>{sroi.lbl}: </strong></p>
-                    {sroi.val.map((val, index) => {
-                        return <div key={index}>
-                            <p>{singleLineMultiFieldValueFormatter([val.course_code, val['term_or_full-year']], null, null, [', '])}</p>
-                            <p>{singleLineMultiFieldValueFormatter([val.teaching_effectiveness_rating, val.department_mean_for_teaching_effectiveness], [true, true], null, [', '])}</p>
-                            <p>{singleLineMultiFieldValueFormatter([val.number_of_students, val.response_ratio], [true, true], null, [', '])}</p>
-                        </div>
-                    })}
-                </div>}
+                <StyledSubsectionFormatterContainer>
+                    {any(sroi) &&
+                    <div>
+                        <p>{sroi.lbl}: </p>
+                        {sroi.val.map((val, index) => {
+                            return <div key={index}>
+                                <p>{singleLineMultiFieldValueFormatter([val.course_code, val['term_or_full-year']], null, null, [', '])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.teaching_effectiveness_rating, val.department_mean_for_teaching_effectiveness], [true, true], null, [', '])}</p>
+                                <p>{singleLineMultiFieldValueFormatter([val.number_of_students, val.response_ratio], [true, true], null, [', '])}</p>
+                            </div>
+                        })}
+                    </div>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -112,21 +116,22 @@ export default function CourseTaught(props) {
                     break;
                 case 'student_rating_of_instruction':
                     const {
-                        course_code:cc,
-                        'term_or_full-year':tofy,
+                        course_code: cc,
+                        'term_or_full-year': tofy,
                         teaching_effectiveness_rating: ter,
-                        department_mean_for_teaching_effectiveness:dmfte,
-                        number_of_students:nos,
+                        department_mean_for_teaching_effectiveness: dmfte,
+                        number_of_students: nos,
                         response_ratio: rr
                     } = ft.getFields();
 
-                    formattedValue = <div className='space-y-1.5'>
+                    formattedValue = <div css={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([cc, tofy], null, null, [', '])}</p>
                         <p>{singleLineMultiFieldValueFormatter([ter, dmfte], [true, true], null, [', '])}</p>
-                        <p>{singleLineMultiFieldValueFormatter([nos,rr], [true, true], null, [', '])}</p>
+                        <p>{singleLineMultiFieldValueFormatter([nos, rr], [true, true], null, [', '])}</p>
                     </div>
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

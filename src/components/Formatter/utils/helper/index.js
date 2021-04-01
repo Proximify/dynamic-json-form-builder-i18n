@@ -1,5 +1,6 @@
 import React from "react";
-import {bilingualValueParser} from "../../../SchemaParser";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 
 export const Months = [
     'January',
@@ -17,11 +18,8 @@ export const Months = [
 ];
 
 export const FieldValueMapper = (value, schema, isSubsectionFormatter = false, order = null) => {
-    // console.log(schema,value)
     const fields = schema.fields
-    // console.log(schema,value)
     const result = {}
-    // console.log(value, schema)
     Object.keys(fields).forEach(fieldKey => {
         const field = fields[fieldKey];
         result[field.name] = {}
@@ -34,23 +32,15 @@ export const FieldValueMapper = (value, schema, isSubsectionFormatter = false, o
         }
         if (!isSubsectionFormatter) {
             if (value[fieldKey]) {
-                // console.log(fieldKey, value[fieldKey]);
                 if (field["type"] !== "section") {
-                    // if (field.type === 'bilingual'){
-                    //     result[field.name]['isRichText'] = !!(field.constraints && field.constraints.richText === true);
-                    // }
                     result[field.name]["value"] = value[fieldKey];
                 } else {
                     result[field.name]["value"] = [];
-                    // console.log("--",field)
                     const subsectionID = field.subsection_id;
                     if (schema.subsections[subsectionID]) {
-                        // console.log("===", schema.subsections[subsectionID])
                         value[fieldKey].forEach(subsectionValue => {
-                            // id? order?
                             result[field.name]["value"].push(FieldValueMapper(subsectionValue.values, schema.subsections[subsectionID], false, subsectionValue.order))
                             result[field.name]["value"][result[field.name]["value"].length - 1]['itemId'] = subsectionValue.id;
-                            // console.log(result[field.name]["value"])
                         })
                     }
                 }
@@ -114,7 +104,6 @@ export const reftableValueParser = (fieldValue, isViewModeSubsectionField = fals
     } else {
         isInViewMode ? result.push(format(fieldValue)) : result.push(format(JSON.parse(fieldValue).slice(1)))
     }
-    // console.log(result)
     return result
 }
 
@@ -234,12 +223,6 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
         return null;
     }
 
-    // if (conflictDelimitersIndex && conflictDelimitersIndex.length > 1) {
-    //     if (fields[conflictDelimitersIndex[0]].val && fields[conflictDelimitersIndex[1]].val) {
-    //         delimiters[conflictDelimitersIndex[1]].splice(0, 1);
-    //     }
-    // }
-
     return <>{
         Object.values(fields).map((field, index) => {
             field.count++;
@@ -259,7 +242,7 @@ export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimit
     }</>
 }
 
-export const genericFieldFormatter = (unformattedFields) => {
+export const genericFieldFormatter = (unformattedFields, isInform = false) => {
     if (Object.keys(unformattedFields).length < 1) {
         return null;
     } else {
@@ -276,11 +259,17 @@ export const genericFieldFormatter = (unformattedFields) => {
                             })}</div>
                         case 'bilingual':
                             return <p
-                                key={index}>{unformattedField.lbl ?? unformattedField.label}: <>{Object.values(unformattedField.val ?? unformattedField.value).map((bilingualValue, bilingualValueIndex) => bilingualValue && <span key={bilingualValueIndex}>{bilingualValueIndex > 0 && ', '}
-                                <span dangerouslySetInnerHTML={{__html: bilingualValue}}/></span>)}</></p>
+                                key={index}>{unformattedField.lbl ?? unformattedField.label}: <>{Object.values(unformattedField.val ?? unformattedField.value).map((bilingualValue, bilingualValueIndex) => bilingualValue &&
+                                <span key={bilingualValueIndex}>{bilingualValueIndex > 0 && ', '}
+                                    <span dangerouslySetInnerHTML={{__html: bilingualValue}}/></span>)}</></p>
                         case 'reftable':
                         case 'systable':
-                            return <p key={index}>{unformattedField.lbl ?? unformattedField.label}: {(unformattedField.val ?? unformattedField.value.slice(1)).join(' - ')}</p>
+                            if (isInform) {
+                                return <p
+                                    key={index}>{unformattedField.lbl ?? unformattedField.label}: {JSON.parse(unformattedField.val).slice(1).join(' - ')}</p>
+                            }
+                            return <p
+                                key={index}>{unformattedField.lbl ?? unformattedField.label}: {unformattedField.val ? unformattedField.val.join(' - ') : unformattedField.value[1].split('|').join(' - ')}</p>
                         case 'lov':
                             return <p
                                 key={index}>{unformattedField.lbl ?? unformattedField.label}: {unformattedField.val ?? unformattedField.value.slice(1)}</p>
@@ -303,19 +292,6 @@ export class FormatterTracker {
         const tempFields = {...fields}
         this.#isSubsectionFormatter = isSubsectionFormatter;
         this.#fields = this.fieldsLoader(tempFields);
-        // Object.keys(tempFields).forEach(key => {
-        //     const field = tempFields[key];
-        //     const value = field.value;
-        //     this.#fields[key] = {
-        //         val: (value !== undefined && value !== "" && value !== null) ? this.format(field) : undefined,
-        //         lbl: field.label ?? undefined,
-        //         type: field.type ?? undefined,
-        //         subtype: field.subtype ?? undefined,
-        //         rawValue: value ?? undefined,
-        //         name: key,
-        //         count: 0
-        //     }
-        // })
     }
 
     fieldsLoader = (fields) => {
@@ -357,12 +333,6 @@ export class FormatterTracker {
     }
 
     getUnformattedField() {
-        // Object.keys(this.#fields).forEach(key => {
-        //     const field = this.#fields[key];
-        //     if (field.count === 0 && field.rawValue && field.name !== "order") {
-        //         result[key] = this.#fields[key]
-        //     }
-        // })
         return this.getUnFormattedFieldHelper(this.#fields)
     }
 
@@ -387,25 +357,6 @@ export class FormatterTracker {
         })
         return result;
     }
-
-
-    // getFieldValue(field, rawData = false) {
-    //     if (!field)
-    //         return null;
-    //     if (rawData) {
-    //         return this.#fields[field.name].rawValue;
-    //     } else {
-    //         return this.#fields[field.name].val;
-    //     }
-    // }
-
-    // getLabel(field) {
-    //     const result = {};
-    //     Object.keys(this.#fields).forEach(key => {
-    //         result[key] = <span className="font-bold text-black">{this.#fields[key].label}: </span>
-    //     })
-    //     return result
-    // }
 
     format(field) {
         if (!field.value) {

@@ -9,9 +9,10 @@ import {
 } from "../../../utils/helper";
 import {css} from 'styled-components/macro'
 import tw from "twin.macro";
+import {StyledSubsectionFormatterContainer} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function Identification(props) {
-    // console.log("Identification", props)
     const {rawData, schema} = props;
     const formData = rawData.values;
 
@@ -34,11 +35,11 @@ export default function Identification(props) {
             sex: s,
             title: t,
         } = ft.getFields();
-        // console.log(rawData, mappedValue, ft.getFields())
+
         return (
             <div>
                 {any(t, fin, mn, fan) &&
-                <p css={[tw`text-base`]}>
+                <p>
                     {singleLineMultiFieldValueFormatter([t, fin, mn, fan], null, ['s', 's', 's', 's'], [' ', ' ', ' '])}
                 </p>}
                 {any(pfan) &&
@@ -56,8 +57,10 @@ export default function Identification(props) {
                 {any(prsd) &&
                 <p>{prsd.lbl}: {prsd.val}</p>}
                 {any(afpr) && <p>{afpr.lbl}</p>}
-                {any(coc) &&
-                <p>{coc.lbl}: {singleFieldSubsectionFormatter(coc.val)}</p>}
+                <StyledSubsectionFormatterContainer>
+                    {any(coc) &&
+                    <p>{coc.lbl}: {singleFieldSubsectionFormatter(coc.val)}</p>}
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
             </div>
         )
@@ -69,7 +72,7 @@ export default function Identification(props) {
         const {
             country_of_citizenship: coc
         } = ft.getFields();
-        // console.log(mappedValue, coc)
+
         if (subsection) {
             let formattedValue;
             switch (subsection) {
@@ -77,6 +80,7 @@ export default function Identification(props) {
                     formattedValue = <p>{singleFieldSubsectionFormatter(coc.val, true)}</p>;
                     break;
                 default:
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

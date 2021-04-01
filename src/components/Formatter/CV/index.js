@@ -11,10 +11,9 @@ import Activities from "./Activities";
 import Memberships from "./Memberships";
 import MostSignificantContributions from "./MostSignificantContributions";
 import Contributions from "./Contributions";
+import {GenericFormFormatter} from "../utils/GenericFormFormatter";
 
 export default function CVFormatter(props) {
-    // console.log("CVFormatters", props);
-
     const subsections = {
         "personal_information": <PersonalInformation structureChain={props.structureChain}
                                                      isFullScreenViewMode={props.isFullScreenViewMode}
@@ -51,7 +50,7 @@ export default function CVFormatter(props) {
 
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }

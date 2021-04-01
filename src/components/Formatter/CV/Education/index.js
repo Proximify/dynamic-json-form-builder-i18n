@@ -4,8 +4,6 @@ import Credentials from "./Credentials";
 import ContinuousProfessionalDevelopment from "./ContinuousProfessionalDevelopment";
 
 export default function Education(props) {
-    // console.log("PersonalInformation", props);
-
     const subsections = {
         "degrees": <Degree structureChain={props.structureChain}
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}

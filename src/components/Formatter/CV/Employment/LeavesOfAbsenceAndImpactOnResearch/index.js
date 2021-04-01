@@ -7,9 +7,10 @@ import {
     reftableValueFormatter,
     singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function LeavesOfAbsenceAndImpactOnResearch(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -31,7 +32,8 @@ export default function LeavesOfAbsenceAndImpactOnResearch(props) {
             <div>
                 {any(lt, sd, ed) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([lt, sd, ed], null, ['s', 's', 's'], [' '],[[0,1,2,<strong> (</strong>],[1,1,2,<strong> - </strong>],[2,1,2,<strong>)</strong>]])}
+                    {singleLineMultiFieldValueFormatter([lt, sd, ed], null, ['s', 's', 's'], [' '], [[0, 1, 2,
+                        <strong> (</strong>], [1, 1, 2, <strong> - </strong>], [2, 1, 2, <strong>)</strong>]])}
                 </p>}
                 {any(ori, otori, otorit, otoril) &&
                 <p>{ori.val && reftableValueParser(ori.val, false, true).map((val, index) => {
@@ -42,14 +44,14 @@ export default function LeavesOfAbsenceAndImpactOnResearch(props) {
                     {otoril.val && <span>{otoril.val}</span>}
                 </p>}
                 {any(aaid) && <>
-                    {aaid.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{aaid.lbl}</p>
+                    {aaid.val.eng && <StyledBilingualItemContainer>
+                        <p>{aaid.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: aaid.val.eng}}/>
-                    </div>}
-                    {aaid.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{aaid.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {aaid.val.fre && <StyledBilingualItemContainer>
+                        <p>{aaid.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: aaid.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {Object.keys(ft.getUnformattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
@@ -58,10 +60,7 @@ export default function LeavesOfAbsenceAndImpactOnResearch(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                affiliations
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

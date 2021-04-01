@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
 export default function ClinicalTeaching(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -27,9 +27,7 @@ export default function ClinicalTeaching(props) {
         )
     } else {
         return (
-            <p>
-                ClinicalTeaching
-            </p>
+            GenericSubsectionFormatter(props)
         )
     }
 }

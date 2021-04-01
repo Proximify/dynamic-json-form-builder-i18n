@@ -6,6 +6,7 @@ import {
     singleLineMultiFieldValueFormatter,
     genericFieldFormatter
 } from "../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function Telephone(props) {
     const rawData = props.rawData;
@@ -37,9 +38,7 @@ export default function Telephone(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                LanguageSkill
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

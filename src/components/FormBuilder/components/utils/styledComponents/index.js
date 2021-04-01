@@ -178,7 +178,31 @@ export const StyledSubsectionDataContainer = styled.div`
 
 export const StyledMultiLangFieldContainer = styled.div`
   min-width: 16rem;
-  ${tw`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm flex`}
+  ${tw`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm flex`};
+
+  .rdw-editor-wrapper {
+    min-height: 8rem;
+    ${tw`w-full h-full border border-gray-300 rounded mt-0.5`};
+
+    .rdw-editor-toolbar {
+      ${tw`h-8 py-0 px-1 border-0 border-b border-gray-300 rounded-t-md justify-between`};
+
+      .rdw-inline-wrapper {
+        ${tw`m-0`}
+      }
+    }
+
+    .rdw-editor-main {
+      ${tw`px-2 pb-1`}
+      .DraftEditor-root {
+        ${tw`z-0`}
+      }
+
+      .public-DraftStyleDefault-block {
+        ${tw`m-0`}        
+      }
+    }
+  }
 `
 
 export const StyledMultiLangFieldTextarea = styled(TextareaAutosize)`

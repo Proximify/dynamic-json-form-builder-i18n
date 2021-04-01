@@ -12,7 +12,6 @@ import {
     handleOnPrimaryItemSetBtnClick
 } from './helper/sectionPageBuilderHelper'
 import {SectionLabel, StyledSectionContainer} from "./styledComponents";
-import './index.css'
 import styled from "styled-components";
 import {css} from 'styled-components/macro'
 import tw from "twin.macro";

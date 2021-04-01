@@ -8,9 +8,11 @@ import {
     singleFieldSubsectionFormatter,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../utils/helper";
+import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../utils/styledComponents";
+import {css} from 'styled-components/macro'
+import tw from "twin.macro";
 
 export default function ResearchFundingHistory(props) {
-    // console.log("ResearchFundingHistory", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -39,7 +41,6 @@ export default function ResearchFundingHistory(props) {
             research_settings: rs,
             funding_sources: fso
         } = ft.getFields();
-        // console.log(fso);
         return (
             <div>
                 {any(fr, fsd, fed, fst) &&
@@ -52,27 +53,27 @@ export default function ResearchFundingHistory(props) {
                     {gt.val && <span>{gt.val}</span>}
                 </p>}
                 {any(pd) && <>
-                    {pd.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{pd.lbl}</p>
+                    {pd.val.eng && <StyledBilingualItemContainer>
+                        <p>{pd.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: pd.val.eng}}/>
-                    </div>}
-                    {pd.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{pd.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {pd.val.fre && <StyledBilingualItemContainer>
+                        <p>{pd.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: pd.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {any(crp) && <p>{crp.val}</p>}
                 {any(ru) && <>
-                    {ru.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{ru.lbl}</p>
+                    {ru.val.eng && <StyledBilingualItemContainer>
+                        <p>{ru.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: ru.val.eng}}/>
-                    </div>}
-                    {ru.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{ru.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {ru.val.fre && <StyledBilingualItemContainer>
+                        <p>{ru.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: ru.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
-                <div className="viewModeSubsection">
+                <StyledSubsectionFormatterContainer>
                     {any(oi) &&
                     <div><p>{oi.lbl}</p> <p>{oi.val.map((val, index) => {
                         return <span key={index}>
@@ -125,7 +126,7 @@ export default function ResearchFundingHistory(props) {
                             </div>
                         })}</div>
                     </div>}
-                </div>
+                </StyledSubsectionFormatterContainer>
                 {genericFieldFormatter(ft.getUnformattedField())}
 
             </div>
@@ -145,7 +146,6 @@ export default function ResearchFundingHistory(props) {
             investigator_name: ina,
             role: ro
         } = ft.getFields();
-        // console.log(ft.getFields())
         if (subsection) {
             let formattedValue = null;
             switch (subsection) {
@@ -179,7 +179,7 @@ export default function ResearchFundingHistory(props) {
                         converted_portion_of_funding_received: cpofr,
                     } = ft.getFields();
 
-                    formattedValue = <div className='space-y-1.5'>
+                    formattedValue = <div css={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([ot, fo, ofo, fsd, fed], null, ['s'], [' '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pn, frn], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([tf, cotf, tfc], [true], null, [' ', ['(', ')'], ['(', ')  CAN']])}</p>
@@ -202,7 +202,7 @@ export default function ResearchFundingHistory(props) {
                         currency_of_portion_of_funding_received: copofr,
                         time_commitment: tc
                     } = ft.getFields();
-                    formattedValue = <div className='space-y-1.5'>
+                    formattedValue = <div css={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([sd, ed], null, null, [['(', ''], ')'], [[0, 1, 2, ' - ']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([tf, cotf], [true], null, [' ', ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pofr, copofr], [true], null, [' ', ['(', ')']])}</p>
@@ -230,7 +230,7 @@ export default function ResearchFundingHistory(props) {
                         <p>{singleLineMultiFieldValueFormatter([ina, ro], null, null, [' ', ['(', ')']])}</p>;
                     break;
                 default:
-                    formattedValue = <p>{JSON.stringify(props.rawData)}</p>
+                    formattedValue = genericFieldFormatter(ft.getUnformattedField(), true);
                     break;
             }
             return formattedValue

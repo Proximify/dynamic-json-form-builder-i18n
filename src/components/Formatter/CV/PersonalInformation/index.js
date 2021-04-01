@@ -5,10 +5,9 @@ import Address from "./Address";
 import Telephone from "./Telephone";
 import Email from "./Email";
 import Website from "./Website";
+import {GenericFormFormatter} from "../../utils/GenericFormFormatter";
 
 export default function PersonalInformation(props) {
-    // console.log("PersonalInformation", props);
-
     const subsections = {
         "identification": <Identification structureChain={props.structureChain}
                                           isFullScreenViewMode={props.isFullScreenViewMode} schema={props.schema}
@@ -32,7 +31,7 @@ export default function PersonalInformation(props) {
 
     return (
         <React.Fragment>
-            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}
+            {props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : GenericFormFormatter(props)}
         </React.Fragment>
     )
 }

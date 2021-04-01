@@ -7,9 +7,10 @@ import {
     reftableValueFormatter,
     singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
+import {StyledBilingualItemContainer} from "../../../utils/styledComponents";
 
 export default function UniversityAppointments(props) {
-    // console.log("UniversityAppointments", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -50,14 +51,14 @@ export default function UniversityAppointments(props) {
                     {singleLineMultiFieldValueFormatter([fto, fr], [true, true], null, [', '])}
                 </p>}
                 {any(co) && <>
-                    {co.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{co.lbl}</p>
+                    {co.val.eng && <StyledBilingualItemContainer>
+                        <p>{co.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: co.val.eng}}/>
-                    </div>}
-                    {co.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{co.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {co.val.fre && <StyledBilingualItemContainer>
+                        <p>{co.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: co.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {Object.keys(ft.getUnformattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
@@ -66,10 +67,7 @@ export default function UniversityAppointments(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                UniversityAppointments
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

@@ -6,9 +6,9 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function Address(props) {
-    // console.log("Address", props)
     const {rawData, schema} = props;
     const formData = rawData.values;
 
@@ -51,9 +51,7 @@ export default function Address(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                Address
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

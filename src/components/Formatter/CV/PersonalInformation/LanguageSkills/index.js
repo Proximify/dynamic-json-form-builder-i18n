@@ -6,9 +6,9 @@ import {
     singleLineMultiFieldValueFormatter,
     genericFieldFormatter
 } from "../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function LanguageSkills(props) {
-    // console.log("LanguageSkill", props);
     const {rawData, schema} = props;
     const formData = rawData.values;
 
@@ -28,7 +28,7 @@ export default function LanguageSkills(props) {
             <div>
                 {any(la) &&
                 <p>
-                    <span className="font-bold">{la.val} </span>
+                    <strong>{la.val} </strong>
                     {any(rd, wr, sp, und, pv) &&
                     <span>({singleLineMultiFieldValueFormatter([rd, wr, sp, und, pv], null, null, [', ', ', ', ', ', ', '])})</span>}
                 </p>}
@@ -37,9 +37,7 @@ export default function LanguageSkills(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                LanguageSkill
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

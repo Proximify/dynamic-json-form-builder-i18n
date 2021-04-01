@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {BsCaretDownFill, BsTrashFill} from 'react-icons/bs';
-import './MultiLangField.css';
 import {Menu, Transition} from "@headlessui/react";
 import {ContentState, convertToRaw, EditorState} from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -277,9 +276,9 @@ export function MultiLangFieldWidget(props) {
             <StyledMultiLangFieldContainer>
                 {state.isRichText ? <Editor
                         editorState={state.primaryContent}
-                        wrapperClassName="multiLangRichTextAreaWrapper"
-                        toolbarClassName="multiLangRichTextAreaToolbar"
-                        editorClassName="multiLangRichTextAreaEditor"
+                        // wrapperClassName="multiLangRichTextAreaWrapper"
+                        // toolbarClassName="multiLangRichTextAreaToolbar"
+                        // editorClassName="multiLangRichTextAreaEditor"
                         stripPastedStyles={true}
                         spellCheck={true}
                         toolbar={ToolbarStyleCompact}

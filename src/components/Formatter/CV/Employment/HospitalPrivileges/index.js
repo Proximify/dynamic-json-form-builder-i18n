@@ -7,6 +7,8 @@ import {
     reftableValueFormatter,
     singleLineMultiFieldValueFormatter
 } from "../../../utils/helper";
+import {StyledBilingualItemContainer} from "../../../utils/styledComponents";
+import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function HospitalPrivileges(props) {
     // console.log("UniversityAppointments", props);
@@ -24,19 +26,19 @@ export default function HospitalPrivileges(props) {
             board_appointment_date: bad,
             department_division: dd,
             hospital: ho,
-            sites:si,
-            privilege:pr,
-            start_date:sd,
+            sites: si,
+            privilege: pr,
+            start_date: sd,
             end_date: ed,
-            afp_association:aa,
-            review_requested:rr,
+            afp_association: aa,
+            review_requested: rr,
             comment: co
         } = ft.getFields();
         return (
             <div>
-                {any(st,ap,ac,bad) &&
+                {any(st, ap, ac, bad) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([st,ap,ac,bad], null, ['s', 's', 's'], [', ', ', ', ', '])}
+                    {singleLineMultiFieldValueFormatter([st, ap, ac, bad], null, ['s', 's', 's'], [', ', ', ', ', '])}
                 </p>}
                 {any(dd) &&
                 <p>
@@ -44,27 +46,27 @@ export default function HospitalPrivileges(props) {
                         return reftableValueFormatter(val, index)
                     })}</span>
                 </p>}
-                {any(ho,si) &&
+                {any(ho, si) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([ho,si], null,null, [', '])}
+                    {singleLineMultiFieldValueFormatter([ho, si], null, null, [', '])}
                 </p>}
-                {any(pr,sd,ed) &&
+                {any(pr, sd, ed) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([pr,sd,ed], null,null, [' '], [[0, 1, 2, '('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
+                    {singleLineMultiFieldValueFormatter([pr, sd, ed], null, null, [' '], [[0, 1, 2, '('], [1, 1, 2, ' - '], [2, 1, 2, ')']])}
                 </p>}
-                {any(aa,rr) &&
+                {any(aa, rr) &&
                 <p>
-                    {singleLineMultiFieldValueFormatter([aa,rr], null,null, [', '])}
+                    {singleLineMultiFieldValueFormatter([aa, rr], null, null, [', '])}
                 </p>}
                 {any(co) && <>
-                    {co.val.eng && <div className="bilingualItem">
-                        <p className="mainValue">{co.lbl}</p>
+                    {co.val.eng && <StyledBilingualItemContainer>
+                        <p>{co.lbl}</p>
                         <p dangerouslySetInnerHTML={{__html: co.val.eng}}/>
-                    </div>}
-                    {co.val.fre && <div className="bilingualItem">
-                        <p className="mainValue">{co.lbl} (French)</p>
+                    </StyledBilingualItemContainer>}
+                    {co.val.fre && <StyledBilingualItemContainer>
+                        <p>{co.lbl} (French)</p>
                         <p dangerouslySetInnerHTML={{__html: co.val.fre}}/>
-                    </div>}
+                    </StyledBilingualItemContainer>}
                 </>}
                 {Object.keys(ft.getUnformattedField()).length > 0 ?
                     <p>{JSON.stringify(ft.getUnformattedField())}</p> : null
@@ -73,10 +75,7 @@ export default function HospitalPrivileges(props) {
         )
     } else {
         return (
-            <React.Fragment>
-                HospitalPrivileges
-                {/*{props.structureChain[0] in subsections ? subsections[props.structureChain.shift()] : JSON.stringify(props.rawData)}*/}
-            </React.Fragment>
+            GenericSubsectionFormatter(props)
         )
     }
 }

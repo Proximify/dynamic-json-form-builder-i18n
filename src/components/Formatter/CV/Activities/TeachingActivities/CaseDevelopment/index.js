@@ -6,6 +6,7 @@ import {
     reftableValueParser,
     reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
+import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
 export default function CaseDevelopment(props) {
     // console.log("Recognitions", props);
@@ -27,9 +28,7 @@ export default function CaseDevelopment(props) {
         )
     } else {
         return (
-            <p>
-                CaseDevelopment
-            </p>
+            GenericSubsectionFormatter(props)
         )
     }
 }
