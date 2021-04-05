@@ -1,5 +1,5 @@
 import React from "react";
-import './index.css'
+// import './index.css'
 
 import UserProfile from './UserProfile';
 import PersonalInformation from './PersonalInformation'

@@ -5,7 +5,7 @@ import LanguageTogglerButton from './language-toggle-btn';
 import {SectionPageBuilder} from "./components/SectionPageBuilder";
 import {css} from 'styled-components/macro'
 import tw, {theme} from 'twin.macro'
-import './index.css'
+import './main.css'
 
 class App extends Component {
     constructor(props) {

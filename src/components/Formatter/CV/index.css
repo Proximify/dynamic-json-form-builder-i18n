@@ -1,23 +1,23 @@
-.viewModeSubsection > div{
-    @apply ml-6 py-1 border-b border-dotted border-gray-300
-}
+/*.viewModeSubsection > div{*/
+/*    @apply ml-6 py-1 border-b border-dotted border-gray-300*/
+/*}*/
 
-.viewModeSubsection > div > p:first-child {
-    @apply font-bold
-}
+/*.viewModeSubsection > div > p:first-child {*/
+/*    @apply font-bold*/
+/*}*/
 
-.mainValue{
-    @apply font-semibold text-gray-500
-}
+/*.mainValue{*/
+/*    @apply font-semibold text-gray-500*/
+/*}*/
 
-.baseValue{
-    @apply text-sm
-}
+/*.baseValue{*/
+/*    @apply text-sm*/
+/*}*/
 
-.secondLang {
-    @apply text-gray-400
-}
+/*.secondLang {*/
+/*    @apply text-gray-400*/
+/*}*/
 
-.bilingualItem {
-    @apply mt-1 mb-2
-}
+/*.bilingualItem {*/
+/*    @apply mt-1 mb-2*/
+/*}*/

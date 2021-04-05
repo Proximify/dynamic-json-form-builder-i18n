@@ -7,8 +7,6 @@ const Themes = {
     'McGill': McGillTheme
 }
 
-// const combineTheme = Object.assign({}, UniwebTheme, Themes[process.env.REACT_APP_CLIENT])
-
 function isObject(obj) {
     return (obj && typeof obj === 'object' && !Array.isArray(obj));
 }
@@ -21,7 +19,7 @@ function mergeTheme(baseTheme, extendTheme) {
             const extendThemeValue = extendTheme[key];
             if (baseTheme[key]) {
                 if (isObject(extendThemeValue)) {
-                    extendTheme[key] = mergeTheme(baseTheme[key], extendThemeValue)
+                    extendTheme[key] = mergeTheme(baseTheme[key], extendThemeValue);
                 } else {
                     baseTheme[key] = extendThemeValue;
                 }
