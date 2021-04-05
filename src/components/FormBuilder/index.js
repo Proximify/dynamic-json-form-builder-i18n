@@ -178,7 +178,7 @@ class FormBuilder extends Component {
                         </div>
                         <div css={[tw`flex justify-between`]}>
                             <div css={[this.state.newForm ? tw`invisible`: tw``]}>
-                                <button css={[tw`py-1 px-2 ml-16 border bg-red-500 rounded text-white`]}
+                                <button css={[tw`py-1 px-2 ml-16 border bg-color-warning rounded text-white`]}
                                         type="button"
                                         onClick={() => {
                                             this.setState({...this.state, shouldDeleteConfirmModalOpen: true})
@@ -187,14 +187,14 @@ class FormBuilder extends Component {
                                 </button>
                             </div>
                             <div>
-                                <button css={[tw`py-1 px-2 mr-4 border bg-gray-300 rounded text-black`]}
+                                <button css={[tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`]}
                                         type="button"
                                         onClick={() => {
                                             this.props.onFormEditCancel();
                                         }}>
                                     Cancel
                                 </button>
-                                <button css={[tw`py-1 px-2 border bg-green-400 rounded`]}
+                                <button css={[tw`py-1 px-2 border bg-color-action rounded`]}
                                         type="submit">
                                     Save
                                 </button>

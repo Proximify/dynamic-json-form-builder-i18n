@@ -1,13 +1,10 @@
 module.exports = {
     "colors": {
-        "color-primary": "#26a0f1",
-        "color-secondary": "#9b6904",
-        "color-info": "#36c",
-        "color-action": "#c66216",
-        "color-transparent": "#ffffff",
-        "color-warning": "#ff0000",
-        "color-revert": "#cdcdcd",
-        "color-confirm": "#1d3b79"
+        "color-primary": "#56a3de",
+        "color-secondary": "#1a63d9",
+        "color-info": "#ececec",
+        "color-action": "#36c",
+        "color-transparent": "#ffffff"
     },
     "fontFamily": {
         "title": "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif",
@@ -20,4 +17,3 @@ module.exports = {
         "SectionLabel": "16px"
     }
 }
-

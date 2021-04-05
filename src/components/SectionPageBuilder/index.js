@@ -618,7 +618,7 @@ export function SectionPageBuilder(props) {
                 <StyledSectionContainer key={sectionIndex} layer={layer}>
                     <div css={[tw`flex items-center`]}>
                         <SectionLabel TopSectionLabel={layer === 3}>{section.title}</SectionLabel>
-                        <p css={[tw`ml-1 text-color-info`]}>{section.multiplicity === "multiple" ?
+                        <p css={[tw`ml-1 text-color-action hover:text-color-confirm`]}>{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
                                                   handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
@@ -710,7 +710,7 @@ export function SectionPageBuilder(props) {
                                                     />
                                                 </div>
                                                 {section.multiplicity === "multiple" ?
-                                                    <div css={[tw`text-color-info`]}>
+                                                    <div css={[tw`text-color-action hover:text-color-confirm`]}>
                                                         <FiEdit size={"1.1rem"}
                                                                 onClick={() => {
                                                                     if (!section.section_data[itemIndex]) {

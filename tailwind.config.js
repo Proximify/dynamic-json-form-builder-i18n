@@ -1,17 +1,39 @@
-const uOttawaTheme = require('./clients/uOttawa/theme.json');
-const McGillTheme = require('./clients/McGill/theme.json');
+const uOttawaTheme = require('./clients/uOttawa/theme.js');
+const McGillTheme = require('./clients/McGill/theme.js');
 const UniwebTheme = require('./clients/Uniweb/theme');
-
-console.log("=====", process.env.REACT_APP_CLIENT)
 
 const Themes = {
     'uOttawa': uOttawaTheme,
     'McGill': McGillTheme
 }
 
-const combineTheme = Object.assign(Themes[process.env.REACT_APP_CLIENT],UniwebTheme)
+// const combineTheme = Object.assign({}, UniwebTheme, Themes[process.env.REACT_APP_CLIENT])
 
-console.log(combineTheme)
+function isObject(obj) {
+    return (obj && typeof obj === 'object' && !Array.isArray(obj));
+}
+
+function mergeTheme(baseTheme, extendTheme) {
+    if (!extendTheme || Object.keys(extendTheme).length < 1) {
+        return baseTheme;
+    } else {
+        Object.keys(extendTheme).forEach(key => {
+            const extendThemeValue = extendTheme[key];
+            if (baseTheme[key]) {
+                if (isObject(extendThemeValue)) {
+                    extendTheme[key] = mergeTheme(baseTheme[key], extendThemeValue)
+                } else {
+                    baseTheme[key] = extendThemeValue;
+                }
+            } else {
+                baseTheme[key] = extendThemeValue;
+            }
+        })
+        return baseTheme;
+    }
+}
+
+const combineTheme = Themes[process.env.REACT_APP_CLIENT] ? mergeTheme(UniwebTheme, Themes[process.env.REACT_APP_CLIENT]) : UniwebTheme;
 
 module.exports = {
     purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
