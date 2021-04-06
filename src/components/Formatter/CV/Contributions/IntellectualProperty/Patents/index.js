@@ -3,8 +3,6 @@ import {
     any,
     FieldValueMapper,
     FormatterTracker,
-    reftableValueParser,
-    reftableValueFormatter,
     singleLineMultiFieldValueFormatter,
     genericFieldFormatter
 } from "../../../../utils/helper";
@@ -83,7 +81,7 @@ export default function Patents(props) {
         } = ft.getFields();
 
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'funding_sources':
                     formattedValue = <p>

@@ -18,14 +18,8 @@ import MuseumExhibitions from "./MuseumExhibitions";
 import PerformanceArt from "./PerformanceArt";
 import Poetry from "./Poetry";
 import OtherArtisticContributions from "./OtherArtisticContributions";
-import {
-    FieldValueMapper,
-    FormatterTracker,
-    genericFieldFormatter,
-    singleLineMultiFieldValueFormatter
-} from "../../../utils/helper";
-import {GenericFormFormatter} from "../../../utils/GenericFormFormatter";
 import SoundRecording from "./SoundRecording";
+import {GenericFormFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function ArtisticContributions(props) {
     const subsections = {

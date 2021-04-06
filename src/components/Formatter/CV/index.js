@@ -1,6 +1,4 @@
 import React from "react";
-// import './index.css'
-
 import UserProfile from './UserProfile';
 import PersonalInformation from './PersonalInformation'
 import Recognitions from "./Recognitions";

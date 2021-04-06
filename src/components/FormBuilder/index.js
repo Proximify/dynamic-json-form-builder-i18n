@@ -25,7 +25,6 @@ import {ModalDeleteConfirm} from "./components/utils/Modals";
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
-import styled from "styled-components";
 import {css} from 'styled-components/macro'
 import tw from "twin.macro";
 
@@ -161,9 +160,9 @@ class FormBuilder extends Component {
                     onChange={({formData}) => {
                         this.setState({...this.state, formData: formData})
                         // TODO generic
-                        if (formData.hasOwnProperty('total_workload')) {
-                            formData.total_workload = (Number(formData.undergraduate_teaching) + Number(formData.graduate_professional_teaching)).toString();
-                        }
+                        // if (formData.hasOwnProperty('total_workload')) {
+                        //     formData.total_workload = (Number(formData.undergraduate_teaching) + Number(formData.graduate_professional_teaching)).toString();
+                        // }
                         console.log("data changed", formData);
 
                     }}

@@ -4,7 +4,7 @@ import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
 import {SectionPageBuilder} from "./components/SectionPageBuilder";
 import {css} from 'styled-components/macro'
-import tw, {theme} from 'twin.macro'
+import tw from 'twin.macro'
 import './main.css'
 
 class App extends Component {

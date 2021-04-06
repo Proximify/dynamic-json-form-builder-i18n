@@ -98,7 +98,7 @@ export default function Degree(props) {
             field_of_application: foa
         } = ft.getFields();
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'supervisors':
                     formattedValue =

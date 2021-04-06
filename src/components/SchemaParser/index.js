@@ -1,6 +1,5 @@
 import {SchemaGenerator} from "./FormSchemaGenerator";
 
-
 const getLovSubtypeIdHelper = (sectionSchema) => {
     if (!sectionSchema.fields) {
         return [];
@@ -67,18 +66,13 @@ const sectionParser = (section, parent_id) => {
 export const bilingualValueParser = (field, fieldData, dataToServer = false, dataFromServer = false) => {
     const result = {};
     if (dataToServer) {
-        // console.log(fieldData);
         const bilingualData = JSON.parse(fieldData);
-        // console.log(bilingualData);
-
         if (!field.constraints) {
             if (bilingualData.english) {
                 result['eng'] = bilingualData.english;
-                // formData.append(`data[${field.id}][english]`, bilingualData.english)
             }
             if (bilingualData.french) {
                 result['fre'] = bilingualData.french;
-                // formData.append(`data[${field.id}][french]`, bilingualData.french)
             }
         } else if (field.constraints.richText) {
             if (bilingualData.english) {
@@ -89,9 +83,7 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
                 engData = engData.replace(/<p>/g, '');
                 engData = engData.replace(/<\/p>/g, '');
                 engData = engData.replace(/\\n/g, '<br>');
-                // engData = engData.replace(/\\n/g, '<br>');
                 engData = engData.replace(/<br><br>/g, '<br>');
-                // <br><br>-><br>??
                 engData = engData.replace(/<strong>/g, '<b>');
                 engData = engData.replace(/<\/strong>/g, '</b>');
                 engData = engData.replace(/<em>/g, '<i>');
@@ -103,16 +95,13 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
             }
             if (bilingualData.french) {
                 let freData = JSON.stringify(bilingualData.french);
-
                 freData = freData.replace(/^\"/g, '');
                 freData = freData.replace(/\"$/g, '');
                 freData = freData.replace(/\\n$/g, '');
                 freData = freData.replace(/<p>/g, '');
                 freData = freData.replace(/<\/p>/g, '');
                 freData = freData.replace(/\\n/g, '<br>');
-                // freData = freData.replace(/\\n/g, '<br>');
                 freData = freData.replace(/<br><br>/g, '<br>');
-                // <br><br>-><br>??
                 freData = freData.replace(/<strong>/g, '<b>');
                 freData = freData.replace(/<\/strong>/g, '</b>');
                 freData = freData.replace(/<em>/g, '<i>');
@@ -131,11 +120,9 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
         if (!field.constraints) {
             if (bilingualData.english) {
                 result['english'] = bilingualData.english;
-                // formData.append(`data[${field.id}][english]`, bilingualData.english)
             }
             if (bilingualData.french) {
                 result['french'] = bilingualData.french;
-                // formData.append(`data[${field.id}][french]`, bilingualData.french)
             }
         }else if (field.constraints.richText) {
             if (bilingualData.english) {
@@ -160,7 +147,6 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
                 freData = freData.replace(/<\/i>/g, '</em>');
                 freData = freData.replace(/<u>/g, '<ins>');
                 freData = freData.replace(/<\/u>/g, '</ins>');
-                // console.log(freData)
 
                 result['french'] = freData;
             }
@@ -174,14 +160,11 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
 /**
  * @param schema: raw Response from Server
  * @param singleForm: single to identify the Response if for one form or full screen view mode
- * @param lovOptions
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}|[]}
  * @constructor
  */
 export default function SchemaParser(schema, singleForm = false) {
-    // console.log(schema)
     const sections = schema.sections;
-    // const selectionOptions = schema.default.selectionOptions;
 
     const result = []
     sections.forEach(section => result.push(sectionParser(section, null)))

@@ -3,8 +3,6 @@ import {
     any,
     FieldValueMapper,
     FormatterTracker,
-    reftableValueParser,
-    reftableValueFormatter,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
 import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../utils/styledComponents";
@@ -74,7 +72,7 @@ export default function Workload(props) {
             external_workload: ew
         } = ft.getFields();
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'external_teaching':
                     formattedValue =

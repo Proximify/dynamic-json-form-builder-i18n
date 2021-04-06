@@ -1,6 +1,5 @@
 import React from "react";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+import { StyledBaseValueText, StyledMainValueText, StyledSecondLangText } from "../styledComponents";
 
 export const Months = [
     'January',
@@ -112,13 +111,11 @@ export const reftableValueFormatter = (fieldValue, index, isInFormFormatter = fa
     if (!fieldValue)
         return;
     if (!Array.isArray(fieldValue))
-        return <span key={index} className="baseValue">{fieldValue}</span>
+        return <StyledBaseValueText key={index}>{fieldValue}</StyledBaseValueText>
     if (isInFormFormatter) {
-        return <span key={index}><strong className="mainValue block">{fieldValue[0]}</strong><span
-            className="baseValue">{fieldValue.slice(1)}</span></span>;
+        return <span key={index}><StyledMainValueText block>{fieldValue[0]}</StyledMainValueText><StyledBaseValueText>{fieldValue.slice(1)}</StyledBaseValueText></span>;
     }
-    return <span key={index}><strong className="mainValue">{fieldValue[0]}</strong><span
-        className="baseValue">{fieldValue.slice(1)}</span></span>;
+    return <span key={index}><StyledMainValueText>{fieldValue[0]}</StyledMainValueText><StyledBaseValueText>{fieldValue.slice(1)}</StyledBaseValueText></span>;
 }
 
 export const singleFieldSubsectionFormatter = (fieldValue, isInFormFormatter = false, isBilingualField = false) => {
@@ -139,9 +136,7 @@ export const singleFieldSubsectionFormatter = (fieldValue, isInFormFormatter = f
                         }
                     })
                     if (bilingualData.length > 1) {
-                        result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <span
-                            className="secondLang">({bilingualData[1]})</span></> : <>{bilingualData[0]} <span
-                            className="secondLang">({bilingualData[1]})</span>, </>}</span>)
+                        result.push(<span key={index}>{index === fieldValue.length - 1 ? <>{bilingualData[0]} <StyledSecondLangText>({bilingualData[1]})</StyledSecondLangText></> : <>{bilingualData[0]} <StyledSecondLangText>({bilingualData[1]})</StyledSecondLangText>, </>}</span>)
                     } else {
                         result.push(<span
                             key={index}>{index === fieldValue.length - 1 ? `${bilingualData[0]}` : `${bilingualData[0]}, `}</span>)
@@ -160,15 +155,13 @@ export const singleFieldSubsectionFormatter = (fieldValue, isInFormFormatter = f
                     bilingualData.push(biliData)
                 }
             })
-            result.push(<span key={result.length}>{bilingualData[0]} <span
-                className="secondLang">({bilingualData[1]})</span></span>)
+            result.push(<span key={result.length}>{bilingualData[0]} <StyledSecondLangText>({bilingualData[1]})</StyledSecondLangText></span>)
         } else {
             result.push(<span key={result.length}>{fieldValue}</span>)
         }
     }
     return result
 }
-
 
 export const singleLineMultiFieldValueFormatter = (fields, labels, tags, delimiters, constantDelimitersIndex = null) => {
     const formatter = (value, tag) => {
@@ -252,7 +245,6 @@ export const genericFieldFormatter = (unformattedFields, isInform = false) => {
                 if ((unformattedField.val || unformattedField.value) && unformattedFieldKey !== 'order' && unformattedField !== 'itemId') {
                     switch (unformattedField.type) {
                         case 'section':
-                            console.log(unformattedField)
                             return <div key={index}>{unformattedField.rawValue.map((subsection, i) => {
                                 return <div key={i}><p>{unformattedField.lbl}</p>{genericFieldFormatter(subsection)}
                                 </div>

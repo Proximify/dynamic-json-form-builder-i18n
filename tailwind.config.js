@@ -34,6 +34,7 @@ function mergeTheme(baseTheme, extendTheme) {
 const combineTheme = Themes[process.env.REACT_APP_CLIENT] ? mergeTheme(UniwebTheme, Themes[process.env.REACT_APP_CLIENT]) : UniwebTheme;
 
 module.exports = {
+    mode: 'jit',
     purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
     darkMode: false, // or 'media' or 'class'
     theme: {

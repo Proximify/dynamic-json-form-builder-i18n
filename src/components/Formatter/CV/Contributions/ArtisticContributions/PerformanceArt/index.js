@@ -3,8 +3,7 @@ import {
     any,
     FieldValueMapper,
     FormatterTracker,
-    reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
+    singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../../utils/helper";
 import {
     StyledBilingualItemContainer,
@@ -85,7 +84,7 @@ export default function PerformanceArt(props) {
         } = ft.getFields();
 
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'funding_sources':
                     formattedValue = <p>

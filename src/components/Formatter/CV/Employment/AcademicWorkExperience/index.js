@@ -100,7 +100,7 @@ export default function AcademicWorkExperience(props) {
         } = ft.getFields();
 
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'research_disciplines':
                     formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {

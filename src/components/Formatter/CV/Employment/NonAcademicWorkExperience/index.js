@@ -9,7 +9,6 @@ import {
 import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../../utils/styledComponents";
 
 export default function NonAcademicWorkExperience(props) {
-    // console.log("Recognitions", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -89,7 +88,7 @@ export default function NonAcademicWorkExperience(props) {
         } = ft.getFields();
 
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'research_disciplines':
                     formattedValue = <p>{reftableValueParser(rd.val).map((val, index) => {

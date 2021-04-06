@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import {css} from 'styled-components/macro'
 import tw from "twin.macro";
 
 export const StyledSubsectionFormatterContainer = styled.div`
@@ -18,11 +17,16 @@ export const StyledSubsectionFormatterContainer = styled.div`
 `
 
 export const StyledLink = styled.a`
-    ${tw`text-blue-500 hover:underline`}
+  ${tw`text-blue-500 hover:underline`}
 `
 
-export const StyledMainValueContainer = styled.div`
-  
+export const StyledMainValueText = styled.strong`
+  ${tw`font-semibold text-gray-500`}
+          ${({ block }) => block && tw`block`}
+`
+
+export const StyledBaseValueText = styled.span`
+  ${tw`text-sm`}
 `
 
 export const StyledBilingualItemContainer = styled.div`
@@ -33,5 +37,5 @@ export const StyledBilingualItemContainer = styled.div`
 `
 
 export const StyledSecondLangText = styled.span`
-    ${tw`text-gray-400`}
+  ${tw`text-gray-400`}
 `

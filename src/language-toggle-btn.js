@@ -1,32 +1,7 @@
-import {language, LanguageContext} from './language-context';
+import {language,LanguageContext} from './language-context';
 import React from "react";
 import {css} from 'styled-components/macro'
-import tw, {theme} from 'twin.macro'
-import styled, {ThemeProvider} from "styled-components";
-
-// const Button = styled.button`
-//   background: ${props => props.theme.background};
-//   color: ${props => props.theme.color};
-//   font-size: ${props => props.theme.fontSize};
-//   font-family: ${props => props.theme.fontFamily};
-// `;
-//
-// Button.defaultProps = {
-//     theme: {
-//         color: 'black',
-//         fontSize:`20px`,
-//         fontFamily: 'Times New Roman',
-//         background: 'aliceblue'
-//     }
-// }
-//
-// const customTheme = {
-//     fontFamily: `${theme`fontFamily.title`}`,
-//     fontSize: `${theme`fontSize.title`}`,
-//     background: `${theme`colors.color-info`}`
-//
-// };
-
+import tw from 'twin.macro'
 
 function LanguageTogglerButton(props) {
     const languages = {
@@ -43,11 +18,9 @@ function LanguageTogglerButton(props) {
                     <button>
                         Change Language:
                     </button>
-                    {/*<ThemeProvider theme={customTheme}>*/}
                         <button>
                             Change Language:
                         </button>
-                    {/*</ThemeProvider>*/}
                     <div css={[tw`flex space-x-2`]}>
                         {
                             props.pageLanguages.map((value, index) => {

@@ -2,9 +2,7 @@ import React from "react";
 import {
     any,
     FieldValueMapper,
-    FormatterTracker, reftableValueFormatter,
-    reftableValueParser,
-    singleLineMultiFieldValueFormatter
+    FormatterTracker
 } from "../../utils/helper";
 import {StyledBilingualItemContainer} from "../../utils/styledComponents";
 

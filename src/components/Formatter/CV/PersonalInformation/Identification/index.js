@@ -3,14 +3,10 @@ import {
     FieldValueMapper,
     FormatterTracker,
     any,
-    reftableValueParser,
     singleFieldSubsectionFormatter,
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../../utils/helper";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
 import {StyledSubsectionFormatterContainer} from "../../../utils/styledComponents";
-import {GenericSubsectionFormatter} from "../../../utils/GenericFormFormatter";
 
 export default function Identification(props) {
     const {rawData, schema} = props;

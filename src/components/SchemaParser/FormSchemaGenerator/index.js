@@ -15,7 +15,6 @@ import HiddenFieldTemplate
  * @constructor
  */
 export const SchemaGenerator = (schema) => {
-    // console.log(schema)
     const result = {
         formSchema: null,
         uiSchema: null,
@@ -38,7 +37,6 @@ export const SchemaGenerator = (schema) => {
  * @returns {{id, type: string, required: [], properties: {}}}
  */
 const formStrSchemaGen = (schema) => {
-    // console.log("--",schema)
     const required = [];
     const properties = {};
     const fields = schema.fields;
@@ -78,18 +76,8 @@ const fieldStrSchemaGen = (field, schema) => {
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
     switch (field.type) {
         case "lov":
-        //     {
-        //     // const subtype_id = field.subtype_id;
-        //     result["type"] = "string";
-        //     // result["options"] = lovOptions[subtype_id] ?? []; // should be url
-        //     result['subtype_id'] = field.subtype_id;
-        //     // result["enum"] = lovOptions[subtype_id] ?? []
-        //     break;
-        // }
         case "reftable":
         case "systable": {
-            // const subtype_id = field.subtype_id;
-            // result["enum"] = lovOptions[subtype_id] ?? []
             result["type"] = "string";
             result['subtype_id'] = field.subtype_id;
             break;
@@ -146,19 +134,13 @@ const formDataSchemaGen = (schema) => {
     if (!schema.section_data) {
         return {}
     }
-    // console.log(schema)
     const mapper = FieldValueMapper(schema.section_data[0].values, schema);
-    // console.log(mapper)
     const ft = new FormatterTracker(mapper);
     const fields = ft.getFields();
-    // console.log(fields)
     const dataSchema = {}
-    // console.log(mapper, ft.getFields())
     Object.keys(fields).forEach(fieldName => {
         const field = fields[fieldName];
-        // console.log(field)
         if (field.type === "section") {
-            // console.log(field)
             if (field.rawValue) {
                 const values = [];
                 field.rawValue.forEach(val => {
@@ -175,17 +157,12 @@ const formDataSchemaGen = (schema) => {
                             } else if (subField.type === 'lov' || subField.type === "systable") {
                                 subFieldDataSchema[subFieldName] = val[subFieldName].value ? JSON.stringify(val[subFieldName].value) : undefined
                             }
-                                // else if (subField.type === "reftable") {
-                                //     subFieldDataSchema[subFieldName] = val[subFieldName].value && val[subFieldName].value.length ? [val[subFieldName].value[0]].concat(val[subFieldName].value[1].split("|")) : undefined;
-                            // }
                             else {
                                 subFieldDataSchema[subFieldName] = val[subFieldName].value;
                             }
                         }
-                        // subFieldDataSchema[subFieldName] = val[subFieldName].value;
                     })
                     values.push(subFieldDataSchema);
-                    // console.log(subFieldDataSchema)
                 })
                 dataSchema[fieldName] = values;
             } else {
@@ -193,17 +170,12 @@ const formDataSchemaGen = (schema) => {
             }
         } else {
             if (field.type === "bilingual") {
-                // console.log("bilingualfields: ",bilingualValueParser(field,field.rawValue,false,true))
-
                 dataSchema[fieldName] = JSON.stringify(bilingualValueParser(field, field.rawValue, false, true));
             } else if (field.type === "reftable") {
                 dataSchema[fieldName] = field.rawValue && field.rawValue.length ? JSON.stringify([field.rawValue[0]].concat(field.rawValue[1].split("|"))) : undefined;
             } else if (field.type === 'lov' || field.type === "systable") {
                 dataSchema[fieldName] = field.rawValue ? JSON.stringify(field.rawValue) : undefined
             }
-                // else if (field.type === "reftable") {
-                //     dataSchema[fieldName] = field.rawValue && field.rawValue.length ? [field.rawValue[0]].concat(field.rawValue[1].split("|")) : undefined;
-            // }
             else {
                 dataSchema[fieldName] = field.rawValue;
             }
@@ -279,15 +251,10 @@ const fieldTypeWidgetMapper = {
 
 
 const formUISchemaGen = (schema) => {
-    // const title = schema.title ?? schema.label;
-    //const fieldLanguages = ["en", "fr"]
-    // TODO: check enums size, use windowed select
-    // console.log(schema)
     const result = {}
     const fields = schema.fields;
     Object.keys(fields).forEach(fieldKey => {
         const field = fields[fieldKey];
-        // console.log(field)
         const fieldName = field.name;
         if (field.type === 'section') {
             const subsectionId = field["subsection_id"];
@@ -325,5 +292,3 @@ const formUISchemaGen = (schema) => {
     })
     return result;
 }
-
-//readOnlyFieldWidget

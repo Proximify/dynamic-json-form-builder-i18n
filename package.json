@@ -41,7 +41,7 @@
     "workbox-strategies": "^6.0.2"
   },
   "scripts": {
-    "start": "npm run watch:css && react-scripts start",
+    "start": "TAILWIND_MODE=build NODE_ENV=development npm run watch:css && react-scripts start",
     "build": "npm run build:css && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

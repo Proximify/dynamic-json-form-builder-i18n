@@ -139,7 +139,7 @@ export default function UserProfile(props) {
             country: co
         } = ft.getFields();
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'research_specialization_keywords':
                     formattedValue = <p>{singleFieldSubsectionFormatter(rsk.val, true, true)}</p>;

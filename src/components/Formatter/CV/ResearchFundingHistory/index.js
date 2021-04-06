@@ -147,7 +147,7 @@ export default function ResearchFundingHistory(props) {
             role: ro
         } = ft.getFields();
         if (subsection) {
-            let formattedValue = null;
+            let formattedValue;
             switch (subsection) {
                 case 'research_uptake_stakeholders':
                     formattedValue = <p>{singleFieldSubsectionFormatter(st.val, true)}</p>;

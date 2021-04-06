@@ -1,10 +1,8 @@
 import React from "react";
 import {
-    any,
     FieldValueMapper,
     FormatterTracker,
-    reftableValueParser,
-    reftableValueFormatter, singleLineMultiFieldValueFormatter, genericFieldFormatter
+    genericFieldFormatter
 } from "../../../../utils/helper";
 import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
