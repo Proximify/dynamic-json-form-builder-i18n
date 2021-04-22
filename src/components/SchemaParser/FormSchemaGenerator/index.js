@@ -65,8 +65,8 @@ const formStrSchemaGen = (schema) => {
  */
 const fieldStrSchemaGen = (field, schema) => {
     const result = {}
-    result["name"] = field.name ?? null;
-    result["id"] = field.field_id ?? null;
+    result["name"] = field.name ?? undefined;
+    result["id"] = field.field_id ?? undefined;
     result["description"] = field.description ? field.description.replaceAll('<a/>', '</a>') : undefined;
     result["title"] = field.label;
     result["subtype_id"] = field.subtype_id;
@@ -74,6 +74,7 @@ const fieldStrSchemaGen = (field, schema) => {
     result["constraints"] = field.constraints;
     result["exclusive_with"] = field.exclusive_with;
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
+    result["twClass"] = field.tw ?? 'bg-red-200';
     switch (field.type) {
         case "lov":
         case "reftable":

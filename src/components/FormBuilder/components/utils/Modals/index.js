@@ -184,7 +184,8 @@ export function ModalFullScreen(props) {
                 <div css={tw`max-w-2xl h-full w-full mx-auto py-5`}>
                     <div css={tw`flex border-b-2 border-gray-200 py-3 items-center space-x-3`}>
                         <h1 css={tw`text-2xl font-semibold text-black ml-20`}>{title}</h1>
-                        {content.props.formSchema && content.props.formSchema.form_description && <Tooltip
+                        {content.props.formSchema && content.props.formSchema.form_description &&
+                        <Tooltip
                             placement="right"
                             trigger="hover"
                             delayHide={200}

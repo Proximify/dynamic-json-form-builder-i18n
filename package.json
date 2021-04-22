@@ -3,33 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@rjsf/core": "^2.4.2",
     "@headlessui/react": "^0.2.0",
-    "@craco/craco": "^6.1.1",
+    "@rjsf/core": "^2.4.2",
     "@tailwindcss/forms": "^0.2.1",
     "axios": "^0.21.0",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "html-to-draftjs": "^1.5.0",
-    "js-file-download": "^0.4.12",
     "node-sass": "4.14.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-beautiful-dnd": "^13.0.0",
-    "react-click-away-listener": "^1.4.4",
     "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
     "react-draft-wysiwyg": "^1.14.5",
-    "react-file-viewer": "^1.2.1",
-    "react-i18next": "^11.8.2",
     "react-icons": "^4.1.0",
-    "react-modal": "^3.12.1",
     "react-number-format": "^4.4.1",
     "react-popper-tooltip": "^3.1.1",
-    "react-scripts": "4.0.1",
+    "react-scripts": "4.0.3",
     "react-select": "^3.1.1",
     "react-textarea-autosize": "^8.3.2",
-    "react-toastify": "^6.2.0",
     "react-windowed-select": "^2.0.4",
     "styled-components": "^5.2.1",
     "twin.macro": "^2.3.0",
@@ -49,6 +42,10 @@
     "watch:css": "postcss src/index.css -o src/main.css"
   },
   "eslintConfig": {
+    "ignorePatterns": [
+      "src/*",
+      "!src/test.js"
+    ],
     "extends": [
       "react-app",
       "react-app/jest"

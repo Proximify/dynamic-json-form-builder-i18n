@@ -9,7 +9,7 @@ import WindowedSelect from "react-windowed-select";
 
 const baseFieldStyles = css`
   min-width: 16rem;
-  ${tw`max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded`};
+  ${tw`max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border border-gray-300 rounded`};
 `
 
 export const StyledTextarea = styled(TextareaAutosize)`
@@ -199,7 +199,7 @@ export const StyledMultiLangFieldContainer = styled.div`
       }
 
       .public-DraftStyleDefault-block {
-        ${tw`m-0`}        
+        ${tw`m-0`}
       }
     }
   }
