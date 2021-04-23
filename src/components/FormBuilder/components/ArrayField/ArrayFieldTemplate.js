@@ -1,3 +1,4 @@
+import isEmpty from 'lodash/isEmpty'
 import React, {useState} from 'react';
 import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import {BiPencil} from 'react-icons/bi';
@@ -14,6 +15,27 @@ const descriptions = {
         included: <strong>yyyy</strong>/m/d.</p>
 }
 
+const itemValueValidator = (itemData) => {
+    const itemFormData = {...itemData};
+    if (isEmpty(itemFormData)) {
+        return false;
+    } else {
+        delete itemFormData.order;
+        delete itemFormData.itemId;
+        if (isEmpty(itemFormData)) {
+            return false;
+        } else {
+            let valid = false;
+            Object.values(itemFormData).forEach(formData => {
+                if (formData) {
+                    valid = true;
+                }
+            })
+            return valid;
+        }
+    }
+}
+
 export function SortableArrayFieldTemplate(props) {
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
@@ -26,14 +48,14 @@ export function SortableArrayFieldTemplate(props) {
         }
     )
 
-    const isEmptyItem = () => {
-        console.log(items);
+    const isItemValueValid = (index) => {
+        return itemValueValidator(formData[index]);
     }
 
     const handleOnDragEnd = (result) => {
         if (!result.destination)
             return;
-        const sortedFormData = [...formData].sort((a, b) => (a.order > b.order ? 1 : -1));
+        const sortedFormData = [...formData].sort((a, b) => ((a.order && b.order) && Number(a.order) > Number(b.order) ? 1 : -1));
         const si = result.source.index;
         const di = result.destination.index;
 
@@ -127,7 +149,7 @@ export function SortableArrayFieldTemplate(props) {
                                 {(provided) => (
                                     <ul {...provided.droppableProps} ref={provided.innerRef}>
                                         {
-                                            [...formData].sort((a, b) => (a.order > b.order ? 1 : -1)).map((item, index) => {
+                                            [...formData].sort((a, b) => ((a.order && b.order) && Number(a.order) > Number(b.order) ? 1 : -1)).map((item, index) => {
                                                 return (
                                                     <Draggable key={index} draggableId={`${schema.id}_${index}`}
                                                                index={index}>
@@ -189,9 +211,8 @@ export function SortableArrayFieldTemplate(props) {
                                 context={formContext}
                                 dropItem={items[index].onDropIndexClick(index)}
                                 title={title}
-                                itemValueValidator={isEmptyItem}
+                                itemValueValidator={isItemValueValid}
                             />
-
                     })
                 }
             </div>
@@ -211,8 +232,8 @@ export function ArrayFieldTemplate(props) {
         }
     )
 
-    const isEmptyItem = () => {
-        console.log(items);
+    const isItemValueValid = (index) => {
+        return itemValueValidator(formData[index])
     }
 
     return (
@@ -315,9 +336,8 @@ export function ArrayFieldTemplate(props) {
                                 children={items[index].children}
                                 context={formContext}
                                 dropItem={items[index].onDropIndexClick(index)}
-                                itemValueValidator={isEmptyItem}
+                                itemValueValidator={isItemValueValid}
                             />
-
                     })
                 }
             </div>

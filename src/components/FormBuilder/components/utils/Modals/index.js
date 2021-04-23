@@ -72,14 +72,16 @@ export function ModalArrayItem(props) {
                                 </button>
                                 <button
                                     className={tw`bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`}
-                                    onClick={() => {
-                                        itemValueValidator();
-                                        setState({
-                                            ...state,
-                                            open: false,
-                                            edit: false,
-                                            index: -1
-                                        })
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        if (itemValueValidator(state.index)){
+                                            setState({
+                                                ...state,
+                                                open: false,
+                                                edit: false,
+                                                index: -1
+                                            })
+                                        }
                                     }}
                                 >Save
                                 </button>
