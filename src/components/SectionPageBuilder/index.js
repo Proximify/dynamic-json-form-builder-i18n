@@ -11,12 +11,13 @@ import {
     handleOnPrimaryItemChangeBtnClick,
     handleOnPrimaryItemSetBtnClick
 } from './helper/sectionPageBuilderHelper'
-import {SectionLabel, StyledSectionContainer} from "./styledComponents";
-import {tw} from "twind";
+import {SectionLabel, StyledSectionContainer} from "./twClass";
+import {setup, tw} from "twind";
 
 const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
 const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
 const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
+
 
 export function SectionPageBuilder(props) {
     const [state, setState] = useState({
@@ -615,7 +616,7 @@ export function SectionPageBuilder(props) {
             return (
                 <StyledSectionContainer key={sectionIndex} layer={layer}>
                     <div className={tw`flex items-center`}>
-                        <SectionLabel TopSectionLabel={layer === 3}>{section.title}</SectionLabel>
+                        <SectionLabel topSectionLabel={layer === 3}>{section.title}</SectionLabel>
                         <p className={tw`ml-1 text-color-action hover:text-color-confirm`}>{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
@@ -771,7 +772,7 @@ export function SectionPageBuilder(props) {
         } else if (section.type === "section") {
             return (
                 <StyledSectionContainer key={sectionIndex} layer={layer}>
-                    <SectionLabel TopSectionLabel={layer === 3}>{section.title}</SectionLabel>
+                    <SectionLabel topSectionLabel={layer === 3}>{section.title}</SectionLabel>
                     {Object.keys(section.subsections).map((subsectionId, subsectionIndex) => sectionBuilder(section.subsections[subsectionId], subsectionIndex, layer - 1, structureChain.concat(section.subsections[subsectionId].name), section))}
                 </StyledSectionContainer>)
         }

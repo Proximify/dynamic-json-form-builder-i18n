@@ -1,6 +1,5 @@
 import {css, apply} from 'twind/css'
 import {tw} from "twind";
-// import styled  from "styled-components";
 import { styled } from "@twind/react"
 
 
@@ -258,7 +257,6 @@ export  const MultiColWindowedSelectValueContainer = styled("div",{
   defaults:{
     numOfCol: "1"
   }
-
 })
 
 // export const StyledMultiColWindowedSelectValueContainer = styled.div`
