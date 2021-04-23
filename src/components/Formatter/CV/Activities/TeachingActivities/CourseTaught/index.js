@@ -8,8 +8,7 @@ import {
     singleLineMultiFieldValueFormatter,
     genericFieldFormatter
 } from "../../../../utils/helper";
-import tw from "twin.macro";
-import {css} from 'styled-components/macro'
+import {tw} from "twind";
 import {StyledSubsectionFormatterContainer} from "../../../../utils/styledComponents";
 
 export default function CourseTaught(props) {
@@ -124,7 +123,7 @@ export default function CourseTaught(props) {
                         response_ratio: rr
                     } = ft.getFields();
 
-                    formattedValue = <div css={tw`space-y-1.5`}>
+                    formattedValue = <div className={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([cc, tofy], null, null, [', '])}</p>
                         <p>{singleLineMultiFieldValueFormatter([ter, dmfte], [true, true], null, [', '])}</p>
                         <p>{singleLineMultiFieldValueFormatter([nos, rr], [true, true], null, [', '])}</p>

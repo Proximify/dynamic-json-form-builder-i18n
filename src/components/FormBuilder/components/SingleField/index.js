@@ -1,16 +1,18 @@
 import React, {useState} from 'react';
-import DatePicker from "react-datepicker";
+import TextareaAutosize from "react-textarea-autosize";
+import DatePicker, {CalendarContainer} from "react-datepicker";
+import NumberFormat from "react-number-format";
+
 import "react-datepicker/dist/react-datepicker.css";
 import {
-    StyledTextarea,
-    StyledNumberInput,
-    StyledMultiNumberInput,
-    StyledBooleanFieldContainer,
-    StyledDatePickerWrapper,
-    StyledDatePickerCalendarContainer
-} from "../utils/styledComponents";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+    TextAreaInputStyle,
+    NumberInputStyle,
+    MultiNumberInputStyle,
+    BooleanFieldContainerStyle,
+    DatePickerContainerStyle,
+    DatePickerCalendarContainerStyle
+} from "../utils/twindClass";
+import {tw} from "twind";
 
 const months = {
     en: [
@@ -82,7 +84,8 @@ const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime =
 export function StringInputWidget(props) {
     const [value, setValue] = useState(props.value ?? "");
     return (
-        <StyledTextarea
+        <TextareaAutosize
+            className={tw`${TextAreaInputStyle} ${props.schema.twClass}`}
             minRows={1}
             maxLength={props.schema.max_char_count ?? undefined}
             id={props.schema.id}
@@ -97,7 +100,8 @@ export function StringInputWidget(props) {
 export function NumberInputWidget(props) {
     const [value, setValue] = useState(props.value ?? undefined);
     return (
-        <StyledNumberInput
+        <NumberFormat
+            className={tw`${NumberInputStyle} ${props.schema.twClass}`}
             id={props.schema.id}
             value={value}
             isAllowed={(values) => values.value >= 0 ? values : null}
@@ -111,7 +115,8 @@ export function NumberInputWidget(props) {
 export function PhoneInputWidget(props) {
     const [value, setValue] = useState(props.value ?? undefined);
     return (
-        <StyledNumberInput
+        <NumberFormat
+            className={tw`${NumberInputStyle} ${props.schema.twClass}`}
             id={props.schema.id}
             value={value}
             format={"+# (###) ###-####"}
@@ -129,7 +134,7 @@ export function ElapsedTimeWidget(props) {
     } : {Min: undefined, Sec: undefined});
 
     return (
-        <div css={[tw`flex space-x-4 max-w-lg`]}
+        <div className={tw`flex space-x-4 max-w-lg`}
              style={{minWidth: '16rem'}}
              onBlur={() => {
                  if (!value.Min && !value.Sec) {
@@ -141,7 +146,8 @@ export function ElapsedTimeWidget(props) {
                          props.onChange(time)
                  }
              }}>
-            <StyledMultiNumberInput
+            <NumberFormat
+                className={tw`${MultiNumberInputStyle}`}
                 suffix={" Min"}
                 decimalScale={0}
                 id={`${props.schema.id}`}
@@ -155,7 +161,8 @@ export function ElapsedTimeWidget(props) {
                     }, props.rawErrors, setValue, props.onChange, true)
                 }}
             />
-            <StyledMultiNumberInput
+            <NumberFormat
+                className={tw`${MultiNumberInputStyle}`}
                 suffix={" Sec"}
                 decimalScale={0}
                 id={props.schema.id}
@@ -189,11 +196,12 @@ export function DateInputWidget(props) {
     }
 
     return (
-        <>
+        <div className={tw`${DatePickerContainerStyle}`}>
             <DatePicker
-                wrapperClassName='date_picker'
+                className='date_picker'
                 calendarContainer={({children}) =>
-                    <StyledDatePickerCalendarContainer>{children}</StyledDatePickerCalendarContainer>}
+                    <CalendarContainer
+                        className={tw`${DatePickerCalendarContainerStyle}`}>{children}</CalendarContainer>}
                 isClearable={true}
                 selected={date}
                 onChange={(date) => {
@@ -211,8 +219,7 @@ export function DateInputWidget(props) {
                 scrollableYearDropdown={true}
                 todayButton="Today"
             />
-            <StyledDatePickerWrapper/>
-        </>
+        </div>
     );
 }
 
@@ -231,9 +238,9 @@ export function MonthDayInputWidget(props) {
     }
 
     return (
-        <>
+        <div className={tw`${DatePickerContainerStyle}`}>
             <DatePicker
-                wrapperClassName='date_picker'
+                className='date_picker'
                 selected={date}
                 onChange={(date) => {
                     setDate(date);
@@ -244,11 +251,11 @@ export function MonthDayInputWidget(props) {
                 // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
                 // placeholderText={i18n.language === "fr" ? "m/j" : "mm/dd"}
                 locale={'en'}
+                isClearable={true}
                 placeholderText={'mm/dd'}
                 showMonthDropdown={true}
             />
-            <StyledDatePickerWrapper/>
-        </>
+        </div>
     );
 }
 
@@ -276,10 +283,20 @@ export function YearMonthInputWidget(props) {
     }
 
     return (
-        <>
+        <div className={tw`${DatePickerContainerStyle}`}>
             <DatePicker
-                wrapperClassName='date_picker'
+                className='date_picker'
                 selected={state.date}
+                onChange={event => {
+                    if (!event) {
+                        setState({
+                            ...state,
+                            date: null,
+                            hasDate: false
+                        })
+                        handleChange(undefined);
+                    }
+                }}
                 onChangeRaw={event => {
                     if (event.target.value === undefined) {
                         return;
@@ -324,12 +341,12 @@ export function YearMonthInputWidget(props) {
                 dateFormat={!state.hasDate ? `yyyy/MM` : 'yyyy/MM/dd'}
                 // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
                 // placeholderText={i18n.language === "fr" ? "aaaa/m" : "yyyy/mm"}
+                isClearable={true}
                 locale={'en'}
                 placeholderText={'yyyy/mm'}
                 showMonthYearPicker={!state.hasDate}
             />
-            <StyledDatePickerWrapper/>
-        </>
+        </div>
     );
 }
 
@@ -349,7 +366,7 @@ export function YearInputWidget(props) {
 
     const handleChange = (dateValue, hasMonth, hasDate) => {
         if (!dateValue) {
-            props.onChange(undefined);
+                props.onChange(undefined);
         } else {
             const year = dateValue.getFullYear();
             const month = dateValue.getMonth();
@@ -359,10 +376,21 @@ export function YearInputWidget(props) {
     }
 
     return (
-        <>
+        <div className={tw`${DatePickerContainerStyle}`}>
             <DatePicker
-                wrapperClassName='date_picker'
+                className='date_picker'
                 selected={state.date}
+                onChange={event => {
+                    if (!event) {
+                        setState({
+                            ...state,
+                            date: null,
+                            hasMonth: false,
+                            hasDate: false
+                        })
+                        handleChange(undefined);
+                    }
+                }}
                 onChangeRaw={event => {
                     const value = event.target.value;
                     if (value === undefined) {
@@ -416,6 +444,7 @@ export function YearInputWidget(props) {
                 dateFormat={state.hasMonth ? (state.hasDate ? "yyyy/MM/dd" : `yyyy/MM`) : `yyyy`}
                 // locale={locale(i18n.language === 'fr' ? 'fr' : 'en')}
                 // placeholderText={i18n.language === "fr" ? "aaaa" : "yyyy"}
+                isClearable={true}
                 locale={'en'}
                 placeholderText={'yyyy'}
                 showYearPicker={!state.hasMonth}
@@ -424,9 +453,7 @@ export function YearInputWidget(props) {
                 showYearDropdown={state.hasMonth}
                 scrollableYearDropdown={state.hasMonth}
             />
-            <StyledDatePickerWrapper/>
-
-        </>
+        </div>
     );
 }
 
@@ -436,15 +463,15 @@ export function BooleanInputWidget(props) {
         onChange(event.target.value)
     }
 
-    return <StyledBooleanFieldContainer onChange={onValueChange}>
+    return <div onChange={onValueChange} className={tw`${BooleanFieldContainerStyle}`}>
         <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false}
                onChange={() => {
                }}/>
-        <span css={[tw`ml-1.5 mr-3`]}>No</span>
+        <span className={tw`ml-1.5 mr-3`}>No</span>
         <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false} onChange={() => {
         }}/>
-        <span css={[tw`ml-1.5`]}>Yes</span>
-    </StyledBooleanFieldContainer>
+        <span className={tw`ml-1.5`}>Yes</span>
+    </div>
 }
 
 export function SliderInputWidget(props) {
@@ -457,7 +484,8 @@ export function SliderInputWidget(props) {
     };
 
     return (
-        <StyledNumberInput
+        <NumberFormat
+            className={tw`${NumberInputStyle} ${props.schema.twClass}`}
             id={props.schema.id}
             value={value}
             suffix={'%'}

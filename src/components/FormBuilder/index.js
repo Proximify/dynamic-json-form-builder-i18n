@@ -14,19 +14,16 @@ import {
     SliderInputWidget
 } from "./components/SingleField";
 import {
-    SingleSelectionWidget,
-    MultiColSelectionWidget,
     SingleLargeSelectionWidget,
     MultiColLargeSelectionWidget
 } from "./components/SelectionField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
-import {ReorderableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
+import {SortableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
 import {ModalDeleteConfirm} from "./components/utils/Modals";
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+import {tw} from "twind";
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -40,8 +37,6 @@ const customWidgets = {
     yearInputWidget: YearInputWidget,
     booleanInputWidget: BooleanInputWidget,
     sliderInputWidget: SliderInputWidget,
-    singleSelectionWidget: SingleSelectionWidget,
-    multiColSelectionWidget: MultiColSelectionWidget,
     singleLargeSelectionWidget: SingleLargeSelectionWidget,
     multiColLargeSelectionWidget: MultiColLargeSelectionWidget,
     hiddenFieldWidget: HiddenFieldWidget,
@@ -54,7 +49,7 @@ const customTemplates = {
 }
 
 const customArrayTemplate = {
-    reorderableArrayFieldTemplate: ReorderableArrayFieldTemplate,
+    sortableArrayFieldTemplate: SortableArrayFieldTemplate,
     arrayFieldTemplate: ArrayFieldTemplate
 }
 
@@ -62,14 +57,19 @@ class FormBuilder extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {shouldDeleteConfirmModalOpen: false, shouldDeleteForm: false, formData: this.props.formData ?? undefined, newForm: Object.keys(this.props.formData).length === 0};
+        this.state = {
+            shouldDeleteConfirmModalOpen: false,
+            shouldDeleteForm: false,
+            formData: this.props.formData ?? undefined,
+            newForm: Object.keys(this.props.formData).length === 0,
+            mandatoryFieldValidation: true
+        };
         this.handleStateChange = this.handleStateChange.bind(this);
         document.addEventListener("keydown", this._handleKeyDown.bind(this));
     }
 
     /**
      * This function handle the form submit event
-     * @param data
      */
     onFormSubmit = () => {
         this.onErrorMsgChange(null);
@@ -99,7 +99,6 @@ class FormBuilder extends Component {
         if (errors) {
             const errorList = errors.map(err => Object.values(err));
             errorList.forEach(err => {
-                console.log(err)
                 let errorMsg = document.createElement("div");
                 errorMsg.className += "alert alert-danger";
                 errorMsg.role = "alert";
@@ -117,7 +116,7 @@ class FormBuilder extends Component {
             const fieldValidations = validations[fieldName];
             if (Array.isArray(fieldValidations)) {
                 fieldValidations.forEach(fieldValidation => {
-                    if (!fieldValidation.validateMethod(formData)) {
+                    if (!fieldValidation.validateMethod(formData, this.state.mandatoryFieldValidation)) {
                         errors[fieldName].addError(fieldValidation.getErrMsg(formData));
                     }
                 })
@@ -128,7 +127,7 @@ class FormBuilder extends Component {
                         subFieldValidations.forEach(subFieldValidation => {
                             if (formData[fieldName]) {
                                 formData[fieldName].forEach((subsection, index) => {
-                                    if (!subFieldValidation.validateMethod(subsection)) {
+                                    if (!subFieldValidation.validateMethod(subsection,this.state.mandatoryFieldValidation)) {
                                         errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
                                     }
                                 })
@@ -145,7 +144,7 @@ class FormBuilder extends Component {
     render() {
         console.log(this.state)
         return (
-            <>
+            <div className={tw`flex`}>
                 <Form
                     id={this.props.formID ?? null}
                     schema={this.props.formSchema ?? undefined}
@@ -155,8 +154,6 @@ class FormBuilder extends Component {
                         {...this.props.formContext} ?? undefined
                     }
                     widgets={customWidgets}
-                    showErrorList={false}
-                    liveValidate
                     onChange={({formData}) => {
                         this.setState({...this.state, formData: formData})
                         // TODO generic
@@ -164,20 +161,24 @@ class FormBuilder extends Component {
                         //     formData.total_workload = (Number(formData.undergraduate_teaching) + Number(formData.graduate_professional_teaching)).toString();
                         // }
                         console.log("data changed", formData);
-
                     }}
+                    liveValidate={true}
+                    noHtml5Validate={true}
                     validate={this.validation}
                     // noValidate={true}
                     onError={(errors) => {
+                        console.log(errors)
                         this.onErrorMsgChange(errors);
                     }}
+                    showErrorList={false}
                     onSubmit={this.onFormSubmit}>
-                    <div css={[tw`my-4 mb-20 mx-1.5`]}>
-                        <div id={`${this.props.formID}-errorMsg`}>
-                        </div>
-                        <div css={[tw`flex justify-between`]}>
-                            <div css={[this.state.newForm ? tw`invisible`: tw``]}>
-                                <button css={[tw`py-1 px-2 ml-16 border bg-color-warning rounded text-white`]}
+                    <div className={tw`my-4 mb-20 mx-1.5`}>
+                        {/*<div id={`${this.props.formID}-errorMsg`}>*/}
+                        {/*      /!*className={tw`${this.state.noValidation ? 'hidden' : ''}`}>*!/*/}
+                        {/*</div>*/}
+                        <div className={tw`flex justify-between`}>
+                            <div className={this.state.newForm ? tw`invisible` : tw``}>
+                                <button className={tw`py-1 px-2 ml-16 border bg-color-warning rounded`}
                                         type="button"
                                         onClick={() => {
                                             this.setState({...this.state, shouldDeleteConfirmModalOpen: true})
@@ -186,14 +187,14 @@ class FormBuilder extends Component {
                                 </button>
                             </div>
                             <div>
-                                <button css={[tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`]}
+                                <button className={tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`}
                                         type="button"
                                         onClick={() => {
                                             this.props.onFormEditCancel();
                                         }}>
                                     Cancel
                                 </button>
-                                <button css={[tw`py-1 px-2 border bg-color-action rounded`]}
+                                <button className={tw`py-1 px-2 border bg-color-action rounded`}
                                         type="submit">
                                     Save
                                 </button>
@@ -201,9 +202,18 @@ class FormBuilder extends Component {
                         </div>
                     </div>
                 </Form>
+
+                <div>
+                    <button onClick={() => {
+                        this.setState({
+                            ...this.state,
+                            mandatoryFieldValidation: !this.state.mandatoryFieldValidation
+                        })
+                    }}>{this.state.mandatoryFieldValidation ? "Save Without Required Field" : "Save With Required Field"}</button>
+                </div>
                 {this.state.shouldDeleteConfirmModalOpen &&
                 <ModalDeleteConfirm state={this.state} changeState={this.handleStateChange}/>}
-            </>
+            </div>
         );
     }
 }

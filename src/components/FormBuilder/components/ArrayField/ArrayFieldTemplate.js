@@ -5,9 +5,8 @@ import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import ModalArrayItem from "../utils/Modals";
 import Formatter from "../../../Formatter";
 import Tooltip from "../../../Tooltip";
-import {StyledSubsectionDataContainer} from "../utils/styledComponents";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+import {SubsectionFormatterContainerStyle} from "../utils/twindClass";
+import {tw} from "twind";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -15,7 +14,7 @@ const descriptions = {
         included: <strong>yyyy</strong>/m/d.</p>
 }
 
-export function ReorderableArrayFieldTemplate(props) {
+export function SortableArrayFieldTemplate(props) {
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
     const [state, setState] = useState(
@@ -26,6 +25,10 @@ export function ReorderableArrayFieldTemplate(props) {
             dataPrev: null
         }
     )
+
+    const isEmptyItem = () => {
+        console.log(items);
+    }
 
     const handleOnDragEnd = (result) => {
         if (!result.destination)
@@ -69,12 +72,12 @@ export function ReorderableArrayFieldTemplate(props) {
     }
 
     return (
-        <div css={[tw`flex flex-wrap justify-center my-3 space-x-6`]}>
-            <div css={[tw`w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end`]}>
+        <div className={tw`flex flex-wrap justify-center my-3 space-x-6`}>
+            <div className={tw`w-1/4 flex flex-grow text-sm font-medium text-gray-700 justify-end`}>
                 <div>
-                    <div css={[tw`flex items-center`]}>
+                    <div className={tw`flex items-center`}>
                         {title && <label>{title}</label>}
-                        {required && <p css={[tw`text-red-700 ml-1 mr-2`]}>*</p>}
+                        {required && <p className={tw`text-red-700 ml-1 mr-2`}>*</p>}
                         {schema.description && <Tooltip
                             placement="right-start"
                             trigger="hover"
@@ -96,16 +99,16 @@ export function ReorderableArrayFieldTemplate(props) {
                                 }
                             ]}
                         >
-                            <AiOutlineQuestionCircle size={'1.1em'} css={[tw`text-gray-400 mx-1`]}/>
+                            <AiOutlineQuestionCircle size={'1.1em'} className={tw`text-gray-400 mx-1`}/>
                         </Tooltip>}
                     </div>
                 </div>
             </div>
-            <div style={{maxWidth: "20rem"}} css={[tw`flex-grow`]}>
-                <StyledSubsectionDataContainer>
+            <div style={{maxWidth: "20rem"}} className={tw`flex-grow`}>
+                <div className={tw`${SubsectionFormatterContainerStyle}`}>
                     {canAdd &&
                     <a type="button"
-                       css={[tw`text-blue-600`]}
+                       className={tw`text-blue-600`}
                        onClick={() => {
                            setState({
                                ...state,
@@ -118,7 +121,7 @@ export function ReorderableArrayFieldTemplate(props) {
                        }}
                     >< AiOutlinePlusCircle size={"1.2em"}/></a>}
                     <div
-                        css={[formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`]}>
+                        className={formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`}>
                         <DragDropContext onDragEnd={handleOnDragEnd}>
                             <Droppable droppableId={title}>
                                 {(provided) => (
@@ -131,7 +134,7 @@ export function ReorderableArrayFieldTemplate(props) {
                                                         {(provided) => (
                                                             <li {...provided.draggableProps} {...provided.dragHandleProps}
                                                                 ref={provided.innerRef}
-                                                                css={[index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`]}
+                                                                className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
                                                             >
                                                                 <div>
                                                                     <Formatter app={"CV"}
@@ -141,9 +144,9 @@ export function ReorderableArrayFieldTemplate(props) {
                                                                                rawData={item}
                                                                     />
                                                                 </div>
-                                                                <div css={[tw`mt-0.5`]}>
+                                                                <div className={tw`mt-0.5`}>
                                                                     <BiPencil
-                                                                        css={[tw`cursor-pointer mx-1`]}
+                                                                        className={tw`cursor-pointer mx-1`}
                                                                         onClick={() => {
                                                                             const itemIndex = formData.findIndex(data => data.order === item.order);
                                                                             setState({
@@ -168,7 +171,7 @@ export function ReorderableArrayFieldTemplate(props) {
                             </Droppable>
                         </DragDropContext>
                     </div>
-                </StyledSubsectionDataContainer>
+                </div>
                 {
                     formData.length > 0 && state.open && state.index >= 0 &&
                     formData.map((item, index) => {
@@ -186,6 +189,7 @@ export function ReorderableArrayFieldTemplate(props) {
                                 context={formContext}
                                 dropItem={items[index].onDropIndexClick(index)}
                                 title={title}
+                                itemValueValidator={isEmptyItem}
                             />
 
                     })
@@ -196,7 +200,6 @@ export function ReorderableArrayFieldTemplate(props) {
 }
 
 export function ArrayFieldTemplate(props) {
-    // console.log("ArrayFieldTemplate", props);
     const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
 
     const [state, setState] = useState(
@@ -208,13 +211,17 @@ export function ArrayFieldTemplate(props) {
         }
     )
 
+    const isEmptyItem = () => {
+        console.log(items);
+    }
+
     return (
-        <div css={[tw`flex flex-wrap justify-center my-3 space-x-6`]}>
-            <div css={[tw`w-1/4 flex flex-grow text-base font-medium text-gray-700 justify-end`]}>
+        <div className={tw`flex flex-wrap justify-center my-3 space-x-6`}>
+            <div className={tw`w-1/4 flex flex-grow text-sm font-medium text-gray-700 justify-end`}>
                 <div>
-                    <div css={[tw`flex items-center`]}>
+                    <div className={tw`flex items-center`}>
                         {title && <label>{title}</label>}
-                        {required && <p css={[tw`text-red-700 ml-1 mr-2`]}>*</p>}
+                        {required && <p className={tw`text-red-700 ml-1 mr-2`}>*</p>}
                         {schema.description && <Tooltip
                             placement="right-start"
                             trigger="hover"
@@ -236,16 +243,16 @@ export function ArrayFieldTemplate(props) {
                                 }
                             ]}
                         >
-                            <AiOutlineQuestionCircle size={"1.1em"} css={[tw`text-gray-400 mx-1`]}/>
+                            <AiOutlineQuestionCircle size={"1.1em"} className={tw`text-gray-400 mx-1`}/>
                         </Tooltip>}
                     </div>
                 </div>
             </div>
-            <div style={{maxWidth: "20rem"}} css={[tw`flex-grow`]}>
-                <StyledSubsectionDataContainer>
+            <div style={{maxWidth: "20rem"}} className={tw`flex-grow`}>
+                <div className={tw`${SubsectionFormatterContainerStyle}`}>
                     {canAdd &&
                     <a type="button"
-                       css={[tw`text-blue-600`]}
+                       className={tw`text-blue-600`}
                        onClick={() => {
                            setState({
                                ...state,
@@ -258,13 +265,13 @@ export function ArrayFieldTemplate(props) {
                        }}
                     >< AiOutlinePlusCircle size={"1.2em"}/></a>}
                     <div
-                        css={[formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`]}>
+                        className={formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`}>
                         <ul>
                             {
                                 formData.map((item, index) => {
                                     return (
                                         <li key={index}
-                                            css={[index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`]}
+                                            className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
                                         >
                                             <div>
                                                 <Formatter app={"CV"}
@@ -274,9 +281,9 @@ export function ArrayFieldTemplate(props) {
                                                            rawData={item}
                                                 />
                                             </div>
-                                            <div css={[tw`mt-0.5`]}>
+                                            <div className={tw`mt-0.5`}>
                                                 <BiPencil
-                                                    css={[tw`cursor-pointer mx-1 align-top`]}
+                                                    className={tw`cursor-pointer mx-1 align-top`}
                                                     onClick={() => {
                                                         setState({
                                                             ...state,
@@ -294,18 +301,21 @@ export function ArrayFieldTemplate(props) {
                             }
                         </ul>
                     </div>
-                </StyledSubsectionDataContainer>
+                </div>
                 {
                     formData.length > 0 && state.open && state.index >= 0 &&
                     formData.map((item, index) => {
                         return index === state.index &&
                             <ModalArrayItem
-                                key={index} state={state}
+                                key={index}
+                                title={title}
+                                state={state}
                                 setState={setState}
                                 index={index}
-                                children={items[index].children} context={formContext}
+                                children={items[index].children}
+                                context={formContext}
                                 dropItem={items[index].onDropIndexClick(index)}
-                                title={title}
+                                itemValueValidator={isEmptyItem}
                             />
 
                     })

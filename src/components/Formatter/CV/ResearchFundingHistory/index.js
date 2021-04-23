@@ -9,8 +9,7 @@ import {
     singleLineMultiFieldValueFormatter, genericFieldFormatter
 } from "../../utils/helper";
 import {StyledBilingualItemContainer, StyledSubsectionFormatterContainer} from "../../utils/styledComponents";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+import {tw} from "twind";
 
 export default function ResearchFundingHistory(props) {
     const rawData = props.rawData;
@@ -179,7 +178,7 @@ export default function ResearchFundingHistory(props) {
                         converted_portion_of_funding_received: cpofr,
                     } = ft.getFields();
 
-                    formattedValue = <div css={tw`space-y-1.5`}>
+                    formattedValue = <div className={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([ot, fo, ofo, fsd, fed], null, ['s'], [' '], [[2, 3, 4, ' ('], [3, 3, 4, ' - '], [4, 3, 4, ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pn, frn], [false, true], null, null, [[0, 1, 1, ', ']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([tf, cotf, tfc], [true], null, [' ', ['(', ')'], ['(', ')  CAN']])}</p>
@@ -202,7 +201,7 @@ export default function ResearchFundingHistory(props) {
                         currency_of_portion_of_funding_received: copofr,
                         time_commitment: tc
                     } = ft.getFields();
-                    formattedValue = <div css={tw`space-y-1.5`}>
+                    formattedValue = <div className={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([sd, ed], null, null, [['(', ''], ')'], [[0, 1, 2, ' - ']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([tf, cotf], [true], null, [' ', ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([pofr, copofr], [true], null, [' ', ['(', ')']])}</p>

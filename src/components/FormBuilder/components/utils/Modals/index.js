@@ -1,39 +1,38 @@
 import React from "react";
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
 import Tooltip from "../../../../Tooltip";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+import {tw} from "twind";
 
 export function ModalArrayItem(props) {
-    const {state, setState, children, dropItem, title} = props;
+    const {state, setState, children, dropItem, title, itemValueValidator} = props;
 
     return (
         <>
             <div
-                css={[tw`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed z-50 inset-0 outline-none focus:outline-none bg-gray-300 bg-opacity-70`]}>
+                className={tw`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed z-50 inset-0 outline-none focus:outline-none bg-gray-300 bg-opacity-70`}>
                 <div
-                    css={[tw`relative w-full my-6 mx-auto max-w-3xl`]}
+                    className={tw`relative w-full my-6 mx-auto max-w-3xl`}
                 >
                     <div
-                        css={[tw`border rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none`]}
+                        className={tw`border rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none`}
                     >
                         <div
-                            css={[tw`flex items-start justify-between p-4 border-b border-solid border-gray-300 rounded-t h-16 items-center`]}>
-                            <h1 css={[tw`text-2xl font-semibold`]}>
+                            className={tw`flex items-start justify-between p-4 border-b border-solid border-gray-300 rounded-t h-16 items-center`}>
+                            <h1 className={tw`text-2xl font-semibold`}>
                                 {title}
                             </h1>
                         </div>
-                        <div css={[tw`relative pt-2 pb-5 px-10 flex-auto`]}>
-                            <div css={[tw`my-4 text-gray-600 text-lg leading-relaxed`]}>
+                        <div className={tw`relative pt-2 pb-5 px-10 flex-auto`}>
+                            <div className={tw`my-4 text-gray-600 text-lg leading-relaxed`}>
                                 {children}
                             </div>
                         </div>
                         <div
-                            css={[tw`flex items-center justify-between py-3 px-9 border-t border-solid border-gray-300`]}>
+                            className={tw`flex items-center justify-between py-3 px-9 border-t border-solid border-gray-300`}>
                             <div>
                                 {state.edit &&
                                 <button
-                                    css={[tw`bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`]}
+                                    className={tw`bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`}
                                     onClick={() => {
                                         dropItem();
                                         setState({
@@ -49,7 +48,7 @@ export function ModalArrayItem(props) {
                             </div>
                             <div>
                                 <button
-                                    css={[tw`text-gray-500 font-bold uppercase px-5 py-2 text-sm outline-none focus:outline-none mr-1 mb-1`]}
+                                    className={tw`text-gray-500 font-bold uppercase px-5 py-2 text-sm outline-none focus:outline-none mr-1 mb-1`}
                                     onClick={() => {
                                         if (!state.edit) {
                                             dropItem();
@@ -72,8 +71,9 @@ export function ModalArrayItem(props) {
                                 >Cancel
                                 </button>
                                 <button
-                                    css={[tw`bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`]}
+                                    className={tw`bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`}
                                     onClick={() => {
+                                        itemValueValidator();
                                         setState({
                                             ...state,
                                             open: false,
@@ -96,19 +96,19 @@ export function ModalArrayItem(props) {
 export function ModalDeleteConfirm(props) {
     const {state, changeState} = props;
     return (
-        <div css={tw`fixed z-10 inset-0 overflow-y-auto`}>
-            <div css={tw`flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0`}>
-                <div css={tw`fixed inset-0 transition-opacity`} aria-hidden="true">
-                    <div css={tw`absolute inset-0 bg-gray-500 opacity-75`}>
+        <div className={tw`fixed z-10 inset-0 overflow-y-auto`}>
+            <div className={tw`flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0`}>
+                <div className={tw`fixed inset-0 transition-opacity`} aria-hidden="true">
+                    <div className={tw`absolute inset-0 bg-gray-500 opacity-75`}>
                     </div>
                 </div>
-                <span css={tw`hidden sm:inline-block sm:align-middle sm:h-screen`} aria-hidden="true">&#8203;</span>
+                <span className={tw`hidden sm:inline-block sm:align-middle sm:h-screen`} aria-hidden="true">&#8203;</span>
                 <div
-                    css={tw`inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6`}
+                    className={tw`inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6`}
                     role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                    <div css={tw`hidden sm:block absolute top-0 right-0 pt-4 pr-4`}>
+                    <div className={tw`hidden sm:block absolute top-0 right-0 pt-4 pr-4`}>
                         <button type="button"
-                                css={tw`bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                                className={tw`bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
                                 onClick={() => {
                                     changeState({
                                         ...state,
@@ -116,38 +116,38 @@ export function ModalDeleteConfirm(props) {
                                         shouldDeleteForm: false
                                     });
                                 }}>
-                            <span css={tw`sr-only`}>Close</span>
-                            <svg css={tw`h-6 w-6`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            <span className={tw`sr-only`}>Close</span>
+                            <svg className={tw`h-6 w-6`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor" aria-hidden="true">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                       d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
                     </div>
-                    <div css={tw`sm:flex sm:items-start`}>
+                    <div className={tw`sm:flex sm:items-start`}>
                         <div
-                            css={tw`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10`}>
-                            <svg css={tw`h-6 w-6 text-red-600`} xmlns="http://www.w3.org/2000/svg" fill="none"
+                            className={tw`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10`}>
+                            <svg className={tw`h-6 w-6 text-red-600`} xmlns="http://www.w3.org/2000/svg" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                       d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                             </svg>
                         </div>
-                        <div css={tw`mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left`}>
-                            <h3 css={tw`text-lg leading-6 font-medium text-gray-900`} id="modal-headline">
+                        <div className={tw`mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left`}>
+                            <h3 className={tw`text-lg leading-6 font-medium text-gray-900`} id="modal-headline">
                                 Delete Form
                             </h3>
-                            <div css={tw`mt-2`}>
-                                <p css={tw`text-sm text-gray-500`}>
+                            <div className={tw`mt-2`}>
+                                <p className={tw`text-sm text-gray-500`}>
                                     This form contains data. Are you sure you want to delete this form? This action
                                     cannot be undone.
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <div css={tw`mt-5 sm:mt-4 sm:flex sm:flex-row-reverse`}>
+                    <div className={tw`mt-5 sm:mt-4 sm:flex sm:flex-row-reverse`}>
                         <button type="button"
-                                css={tw`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`}
+                                className={tw`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`}
                                 onClick={() => {
                                     changeState({
                                         ...state,
@@ -158,7 +158,7 @@ export function ModalDeleteConfirm(props) {
                             Delete
                         </button>
                         <button type="button"
-                                css={tw`mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm`}
+                                className={tw`mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm`}
                                 onClick={() => {
                                     changeState({
                                         ...state,
@@ -180,18 +180,18 @@ export function ModalFullScreen(props) {
 
     return (
         <>
-            <div css={tw`overflow-y-auto fixed z-50 w-full h-full top-0 left-0 bg-white`}>
-                <div css={tw`max-w-2xl h-full w-full mx-auto py-5`}>
-                    <div css={tw`flex border-b-2 border-gray-200 py-3 items-center space-x-3`}>
-                        <h1 css={tw`text-2xl font-semibold text-black ml-20`}>{title}</h1>
+            <div className={tw`overflow-y-auto fixed z-50 w-full h-full top-0 left-0 bg-white`}>
+                <div className={tw`max-w-2xl h-full w-full mx-auto py-5`}>
+                    <div className={tw`flex border-b-2 border-gray-200 py-3 items-center space-x-3`}>
+                        <h1 className={tw`text-2xl font-semibold text-black ml-20`}>{title}</h1>
                         {content.props.formSchema && content.props.formSchema.form_description &&
                         <Tooltip
                             placement="right"
                             trigger="hover"
                             delayHide={200}
                             tooltip={
-                                <div css={tw`mx-2 my-1`}>
-                                    <p css={tw`mb-1`}><strong>{title}</strong></p>
+                                <div className={tw`mx-2 my-1`}>
+                                    <p className={tw`mb-1`}><strong>{title}</strong></p>
                                     {content.props.formSchema &&
                                     <p>{content.props.formSchema.form_description ?? null}</p>}
                                 </div>
@@ -207,10 +207,10 @@ export function ModalFullScreen(props) {
                                 }
                             ]}
                         >
-                            <AiOutlineQuestionCircle css={tw`text-red-600`} size={"1.5em"}/>
+                            <AiOutlineQuestionCircle className={tw`text-red-600`} size={"1.5em"}/>
                         </Tooltip>}
                     </div>
-                    <div css={tw`pt-2 pb-5 my-4`}>
+                    <div className={tw`pt-2 pb-5 my-4`}>
                         {content}
                     </div>
                 </div>

@@ -1,6 +1,5 @@
 import React from "react";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+import {tw} from "twind";
 import {
     any,
     FieldValueMapper,
@@ -171,7 +170,7 @@ export default function StudentPostdoctoralSupervision(props) {
                         other_funding_organization: ofori,
                         converted_amount: cam
                     } = ft.getFields();
-                    formattedValue = <div css={tw`space-y-1.5`}>
+                    formattedValue = <div className={tw`space-y-1.5`}>
                         <p>{singleLineMultiFieldValueFormatter([frn, am, cu], [true, true], null, [', ', ', ', ['(', ')']])}</p>
                         <p>{singleLineMultiFieldValueFormatter([fori, ofori], null, null, [' ', ' '])}</p>
                         {(cam.val || cam.val === 0) && <p>{cam.lbl}: {cam.val}</p>}

@@ -3,9 +3,7 @@ import ReactDOM from 'react-dom';
 import {language, LanguageContext} from './language-context';
 import LanguageTogglerButton from './language-toggle-btn';
 import {SectionPageBuilder} from "./components/SectionPageBuilder";
-import {css} from 'styled-components/macro'
-import tw from 'twin.macro'
-import './main.css'
+import {tw} from 'twind';
 
 class App extends Component {
     constructor(props) {
@@ -30,9 +28,9 @@ class App extends Component {
         return (
             <LanguageContext.Provider value={this.state}>
                 <LanguageTogglerButton pageLanguages={this.state.pageLanguages}/>
-                <div css={[tw`flex justify-center bg-gray-200 pt-3`]}>
+                <div className={tw`flex justify-center bg-gray-200 pt-3`}>
                     <div
-                        css={"background: white; max-width: 40rem"}>
+                        className={tw`bg-white max-w-xl`}>
                         <SectionPageBuilder
                             language={this.state.language.language}
                         />

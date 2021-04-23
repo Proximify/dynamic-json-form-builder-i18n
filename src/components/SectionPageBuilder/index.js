@@ -12,8 +12,7 @@ import {
     handleOnPrimaryItemSetBtnClick
 } from './helper/sectionPageBuilderHelper'
 import {SectionLabel, StyledSectionContainer} from "./styledComponents";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+import {tw} from "twind";
 
 const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
 const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
@@ -615,9 +614,9 @@ export function SectionPageBuilder(props) {
         if (section.type === "form" && (section.disabled && section.disabled !== "1")) {
             return (
                 <StyledSectionContainer key={sectionIndex} layer={layer}>
-                    <div css={[tw`flex items-center`]}>
+                    <div className={tw`flex items-center`}>
                         <SectionLabel TopSectionLabel={layer === 3}>{section.title}</SectionLabel>
-                        <p css={[tw`ml-1 text-color-action hover:text-color-confirm`]}>{section.multiplicity === "multiple" ?
+                        <p className={tw`ml-1 text-color-action hover:text-color-confirm`}>{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
                                                   handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
@@ -675,32 +674,32 @@ export function SectionPageBuilder(props) {
                                         {!state.shouldModalOpen &&
                                         <>
                                             {(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true) &&
-                                            <div css={[tw`flex space-x-2 ml-2 text-sm`]}>
-                                                <p css={[tw`text-yellow-700 text-base`]}>Primary</p>
+                                            <div className={tw`flex space-x-2 ml-2 text-sm`}>
+                                                <p className={tw`text-yellow-700 text-base`}>Primary</p>
                                                 <button
-                                                    css={[tw`text-blue-500 hover:text-blue-400 hover:underline`]}
+                                                    className={tw`text-blue-500 hover:text-blue-400 hover:underline`}
                                                     onClick={() => {
                                                         handleOnPrimaryItemChangeBtnClick(state, setState, structureChain, getFormRecur)
                                                     }}>Change
                                                 </button>
                                                 <button
-                                                    css={section.primaryItemUpdate ? [tw`text-gray-500 hover:text-gray-700 hover:underline`] : [tw`hidden`]}
+                                                    className={tw`${section.primaryItemUpdate ? 'text-gray-500 hover:text-gray-700 hover:underline' : 'hidden'}`}
                                                     onClick={() => {
                                                         handleOnPrimaryItemCancelBtnClick(state, setState, structureChain, getFormRecur)
                                                     }}>Cancel
                                                 </button>
                                             </div>}
 
-                                            <div css={[tw`mx-3 mb-1 px-2 text-sm flex justify-between`]}>
+                                            <div className={tw`mx-3 mb-1 px-2 text-sm flex justify-between`}>
                                                 <input
-                                                    css={section.primaryItemUpdate ? [tw`mt-1 cursor-pointer p-0`] : [tw`hidden`]}
+                                                    className={tw`${section.primaryItemUpdate ? 'mt-1 cursor-pointer p-0' : 'hidden'}`}
                                                     type='radio'
                                                     checked={!!(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true)}
                                                     onChange={() => {
                                                         handleOnPrimaryItemSetBtnClick(state, setState, structureChain, getFormRecur, itemIndex, api);
                                                     }}>
                                                 </input>
-                                                <div css={[tw`w-11/12`]}>
+                                                <div className={tw`w-11/12`}>
                                                     <Formatter app={"CV"}
                                                                structureChain={[...structureChain]}
                                                                isFullScreenViewMode={true}
@@ -709,7 +708,7 @@ export function SectionPageBuilder(props) {
                                                     />
                                                 </div>
                                                 {section.multiplicity === "multiple" ?
-                                                    <div css={[tw`text-color-action hover:text-color-confirm`]}>
+                                                    <div className={tw`text-color-action hover:text-color-confirm`}>
                                                         <FiEdit size={"1.1rem"}
                                                                 onClick={() => {
                                                                     if (!section.section_data[itemIndex]) {

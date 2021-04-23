@@ -6,14 +6,12 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import htmlToDraft from "html-to-draftjs";
 import draftToHtml from "draftjs-to-html";
 import {Editor} from "react-draft-wysiwyg";
-import {ToolbarStyleCompact} from "../utils/styledComponents/richTextToolBarStyle";
+import {ToolbarStyleCompact} from "../utils/richTextToolBarStyle";
 import {
-    StyledMultiLangBtnContainer,
-    StyledMultiLangFieldContainer,
-    StyledMultiLangFieldTextarea
-} from "../utils/styledComponents";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+    BilingualContainerStyle, MultiLangBtnContainerStyle, MultiLangRichTextInputStyle, MultiLangTextareaStyle
+} from "../utils/twindClass";
+import {tw} from "twind";
+import TextareaAutosize from "react-textarea-autosize";
 
 
 export function MultiLangFieldWidget(props) {
@@ -154,15 +152,15 @@ export function MultiLangFieldWidget(props) {
     const LangDropDownBtn = () => {
         return (
             <div
-                css={[state.isRichText ? tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500` : tw`w-full h-full focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500`]}
+                className={state.isRichText ? tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500` : tw`w-full h-full focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500`}
             >
-                <div css={[tw`w-full h-full items-center justify-center`]}>
+                <div className={tw`w-full h-full items-center justify-center`}>
                     <Menu>
                         {({open}) => (
                             <>
-                                <div css={[tw`w-full h-full items-center justify-center`]}>
+                                <div className={tw`w-full h-full items-center justify-center`}>
                                     <Menu.Button
-                                        css={[tw`w-full h-full flex flex-row items-center justify-center bg-white rounded-md hover:text-gray-600`]}>
+                                        className={tw`w-full h-full flex flex-row items-center justify-center bg-white rounded-md hover:text-gray-600`}>
                                         {languageShortLabel[state.primaryLanguage] ?? "EN"}
                                         <BsCaretDownFill size={"0.8em"}/>
                                     </Menu.Button>
@@ -172,15 +170,15 @@ export function MultiLangFieldWidget(props) {
                                 >
                                     <Menu.Items
                                         static
-                                        css={[tw`absolute w-32 mt-0 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10`]}
+                                        className={tw`absolute w-32 mt-0 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10`}
                                     >
-                                        <div css={[tw`py-1`]}>
+                                        <div className={tw`py-1`}>
                                             {state.languageList.map((lang, index) => {
                                                 return (
                                                     <Menu.Item key={index}>
                                                         {({active}) => (
                                                             <a
-                                                                css={[(active || (!state.isBilingual && state.primaryLanguage === lang)) ? tw`bg-indigo-500 text-white flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none` : tw`flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none text-gray-700`]}
+                                                                className={(active || (!state.isBilingual && state.primaryLanguage === lang)) ? tw`bg-indigo-500 text-white flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none` : tw`flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none text-gray-700`}
                                                                 href="#"
                                                                 onClick={(e) => {
                                                                     e.preventDefault();
@@ -223,7 +221,7 @@ export function MultiLangFieldWidget(props) {
                                                 <Menu.Item>
                                                     {({active}) => (
                                                         <a
-                                                            css={[(active || state.isBilingual) ? tw`flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none bg-gray-500 text-white font-semibold` : tw`flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none text-gray-700`]}
+                                                            className={(active || state.isBilingual) ? tw`flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none bg-gray-500 text-white font-semibold` : tw`flex justify-between w-full px-4 py-2 text-sm leading-5 text-left focus:outline-none text-gray-700`}
                                                             href="#"
                                                             onClick={(e) => {
                                                                 e.preventDefault();
@@ -249,11 +247,11 @@ export function MultiLangFieldWidget(props) {
     const LangCloseBtn = () => {
         return (
             <div
-                css={[state.isRichText ? tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500` : tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500 w-full h-full`]}
+                className={state.isRichText ? tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500` : tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500 w-full h-full`}
             >
-                <div css={[tw`w-full h-full items-center justify-center`]}>
+                <div className={tw`w-full h-full items-center justify-center`}>
                     <button
-                        css={[tw`w-full h-full items-center justify-center flex flex-row`]}
+                        className={tw`w-full h-full items-center justify-center flex flex-row`}
                         onClick={() => {
                             setState({
                                 ...state,
@@ -273,25 +271,30 @@ export function MultiLangFieldWidget(props) {
 
     return (
         <React.Fragment>
-            <StyledMultiLangFieldContainer>
-                {state.isRichText ? <Editor
-                        editorState={state.primaryContent}
-                        // wrapperClassName="multiLangRichTextAreaWrapper"
-                        // toolbarClassName="multiLangRichTextAreaToolbar"
-                        // editorClassName="multiLangRichTextAreaEditor"
-                        stripPastedStyles={true}
-                        spellCheck={true}
-                        toolbar={ToolbarStyleCompact}
-                        onEditorStateChange={text => {
-                            setState({...state, primaryContent: text})
-                        }}
-                        toolbarCustomButtons={[<LangDropDownBtn/>]}
-                        onBlur={() => {
-                            handleChange()
-                        }}
-                    /> :
+            <div className={tw`${BilingualContainerStyle}`}>
+                {state.isRichText ?
+                    <div className={tw`${MultiLangRichTextInputStyle}`}>
+                        <Editor
+                            className={tw`bg-red-200 p-20`}
+                            editorState={state.primaryContent}
+                            // wrapperClassName="multiLangRichTextAreaWrapper"
+                            // toolbarClassName="multiLangRichTextAreaToolbar"
+                            // editorClassName="multiLangRichTextAreaEditor"
+                            stripPastedStyles={true}
+                            spellCheck={true}
+                            toolbar={ToolbarStyleCompact}
+                            onEditorStateChange={text => {
+                                setState({...state, primaryContent: text})
+                            }}
+                            toolbarCustomButtons={[<LangDropDownBtn/>]}
+                            onBlur={() => {
+                                handleChange()
+                            }}
+                        />
+                    </div> :
                     <>
-                        <StyledMultiLangFieldTextarea
+                        <TextareaAutosize
+                            className={tw`${MultiLangTextareaStyle}`}
                             id={props.schema.id}
                             value={state.primaryContent ?? undefined}
                             required={props.required}
@@ -302,32 +305,35 @@ export function MultiLangFieldWidget(props) {
                                 handleChange()
                             }}
                         />
-                        <StyledMultiLangBtnContainer>{<LangDropDownBtn/>}</StyledMultiLangBtnContainer>
+                        <div className={tw`${MultiLangBtnContainerStyle}`}>{<LangCloseBtn/>}</div>
                     </>
                 }
 
-            </StyledMultiLangFieldContainer>
+            </div>
 
             <div className={`mt-1 ${!state.isBilingual ? "hidden" : ""}`}>
-                <StyledMultiLangFieldContainer>
+                <div className={tw`${BilingualContainerStyle}`}>
                     {state.isRichText ?
-                        <Editor
-                            editorState={state.secondaryContent}
-                            wrapperClassName="multiLangRichTextAreaWrapper"
-                            toolbarClassName="multiLangRichTextAreaToolbar"
-                            editorClassName="multiLangRichTextAreaEditor"
-                            stripPastedStyles={true}
-                            toolbar={ToolbarStyleCompact}
-                            onEditorStateChange={text => {
-                                setState({...state, secondaryContent: text})
-                            }}
-                            toolbarCustomButtons={[<LangCloseBtn/>]}
-                            onBlur={() => {
-                                handleChange()
-                            }}
-                        /> :
+                        <div className={tw`${MultiLangRichTextInputStyle}`}>
+                            <Editor
+                                editorState={state.secondaryContent}
+                                wrapperClassName="multiLangRichTextAreaWrapper"
+                                toolbarClassName="multiLangRichTextAreaToolbar"
+                                editorClassName="multiLangRichTextAreaEditor"
+                                stripPastedStyles={true}
+                                toolbar={ToolbarStyleCompact}
+                                onEditorStateChange={text => {
+                                    setState({...state, secondaryContent: text})
+                                }}
+                                toolbarCustomButtons={[<LangCloseBtn/>]}
+                                onBlur={() => {
+                                    handleChange()
+                                }}
+                            />
+                        </div> :
                         <>
-                            <StyledMultiLangFieldTextarea
+                            <TextareaAutosize
+                                className={tw`${MultiLangTextareaStyle}`}
                                 value={state.secondaryContent ?? undefined}
                                 onChange={(event) => {
                                     setState({...state, secondaryContent: event.target.value})
@@ -336,14 +342,14 @@ export function MultiLangFieldWidget(props) {
                                     handleChange()
                                 }}
                             />
-                            <StyledMultiLangBtnContainer>{<LangCloseBtn/>}</StyledMultiLangBtnContainer>
+                            <div className={tw`${MultiLangBtnContainerStyle}`}>{<LangCloseBtn/>}</div>
                         </>
                     }
-                </StyledMultiLangFieldContainer>
+                </div>
             </div>
             <div>
                 <a
-                    css={[(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? tw`hidden` : tw`px-1 py-1 leading-normal text-sm text-blue-500 font-medium`]}
+                    className={(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? tw`hidden` : tw`px-1 py-1 leading-normal text-sm text-blue-500 font-medium`}
                     onClick={() => {
                         handleOnBilingual()
                     }}>undo

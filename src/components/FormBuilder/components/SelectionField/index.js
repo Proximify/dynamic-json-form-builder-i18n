@@ -1,69 +1,15 @@
 import React from 'react';
-import {components} from "react-windowed-select";
+import WindowedSelect, {components} from "react-windowed-select";
 import {
-    StyledSelect,
-    StyledWindowedSelect,
-    StyledMultiColWindowedSelect,
-    StyledMultiColWindowedSelectMenuItem,
-    StyledMultiColWindowedSelectValueContainer
-} from "../utils/styledComponents";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
+    MultiColWindowedSelectStyle,
+    MultiColWindowedSelectMenuItem,
+    MultiColWindowedSelectValueContainer,
+    WindowedSelectStyle
+} from "../utils/twindClass";
+import {tw} from "twind";
 
 const handleChange = (value, onChange) => {
     onChange(!value ? undefined : JSON.stringify(value.value))
-}
-
-export function SingleSelectionWidget(props) {
-    const {options, value} = props;
-    return (
-        <StyledSelect
-            id={props.schema.id}
-            getOptionLabel={option => option.value[1] ?? option.label}
-            options={options.enumOptions}
-            defaultValue={value ?
-                options.enumOptions[options.enumOptions.map(element =>
-                    element.value.toString()
-                ).indexOf(value.toString())]
-                : null}
-            onChange={value => handleChange(value, props.onChange)}
-            isClearable={true}
-        />
-    );
-}
-
-export function MultiColSelectionWidget(props) {
-    const {options, value} = props;
-    const formatOptionLabel = ({label, value}) => (
-        <table>
-            <tbody>
-            <tr>
-                {
-                    value.map((val, index) => {
-                        return index > 0 ?
-                            <td key={index} css={[tw`w-40 p-1`]}>{val}</td>
-                            : null
-                    })
-                }
-            </tr>
-            </tbody>
-        </table>
-    );
-
-    return (
-        <StyledSelect
-            id={props.schema.id}
-            options={options.enumOptions}
-            onChange={value => handleChange(value, props.onChange)}
-            formatOptionLabel={formatOptionLabel}
-            defaultValue={value ?
-                options.enumOptions[options.enumOptions.map(element =>
-                    element.value.toString()
-                ).indexOf(value.toString())]
-                : null}
-            isClearable
-        />
-    );
 }
 
 export function SingleLargeSelectionWidget(props) {
@@ -73,8 +19,8 @@ export function SingleLargeSelectionWidget(props) {
     });
     const lovValue = value ? JSON.parse(value) : undefined;
     return (
-        <StyledWindowedSelect
-            className='react-select-container'
+        <WindowedSelect
+            className={tw`${WindowedSelectStyle}`}
             classNamePrefix="react-select"
             id={props.schema.id}
             getOptionLabel={option => option.value[1] ?? option.label}
@@ -85,7 +31,8 @@ export function SingleLargeSelectionWidget(props) {
                 ).indexOf(lovValue.toString())]
                 : null}
             onChange={value => handleChange(value, props.onChange)}
-            isClearable={true}/>);
+            isClearable={true}
+        />);
 }
 
 export function MultiColLargeSelectionWidget(props) {
@@ -96,16 +43,16 @@ export function MultiColLargeSelectionWidget(props) {
     const lovValue = value ? JSON.parse(value) : undefined;
 
     const formatOptionLabel = ({label, value}) => (
-        <table css={[tw`w-full border-b`]}>
+        <table className={tw`w-full border-b`}>
             <tbody>
-            <tr css={[tw`flex`]}>
+            <tr className={tw`flex`}>
                 {
                     value.map((val, index) => {
                         return index > 0 &&
-                            <StyledMultiColWindowedSelectMenuItem
+                            <MultiColWindowedSelectMenuItem
                                 key={index}
-                                numberOfCol={value.length - 1}>{val}
-                            </StyledMultiColWindowedSelectMenuItem>
+                                size={value.length - 1}>{val}
+                            </MultiColWindowedSelectMenuItem>
                     })
                 }
             </tr>
@@ -116,18 +63,18 @@ export function MultiColLargeSelectionWidget(props) {
     const SingleValue = ({children, ...props}) => {
         const value = [...props.data.value];
         value.shift();
-        return (<StyledMultiColWindowedSelectValueContainer numberOfCol={value.length - 1}>
+        return (<MultiColWindowedSelectValueContainer numOfCol={value.length - 1}>
             <components.SingleValue {...props}>
                 {value.map((val, index) => {
-                    return <p key={index} css={[tw`overflow-scroll`]}>{val}</p>
+                    return <p key={index} className={tw`overflow-scroll`}>{val}</p>
                 })}
             </components.SingleValue>
-        </StyledMultiColWindowedSelectValueContainer>)
+        </MultiColWindowedSelectValueContainer>)
     };
 
     return (
-        <StyledMultiColWindowedSelect
-            className='react-select-container'
+        <WindowedSelect
+            className={tw`${MultiColWindowedSelectStyle}`}
             classNamePrefix="react-select"
             id={props.schema.id}
             components={{SingleValue}}

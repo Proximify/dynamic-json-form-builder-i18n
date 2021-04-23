@@ -5,10 +5,12 @@
   "dependencies": {
     "@headlessui/react": "^0.2.0",
     "@rjsf/core": "^2.4.2",
+    "@twind/react": "^0.0.4",
     "axios": "^0.21.0",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "html-to-draftjs": "^1.5.0",
+    "lodash": "^4.17.20",
     "node-sass": "4.14.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
@@ -23,14 +25,14 @@
     "react-select": "^3.1.1",
     "react-textarea-autosize": "^8.3.2",
     "react-windowed-select": "^2.0.4",
+    "styled-components": "^5.2.3",
+    "twind": "^0.16.10",
     "web-vitals": "^0.2.4",
     "workbox-core": "^6.0.2",
     "workbox-expiration": "^6.0.2",
     "workbox-precaching": "^6.0.2",
     "workbox-routing": "^6.0.2",
-    "workbox-strategies": "^6.0.2",
-    "lodash": "^4.17.20",
-    "twind": "^0.16.10"
+    "workbox-strategies": "^6.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

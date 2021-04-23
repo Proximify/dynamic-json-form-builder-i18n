@@ -3,7 +3,7 @@ import {FieldValueMapper, FormatterTracker} from "../../Formatter/utils/helper";
 import {bilingualValueParser} from '../index'
 import GenericFieldTemplate
     from "../../FormBuilder/components/utils/GenericFieldTemplate";
-import {ReorderableArrayFieldTemplate, ArrayFieldTemplate}
+import {SortableArrayFieldTemplate, ArrayFieldTemplate}
     from "../../FormBuilder/components/ArrayField/ArrayFieldTemplate";
 import HiddenFieldTemplate
     from "../../FormBuilder/components/HiddenField/HiddenFieldTemplate";
@@ -43,9 +43,9 @@ const formStrSchemaGen = (schema) => {
     const sortedFields = Object.entries(fields).sort(([, a], [, b]) => a.order_number - b.order_number)
 
     sortedFields.forEach(([, field]) => {
-        if (field["not_null"] === "1") {
-            required.push(field.name)
-        }
+        // if (field["not_null"] === "1") {
+        //     required.push(field.name)
+        // }
         properties[field.name] = fieldStrSchemaGen(field, schema);
     })
     return {
@@ -74,7 +74,9 @@ const fieldStrSchemaGen = (field, schema) => {
     result["constraints"] = field.constraints;
     result["exclusive_with"] = field.exclusive_with;
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
-    result["twClass"] = field.tw ?? 'bg-red-200';
+    result["mandatory"] = field['not_null'] === "1";
+    // add twClass for test
+    // result["twClass"] = field.tw ?? 'bg-red-200';
     switch (field.type) {
         case "lov":
         case "reftable":
@@ -191,7 +193,7 @@ const customTemplates = {
 }
 
 const customArrayTemplate = {
-    reorderableArrayFieldTemplate: ReorderableArrayFieldTemplate,
+    sortableArrayFieldTemplate: SortableArrayFieldTemplate,
     arrayFieldTemplate: ArrayFieldTemplate
 }
 
@@ -262,7 +264,7 @@ const formUISchemaGen = (schema) => {
             const subsections = schema.subsections;
             if (subsectionId in subsections) {
                 result[fieldName] = {
-                    "ui:ArrayFieldTemplate": subsections[subsectionId].asc_item_order === "1" ? customArrayTemplate.reorderableArrayFieldTemplate : customArrayTemplate.arrayFieldTemplate,
+                    "ui:ArrayFieldTemplate": subsections[subsectionId].asc_item_order === "1" ? customArrayTemplate.sortableArrayFieldTemplate : customArrayTemplate.arrayFieldTemplate,
                     "items": formUISchemaGen(subsections[subsectionId])
                 }
                 result[fieldName]['items']['itemId'] = {

@@ -1,7 +1,6 @@
 import {language,LanguageContext} from './language-context';
 import React from "react";
-import {css} from 'styled-components/macro'
-import tw from 'twin.macro'
+import {tw} from 'twind'
 
 function LanguageTogglerButton(props) {
     const languages = {
@@ -27,7 +26,7 @@ function LanguageTogglerButton(props) {
                                 return (
                                     <a
                                         href="#" key={index}
-                                        css={[tw`text-red-300`]}
+                                        className={tw`text-red-300`}
                                         onClick={() => toggleLanguage(value)}>{languages[value]}</a>
                                 )
                             })

@@ -19,9 +19,9 @@ export default function FormValidationGenerator(fields) {
 
 
 const fieldConstraintsHandler = (field, fields) => {
-    if (!field.constraints && !field.exclusive_with && field.field_type !== "elapsed-time") {
-        return null;
-    }
+    // if (!field.constraints && !field.exclusive_with && field.field_type !== "elapsed-time") {
+    //     return null;
+    // }
     const validations = [];
     if (field.constraints){
         Object.keys(field.constraints).forEach(constraintName => {
@@ -84,7 +84,18 @@ const fieldConstraintsHandler = (field, fields) => {
                 return formData === undefined || !(formData[field.name] && formData[field.name].split(':').filter(time => /\d/.test(time)).length !== 2);
             },
             getErrMsg: () => {
-                return `Incomplete ${field.label}`
+                return `Incomplete ${field.title}`
+            }
+        };
+    }
+
+    if (field.mandatory){
+        validations[validations.length] = {
+            validateMethod: (formData, needCheck) => {
+                return !needCheck || formData === undefined || formData[field.name];
+            },
+            getErrMsg: () => {
+                return `${field.title} is required`
             }
         };
     }

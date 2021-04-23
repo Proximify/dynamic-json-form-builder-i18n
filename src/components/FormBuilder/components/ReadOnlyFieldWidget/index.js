@@ -1,16 +1,17 @@
 import React from "react";
-import {css} from 'styled-components/macro'
-import tw from "twin.macro";
-import {StyledTextarea} from "../utils/styledComponents";
+import {tw} from "twind";
+import {TextAreaInputStyle} from "../utils/twindClass";
+import TextareaAutosize from "react-textarea-autosize";
+
 
 export default function ReadOnlyFieldWidget(props) {
     return (
-        <StyledTextarea
+        <TextareaAutosize
             minRows={1}
             readOnly={true}
             id={props.schema.id}
             value={props.value}
-            css={[tw`bg-gray-200`]}
+            className={tw`${TextAreaInputStyle} bg-gray-200`}
         />
     );
 }

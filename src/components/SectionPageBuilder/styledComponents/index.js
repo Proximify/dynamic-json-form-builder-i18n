@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import tw from "twin.macro";
+import {tw} from "twind";
 
 export const SectionLabel = styled.p`
   ${tw`py-0.5 px-2 rounded`};
