@@ -22,10 +22,11 @@ const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
 export function SectionPageBuilder(props) {
     const [state, setState] = useState({
         sections: [],
-        form: null,
+        form: {},
         shouldModalOpen: false,
         scrollY: 0,
         ready: false,
+        structureChain: [],
         loadingErr: ""
     })
     console.log("SectionPageBuilder", state)
@@ -405,6 +406,8 @@ export function SectionPageBuilder(props) {
 
     const handleFormEditDelete = (data) => {
         console.log("on form delete", data);
+
+        // no old form data
         if (state.form && state.form.schema && state.form.schema.formSchema) {
             const formData = new FormData();
             formData.append('action', 'delete');
@@ -562,18 +565,40 @@ export function SectionPageBuilder(props) {
         }
     }
 
+    //  const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
+    //     fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
+    //         const lovSubtypeIDs = getLovSubtypeId(res);
+    //         fetchLovOptions(lovSubtypeIDs, (optRes => {
+    //             const formSchema = SchemaParser(res, true);
+    //             setState({
+    //                 ...state,
+    //                 form: {
+    //                     schema: formSchema,
+    //                     id: formSchema.formSchema.id,
+    //                     sectionData: formSchema.dataSchema,
+    //                     lovOptions: optRes,
+    //                     sectionId: sectionId,
+    //                     itemId: itemId,
+    //                     structureChain: structureChain,
+    //                     parentItemId: parentItemId,
+    //                     parentFieldId: parentFieldId
+    //                 },
+    //                 shouldModalOpen: true,
+    //                 scrollY: window.scrollY
+    //             })
+    //         }))
+    //     })
+    // }
+
+
     const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
-        fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
-            const lovSubtypeIDs = getLovSubtypeId(res);
-            fetchLovOptions(lovSubtypeIDs, (optRes => {
-                const formSchema = SchemaParser(res, true);
+        // fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
+        //     const lovSubtypeIDs = getLovSubtypeId(res);
+        //     fetchLovOptions(lovSubtypeIDs, (optRes => {
+        //         const formSchema = SchemaParser(res, true);
                 setState({
                     ...state,
                     form: {
-                        schema: formSchema,
-                        id: formSchema.formSchema.id,
-                        sectionData: formSchema.dataSchema,
-                        lovOptions: optRes,
                         sectionId: sectionId,
                         itemId: itemId,
                         structureChain: structureChain,
@@ -581,10 +606,11 @@ export function SectionPageBuilder(props) {
                         parentFieldId: parentFieldId
                     },
                     shouldModalOpen: true,
+                    structureChain: structureChain,
                     scrollY: window.scrollY
                 })
-            }))
-        })
+        //     }))
+        // })
     }
 
     const getFormRecur = (sections, structureChain) => {
@@ -639,36 +665,41 @@ export function SectionPageBuilder(props) {
                         }
                         </p>
                     </div>
-                    {state.shouldModalOpen === true && state.form && state.form.itemId === 0 && state.form.id === section.name ?
-                        <ModalFullScreen
-                            content={
-                                state.form.schema ? (
-                                        <FormBuilder
-                                            formID={"user-profile-form"}
-                                            resourceURL={"form/"}
-                                            HTTPMethod={"PATCH"}
-                                            language={props.language}
-                                            formSchema={state.form.schema.formSchema}
-                                            uiSchema={state.form.schema.uiSchema}
-                                            formData={state.form.schema.dataSchema}
-                                            validations={state.form.schema.validations}
-                                            onFormEditSubmit={handleFormEditSubmit}
-                                            onFormEditCancel={handleFormEditCancel}
-                                            onFormEditDelete={handleFormEditDelete}
-                                            formContext={{
-                                                api: api,
-                                                app: "CV",
-                                                lovOptions: state.form.lovOptions,
-                                                structureChain: structureChain
-                                            }}
-                                        />
-                                    ) :
-                                    <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[0])}</div>
-                            }
-                            title={section.title}
-                            fullScreen={true}/>
-                        :
-                        section.section_data.length > 0 ?
+                    {/*{state.shouldModalOpen === true && state.form && state.form.itemId === 0 && state.form.id === section.name ?*/}
+                    {/*    <ModalFullScreen*/}
+                    {/*        content={*/}
+                    {/*            // state.form.schema ? (*/}
+                    {/*                    <FormBuilder*/}
+                    {/*                        formID={"user-profile-form"}*/}
+                    {/*                        resourceURL={"form/"}*/}
+                    {/*                        HTTPMethod={"PATCH"}*/}
+                    {/*                        language={"en"}*/}
+
+                    {/*                        // formSchema={state.form.schema.formSchema}*/}
+                    {/*                        // uiSchema={state.form.schema.uiSchema}*/}
+                    {/*                        // formData={state.form.schema.dataSchema}*/}
+                    {/*                        // validations={state.form.schema.validations}*/}
+                    {/*                        itemId={state.form.itemId}*/}
+                    {/*                        sectionId={state.form.sectionId}*/}
+                    {/*                        parentItemId={state.form.parentItemId}*/}
+                    {/*                        parentFieldId={state.form.parentFieldId}*/}
+                    {/*                        onFormEditSubmit={handleFormEditSubmit}*/}
+                    {/*                        onFormEditCancel={handleFormEditCancel}*/}
+                    {/*                        onFormEditDelete={handleFormEditDelete}*/}
+                    {/*                        formContext={{*/}
+                    {/*                            api: api,*/}
+                    {/*                            app: "CV",*/}
+                    {/*                            // lovOptions: state.form.lovOptions,*/}
+                    {/*                            structureChain: structureChain*/}
+                    {/*                        }}*/}
+                    {/*                    />*/}
+                    {/*                // ) :*/}
+                    {/*                // <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[0])}</div>*/}
+                    {/*        }*/}
+                    {/*        title={section.title}*/}
+                    {/*        fullScreen={true}/>*/}
+                    {/*    :*/}
+                    { section.section_data.length > 0 ?
                             section.section_data.map((data, itemIndex) => {
                                 return (
                                     <div key={itemIndex}>
@@ -732,38 +763,6 @@ export function SectionPageBuilder(props) {
                                             </div>
                                         </>
                                         }
-                                        <div>
-                                            {state.shouldModalOpen === true && state.form && state.form.id === section.name && state.form.itemId === section.section_data[itemIndex].id &&
-                                            // console.log(section)
-                                            <ModalFullScreen
-                                                content={
-                                                    state.form.schema ? (
-                                                            <FormBuilder
-                                                                formID={"user-profile-form"}
-                                                                resourceURL={"form/"}
-                                                                HTTPMethod={"PATCH"}
-                                                                language={props.language}
-                                                                formSchema={state.form.schema.formSchema}
-                                                                uiSchema={state.form.schema.uiSchema}
-                                                                formData={state.form.schema.dataSchema}
-                                                                validations={state.form.schema.validations}
-                                                                onFormEditSubmit={handleFormEditSubmit}
-                                                                onFormEditCancel={handleFormEditCancel}
-                                                                onFormEditDelete={handleFormEditDelete}
-                                                                formContext={{
-                                                                    api: api,
-                                                                    app: "CV",
-                                                                    lovOptions: state.form.lovOptions,
-                                                                    structureChain: structureChain
-                                                                }}
-                                                            />
-                                                        ) :
-                                                        <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[itemIndex])}</div>
-                                                }
-                                                title={section.title}
-                                                fullScreen={true}/>
-                                            }
-                                        </div>
                                     </div>
                                 )
                             }) : null}
@@ -779,10 +778,38 @@ export function SectionPageBuilder(props) {
     }
 
     return (
-        <>
+        <div>
             {state.ready ? (state.loadingErr === "" || !state.loadingErr ? state.sections.map((section, index) => {
                 return sectionBuilder(section, index, 3, [section.name])
             }) : <div>{state.loadingErr}</div>) : <div>Loading...</div>}
-        </>
+            <div>
+                {state.shouldModalOpen === true &&
+                <ModalFullScreen
+                    content={
+                        <FormBuilder
+                            formID={"user-profile-form"}
+                            resourceURL={"form/"}
+                            HTTPMethod={"PATCH"}
+                            language={"en"}
+
+                            itemId={state.form.itemId}
+                            sectionId={state.form.sectionId}
+                            parentItemId={state.form.parentItemId}
+                            parentFieldId={state.form.parentFieldId}
+                            onFormEditSubmit={handleFormEditSubmit}
+                            onFormEditCancel={handleFormEditCancel}
+                            onFormEditDelete={handleFormEditDelete}
+                            formContext={{
+                                api: api,
+                                app: "CV",
+                                structureChain: state.structureChain
+                            }}
+                        />
+                    }
+                    title={"title"}
+                />
+                }
+            </div>
+        </div>
     )
 }

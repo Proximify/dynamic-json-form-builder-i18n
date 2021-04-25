@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import Form from "@rjsf/core";
-import { setup } from "twind"
 import {
     NumberInputWidget,
     StringInputWidget,
@@ -24,6 +23,9 @@ import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
 import {tw} from "twind";
+
+import {fetchFormSchema, fetchLovOptions} from "./service/api";
+import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -69,47 +71,95 @@ const customWidgets = {
 // })
 
 
-class FormBuilder extends Component {
+const FormBuilder = (props) => {
+    const {
+        formID,
+        resourceURL,
+        HTTPMethod,
+        language,
+        itemId,
+        sectionId,
+        parentItemId,
+        parentFieldId,
+        onFormEditSubmit,
+        onFormEditCancel,
+        onFormEditDelete,
+        formContext
+    } = props;
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            shouldDeleteConfirmModalOpen: false,
-            shouldDeleteForm: false,
-            formData: this.props.formData ?? undefined,
-            newForm: Object.keys(this.props.formData).length === 0,
-            mandatoryFieldValidation: true
-        };
-        this.handleStateChange = this.handleStateChange.bind(this);
-        document.addEventListener("keydown", this._handleKeyDown.bind(this));
+    const [state, setState] = useState({
+        shouldDeleteConfirmModalOpen: false,
+        shouldDeleteForm: false,
+        formData: {},
+        initialFormData: {},
+        formSchema: {},
+        uiSchema: {},
+        validations: {},
+        lovOptions: {},
+        newForm: false,
+        mandatoryFieldValidation: true,
+        isReady: false
+    })
+    // this.state = {
+    //     shouldDeleteConfirmModalOpen: false,
+    //     shouldDeleteForm: false,
+    //     formData: this.props.formData ?? undefined,
+    //     newForm: Object.keys(this.props.formData).length === 0,
+    //     mandatoryFieldValidation: true
+    // };
+    // this.handleStateChange = this.handleStateChange.bind(this);
+    //  document.addEventListener("keydown", this._handleKeyDown.bind(this));
+
+    useEffect(() => {
+        fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
+            const lovSubtypeIDs = getLovSubtypeId(res);
+            fetchLovOptions(lovSubtypeIDs, (optRes => {
+                const parsedSchema = SchemaParser(res, true);
+                setState({
+                    ...state,
+                    formData: parsedSchema.dataSchema,
+                    initialFormData: parsedSchema.dataSchema,
+                    formSchema: parsedSchema.formSchema,
+                    uiSchema: parsedSchema.uiSchema,
+                    validations: parsedSchema.validations,
+                    lovOptions: optRes,
+                    newForm: Object.keys(parsedSchema.dataSchema).length === 0,
+                    isReady: true
+                })
+            }))
+        })
+
+    }, [])
+
+    useEffect(() => {
+        if (state.shouldDeleteForm)
+            onFormEditDelete(state.formData)
+    }, [state.shouldDeleteForm])
+
+
+    const onFormSubmit = () => {
+        onErrorMsgChange(null);
+        onFormEditSubmit(state.formData);
     }
 
-    /**
-     * This function handle the form submit event
-     */
-    onFormSubmit = () => {
-        this.onErrorMsgChange(null);
-        this.props.onFormEditSubmit(this.state.formData);
-    }
+    // componentDidUpdate() {
+    //     if (this.state.shouldDeleteForm) {
+    //         this.props.onFormEditDelete(this.state.formData)
+    //     }
+    // }
 
-    componentDidUpdate() {
-        if (this.state.shouldDeleteForm) {
-            this.props.onFormEditDelete(this.state.formData)
-        }
-    }
-
-    _handleKeyDown(event) {
+    const _handleKeyDown = (event) => {
         if (event.keyCode === 13) {
             event.preventDefault();
         }
     }
 
-    handleStateChange(newState) {
-        this.setState(newState);
+    const handleStateChange = (newState) => {
+        setState(newState);
     }
 
-    onErrorMsgChange = (errors) => {
-        const errorMsgDiv = document.getElementById(`${this.props.formID}-errorMsg`);
+    const onErrorMsgChange = (errors) => {
+        const errorMsgDiv = document.getElementById(`${formID}-errorMsg`);
         if (!errorMsgDiv)
             return;
         if (errors) {
@@ -126,13 +176,13 @@ class FormBuilder extends Component {
         }
     }
 
-    validation = (formData, errors) => {
-        const validations = this.props.validations;
+    const validation = (formData, errors) => {
+        const validations = state.validations;
         Object.keys(validations).forEach(fieldName => {
             const fieldValidations = validations[fieldName];
             if (Array.isArray(fieldValidations)) {
                 fieldValidations.forEach(fieldValidation => {
-                    if (!fieldValidation.validateMethod(formData, this.state.mandatoryFieldValidation)) {
+                    if (!fieldValidation.validateMethod(formData, state.mandatoryFieldValidation)) {
                         errors[fieldName].addError(fieldValidation.getErrMsg(formData));
                     }
                 })
@@ -143,7 +193,7 @@ class FormBuilder extends Component {
                         subFieldValidations.forEach(subFieldValidation => {
                             if (formData[fieldName]) {
                                 formData[fieldName].forEach((subsection, index) => {
-                                    if (!subFieldValidation.validateMethod(subsection,this.state.mandatoryFieldValidation)) {
+                                    if (!subFieldValidation.validateMethod(subsection, state.mandatoryFieldValidation)) {
                                         errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
                                     }
                                 })
@@ -157,21 +207,24 @@ class FormBuilder extends Component {
         return errors;
     }
 
-    render() {
-        console.log(this.state)
+    console.log(state)
+    if (!state.isReady) {
+        return (
+            <div>Loading...</div>
+        )
+    } else {
+
         return (
             <div className={tw`flex`}>
                 <Form
-                    id={this.props.formID ?? null}
-                    schema={this.props.formSchema ?? undefined}
-                    uiSchema={this.props.uiSchema ?? undefined}
-                    formData={this.state.formData}
-                    formContext={
-                        {...this.props.formContext} ?? undefined
-                    }
+                    id={formID ?? null}
+                    schema={state.formSchema}
+                    uiSchema={state.uiSchema}
+                    formData={state.formData}
+                    formContext={{...formContext, lovOptions: state.lovOptions}}
                     widgets={customWidgets}
                     onChange={({formData}) => {
-                        this.setState({...this.state, formData: formData})
+                        setState({...state, formData: formData})
                         // TODO generic
                         // if (formData.hasOwnProperty('total_workload')) {
                         //     formData.total_workload = (Number(formData.undergraduate_teaching) + Number(formData.graduate_professional_teaching)).toString();
@@ -180,24 +233,24 @@ class FormBuilder extends Component {
                     }}
                     liveValidate={true}
                     noHtml5Validate={true}
-                    validate={this.validation}
+                    validate={validation}
                     // noValidate={true}
                     onError={(errors) => {
                         console.log(errors)
-                        this.onErrorMsgChange(errors);
+                        onErrorMsgChange(errors);
                     }}
                     showErrorList={false}
-                    onSubmit={this.onFormSubmit}>
+                    onSubmit={onFormSubmit}>
                     <div className={tw`my-4 mb-20 mx-1.5`}>
                         {/*<div id={`${this.props.formID}-errorMsg`}>*/}
                         {/*      /!*className={tw`${this.state.noValidation ? 'hidden' : ''}`}>*!/*/}
                         {/*</div>*/}
                         <div className={tw`flex justify-between`}>
-                            <div className={this.state.newForm ? tw`invisible` : tw``}>
+                            <div className={state.newForm ? tw`invisible` : tw``}>
                                 <button className={tw`py-1 px-2 ml-16 border bg-color-warning rounded`}
                                         type="button"
                                         onClick={() => {
-                                            this.setState({...this.state, shouldDeleteConfirmModalOpen: true})
+                                            setState({...state, shouldDeleteConfirmModalOpen: true})
                                         }}
                                 >Delete
                                 </button>
@@ -206,7 +259,7 @@ class FormBuilder extends Component {
                                 <button className={tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`}
                                         type="button"
                                         onClick={() => {
-                                            this.props.onFormEditCancel();
+                                            onFormEditCancel();
                                         }}>
                                     Cancel
                                 </button>
@@ -221,14 +274,14 @@ class FormBuilder extends Component {
 
                 <div>
                     <button onClick={() => {
-                        this.setState({
-                            ...this.state,
-                            mandatoryFieldValidation: !this.state.mandatoryFieldValidation
+                        setState({
+                            ...state,
+                            mandatoryFieldValidation: !state.mandatoryFieldValidation
                         })
-                    }}>{this.state.mandatoryFieldValidation ? "Save Without Required Field" : "Save With Required Field"}</button>
+                    }}>{state.mandatoryFieldValidation ? "Save Without Required Field" : "Save With Required Field"}</button>
                 </div>
-                {this.state.shouldDeleteConfirmModalOpen &&
-                <ModalDeleteConfirm state={this.state} changeState={this.handleStateChange}/>}
+                {state.shouldDeleteConfirmModalOpen &&
+                <ModalDeleteConfirm state={state} changeState={handleStateChange}/>}
             </div>
         );
     }
