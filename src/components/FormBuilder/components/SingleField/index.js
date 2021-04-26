@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import DatePicker, {CalendarContainer} from "react-datepicker";
 import NumberFormat from "react-number-format";
@@ -83,6 +83,7 @@ const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime =
 
 export function StringInputWidget(props) {
     const [value, setValue] = useState(props.value ?? "");
+
     return (
         <TextareaAutosize
             className={tw`${TextAreaInputStyle} ${props.schema.twClass}`}

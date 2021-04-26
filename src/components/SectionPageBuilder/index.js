@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import FormBuilder from '../FormBuilder';
-import api, {fetchFormSchema, fetchLovOptions, fetchCVSchema} from "./helper/api";
+import api, {fetchCVSchema} from "./helper/api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
 import {ModalFullScreen} from "../FormBuilder/components/utils/Modals";
-import Formatter from "../Formatter";
-import SchemaParser, {getLovSubtypeId, bilingualValueParser} from "../SchemaParser";
+// import Formatter from "../Formatter";
+import SchemaParser from "../SchemaParser";
 import {
     handleOnPrimaryItemCancelBtnClick,
     handleOnPrimaryItemChangeBtnClick,
@@ -13,11 +13,6 @@ import {
 } from './helper/sectionPageBuilderHelper'
 import {SectionLabel, StyledSectionContainer} from "./twClass";
 import {setup, tw} from "twind";
-
-const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
-const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
-const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
-
 
 export function SectionPageBuilder(props) {
     const [state, setState] = useState({
@@ -85,7 +80,6 @@ export function SectionPageBuilder(props) {
         }
     }, [state.shouldModalOpen])
 
-    // has subsection, use field to create subtitle, no subsection, use field to call formatter
     const sectionSchemaBuilder = (section, section_data, fields) => {
         if (section["type"] === "form") {
             if (section.primary_item === '1') {
@@ -115,502 +109,20 @@ export function SectionPageBuilder(props) {
         }
     }
 
-    const handleFormEditSubmit = (data) => {
-        console.log("received form data", data, state);
-        if (state.form && state.form.schema && state.form.schema.formSchema) {
-            const formData = new FormData();
-            formData.append('action', state.form.itemId !== 0 ? 'update' : 'insert');
-            Object.keys(state.form.schema.formSchema.properties).forEach(fieldName => {
-                const field = state.form.schema.formSchema.properties[fieldName]
-                const fieldData = data[fieldName];
-                switch (field.field_type) {
-                    case 'string':
-                    case 'integer':
-                    case 'elapsed-time':
-                    case 'slider':
-                    case "monthday":
-                    case "yearmonth":
-                    case "year":
-                    case "boolean":
-                    case "date":
-                        formData.append(`data[${field.id}]`, fieldData ?? "");
-                        break;
-                    case 'lov':
-                    case 'systable':
-                    case 'reftable':
-                        if (fieldData) {
-                            const lovData = JSON.parse(fieldData);
-                            if (field.field_type === 'lov') {
-                                lovData.forEach(data => {
-                                    formData.append(`data[${field.id}][]`, data)
-                                })
-                            } else {
-                                formData.append(`data[${field.id}][]`, lovData[0])
-                                formData.append(`data[${field.id}][]`, lovData.slice(1).join('|'))
-                            }
-                        } else {
-                            formData.append(`data[${field.id}]`, "")
-                        }
-                        break;
-                    case 'bilingual':
-                        if (fieldData) {
-                            const bilingualData = bilingualValueParser(field, fieldData, true, false);
-                            if (bilingualData.eng) {
-                                formData.append(`data[${field.id}][english]`, bilingualData.eng)
-                            }
-                            if (bilingualData.fre) {
-                                formData.append(`data[${field.id}][french]`, bilingualData.fre)
-                            }
-                            if (Object.keys(bilingualData).length === 0) {
-                                formData.append(`data[${field.id}]`, "")
-                            }
-                        } else {
-                            formData.append(`data[${field.id}]`, "")
-                        }
-                        break;
-                    case 'section': {
-                        if (fieldData) {
-                            const newFieldData = [...fieldData];
-                            const oldFieldData = state.form.sectionData[fieldName] ? [...state.form.sectionData[fieldName]] : [];
-                            let insertItemCount = 1;
-                            let processCount = 0;
-                            while (newFieldData.length > 0) {
-                                const template = `data[${field.id}][${processCount}]`;
-                                const nfd = newFieldData[0];
-                                let oldFieldDataIndexTracker = -1;
-                                if (!nfd.itemId) {
-                                    // console.log(" insert new data", nfd);
-                                    // console.log(`${field.id}-new${insertItemCount}-action insert`);
-                                    formData.append(`${template}[itemId]`, `new${insertItemCount}`)
-                                    formData.append(`${template}[action]`, `insert`)
-
-                                    const subsectionFields = field.fields;
-                                    Object.keys(subsectionFields).forEach(fieldId => {
-                                        const subsectionField = subsectionFields[fieldId];
-                                        Object.keys(nfd).forEach(nfdId => {
-                                            const newFieldData = nfd[nfdId];
-                                            if (nfdId === subsectionField.name) {
-                                                if (newFieldData) {
-                                                    if (subsectionField.type === 'lov') {
-                                                        const subsectionLovData = JSON.parse(newFieldData);
-                                                        subsectionLovData.forEach(data => {
-                                                            formData.append(`${template}[data][${fieldId}][]`, data)
-                                                        })
-                                                    } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
-                                                        const subsectionLovData = JSON.parse(newFieldData);
-                                                        formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
-                                                        formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
-                                                    } else if (subsectionField.type === 'bilingual') {
-                                                        const bilingualData = bilingualValueParser(subsectionField, newFieldData, true, false);
-                                                        if (bilingualData.eng) {
-                                                            formData.append(`${template}[data][${fieldId}][english]`, bilingualData.eng)
-                                                        }
-                                                        if (bilingualData.fre) {
-                                                            formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
-                                                        }
-                                                        if (Object.keys(bilingualData).length === 0) {
-                                                            formData.append(`${template}[data][${fieldId}]`, '');
-                                                        }
-                                                    } else {
-                                                        formData.append(`${template}[data][${fieldId}]`, newFieldData)
-                                                    }
-                                                } else {
-                                                    formData.append(`${template}[data][${fieldId}]`, '');
-                                                }
-                                            }
-                                        })
-                                    })
-                                    newFieldData.shift();
-                                    insertItemCount++;
-                                } else {
-                                    let found = false;
-                                    oldFieldData.forEach((ofd, index) => {
-                                        if (ofd.itemId === nfd.itemId) {
-                                            formData.append(`${template}[itemId]`, ofd.itemId)
-                                            found = true;
-                                            if (JSON.stringify(ofd) !== JSON.stringify(nfd)) {
-                                                formData.append(`${template}[action]`, `update`)
-                                                console.log(" update form data", nfd);
-                                            } else {
-                                                console.log(" no change form data", nfd);
-                                                formData.append(`${template}[action]`, `none`)
-                                            }
-                                            const subsectionFields = field.fields;
-                                            Object.keys(subsectionFields).forEach(fieldId => {
-                                                const subsectionField = subsectionFields[fieldId];
-                                                Object.keys(nfd).forEach(nfdId => {
-                                                    const newFieldData = nfd[nfdId];
-                                                    if (nfdId === subsectionField.name) {
-                                                        if (newFieldData) {
-                                                            if (subsectionField.type === 'lov') {
-                                                                const subsectionLovData = JSON.parse(newFieldData);
-                                                                subsectionLovData.forEach(data => {
-                                                                    formData.append(`${template}[data][${fieldId}][]`, data)
-                                                                })
-                                                            } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
-                                                                const subsectionLovData = JSON.parse(newFieldData);
-                                                                formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
-                                                                formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
-                                                            } else if (subsectionField.type === 'bilingual') {
-                                                                const bilingualData = bilingualValueParser(subsectionField, newFieldData, true, false);
-                                                                if (bilingualData.eng) {
-                                                                    formData.append(`${template}[data][${fieldId}][english]`, bilingualData.eng)
-                                                                }
-                                                                if (bilingualData.fre) {
-                                                                    formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
-                                                                }
-                                                            } else {
-                                                                formData.append(`${template}[data][${fieldId}]`, newFieldData)
-                                                            }
-                                                        } else {
-                                                            formData.append(`${template}[data][${fieldId}]`, '');
-                                                        }
-                                                    }
-                                                })
-                                            })
-                                            newFieldData.shift();
-                                            oldFieldDataIndexTracker = index;
-                                        }
-                                    })
-                                    if (oldFieldDataIndexTracker !== -1) {
-                                        oldFieldData.splice(oldFieldDataIndexTracker, 1);
-                                    }
-                                    if (!found) {
-                                        console.error("cannot find newdata itemId from old data", nfd, oldFieldData);
-                                        newFieldData.shift();
-                                    }
-                                }
-                                processCount++;
-                            }
-                            if (oldFieldData.length > 0) {
-                                oldFieldData.forEach(ofd => {
-                                    const template = `data[${field.id}][${processCount}]`;
-                                    const subsectionFields = field.fields;
-
-                                    formData.append(`${template}[itemId]`, ofd.itemId);
-                                    formData.append(`${template}[action]`, `delete`);
-
-                                    Object.keys(subsectionFields).forEach(fieldId => {
-                                        const subsectionField = subsectionFields[fieldId];
-                                        Object.keys(ofd).forEach(nfdId => {
-                                            const oldFieldData = ofd[nfdId];
-                                            if (nfdId === subsectionField.name) {
-
-                                                if (oldFieldData) {
-                                                    if (subsectionField.type === 'lov') {
-                                                        const subsectionLovData = JSON.parse(oldFieldData);
-                                                        subsectionLovData.forEach(data => {
-                                                            formData.append(`${template}[data][${fieldId}][]`, data)
-                                                        })
-                                                    } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
-                                                        const subsectionLovData = JSON.parse(oldFieldData);
-                                                        formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
-                                                        formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
-                                                    } else if (subsectionField.type === 'bilingual') {
-                                                        const bilingualData = bilingualValueParser(subsectionField, oldFieldData, true, false);
-                                                        if (bilingualData.eng) {
-                                                            formData.append(`${template}[data][${fieldId}][english]`, bilingualData.eng)
-                                                        }
-                                                        if (bilingualData.fre) {
-                                                            formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
-                                                        }
-                                                    } else {
-                                                        formData.append(`${template}[data][${fieldId}]`, oldFieldData)
-                                                    }
-                                                } else {
-                                                    formData.append(`${template}[data][${fieldId}]`, '');
-                                                }
-
-                                            }
-                                        })
-
-                                    })
-                                    processCount++;
-                                })
-                            }
-                        }
-                        break;
-                    }
-                    default:
-                        console.warn("unhandled field type when send formdata", field);
-                        formData.append(`data[${field.id}]`, "")
-                        break;
-                }
-            })
-            formData.append('contentType', contentType);
-            formData.append('contentId', contentId);
-            formData.append('viewType', viewType);
-            formData.append('sectionId', state.form.sectionId);
-            formData.append('itemId', state.form.itemId);
-            if (state.form.parentItemId) {
-                formData.append('parentItemId', state.form.parentItemId);
-            }
-            if (state.form.parentFieldId) {
-                formData.append('parentFieldId', state.form.parentFieldId);
-            }
-
-            api.post('http://127.0.0.1:8000/profiles.php', formData, {
-                headers: {'Content-Type': 'application/json'}
-            }).then((response) => {
-                if (!response.data.error) {
-                    const formSchema = SchemaParser({sections: [response.data]}, false);
-                    const newSection = [...state.sections];
-                    const targetForm = getFormRecur(state.sections, state.form.structureChain);
-                    const newData = formSchema[0].section_data;
-                    if (targetForm) {
-                        console.log("----", targetForm, state.form.itemId, newData)
-                        // targetForm.section_data = formSchema[0].section_data;
-                        if (state.form.itemId !== 0) {
-                            const index = targetForm.section_data.findIndex(data => data.id === newData[0].id)
-                            if (index >= 0) {
-                                targetForm.section_data[index] = newData[0];
-                            }
-                        } else if (state.form.itemId === 0) {
-                            targetForm.section_data.push(newData[0]);
-                        }
-                        setState({
-                            ...state,
-                            sections: newSection,
-                            shouldModalOpen: false,
-                            form: null,
-                        })
-                    } else {
-                        console.error("cannot find target form")
-                    }
-                } else {
-                    console.error(response)
-                    setState({
-                        ...state,
-                        shouldModalOpen: false,
-                        form: null
-                    })
-                }
-            }, (error) => {
-                console.error(error);
-                setState({
-                    ...state,
-                    shouldModalOpen: false,
-                    form: null
-                })
-            });
-        }
-    }
-
-    const handleFormEditCancel = () => {
+    const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
         setState({
             ...state,
-            shouldModalOpen: false,
-            form: null
+            form: {
+                sectionId: sectionId,
+                itemId: itemId,
+                structureChain: structureChain,
+                parentItemId: parentItemId,
+                parentFieldId: parentFieldId
+            },
+            shouldModalOpen: true,
+            structureChain: structureChain,
+            scrollY: window.scrollY
         })
-    }
-
-    const handleFormEditDelete = (data) => {
-        console.log("on form delete", data);
-
-        // no old form data
-        if (state.form && state.form.schema && state.form.schema.formSchema) {
-            const formData = new FormData();
-            formData.append('action', 'delete');
-            Object.keys(state.form.schema.formSchema.properties).forEach(fieldName => {
-                const field = state.form.schema.formSchema.properties[fieldName]
-                const fieldData = data[fieldName];
-                switch (field.field_type) {
-                    case 'string':
-                    case 'integer':
-                    case 'elapsed-time':
-                    case 'slider':
-                    case "monthday":
-                    case "yearmonth":
-                    case "year":
-                    case "date":
-                        formData.append(`data[${field.id}]`, fieldData ?? "");
-                        break;
-                    case 'lov':
-                    case 'systable':
-                    case 'reftable':
-                        if (fieldData) {
-                            const lovData = JSON.parse(fieldData);
-                            if (field.field_type === 'lov') {
-                                lovData.forEach(data => {
-                                    formData.append(`data[${field.id}][]`, data)
-                                })
-                            } else {
-                                formData.append(`data[${field.id}][]`, lovData[0])
-                                formData.append(`data[${field.id}][]`, lovData.slice(1).join('|'))
-                            }
-                        } else {
-                            formData.append(`data[${field.id}]`, "")
-                        }
-                        break;
-                    case 'bilingual':
-                        if (fieldData) {
-                            const bilingualData = bilingualValueParser(field, fieldData, true, false);
-                            if (bilingualData.eng) {
-                                formData.append(`data[${field.id}][english]`, bilingualData.eng)
-                            }
-                            if (bilingualData.fre) {
-                                formData.append(`data[${field.id}][french]`, bilingualData.fre)
-                            }
-                        } else {
-                            formData.append(`data[${field.id}]`, "")
-                        }
-                        break;
-                    case 'section': {
-                        if (fieldData) {
-                            const oldFieldData = [...state.form.sectionData[fieldName]];
-                            let processCount = 0;
-                            if (oldFieldData.length > 0) {
-                                oldFieldData.forEach(ofd => {
-                                    const template = `data[${field.id}][${processCount}]`;
-                                    const subsectionFields = field.fields;
-
-                                    formData.append(`${template}[itemId]`, ofd.itemId)
-                                    formData.append(`${template}[action]`, `none`)
-
-                                    Object.keys(subsectionFields).forEach(fieldId => {
-                                        const subsectionField = subsectionFields[fieldId];
-                                        Object.keys(ofd).forEach(nfdId => {
-                                            const oldFieldData = ofd[nfdId];
-                                            if (nfdId === subsectionField.name) {
-                                                if (oldFieldData) {
-                                                    if (subsectionField.type === 'lov') {
-                                                        const subsectionLovData = JSON.parse(oldFieldData);
-                                                        subsectionLovData.forEach(data => {
-                                                            formData.append(`${template}[data][${fieldId}][]`, data)
-                                                        })
-                                                    } else if (subsectionField.type === 'reftable' || subsectionField.type === 'systable') {
-                                                        const subsectionLovData = JSON.parse(oldFieldData);
-                                                        formData.append(`${template}[data][${fieldId}][]`, subsectionLovData[0])
-                                                        formData.append(`${template}[data][${fieldId}][]`, subsectionLovData.slice(1).join('|'))
-                                                    } else if (subsectionField.type === 'bilingual') {
-                                                        const bilingualData = bilingualValueParser(subsectionField, oldFieldData, true, false);
-                                                        if (bilingualData.eng) {
-                                                            formData.append(`${template}[data][${fieldId}][english]`, bilingualData.eng)
-                                                        }
-                                                        if (bilingualData.fre) {
-                                                            formData.append(`${template}[data][${fieldId}][french]`, bilingualData.fre)
-                                                        }
-                                                    } else {
-                                                        formData.append(`${template}[data][${fieldId}]`, oldFieldData)
-                                                    }
-                                                } else {
-                                                    formData.append(`${template}[data][${fieldId}]`, '');
-                                                }
-                                            }
-                                        })
-                                    })
-                                    processCount++;
-                                })
-                            }
-                        }
-                        break;
-                    }
-                    default:
-                        console.warn("unhandled field type when send formdata", field);
-                        formData.append(`data[${field.id}]`, "")
-                        break;
-                }
-            })
-            formData.append('contentType', contentType);
-            formData.append('contentId', contentId);
-            formData.append('viewType', viewType);
-            formData.append('sectionId', state.form.sectionId);
-            formData.append('itemId', state.form.itemId);
-            if (state.form.parentItemId) {
-                formData.append('parentItemId', state.form.parentItemId);
-            }
-            if (state.form.parentFieldId) {
-                formData.append('parentFieldId', state.form.parentFieldId);
-            }
-
-            api.post('http://127.0.0.1:8000/profiles.php', formData, {
-                headers: {'Content-Type': 'application/json'}
-            }).then((response) => {
-                if (!response.data.error) {
-                    const newSection = [...state.sections];
-                    const targetForm = getFormRecur(newSection, state.form.structureChain);
-                    const newData = response.data.items;
-                    if (targetForm) {
-                        if (state.form.itemId !== 0) {
-                            const index = targetForm.section_data.findIndex(data => data.id === newData[0].id.toString())
-                            if (index >= 0) {
-                                targetForm.section_data.splice(index, 1);
-                            }
-                        }
-                        setState({
-                            ...state,
-                            sections: newSection,
-                            shouldModalOpen: false,
-                            form: null,
-                        })
-                    } else {
-                        console.error("cannot find target form")
-                    }
-                } else {
-                    console.error(response)
-                    setState({
-                        ...state,
-                        shouldModalOpen: false,
-                        form: null
-                    })
-                }
-            }, (error) => {
-                console.error(error);
-                setState({
-                    ...state,
-                    shouldModalOpen: false,
-                    form: null
-                })
-            });
-        }
-    }
-
-    //  const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
-    //     fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
-    //         const lovSubtypeIDs = getLovSubtypeId(res);
-    //         fetchLovOptions(lovSubtypeIDs, (optRes => {
-    //             const formSchema = SchemaParser(res, true);
-    //             setState({
-    //                 ...state,
-    //                 form: {
-    //                     schema: formSchema,
-    //                     id: formSchema.formSchema.id,
-    //                     sectionData: formSchema.dataSchema,
-    //                     lovOptions: optRes,
-    //                     sectionId: sectionId,
-    //                     itemId: itemId,
-    //                     structureChain: structureChain,
-    //                     parentItemId: parentItemId,
-    //                     parentFieldId: parentFieldId
-    //                 },
-    //                 shouldModalOpen: true,
-    //                 scrollY: window.scrollY
-    //             })
-    //         }))
-    //     })
-    // }
-
-
-    const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
-        // fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
-        //     const lovSubtypeIDs = getLovSubtypeId(res);
-        //     fetchLovOptions(lovSubtypeIDs, (optRes => {
-        //         const formSchema = SchemaParser(res, true);
-                setState({
-                    ...state,
-                    form: {
-                        sectionId: sectionId,
-                        itemId: itemId,
-                        structureChain: structureChain,
-                        parentItemId: parentItemId,
-                        parentFieldId: parentFieldId
-                    },
-                    shouldModalOpen: true,
-                    structureChain: structureChain,
-                    scrollY: window.scrollY
-                })
-        //     }))
-        // })
     }
 
     const getFormRecur = (sections, structureChain) => {
@@ -646,7 +158,7 @@ export function SectionPageBuilder(props) {
                         <p className={tw`ml-1 text-color-action hover:text-color-confirm`}>{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
-                                                  handleOnItemClick(section.section_id, 0, parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                                  handleOnItemClick(section.section_id, "0", parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                               }}
                                               onDoubleClick={() => {
                                                   console.log('double clicked')
@@ -665,107 +177,74 @@ export function SectionPageBuilder(props) {
                         }
                         </p>
                     </div>
-                    {/*{state.shouldModalOpen === true && state.form && state.form.itemId === 0 && state.form.id === section.name ?*/}
-                    {/*    <ModalFullScreen*/}
-                    {/*        content={*/}
-                    {/*            // state.form.schema ? (*/}
-                    {/*                    <FormBuilder*/}
-                    {/*                        formID={"user-profile-form"}*/}
-                    {/*                        resourceURL={"form/"}*/}
-                    {/*                        HTTPMethod={"PATCH"}*/}
-                    {/*                        language={"en"}*/}
+                    {section.section_data.length > 0 ?
+                        section.section_data.map((data, itemIndex) => {
+                            return (
+                                <div key={itemIndex}>
+                                    {!state.shouldModalOpen &&
+                                    <>
+                                        {(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true) &&
+                                        <div className={tw`flex space-x-2 ml-2 text-sm`}>
+                                            <p className={tw`text-yellow-700 text-base`}>Primary</p>
+                                            <button
+                                                className={tw`text-blue-500 hover:text-blue-400 hover:underline`}
+                                                onClick={() => {
+                                                    handleOnPrimaryItemChangeBtnClick(state, setState, structureChain, getFormRecur)
+                                                }}>Change
+                                            </button>
+                                            <button
+                                                className={tw`${section.primaryItemUpdate ? 'text-gray-500 hover:text-gray-700 hover:underline' : 'hidden'}`}
+                                                onClick={() => {
+                                                    handleOnPrimaryItemCancelBtnClick(state, setState, structureChain, getFormRecur)
+                                                }}>Cancel
+                                            </button>
+                                        </div>}
 
-                    {/*                        // formSchema={state.form.schema.formSchema}*/}
-                    {/*                        // uiSchema={state.form.schema.uiSchema}*/}
-                    {/*                        // formData={state.form.schema.dataSchema}*/}
-                    {/*                        // validations={state.form.schema.validations}*/}
-                    {/*                        itemId={state.form.itemId}*/}
-                    {/*                        sectionId={state.form.sectionId}*/}
-                    {/*                        parentItemId={state.form.parentItemId}*/}
-                    {/*                        parentFieldId={state.form.parentFieldId}*/}
-                    {/*                        onFormEditSubmit={handleFormEditSubmit}*/}
-                    {/*                        onFormEditCancel={handleFormEditCancel}*/}
-                    {/*                        onFormEditDelete={handleFormEditDelete}*/}
-                    {/*                        formContext={{*/}
-                    {/*                            api: api,*/}
-                    {/*                            app: "CV",*/}
-                    {/*                            // lovOptions: state.form.lovOptions,*/}
-                    {/*                            structureChain: structureChain*/}
-                    {/*                        }}*/}
-                    {/*                    />*/}
-                    {/*                // ) :*/}
-                    {/*                // <div>path: {structureChain.map(ele => ele + "->")} content: {JSON.stringify(section.section_data[0])}</div>*/}
-                    {/*        }*/}
-                    {/*        title={section.title}*/}
-                    {/*        fullScreen={true}/>*/}
-                    {/*    :*/}
-                    { section.section_data.length > 0 ?
-                            section.section_data.map((data, itemIndex) => {
-                                return (
-                                    <div key={itemIndex}>
-                                        {!state.shouldModalOpen &&
-                                        <>
-                                            {(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true) &&
-                                            <div className={tw`flex space-x-2 ml-2 text-sm`}>
-                                                <p className={tw`text-yellow-700 text-base`}>Primary</p>
-                                                <button
-                                                    className={tw`text-blue-500 hover:text-blue-400 hover:underline`}
-                                                    onClick={() => {
-                                                        handleOnPrimaryItemChangeBtnClick(state, setState, structureChain, getFormRecur)
-                                                    }}>Change
-                                                </button>
-                                                <button
-                                                    className={tw`${section.primaryItemUpdate ? 'text-gray-500 hover:text-gray-700 hover:underline' : 'hidden'}`}
-                                                    onClick={() => {
-                                                        handleOnPrimaryItemCancelBtnClick(state, setState, structureChain, getFormRecur)
-                                                    }}>Cancel
-                                                </button>
-                                            </div>}
-
-                                            <div className={tw`mx-3 mb-1 px-2 text-sm flex justify-between`}>
-                                                <input
-                                                    className={tw`${section.primaryItemUpdate ? 'mt-1 cursor-pointer p-0' : 'hidden'}`}
-                                                    type='radio'
-                                                    checked={!!(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true)}
-                                                    onChange={() => {
-                                                        handleOnPrimaryItemSetBtnClick(state, setState, structureChain, getFormRecur, itemIndex, api);
-                                                    }}>
-                                                </input>
-                                                <div className={tw`w-11/12`}>
-                                                    <Formatter app={"CV"}
-                                                               structureChain={[...structureChain]}
-                                                               isFullScreenViewMode={true}
-                                                               schema={section}
-                                                               rawData={section.section_data[itemIndex]}
-                                                    />
-                                                </div>
-                                                {section.multiplicity === "multiple" ?
-                                                    <div className={tw`text-color-action hover:text-color-confirm`}>
-                                                        <FiEdit size={"1.1rem"}
-                                                                onClick={() => {
-                                                                    if (!section.section_data[itemIndex]) {
-                                                                        console.error("unable to get item id", section);
-                                                                        return;
-                                                                    }
-                                                                    if (parentSection && parentSection.section_data.length < 1) {
-                                                                        console.error("unable to get parent section item id")
-                                                                        return;
-                                                                    }
-                                                                    handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
-                                                                }}
-                                                                onDoubleClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    console.log('double clicked')
-                                                                }}
-                                                        />
-                                                    </div> : null}
-
+                                        <div className={tw`mx-3 mb-1 px-2 text-sm flex justify-between`}>
+                                            <input
+                                                className={tw`${section.primaryItemUpdate ? 'mt-1 cursor-pointer p-0' : 'hidden'}`}
+                                                type='radio'
+                                                checked={!!(section.section_data[itemIndex].attributes && section.section_data[itemIndex].attributes.primary === true)}
+                                                onChange={() => {
+                                                    handleOnPrimaryItemSetBtnClick(state, setState, structureChain, getFormRecur, itemIndex, api);
+                                                }}>
+                                            </input>
+                                            <div className={tw`w-11/12`}>
+                                                {JSON.stringify(section.section_data[itemIndex])}
+                                                {/*<Formatter app={"CV"}*/}
+                                                {/*           structureChain={[...structureChain]}*/}
+                                                {/*           isFullScreenViewMode={true}*/}
+                                                {/*           schema={section}*/}
+                                                {/*           rawData={section.section_data[itemIndex]}*/}
+                                                {/*/>*/}
                                             </div>
-                                        </>
-                                        }
-                                    </div>
-                                )
-                            }) : null}
+                                            {section.multiplicity === "multiple" ?
+                                                <div className={tw`text-color-action hover:text-color-confirm`}>
+                                                    <FiEdit size={"1.1rem"}
+                                                            onClick={() => {
+                                                                if (!section.section_data[itemIndex]) {
+                                                                    console.error("unable to get item id", section);
+                                                                    return;
+                                                                }
+                                                                if (parentSection && parentSection.section_data.length < 1) {
+                                                                    console.error("unable to get parent section item id")
+                                                                    return;
+                                                                }
+                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                                            }}
+                                                            onDoubleClick={(e) => {
+                                                                e.preventDefault();
+                                                                console.log('double clicked')
+                                                            }}
+                                                    />
+                                                </div> : null}
+
+                                        </div>
+                                    </>
+                                    }
+                                </div>
+                            )
+                        }) : null}
                 </StyledSectionContainer>
             )
         } else if (section.type === "section") {
@@ -791,14 +270,10 @@ export function SectionPageBuilder(props) {
                             resourceURL={"form/"}
                             HTTPMethod={"PATCH"}
                             language={"en"}
-
                             itemId={state.form.itemId}
                             sectionId={state.form.sectionId}
                             parentItemId={state.form.parentItemId}
                             parentFieldId={state.form.parentFieldId}
-                            onFormEditSubmit={handleFormEditSubmit}
-                            onFormEditCancel={handleFormEditCancel}
-                            onFormEditDelete={handleFormEditDelete}
                             formContext={{
                                 api: api,
                                 app: "CV",

@@ -1,15 +1,7 @@
 import {css, apply} from 'twind/css'
-import {tw} from "twind";
 import { styled } from "@twind/react"
 
-
-const baseFieldStyles_old = css`
-  min-width: 16rem;
-  ${tw`max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border border-gray-300 rounded`};
-`
-
 const baseFieldStyles = css`
-  min-width: 16rem;
   min-height: 2.4rem;
   ${apply('w-full shadow-sm border border-gray-300 rounded')};
 `
@@ -71,7 +63,6 @@ export const MultiLangRichTextInputStyle = css`
 
 export const MultiLangTextareaStyle = css`
   width: calc(100% - 2.3rem);
-  min-width: 16rem;
   min-height: 2.4rem;
   ${baseTextAreaStyles} ${apply(`border border-gray-300 rounded-l align-middle h-full resize-none`)}
 `
@@ -82,14 +73,12 @@ export const MultiLangBtnContainerStyle = css`
 `
 
 export const BooleanFieldContainerStyle = css`
-  min-width: 16rem;
   min-height: 2.4rem;
   ${apply('w-full shadow-sm h-full flex items-center shadow-none space-x-2')};
 `
 
 export const WindowedSelectStyle = css`
-  min-width: 16rem;
-  ${apply(`text-sm`)}
+  ${apply(`w-full text-sm`)}
 
   & > .react-select__control {
     min-height: 2.4rem;
@@ -213,32 +202,7 @@ export const MultiColWindowedSelectMenuItem = styled("td", {
   }
 })
 
-
-
-
-
-
-// export const StyledMultiColWindowedSelectMenuItem = styled.td`
-//   ${tw`flex-grow`};
-//   ${({numberOfCol}) => {
-//     switch (numberOfCol) {
-//       case 6:
-//         return tw`w-1/6`;
-//       case 5:
-//         return tw`w-1/5`;
-//       case 4:
-//         return tw`w-1/4`;
-//       case 3:
-//         return tw`w-1/3`;
-//       case 2:
-//         return tw`w-1/2`;
-//       default:
-//         return tw`w-10`
-//     }
-//   }}
-// `
-
-export  const MultiColWindowedSelectValueContainer = styled("div",{
+export const MultiColWindowedSelectValueContainer = styled("div",{
   base: `
     my-1
   `,
@@ -258,24 +222,3 @@ export  const MultiColWindowedSelectValueContainer = styled("div",{
     numOfCol: "1"
   }
 })
-
-// export const StyledMultiColWindowedSelectValueContainer = styled.div`
-//   ${tw`my-1`};
-//   ${({numberOfCol}) => {
-//     switch (numberOfCol) {
-//       case 6:
-//         return tw`py-20`;
-//       case 5:
-//         return tw`py-16`;
-//       case 4:
-//         return tw`py-12`;
-//       case 3:
-//         return tw`py-9`;
-//       case 2:
-//         return tw`py-6`;
-//       default:
-//         return tw`py-3`
-//     }
-//   }}
-// `
-

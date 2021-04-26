@@ -1,12 +1,26 @@
 import FormValidationGenerator from "./FormValidationGenerator";
-import {bilingualValueParser} from '../index'
+import {bilingualValueParser} from '../../formDataHandler'
 import GenericFieldTemplate
     from "../../../components/utils/GenericFieldTemplate";
 import {SortableArrayFieldTemplate, ArrayFieldTemplate}
     from "../../../components/ArrayField/ArrayFieldTemplate";
 import HiddenFieldTemplate
     from "../../../components/HiddenField/HiddenFieldTemplate";
-import {Months} from "../../../../Formatter/utils/helper";
+
+export const Months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+];
 
 const FieldValueMapper = (value, schema, isSubsectionFormatter = false, order = null) => {
     const fields = schema.fields
@@ -213,7 +227,6 @@ export const SchemaGenerator = (schema) => {
  * @returns {{id, type: string, required: [], properties: {}}}
  */
 const formStrSchemaGen = (schema) => {
-    const required = [];
     const properties = {};
     const fields = schema.fields;
     const sortedFields = Object.entries(fields).sort(([, a], [, b]) => a.order_number - b.order_number)
@@ -228,7 +241,7 @@ const formStrSchemaGen = (schema) => {
         type: "object",
         id: schema.name,
         form_description: schema.description,
-        required: required,
+        required: [],
         properties: properties
     }
 }

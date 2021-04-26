@@ -1,4 +1,3 @@
-import {tw} from "twind";
 import {styled} from "@twind/react";
 
 export const StyledSubsectionFormatterContainer = styled("div",{})

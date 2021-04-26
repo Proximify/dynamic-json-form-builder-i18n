@@ -27,6 +27,7 @@ export const fetchCVSchema = (callback) => {
     })
 }
 
+/**
 export const fetchFormSchema = (section, itemId, parentItemId, parentFieldId, callback) => {
     const url = `profiles.php?action=edit&editable=true&contentType=${contentType}&contentId=${contentId}&viewType=${viewType}${section !== null ? '&section=' + section : ""}${itemId !== null ? '&itemId=' + itemId : ""}${parentItemId !== null ? '&parentItemId=' + parentItemId : ""}${parentFieldId !== null ? '&parentFieldId=' + parentFieldId : ""}`;
     api.get(url, {
@@ -59,3 +60,4 @@ export const fetchLovOptions = (subtypeIds, callback) => {
         console.log(err)
     })
 }
+ */

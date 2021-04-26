@@ -183,9 +183,9 @@ export function ModalFullScreen(props) {
     return (
         <>
             <div className={tw`overflow-y-auto fixed z-50 w-full h-full top-0 left-0 bg-white`}>
-                <div className={tw`max-w-2xl h-full w-full mx-auto py-5`}>
+                <div className={tw`h-full w-full mx-auto py-5`}>
                     <div className={tw`flex border-b-2 border-gray-200 py-3 items-center space-x-3`}>
-                        <h1 className={tw`text-2xl font-semibold text-black ml-20`}>{title}</h1>
+                        <h1 className={tw`text-2xl font-semibold text-black ml-60`}>{title}</h1>
                         {content.props.formSchema && content.props.formSchema.form_description &&
                         <Tooltip
                             placement="right"

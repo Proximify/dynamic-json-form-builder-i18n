@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import isEmpty from 'lodash/isEmpty';
 import {BsCaretDownFill, BsTrashFill} from 'react-icons/bs';
 import {Menu, Transition} from "@headlessui/react";
 import {ContentState, convertToRaw, EditorState} from "draft-js";
@@ -95,32 +96,45 @@ export function MultiLangFieldWidget(props) {
     }
 
     const handleChange = () => {
-        let newValue;
+        const bilingualValue = {};
         if (state.isBilingual) {
             if (state.isRichText) {
-                newValue = {
-                    [state.languageList[0]]: state.primaryLanguage === state.languageList[0] ? draftToHtml(convertToRaw(state.primaryContent.getCurrentContent())) : draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent())),
-                    [state.languageList[1]]: state.primaryLanguage === state.languageList[1] ? draftToHtml(convertToRaw(state.primaryContent.getCurrentContent())) : draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent())),
+                if (state.primaryContent.getCurrentContent().hasText()){
+                    bilingualValue[state.primaryLanguage] = draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()));
+                }
+                if (state.secondaryContent.getCurrentContent().hasText()){
+                    bilingualValue[state.secondaryLanguage] = draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent()));
                 }
             } else {
-                newValue = {
-                    [state.languageList[0]]: state.primaryLanguage === state.languageList[0] ? state.primaryContent : state.secondaryContent,
-                    [state.languageList[1]]: state.primaryLanguage === state.languageList[1] ? state.primaryContent : state.secondaryContent,
+                if (state.primaryContent){
+                    bilingualValue[state.primaryLanguage] = state.primaryContent;
+                }
+                if (state.secondaryContent){
+                    bilingualValue[state.secondaryLanguage] = state.secondaryContent;
                 }
             }
         } else {
             if (state.isRichText) {
-                newValue = {
-                    [state.primaryLanguage]: draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()))
+                if (state.primaryContent.getCurrentContent().hasText()){
+                    bilingualValue[state.primaryLanguage] = draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()));
                 }
             } else {
-                newValue = {
-                    [state.primaryLanguage]: state.primaryContent
+                if (state.primaryContent){
+                    console.log(state.primaryContent);
+                    bilingualValue[state.primaryLanguage] = state.primaryContent;
                 }
             }
         }
-        if (value !== JSON.stringify(newValue)) {
-            props.onChange(JSON.stringify(newValue));
+        if (value){
+            if (!isEmpty(bilingualValue) && value !== JSON.stringify(bilingualValue)){
+                props.onChange(JSON.stringify(bilingualValue));
+            }else if(isEmpty(bilingualValue)){
+                props.onChange(undefined);
+            }
+        }else {
+            if (!isEmpty(bilingualValue)){
+                props.onChange(JSON.stringify(bilingualValue));
+            }
         }
     }
 
@@ -305,7 +319,7 @@ export function MultiLangFieldWidget(props) {
                                 handleChange()
                             }}
                         />
-                        <div className={tw`${MultiLangBtnContainerStyle}`}>{<LangCloseBtn/>}</div>
+                        <div className={tw`${MultiLangBtnContainerStyle}`}>{<LangDropDownBtn/>}</div>
                     </>
                 }
 

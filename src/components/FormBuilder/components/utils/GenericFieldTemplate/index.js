@@ -10,14 +10,14 @@ const descriptions = {
 }
 
 const GenericFieldTemplate = (props) => {
-    const {label, children, required, rawErrors, schema} = props;
+    const {label, children, rawErrors, schema} = props;
 
     return (
-        <div className={tw`my-3 flex flex-wrap justify-center space-x-6`}>
-            <div className={tw`w-1/4 flex flex-grow text-sm font-medium text-gray-700 justify-end`}>
-                <div className={tw`flex items-center`}>
+        <div className={tw`my-3 flex justify-between`}>
+            <div className={tw`w-5/12 flex justify-end`}>
+                <div className={tw`flex items-center text-sm font-semibold text-gray-700`}>
                     {label && <label>{label}</label>}
-                    {required && <p className={tw`text-red-700 mx-0.5`}>*</p>}
+                    {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
                     {<Tooltip
                         placement="right-start"
                         trigger="hover"
@@ -43,9 +43,9 @@ const GenericFieldTemplate = (props) => {
                     </Tooltip>}
                 </div>
             </div>
-            <div style={{maxWidth: "20rem"}} className={tw`flex-grow`}>
+            <div className={tw`w-1/2`}>
                 {children}
-                <div className={rawErrors ? tw`` : tw`hidden`}>
+                <div className={rawErrors || tw`hidden`}>
                     {rawErrors ? rawErrors.map((error, index) => {
                         return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
                     }) : null}

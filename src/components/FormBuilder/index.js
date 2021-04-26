@@ -26,6 +26,7 @@ import {tw} from "twind";
 
 import {fetchFormSchema, fetchLovOptions} from "./service/api";
 import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
+import {handleFormSubmit, handleFormDelete} from "./service/formDataHandler";
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -44,6 +45,11 @@ const customWidgets = {
     hiddenFieldWidget: HiddenFieldWidget,
     readOnlyFieldWidget: ReadOnlyFieldWidget
 };
+
+const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
+const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
+const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
+
 
 // setup({
 //     theme: {
@@ -81,9 +87,6 @@ const FormBuilder = (props) => {
         sectionId,
         parentItemId,
         parentFieldId,
-        onFormEditSubmit,
-        onFormEditCancel,
-        onFormEditDelete,
         formContext
     } = props;
 
@@ -100,15 +103,6 @@ const FormBuilder = (props) => {
         mandatoryFieldValidation: true,
         isReady: false
     })
-    // this.state = {
-    //     shouldDeleteConfirmModalOpen: false,
-    //     shouldDeleteForm: false,
-    //     formData: this.props.formData ?? undefined,
-    //     newForm: Object.keys(this.props.formData).length === 0,
-    //     mandatoryFieldValidation: true
-    // };
-    // this.handleStateChange = this.handleStateChange.bind(this);
-    //  document.addEventListener("keydown", this._handleKeyDown.bind(this));
 
     useEffect(() => {
         fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
@@ -123,7 +117,7 @@ const FormBuilder = (props) => {
                     uiSchema: parsedSchema.uiSchema,
                     validations: parsedSchema.validations,
                     lovOptions: optRes,
-                    newForm: Object.keys(parsedSchema.dataSchema).length === 0,
+                    newForm: itemId === "0",
                     isReady: true
                 })
             }))
@@ -132,26 +126,15 @@ const FormBuilder = (props) => {
     }, [])
 
     useEffect(() => {
-        if (state.shouldDeleteForm)
-            onFormEditDelete(state.formData)
+        if (state.shouldDeleteForm) {
+            handleFormDelete(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
+        }
     }, [state.shouldDeleteForm])
 
 
     const onFormSubmit = () => {
         onErrorMsgChange(null);
-        onFormEditSubmit(state.formData);
-    }
-
-    // componentDidUpdate() {
-    //     if (this.state.shouldDeleteForm) {
-    //         this.props.onFormEditDelete(this.state.formData)
-    //     }
-    // }
-
-    const _handleKeyDown = (event) => {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-        }
+        handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType)
     }
 
     const handleStateChange = (newState) => {
@@ -207,72 +190,66 @@ const FormBuilder = (props) => {
         return errors;
     }
 
-    console.log(state)
     if (!state.isReady) {
         return (
             <div>Loading...</div>
         )
     } else {
-
         return (
-            <div className={tw`flex`}>
-                <Form
-                    id={formID ?? null}
-                    schema={state.formSchema}
-                    uiSchema={state.uiSchema}
-                    formData={state.formData}
-                    formContext={{...formContext, lovOptions: state.lovOptions}}
-                    widgets={customWidgets}
-                    onChange={({formData}) => {
-                        setState({...state, formData: formData})
-                        // TODO generic
-                        // if (formData.hasOwnProperty('total_workload')) {
-                        //     formData.total_workload = (Number(formData.undergraduate_teaching) + Number(formData.graduate_professional_teaching)).toString();
-                        // }
-                        console.log("data changed", formData);
-                    }}
-                    liveValidate={true}
-                    noHtml5Validate={true}
-                    validate={validation}
-                    // noValidate={true}
-                    onError={(errors) => {
-                        console.log(errors)
-                        onErrorMsgChange(errors);
-                    }}
-                    showErrorList={false}
-                    onSubmit={onFormSubmit}>
-                    <div className={tw`my-4 mb-20 mx-1.5`}>
-                        {/*<div id={`${this.props.formID}-errorMsg`}>*/}
-                        {/*      /!*className={tw`${this.state.noValidation ? 'hidden' : ''}`}>*!/*/}
-                        {/*</div>*/}
-                        <div className={tw`flex justify-between`}>
-                            <div className={state.newForm ? tw`invisible` : tw``}>
-                                <button className={tw`py-1 px-2 ml-16 border bg-color-warning rounded`}
-                                        type="button"
-                                        onClick={() => {
-                                            setState({...state, shouldDeleteConfirmModalOpen: true})
-                                        }}
-                                >Delete
-                                </button>
-                            </div>
-                            <div>
-                                <button className={tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`}
-                                        type="button"
-                                        onClick={() => {
-                                            onFormEditCancel();
-                                        }}>
-                                    Cancel
-                                </button>
-                                <button className={tw`py-1 px-2 border bg-color-action rounded`}
-                                        type="submit">
-                                    Save
-                                </button>
+            <div className={tw`bg-gray-200 flex justify-center`}>
+                <div className={tw`w-1/5`}/>
+                <div
+                    className={tw`w-3/5 max-w-screen-md justify-self-center bg-white px-5 my-2 border-l border-r border-gray-400`}>
+                    <Form
+                        id={formID ?? null}
+                        schema={state.formSchema}
+                        uiSchema={state.uiSchema}
+                        formData={state.formData}
+                        formContext={{...formContext, lovOptions: state.lovOptions, formData: state.formData}}
+                        widgets={customWidgets}
+                        onChange={({formData}) => {
+                            setState({...state, formData: formData})
+                            console.log("data changed", formData);
+                        }}
+                        liveValidate={true}
+                        noHtml5Validate={true}
+                        validate={validation}
+                        // noValidate={true}
+                        onError={(errors) => {
+                            console.log(errors)
+                            onErrorMsgChange(errors);
+                        }}
+                        showErrorList={false}
+                        onSubmit={onFormSubmit}>
+                        <div className={tw`my-4 mb-20 mx-1.5`}>
+                            <div className={tw`flex justify-between`}>
+                                <div className={state.newForm ? tw`invisible` : tw``}>
+                                    <button className={tw`py-1 px-2 ml-16 border bg-color-warning rounded`}
+                                            type="button"
+                                            onClick={() => {
+                                                setState({...state, shouldDeleteConfirmModalOpen: true})
+                                            }}
+                                    >Delete
+                                    </button>
+                                </div>
+                                <div>
+                                    <button className={tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`}
+                                            type="button"
+                                            onClick={() => {
+                                                console.log("on cancel click")
+                                            }}>
+                                        Cancel
+                                    </button>
+                                    <button className={tw`py-1 px-2 border bg-color-action rounded`}
+                                            type="submit">
+                                        Save
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </Form>
-
-                <div>
+                    </Form>
+                </div>
+                <div className={tw`w-1/5 p-5`}>
                     <button onClick={() => {
                         setState({
                             ...state,
