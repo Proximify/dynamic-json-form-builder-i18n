@@ -10,7 +10,6 @@ import {StyledBilingualItemContainer} from "../../../../utils/styledComponents";
 import {GenericSubsectionFormatter} from "../../../../utils/GenericFormFormatter";
 
 export default function EventParticipation(props) {
-    console.log("EventParticipation", props);
     const rawData = props.rawData;
     const formData = rawData.values;
     const schema = props.schema;
@@ -28,7 +27,6 @@ export default function EventParticipation(props) {
             event_start_date:esd,
             event_end_date:eed
         } = ft.getFields();
-        console.log(ft.getFields())
         return (
             <div>
                 {any(ro, et, en, sd, ed) && <p>

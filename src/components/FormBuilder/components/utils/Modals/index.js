@@ -1,6 +1,4 @@
 import React from "react";
-import {AiOutlineQuestionCircle} from 'react-icons/ai';
-import Tooltip from "../../../../Tooltip";
 import {tw} from "twind";
 
 export function ModalArrayItem(props) {
@@ -175,51 +173,6 @@ export function ModalDeleteConfirm(props) {
             </div>
         </div>
     )
-}
-
-export function ModalFullScreen(props) {
-    const {content, title} = props;
-
-    return (
-        <>
-            <div className={tw`overflow-y-auto fixed z-50 w-full h-full top-0 left-0 bg-white`}>
-                <div className={tw`h-full w-full mx-auto py-5`}>
-                    <div className={tw`flex border-b-2 border-gray-200 py-3 items-center space-x-3`}>
-                        <h1 className={tw`text-2xl font-semibold text-black ml-60`}>{title}</h1>
-                        {content.props.formSchema && content.props.formSchema.form_description &&
-                        <Tooltip
-                            placement="right"
-                            trigger="hover"
-                            delayHide={200}
-                            tooltip={
-                                <div className={tw`mx-2 my-1`}>
-                                    <p className={tw`mb-1`}><strong>{title}</strong></p>
-                                    {content.props.formSchema &&
-                                    <p>{content.props.formSchema.form_description ?? null}</p>}
-                                </div>
-                            }
-                            hideArrow={true}
-                            modifiers={[
-                                {
-                                    name: "offset",
-                                    enabled: true,
-                                    options: {
-                                        offset: [0, 10]
-                                    }
-                                }
-                            ]}
-                        >
-                            <AiOutlineQuestionCircle className={tw`text-red-600`} size={"1.5em"}/>
-                        </Tooltip>}
-                    </div>
-                    <div className={tw`pt-2 pb-5 my-4`}>
-                        {content}
-                    </div>
-                </div>
-            </div>
-
-        </>
-    );
 }
 
 export default ModalArrayItem;

@@ -3,7 +3,7 @@ import {bilingualValueParser} from '../../formDataHandler'
 import GenericFieldTemplate
     from "../../../components/utils/GenericFieldTemplate";
 import {SortableArrayFieldTemplate, ArrayFieldTemplate}
-    from "../../../components/ArrayField/ArrayFieldTemplate";
+    from "../../../components/utils/ArrayFieldTemplate";
 import HiddenFieldTemplate
     from "../../../components/HiddenField/HiddenFieldTemplate";
 
@@ -215,7 +215,7 @@ export const SchemaGenerator = (schema) => {
         result.formSchema = formStrSchemaGen(schema);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
-        result.validations = FormValidationGenerator(result.formSchema ? result.formSchema.properties : null);
+        result.validations = FormValidationGenerator(result.formSchema?.properties || null);
     }
     console.log(result);
     return result;
@@ -240,6 +240,7 @@ const formStrSchemaGen = (schema) => {
     return {
         type: "object",
         id: schema.name,
+        form_title: schema.title,
         form_description: schema.description,
         required: [],
         properties: properties

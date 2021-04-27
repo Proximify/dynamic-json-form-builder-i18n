@@ -17,7 +17,7 @@ import {
     MultiColLargeSelectionWidget
 } from "./components/SelectionField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
-import {SortableArrayFieldTemplate, ArrayFieldTemplate} from './components/ArrayField/ArrayFieldTemplate';
+import {SortableArrayFieldTemplate, ArrayFieldTemplate} from './components/utils/ArrayFieldTemplate';
 import {ModalDeleteConfirm} from "./components/utils/Modals";
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
@@ -51,43 +51,19 @@ const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
 const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
 
 
-// setup({
-//     theme: {
-//         "colors": {
-//             "color-primary": "#26a0f1",
-//             "color-secondary": "#9b6904",
-//             "color-info": "#36c",
-//             "color-action": "#c66216",
-//             "color-transparent": "#ffffff",
-//             "color-warning": "#ff0000",
-//             "color-revert": "#cdcdcd",
-//             "color-confirm": "#1d3b79"
-//         },
-//         "fontFamily": {
-//             "title": "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif",
-//             "TopSectionLabel": "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif",
-//             "SectionLabel": "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif"
-//         },
-//         "fontSize": {
-//             "title": "15px",
-//             "TopSectionLabel": "15px",
-//             "SectionLabel": "16px"
-//         }
-//     }
-// })
-
-
 const FormBuilder = (props) => {
     const {
         formID,
-        resourceURL,
         HTTPMethod,
         language,
         itemId,
         sectionId,
         parentItemId,
         parentFieldId,
-        formContext
+        formContext,
+        handleFormSubmitRes,
+        handleFormDeleteRes,
+        handleFormCancel
     } = props;
 
     const [state, setState] = useState({
@@ -101,6 +77,7 @@ const FormBuilder = (props) => {
         lovOptions: {},
         newForm: false,
         mandatoryFieldValidation: true,
+        formErrors: [],
         isReady: false
     })
 
@@ -108,7 +85,7 @@ const FormBuilder = (props) => {
         fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             fetchLovOptions(lovSubtypeIDs, (optRes => {
-                const parsedSchema = SchemaParser(res, true);
+                const parsedSchema = SchemaParser(res);
                 setState({
                     ...state,
                     formData: parsedSchema.dataSchema,
@@ -127,36 +104,26 @@ const FormBuilder = (props) => {
 
     useEffect(() => {
         if (state.shouldDeleteForm) {
-            handleFormDelete(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
+            handleFormDelete(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormDeleteRes);
         }
     }, [state.shouldDeleteForm])
 
 
     const onFormSubmit = () => {
-        onErrorMsgChange(null);
-        handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType)
+        handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes)
     }
 
     const handleStateChange = (newState) => {
         setState(newState);
     }
 
-    const onErrorMsgChange = (errors) => {
-        const errorMsgDiv = document.getElementById(`${formID}-errorMsg`);
-        if (!errorMsgDiv)
-            return;
-        if (errors) {
-            const errorList = errors.map(err => Object.values(err));
-            errorList.forEach(err => {
-                let errorMsg = document.createElement("div");
-                errorMsg.className += "alert alert-danger";
-                errorMsg.role = "alert";
-                errorMsg.innerHTML = err;
-                errorMsgDiv.appendChild(errorMsg);
-            })
-        } else {
-            errorMsgDiv.innerHTML = "";
-        }
+    const getErrMsg = () => {
+        return state.formErrors && state.formErrors.map((err, index) => {
+            return (
+                <li key={index}>{err.stack.split(':')[1].trim()}</li>
+            )
+        });
+
     }
 
     const validation = (formData, errors) => {
@@ -186,26 +153,28 @@ const FormBuilder = (props) => {
                 })
             }
         })
-
         return errors;
     }
+
 
     if (!state.isReady) {
         return (
             <div>Loading...</div>
         )
     } else {
+        console.log(state)
         return (
             <div className={tw`bg-gray-200 flex justify-center`}>
                 <div className={tw`w-1/5`}/>
                 <div
                     className={tw`w-3/5 max-w-screen-md justify-self-center bg-white px-5 my-2 border-l border-r border-gray-400`}>
+                    <p className={tw`mt-1 mb-5 p-2 px-7 text-2xl font-bold border-b`}>{state.formSchema.form_title}</p>
                     <Form
                         id={formID ?? null}
                         schema={state.formSchema}
                         uiSchema={state.uiSchema}
                         formData={state.formData}
-                        formContext={{...formContext, lovOptions: state.lovOptions, formData: state.formData}}
+                        formContext={{...formContext, lovOptions: state.lovOptions, formData: state.formData,mandatoryFieldValidation: state.mandatoryFieldValidation}}
                         widgets={customWidgets}
                         onChange={({formData}) => {
                             setState({...state, formData: formData})
@@ -213,18 +182,25 @@ const FormBuilder = (props) => {
                         }}
                         liveValidate={true}
                         noHtml5Validate={true}
-                        validate={validation}
-                        // noValidate={true}
+                        validate={(formData, errors)=>{
+                            return validation(formData, errors)}}
                         onError={(errors) => {
                             console.log(errors)
-                            onErrorMsgChange(errors);
+                            setState({
+                                ...state,
+                                formErrors: errors
+                            })
                         }}
                         showErrorList={false}
                         onSubmit={onFormSubmit}>
-                        <div className={tw`my-4 mb-20 mx-1.5`}>
+
+                        <div className={tw`my-4 mb-14 ml-10 mr-14`}>
+                            <div>
+                                <ul>{getErrMsg()}</ul>
+                            </div>
                             <div className={tw`flex justify-between`}>
                                 <div className={state.newForm ? tw`invisible` : tw``}>
-                                    <button className={tw`py-1 px-2 ml-16 border bg-color-warning rounded`}
+                                    <button className={tw`py-1 px-2 ml-16 border bg-color-warning rounded text-white`}
                                             type="button"
                                             onClick={() => {
                                                 setState({...state, shouldDeleteConfirmModalOpen: true})
@@ -236,7 +212,7 @@ const FormBuilder = (props) => {
                                     <button className={tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`}
                                             type="button"
                                             onClick={() => {
-                                                console.log("on cancel click")
+                                                handleFormCancel();
                                             }}>
                                         Cancel
                                     </button>
@@ -250,12 +226,18 @@ const FormBuilder = (props) => {
                     </Form>
                 </div>
                 <div className={tw`w-1/5 p-5`}>
-                    <button onClick={() => {
-                        setState({
-                            ...state,
-                            mandatoryFieldValidation: !state.mandatoryFieldValidation
-                        })
-                    }}>{state.mandatoryFieldValidation ? "Save Without Required Field" : "Save With Required Field"}</button>
+                    {/*<button onClick={() => {*/}
+                    {/*}}>{state.mandatoryFieldValidation ? "Save Without Required Field" : "Save With Required Field"}</button>*/}
+                    <input type={"radio"} checked={!state.mandatoryFieldValidation}
+                           onChange={() => {
+                           }}
+                           onClick={() => {
+                               setState({
+                                   ...state,
+                                   mandatoryFieldValidation: !state.mandatoryFieldValidation
+                               })
+                           }}
+                    /> Allow saving without required fields
                 </div>
                 {state.shouldDeleteConfirmModalOpen &&
                 <ModalDeleteConfirm state={state} changeState={handleStateChange}/>}

@@ -1,6 +1,6 @@
 import React from 'react';
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
-import Tooltip from "../../../../Tooltip";
+import Tooltip from "../Tooltip";
 import {tw} from "twind";
 
 const descriptions = {
@@ -10,13 +10,13 @@ const descriptions = {
 }
 
 const GenericFieldTemplate = (props) => {
-    const {label, children, rawErrors, schema} = props;
+    const {label, children, rawErrors, schema, formContext, formData} = props;
 
     return (
-        <div className={tw`my-3 flex justify-between`}>
+        <div className={tw`my-4 flex justify-between`}>
             <div className={tw`w-5/12 flex justify-end`}>
-                <div className={tw`flex items-center text-sm font-semibold text-gray-700`}>
-                    {label && <label>{label}</label>}
+                <div className={tw`flex items-center text-base font-semibold text-gray-700`}>
+                    {label && <label className={tw`text-right`}>{label}</label>}
                     {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
                     {<Tooltip
                         placement="right-start"
@@ -43,12 +43,18 @@ const GenericFieldTemplate = (props) => {
                     </Tooltip>}
                 </div>
             </div>
-            <div className={tw`w-1/2`}>
+            <div className={tw`w-7/12 max-w-sm sm:(pl-4 pr-6) xl:(pl-0 pr-14)`}>
+
                 {children}
-                <div className={rawErrors || tw`hidden`}>
+
+                <div className={tw`${rawErrors ? '' : 'hidden'}`}>
                     {rawErrors ? rawErrors.map((error, index) => {
-                        return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
+                        if (!error.includes("is required")) {
+                            return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
+                        }
                     }) : null}
+                    {schema.mandatory && formContext.mandatoryFieldValidation && !formData &&
+                    <li className={tw`text-red-600 text-sm`}>{`${label} is required`}</li>}
                 </div>
             </div>
 

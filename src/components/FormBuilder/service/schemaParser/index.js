@@ -65,18 +65,14 @@ const sectionParser = (section, parent_id) => {
 
 /**
  * @param schema: raw Response from Server
- * @param singleForm: single to identify the Response if for one form or full screen view mode
  * @returns {{dataSchema: null, formSchema: null, uiSchema: null}|[]}
  * @constructor
  */
-export default function SchemaParser(schema, singleForm = false) {
+export default function SchemaParser(schema) {
     const sections = schema.sections;
 
     const result = []
     sections.forEach(section => result.push(sectionParser(section, null)))
-    if (singleForm) {
-        return SchemaGenerator(result[0]);
-    } else
-        return result;
+    return SchemaGenerator(result[0]);
 }
 

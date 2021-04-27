@@ -3,10 +3,10 @@ import React, {useState} from 'react';
 import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import {BiPencil} from 'react-icons/bi';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
-import ModalArrayItem from "../utils/Modals";
-import Formatter from "../../../Formatter";
-import Tooltip from "../../../Tooltip";
-import {SubsectionFormatterContainerStyle} from "../utils/twindClass";
+import ModalArrayItem from "../Modals";
+import Formatter from "../../../../Formatter";
+import Tooltip from "../Tooltip";
+import {SubsectionFormatterContainerStyle} from "../twindClass";
 import {tw} from "twind";
 
 const descriptions = {
@@ -94,39 +94,37 @@ export function SortableArrayFieldTemplate(props) {
     }
 
     return (
-        <div className={tw`flex flex-wrap justify-center my-3 space-x-6`}>
-            <div className={tw`w-1/4 flex flex-grow text-sm font-medium text-gray-700 justify-end`}>
-                <div>
-                    <div className={tw`flex items-center`}>
-                        {title && <label>{title}</label>}
-                        {required && <p className={tw`text-red-700 ml-1 mr-2`}>*</p>}
-                        {schema.description && <Tooltip
-                            placement="right-start"
-                            trigger="hover"
-                            delayHide={150}
-                            tooltip={
-                                <>
-                                    <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                    <p>{descriptions[schema.field_type]}</p>
-                                </>
-                            }
-                            hideArrow={true}
-                            modifiers={[
-                                {
-                                    name: "offset",
-                                    enabled: true,
-                                    options: {
-                                        offset: [0, 8]
-                                    }
+        <div className={tw`my-3 flex justify-between`}>
+            <div className={tw`w-5/12 flex justify-end`}>
+                <div className={tw`flex items-center text-base font-semibold text-gray-700`}>
+                    {title && <label className={tw`text-right`}>{title}</label>}
+                    {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
+                    {schema.description && <Tooltip
+                        placement="right-start"
+                        trigger="hover"
+                        delayHide={150}
+                        tooltip={
+                            <>
+                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                <p>{descriptions[schema.field_type]}</p>
+                            </>
+                        }
+                        hideArrow={true}
+                        modifiers={[
+                            {
+                                name: "offset",
+                                enabled: true,
+                                options: {
+                                    offset: [0, 8]
                                 }
-                            ]}
-                        >
-                            <AiOutlineQuestionCircle size={'1.1em'} className={tw`text-gray-400 mx-1`}/>
-                        </Tooltip>}
-                    </div>
+                            }
+                        ]}
+                    >
+                        <AiOutlineQuestionCircle size={"1.1em"} className={tw`text-gray-400 mx-1`}/>
+                    </Tooltip>}
                 </div>
             </div>
-            <div style={{maxWidth: "20rem"}} className={tw`flex-grow`}>
+            <div className={tw`w-7/12 flex items-center max-w-sm sm:(pl-4 pr-6) xl:(pl-0 pr-14)`}>
                 <div className={tw`${SubsectionFormatterContainerStyle}`}>
                     {canAdd &&
                     <a type="button"
@@ -237,39 +235,37 @@ export function ArrayFieldTemplate(props) {
     }
 
     return (
-        <div className={tw`flex flex-wrap justify-center my-3 space-x-6`}>
-            <div className={tw`w-1/4 flex flex-grow text-sm font-medium text-gray-700 justify-end`}>
-                <div>
-                    <div className={tw`flex items-center`}>
-                        {title && <label>{title}</label>}
-                        {required && <p className={tw`text-red-700 ml-1 mr-2`}>*</p>}
-                        {schema.description && <Tooltip
-                            placement="right-start"
-                            trigger="hover"
-                            delayHide={150}
-                            tooltip={
-                                <>
-                                    <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                    <p>{descriptions[schema.field_type]}</p>
-                                </>
-                            }
-                            hideArrow={true}
-                            modifiers={[
-                                {
-                                    name: "offset",
-                                    enabled: true,
-                                    options: {
-                                        offset: [0, 8]
-                                    }
+        <div className={tw`my-3 flex justify-between`}>
+            <div className={tw`w-5/12 flex justify-end`}>
+                <div className={tw`flex items-center text-base font-semibold text-gray-700`}>
+                    {title && <label className={tw`text-right`}>{title}</label>}
+                    {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
+                    {schema.description && <Tooltip
+                        placement="right-start"
+                        trigger="hover"
+                        delayHide={150}
+                        tooltip={
+                            <>
+                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                <p>{descriptions[schema.field_type]}</p>
+                            </>
+                        }
+                        hideArrow={true}
+                        modifiers={[
+                            {
+                                name: "offset",
+                                enabled: true,
+                                options: {
+                                    offset: [0, 8]
                                 }
-                            ]}
-                        >
-                            <AiOutlineQuestionCircle size={"1.1em"} className={tw`text-gray-400 mx-1`}/>
-                        </Tooltip>}
-                    </div>
+                            }
+                        ]}
+                    >
+                        <AiOutlineQuestionCircle size={"1.1em"} className={tw`text-gray-400 mx-1`}/>
+                    </Tooltip>}
                 </div>
             </div>
-            <div style={{maxWidth: "20rem"}} className={tw`flex-grow`}>
+            <div className={tw`w-7/12 flex items-center max-w-sm sm:(pl-4 pr-6) xl:(pl-0 pr-14)`}>
                 <div className={tw`${SubsectionFormatterContainerStyle}`}>
                     {canAdd &&
                     <a type="button"
@@ -292,7 +288,7 @@ export function ArrayFieldTemplate(props) {
                                 formData.map((item, index) => {
                                     return (
                                         <li key={index}
-                                            className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
+                                            className={tw`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 && 'border-b'}`}
                                         >
                                             <div>
                                                 <Formatter app={"CV"}

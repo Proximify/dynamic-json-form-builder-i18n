@@ -1,123 +1,20 @@
 import SchemaParser from "../schemaParser";
-import api from "../api";
+import api, {submitFormData} from "../api";
 
-export const handleFormSubmit = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType) => {
+export const handleFormSubmit = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, responseHandler) => {
     const {formData: data, initialFormData: initialData, formSchema: schema, newForm} = state;
     const formData = new FormData();
     formData.append('action', newForm ? 'insert' : 'update');
-    formDataBuilder(data, initialData, schema, formData,sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
-
-    api.post('http://127.0.0.1:8000/profiles.php', formData, {
-        headers: {'Content-Type': 'application/json'}
-    }).then((response) => {
-        console.log(response);
-        /**
-         if (!response.data.error) {
-                const formSchema = SchemaParser({sections: [response.data]}, false);
-                const newSection = [...state.sections];
-                const targetForm = getFormRecur(state.sections, state.form.structureChain);
-                const newData = formSchema[0].section_data;
-                if (targetForm) {
-                    console.log("----", targetForm, state.form.itemId, newData)
-                    // targetForm.section_data = formSchema[0].section_data;
-                    if (state.form.itemId !== 0) {
-                        const index = targetForm.section_data.findIndex(data => data.id === newData[0].id)
-                        if (index >= 0) {
-                            targetForm.section_data[index] = newData[0];
-                        }
-                    } else if (state.form.itemId === 0) {
-                        targetForm.section_data.push(newData[0]);
-                    }
-                    setState({
-                        ...state,
-                        sections: newSection,
-                        shouldModalOpen: false,
-                        form: null,
-                    })
-                } else {
-                    console.error("cannot find target form")
-                }
-            } else {
-                console.error(response)
-                setState({
-                    ...state,
-                    shouldModalOpen: false,
-                    form: null
-                })
-            }
-         */
-    }, (error) => {
-        console.error(error);
-        // setState({
-        //     ...state,
-        //     shouldModalOpen: false,
-        //     form: null
-        // })
-    });
-    // }
+    formDataBuilder(data, initialData, schema, formData, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
+    submitFormData(formData, responseHandler);
 }
 
-export const handleFormDelete = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType) => {
+export const handleFormDelete = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, responseHandler) => {
     const {formData: data, initialFormData: initialData, formSchema: schema} = state;
     const formData = new FormData();
     formData.append('action', 'delete');
-    // formData.append('contentType', contentType);
-    // formData.append('contentId', contentId);
-    // formData.append('viewType', viewType);
-    // formData.append('sectionId', sectionId);
-    // formData.append('itemId', itemId);
-    // if (parentItemId) {
-    //     formData.append('parentItemId', parentItemId);
-    // }
-    // if (parentFieldId) {
-    //     formData.append('parentFieldId', parentFieldId);
-    // }
-    formDataBuilder(data, initialData, schema, formData,sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
-
-    api.post('http://127.0.0.1:8000/profiles.php', formData, {
-        headers: {'Content-Type': 'application/json'}
-    }).then((response) => {
-        console.log(response);
-
-        /**
-        if (!response.data.error) {
-            const newSection = [...state.sections];
-            const targetForm = getFormRecur(newSection, state.form.structureChain);
-            const newData = response.data.items;
-            if (targetForm) {
-                if (state.form.itemId !== 0) {
-                    const index = targetForm.section_data.findIndex(data => data.id === newData[0].id.toString())
-                    if (index >= 0) {
-                        targetForm.section_data.splice(index, 1);
-                    }
-                }
-                setState({
-                    ...state,
-                    sections: newSection,
-                    shouldModalOpen: false,
-                    form: null,
-                })
-            } else {
-                console.error("cannot find target form")
-            }
-        } else {
-            console.error(response)
-            setState({
-                ...state,
-                shouldModalOpen: false,
-                form: null
-            })
-        }
-         */
-    }, (error) => {
-        console.error(error);
-        // setState({
-        //     ...state,
-        //     shouldModalOpen: false,
-        //     form: null
-        // })
-    });
-    // }
+    formDataBuilder(data, initialData, schema, formData, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
+    submitFormData(formData, responseHandler);
 }
 
 
@@ -210,7 +107,7 @@ export const bilingualValueParser = (field, fieldData, dataToServer = false, dat
             }
         }
     }
-    console.log(result)
+    // console.log(result)
     return result
 
 }
@@ -337,9 +234,9 @@ const formDataBuilder = (data, initialData, schema, formData, sectionId, itemId,
                                     found = true;
                                     if (JSON.stringify(ofd) !== JSON.stringify(nfd)) {
                                         formData.append(`${template}[action]`, `update`)
-                                        console.log(" update form data", nfd);
+                                        // console.log(" update form data", nfd);
                                     } else {
-                                        console.log(" no change form data", nfd);
+                                        // console.log(" no change form data", nfd);
                                         formData.append(`${template}[action]`, `none`)
                                     }
                                     const subsectionFields = field.fields;

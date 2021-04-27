@@ -52,8 +52,8 @@ export const fetchLovOptions = (subtypeIds, callback) => {
     })
     axios.all(urls).then(axios.spread((...responses) => {
         const res = {};
-        subtypeIds.forEach((subtypeId, index) => {
-            res[Array.isArray(subtypeId) ? subtypeId[0] : subtypeId] = responses[index].data;
+        subtypeIds.forEach((subtypeId, api) => {
+            res[Array.isArray(subtypeId) ? subtypeId[0] : subtypeId] = responses[api].data;
         })
         callback(res);
     })).catch(err => {

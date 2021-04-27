@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty';
+
 export default function FormValidationGenerator(fields) {
     if (!fields || Object.keys(fields).length === 0) {
         return null;
@@ -23,7 +25,7 @@ const fieldConstraintsHandler = (field, fields) => {
     //     return null;
     // }
     const validations = [];
-    if (field.constraints){
+    if (field.constraints) {
         Object.keys(field.constraints).forEach(constraintName => {
             const constraint = field.constraints[constraintName];
             switch (constraintName) {
@@ -78,7 +80,7 @@ const fieldConstraintsHandler = (field, fields) => {
         };
     }
 
-    if (field.field_type === "elapsed-time"){
+    if (field.field_type === "elapsed-time") {
         validations[validations.length] = {
             validateMethod: (formData) => {
                 return formData === undefined || !(formData[field.name] && formData[field.name].split(':').filter(time => /\d/.test(time)).length !== 2);
@@ -89,10 +91,14 @@ const fieldConstraintsHandler = (field, fields) => {
         };
     }
 
-    if (field.mandatory){
+    if (field.mandatory) {
         validations[validations.length] = {
             validateMethod: (formData, needCheck) => {
-                return !needCheck || formData === undefined || formData[field.name];
+                if (!needCheck) {
+                    return true;
+                } else {
+                    return isEmpty(formData) ? true : !!formData[field.name]
+                }
             },
             getErrMsg: () => {
                 return `${field.title} is required`

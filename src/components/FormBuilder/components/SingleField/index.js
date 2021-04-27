@@ -84,6 +84,21 @@ const handleValueChange = (value, rawErrors, setValue, onChange, isElapsedTime =
 export function StringInputWidget(props) {
     const [value, setValue] = useState(props.value ?? "");
 
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+
+
+
     return (
         <TextareaAutosize
             className={tw`${TextAreaInputStyle} ${props.schema.twClass}`}

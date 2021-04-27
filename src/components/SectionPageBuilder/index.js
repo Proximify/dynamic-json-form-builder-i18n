@@ -3,8 +3,8 @@ import FormBuilder from '../FormBuilder';
 import api, {fetchCVSchema} from "./helper/api";
 import {FiEdit} from 'react-icons/fi';
 import {AiOutlineFileAdd} from 'react-icons/ai'
-import {ModalFullScreen} from "../FormBuilder/components/utils/Modals";
-// import Formatter from "../Formatter";
+import {ModalFullScreen} from "./Modal";
+import Formatter from "../Formatter";
 import SchemaParser from "../SchemaParser";
 import {
     handleOnPrimaryItemCancelBtnClick,
@@ -24,7 +24,7 @@ export function SectionPageBuilder(props) {
         structureChain: [],
         loadingErr: ""
     })
-    console.log("SectionPageBuilder", state)
+    // console.log("SectionPageBuilder", state)
 
     useEffect(() => {
         if (state.ready)
@@ -109,6 +109,99 @@ export function SectionPageBuilder(props) {
         }
     }
 
+    const handleFormSubmitRes = (response, error) => {
+        if (response) {
+            if (!response.data.error) {
+                const formSchema = SchemaParser({sections: [response.data]}, false);
+                console.log(formSchema)
+                const newSection = [...state.sections];
+                const targetForm = getFormRecur(state.sections, state.form.structureChain);
+                const newData = formSchema[0].section_data;
+                if (targetForm) {
+                    if (state.form.itemId !== "0") {
+                        const index = targetForm.section_data.findIndex(data => data.id === newData[0].id)
+                        if (index >= 0) {
+                            targetForm.section_data[index] = newData[0];
+                        }
+                    } else {
+                        targetForm.section_data.push(newData[0]);
+                    }
+                    setState({
+                        ...state,
+                        sections: newSection,
+                        shouldModalOpen: false,
+                        form: null,
+                    })
+                } else {
+                    console.error("cannot find target form")
+                }
+            } else {
+                console.error(response)
+                setState({
+                    ...state,
+                    shouldModalOpen: false,
+                    form: null
+                })
+            }
+        } else if (error) {
+            console.error(error);
+            setState({
+                ...state,
+                shouldModalOpen: false,
+                form: null
+            })
+        }
+    }
+
+    const handleFormCancel = () => {
+        setState({
+            ...state,
+            shouldModalOpen: false,
+            form: null
+        })
+    }
+
+    const handleFormDeleteRes = (response, error) => {
+        if (response) {
+            if (!response.data.error) {
+                const newSection = [...state.sections];
+                const targetForm = getFormRecur(newSection, state.form.structureChain);
+                const newData = response.data.items;
+                if (targetForm) {
+                    if (state.form.itemId !== "0") {
+                        const index = targetForm.section_data.findIndex(data => data.id === newData[0].id.toString())
+                        if (index >= 0) {
+                            targetForm.section_data.splice(index, 1);
+                        }
+                    }
+                    setState({
+                        ...state,
+                        sections: newSection,
+                        shouldModalOpen: false,
+                        form: null,
+                    })
+                } else {
+                    console.error("cannot find target form")
+                }
+            } else {
+                console.error(response)
+                setState({
+                    ...state,
+                    shouldModalOpen: false,
+                    form: null
+                })
+            }
+        } else if(error){
+            console.error(error);
+            setState({
+                ...state,
+                shouldModalOpen: false,
+                form: null
+            })
+        }
+
+    }
+
     const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
         setState({
             ...state,
@@ -120,7 +213,6 @@ export function SectionPageBuilder(props) {
                 parentFieldId: parentFieldId
             },
             shouldModalOpen: true,
-            structureChain: structureChain,
             scrollY: window.scrollY
         })
     }
@@ -167,7 +259,7 @@ export function SectionPageBuilder(props) {
                             :
                             <FiEdit size={"1.1rem"}
                                     onClick={() => {
-                                        console.log(section, parentSection)
+                                        // console.log(section, parentSection)
                                         handleOnItemClick(section.section_id, section.section_data.length > 0 ? section.section_data[0].id : 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
                                     }}
                                     onDoubleClick={() => {
@@ -210,13 +302,13 @@ export function SectionPageBuilder(props) {
                                                 }}>
                                             </input>
                                             <div className={tw`w-11/12`}>
-                                                {JSON.stringify(section.section_data[itemIndex])}
-                                                {/*<Formatter app={"CV"}*/}
-                                                {/*           structureChain={[...structureChain]}*/}
-                                                {/*           isFullScreenViewMode={true}*/}
-                                                {/*           schema={section}*/}
-                                                {/*           rawData={section.section_data[itemIndex]}*/}
-                                                {/*/>*/}
+                                                {/*{JSON.stringify(section.section_data[itemIndex])}*/}
+                                                <Formatter app={"CV"}
+                                                           structureChain={[...structureChain]}
+                                                           isFullScreenViewMode={true}
+                                                           schema={section}
+                                                           rawData={section.section_data[itemIndex]}
+                                                />
                                             </div>
                                             {section.multiplicity === "multiple" ?
                                                 <div className={tw`text-color-action hover:text-color-confirm`}>
@@ -257,7 +349,7 @@ export function SectionPageBuilder(props) {
     }
 
     return (
-        <div>
+        <div className={tw`mx-auto max-w-screen-md bg-gray-200 p-2`}>
             {state.ready ? (state.loadingErr === "" || !state.loadingErr ? state.sections.map((section, index) => {
                 return sectionBuilder(section, index, 3, [section.name])
             }) : <div>{state.loadingErr}</div>) : <div>Loading...</div>}
@@ -274,10 +366,13 @@ export function SectionPageBuilder(props) {
                             sectionId={state.form.sectionId}
                             parentItemId={state.form.parentItemId}
                             parentFieldId={state.form.parentFieldId}
+                            handleFormSubmitRes={handleFormSubmitRes}
+                            handleFormDeleteRes={handleFormDeleteRes}
+                            handleFormCancel={handleFormCancel}
                             formContext={{
                                 api: api,
                                 app: "CV",
-                                structureChain: state.structureChain
+                                structureChain: state.form.structureChain
                             }}
                         />
                     }

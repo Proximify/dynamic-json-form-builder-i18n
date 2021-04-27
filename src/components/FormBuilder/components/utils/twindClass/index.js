@@ -28,7 +28,6 @@ export const MultiNumberInputStyle = css`
 `
 
 export const BilingualContainerStyle = css`
-  min-width: 16rem;
   min-height: 2.4rem;
   ${apply('shadow-sm text-sm flex')};
 `
@@ -78,7 +77,7 @@ export const BooleanFieldContainerStyle = css`
 `
 
 export const WindowedSelectStyle = css`
-  ${apply(`w-full text-sm`)}
+  ${apply(`w-full text-sm shadow-sm mb-1.5`)}
 
   & > .react-select__control {
     min-height: 2.4rem;
@@ -88,7 +87,7 @@ export const WindowedSelectStyle = css`
 
 export const MultiColWindowedSelectStyle = css`
   min-width: 16rem;
-  ${apply(`text-sm`)}
+  ${apply(`w-full text-sm shadow-sm mb-1.5`)}
 
   & > .react-select__menu {
     min-width: 35rem;
@@ -101,20 +100,20 @@ export const MultiColWindowedSelectStyle = css`
 `
 
 export const DatePickerContainerStyle = css`
-  min-width: 16rem;
-  min-height: 2.4rem;
-  ${apply('h-full')};
+  
+  ${apply('w-full mb-1.5')};
 
   .react-datepicker-wrapper {
-    ${apply(`h-full w-full`)}
+    ${apply(`w-full`)}
     .react-datepicker__input-container {
-      ${apply('shadow-sm text-sm border border-gray-300 rounded h-full w-full')}
+      min-height: 2.4rem;
+      ${apply('text-sm w-full')}
       .date_picker {
-        ${apply(`h-full w-full rounded py-2 px-2.5`)}
+        ${apply(`h-full w-full rounded py-2 px-2.5 border border-gray-300 rounded shadow-sm `)}
       }
 
       .react-datepicker__close-icon {
-        ${apply(`mr-0.5`)}
+        ${apply(`mr-1 h-full pb-0.5`)}
       }
 
       ::after {
@@ -177,8 +176,11 @@ export const DatePickerCalendarContainerStyle = css`
 `
 
 export const SubsectionFormatterContainerStyle = css`
-  min-width: 16rem;
-  ${apply('block w-full h-full')}
+  ${apply('w-full h-full')}
+  
+  & > div {
+    ${apply('shadow-sm')}
+  }
 `
 
 export const MultiColWindowedSelectMenuItem = styled("td", {
