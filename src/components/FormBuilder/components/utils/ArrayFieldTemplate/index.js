@@ -231,8 +231,6 @@ export function SortableArrayFieldTemplate(props) {
 }
 
 export function ArrayFieldTemplate(props) {
-    console.log(props);
-
     const {title, items, canAdd, onAddClick, formData, formContext, schema, rawErrors} = props;
 
     const [state, setState] = useState(

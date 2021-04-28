@@ -6,37 +6,35 @@ import TextareaAutosize from "react-textarea-autosize";
 
 export default function ReadOnlyFieldWidget(props) {
     console.log("ReadOnlyFieldWidget", props);
-    const {formData} = props.formContext;
+    const {formData, fieldIdNameMapper} = props.formContext;
     const {constraints} = props.schema;
     const [value, setValue] = useState(props.value && props.value !== "NaN" ? props.value : "0");
 
     useEffect(() => {
         if (constraints.autoSum) {
             let total = 0;
-            if (formData.undergraduate_teaching) {
-                total += Number(formData.undergraduate_teaching)
-            }
-            if (formData.graduate_professional_teaching) {
-                total += Number(formData.graduate_professional_teaching)
-            }
-            if (formData.external_teaching) {
-                formData.external_teaching.forEach(subsection => {
-                    if (subsection.external_workload){
-                        total += Number(subsection.external_workload)
+            console.log(constraints, fieldIdNameMapper);
+            const targetFieldsId = constraints.autoSum.fields.map(field => (field.id))
+            console.log(targetFieldsId);
+            targetFieldsId.forEach(targetFieldId => {
+                if (fieldIdNameMapper[targetFieldId]) {
+                    if (!fieldIdNameMapper[targetFieldId].isSubsectionField) {
+                        if (formData[fieldIdNameMapper[targetFieldId].name]) {
+                            total += Number(formData[fieldIdNameMapper[targetFieldId].name]);
+                        }
+                    } else {
+                        if (formData[fieldIdNameMapper[targetFieldId].parentName]) {
+                            formData[fieldIdNameMapper[targetFieldId].parentName].forEach(subsectionFormData => {
+                                if (subsectionFormData[fieldIdNameMapper[targetFieldId].name]) {
+                                    total += Number(subsectionFormData[fieldIdNameMapper[targetFieldId].name])
+                                }
+                            })
+                        }
                     }
-                })
-            }
-            if (formData.internal_activities) {
-                total += Number(formData.internal_activities)
-            }
-            if (formData.academic_administration) {
-                total += Number(formData.academic_administration)
-            }
-            if (formData.external_activities) {
-                total += Number(formData.external_activities)
-            }
+                }
+            })
             setValue(total);
-
+            props.onChange(total.toString());
         }
     }, [formData])
 
@@ -46,7 +44,7 @@ export default function ReadOnlyFieldWidget(props) {
             minRows={1}
             readOnly={true}
             id={props.schema.id}
-            value={value}
+            value={value + "%"}
             className={tw`${TextAreaInputStyle} bg-gray-200`}
         />
     );

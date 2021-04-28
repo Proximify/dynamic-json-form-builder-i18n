@@ -95,6 +95,7 @@ const FormBuilder = (props) => {
                     formSchema: parsedSchema.formSchema,
                     uiSchema: parsedSchema.uiSchema,
                     validations: parsedSchema.validations,
+                    fieldIdNameMapper: parsedSchema.fieldIdNameMapper,
                     lovOptions: optRes,
                     newForm: itemId === "0",
                     isReady: true
@@ -211,7 +212,8 @@ const FormBuilder = (props) => {
                             ...formContext,
                             lovOptions: state.lovOptions,
                             formData: state.formData,
-                            mandatoryFieldValidation: state.mandatoryFieldValidation
+                            mandatoryFieldValidation: state.mandatoryFieldValidation,
+                            fieldIdNameMapper: state.fieldIdNameMapper
                         }}
                         widgets={customWidgets}
                         onChange={({formData}) => {

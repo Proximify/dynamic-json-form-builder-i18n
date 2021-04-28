@@ -1,3 +1,4 @@
+import isEmpty from 'lodash/isEmpty';
 import FormValidationGenerator from "./FormValidationGenerator";
 import {bilingualValueParser} from '../../formDataHandler'
 import GenericFieldTemplate
@@ -203,19 +204,49 @@ class FormatterTracker {
     }
 }
 
+const fieldIdNameMapper = (schema) => {
+    // console.log(schema);
+    const {fields, subsections} = schema;
+    const mapper = {};
+    for (const [fieldId, field] of Object.entries(fields)) {
+        mapper[fieldId] = {name: field.name, type: field.type};
+        if (field.type === 'section') {
+            mapper[fieldId]['subFields'] = fieldIdNameMapper(subsections[field.subsection_id])
+        }
+    }
+    if (!Array.isArray(subsections) && !isEmpty(subsections)) {
+        Object.values(subsections).forEach(subsection => {
+            const subsectionFields = subsection.fields;
+            for (const [subsectionFieldId, subsectionField] of Object.entries(subsectionFields)) {
+                mapper[subsectionFieldId] = {
+                    name: subsectionField.name,
+                    type: subsectionField.type,
+                    parentName: subsection.name,
+                    isSubsectionField: true
+                };
+                // if (field.type === 'section') {
+                //     mapper[fieldId]['subFields'] = fieldIdNameMapper(subsections[field.subsection_id])
+                // }
+            }
+        })
+    }
+    return mapper;
+}
 
 export const SchemaGenerator = (schema) => {
     const result = {
         formSchema: null,
         uiSchema: null,
         dataSchema: null,
-        validations: null
+        validations: null,
+        fieldIdNameMapper: null
     }
     if (schema !== null) {
         result.formSchema = formStrSchemaGen(schema);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
         result.validations = FormValidationGenerator(result.formSchema?.properties || null);
+        result.fieldIdNameMapper = fieldIdNameMapper(schema);
     }
     console.log(result);
     return result;
@@ -349,8 +380,7 @@ const formDataSchemaGen = (schema) => {
                                 subFieldDataSchema[subFieldName] = val[subFieldName].value && val[subFieldName].value.length ? JSON.stringify([val[subFieldName].value[0]].concat(val[subFieldName].value[1].split("|"))) : undefined;
                             } else if (subField.type === 'lov' || subField.type === "systable") {
                                 subFieldDataSchema[subFieldName] = val[subFieldName].value ? JSON.stringify(val[subFieldName].value) : undefined
-                            }
-                            else {
+                            } else {
                                 subFieldDataSchema[subFieldName] = val[subFieldName].value;
                             }
                         }
@@ -368,8 +398,7 @@ const formDataSchemaGen = (schema) => {
                 dataSchema[fieldName] = field.rawValue && field.rawValue.length ? JSON.stringify([field.rawValue[0]].concat(field.rawValue[1].split("|"))) : undefined;
             } else if (field.type === 'lov' || field.type === "systable") {
                 dataSchema[fieldName] = field.rawValue ? JSON.stringify(field.rawValue) : undefined
-            }
-            else {
+            } else {
                 dataSchema[fieldName] = field.rawValue;
             }
         }
