@@ -27,6 +27,8 @@ import {tw} from "twind";
 import {fetchFormSchema, fetchLovOptions} from "./service/api";
 import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
 import {handleFormSubmit, handleFormDelete} from "./service/formDataHandler";
+import Tooltip from "./components/utils/Tooltip";
+import {AiOutlineQuestionCircle} from "react-icons/ai";
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -123,7 +125,6 @@ const FormBuilder = (props) => {
                 <li key={index}>{err.stack.split(':')[1].trim()}</li>
             )
         });
-
     }
 
     const validation = (formData, errors) => {
@@ -144,7 +145,11 @@ const FormBuilder = (props) => {
                             if (formData[fieldName]) {
                                 formData[fieldName].forEach((subsection, index) => {
                                     if (!subFieldValidation.validateMethod(subsection, state.mandatoryFieldValidation)) {
-                                        errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
+                                        errors[fieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
+                                        // errors[fieldName][index].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
+                                        if (errors[fieldName][index][subFieldName]) {
+                                            errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
+                                        }
                                     }
                                 })
                             }
@@ -153,6 +158,7 @@ const FormBuilder = (props) => {
                 })
             }
         })
+        // console.log("-", errors)
         return errors;
     }
 
@@ -162,28 +168,61 @@ const FormBuilder = (props) => {
             <div>Loading...</div>
         )
     } else {
-        console.log(state)
+        // console.log(state)
         return (
             <div className={tw`bg-gray-200 flex justify-center`}>
                 <div className={tw`w-1/5`}/>
                 <div
                     className={tw`w-3/5 max-w-screen-md justify-self-center bg-white px-5 my-2 border-l border-r border-gray-400`}>
-                    <p className={tw`mt-1 mb-5 p-2 px-7 text-2xl font-bold border-b`}>{state.formSchema.form_title}</p>
+
+                    <div className={tw`flex items-center mt-1 mb-5 p-2 px-7 border-b space-x-2`}>
+                        <p className={tw`text-2xl font-bold`}>{state.formSchema.form_title}</p>
+                        <Tooltip
+                            placement="right-end"
+                            trigger="hover"
+                            delayHide={200}
+                            tooltip={
+                                <div className={tw`mx-2 my-1 text-sm`}>
+                                    <p className={tw`mb-1`}><strong>{state.formSchema.form_title}</strong></p>
+                                    <p>{state.formSchema?.form_description ?? null}</p>
+                                </div>
+                            }
+                            hideArrow={true}
+                            modifiers={[
+                                {
+                                    name: "offset",
+                                    enabled: true,
+                                    options: {
+                                        offset: [0, 10]
+                                    }
+                                }
+                            ]}
+                        >
+                            <AiOutlineQuestionCircle className={tw`text-red-600`} size={"1.5em"}/>
+                        </Tooltip>
+                    </div>
+
                     <Form
                         id={formID ?? null}
                         schema={state.formSchema}
                         uiSchema={state.uiSchema}
                         formData={state.formData}
-                        formContext={{...formContext, lovOptions: state.lovOptions, formData: state.formData,mandatoryFieldValidation: state.mandatoryFieldValidation}}
+                        formContext={{
+                            ...formContext,
+                            lovOptions: state.lovOptions,
+                            formData: state.formData,
+                            mandatoryFieldValidation: state.mandatoryFieldValidation
+                        }}
                         widgets={customWidgets}
                         onChange={({formData}) => {
-                            setState({...state, formData: formData})
+                            setState({...state, formData: formData, formErrors: []})
                             console.log("data changed", formData);
                         }}
                         liveValidate={true}
                         noHtml5Validate={true}
-                        validate={(formData, errors)=>{
-                            return validation(formData, errors)}}
+                        validate={(formData, errors) => {
+                            return validation(formData, errors)
+                        }}
                         onError={(errors) => {
                             console.log(errors)
                             setState({
@@ -194,13 +233,14 @@ const FormBuilder = (props) => {
                         showErrorList={false}
                         onSubmit={onFormSubmit}>
 
-                        <div className={tw`my-4 mb-14 ml-10 mr-14`}>
-                            <div>
-                                <ul>{getErrMsg()}</ul>
-                            </div>
-                            <div className={tw`flex justify-between`}>
+                        <div className={tw`mt-1 mb-14 ml-10 mr-14`}>
+                            {state.formErrors && state.formErrors.length > 0 && <div className={tw`flex justify-end mb-2`}>
+                                <ul className={tw`border p-2 rounded-lg bg-red-200 text-sm`}>{getErrMsg()}</ul>
+                            </div>}
+                            <div className={tw`flex justify-between pt-2`}>
                                 <div className={state.newForm ? tw`invisible` : tw``}>
-                                    <button className={tw`py-1 px-2 ml-16 border bg-color-warning rounded text-white`}
+                                    <button
+                                        className={tw`bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`}
                                             type="button"
                                             onClick={() => {
                                                 setState({...state, shouldDeleteConfirmModalOpen: true})
@@ -209,14 +249,16 @@ const FormBuilder = (props) => {
                                     </button>
                                 </div>
                                 <div>
-                                    <button className={tw`py-1 px-2 mr-4 border bg-color-revert rounded text-black`}
+                                    <button
+                                        className={tw`text-gray-500 font-bold uppercase px-5 py-2 text-sm outline-none focus:outline-none mr-1 mb-1`}
                                             type="button"
                                             onClick={() => {
                                                 handleFormCancel();
                                             }}>
                                         Cancel
                                     </button>
-                                    <button className={tw`py-1 px-2 border bg-color-action rounded`}
+                                    <button
+                                        className={tw`bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`}
                                             type="submit">
                                         Save
                                     </button>
@@ -225,10 +267,10 @@ const FormBuilder = (props) => {
                         </div>
                     </Form>
                 </div>
-                <div className={tw`w-1/5 p-5`}>
+                <div className={tw`w-1/5 p-5 mt-1`}>
                     {/*<button onClick={() => {*/}
                     {/*}}>{state.mandatoryFieldValidation ? "Save Without Required Field" : "Save With Required Field"}</button>*/}
-                    <input type={"radio"} checked={!state.mandatoryFieldValidation}
+                    <input type={"radio"} checked={!state.mandatoryFieldValidation} className={tw``}
                            onChange={() => {
                            }}
                            onClick={() => {

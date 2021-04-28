@@ -176,7 +176,7 @@ export const DatePickerCalendarContainerStyle = css`
 `
 
 export const SubsectionFormatterContainerStyle = css`
-  ${apply('w-full h-full')}
+  ${apply('w-full h-full mb-1.5')}
   
   & > div {
     ${apply('shadow-sm')}

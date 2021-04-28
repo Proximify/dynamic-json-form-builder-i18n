@@ -13,7 +13,7 @@ const GenericFieldTemplate = (props) => {
     const {label, children, rawErrors, schema, formContext, formData} = props;
 
     return (
-        <div className={tw`my-4 flex justify-between`}>
+        <div className={tw`my-3 flex justify-between`}>
             <div className={tw`w-5/12 flex justify-end`}>
                 <div className={tw`flex items-center text-base font-semibold text-gray-700`}>
                     {label && <label className={tw`text-right`}>{label}</label>}
@@ -23,10 +23,10 @@ const GenericFieldTemplate = (props) => {
                         trigger="hover"
                         delayHide={150}
                         tooltip={
-                            schema.description ? <>
-                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                <div>{descriptions[schema.field_type]}</div>
-                            </> : <div>{label}</div>
+                            schema.description ? <div className={tw`text-sm`}>
+                                <p dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                <p>{descriptions[schema.field_type]}</p>
+                            </div> : <div className={tw`text-sm`}>{label}</div>
                         }
                         hideArrow={true}
                         modifiers={[
@@ -44,9 +44,7 @@ const GenericFieldTemplate = (props) => {
                 </div>
             </div>
             <div className={tw`w-7/12 max-w-sm sm:(pl-4 pr-6) xl:(pl-0 pr-14)`}>
-
                 {children}
-
                 <div className={tw`${rawErrors ? '' : 'hidden'}`}>
                     {rawErrors ? rawErrors.map((error, index) => {
                         if (!error.includes("is required")) {

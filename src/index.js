@@ -42,9 +42,9 @@ class App extends Component {
                         "color-primary": "#26a0f1",
                         "color-secondary": "#9b6904",
                         "color-info": "#36c",
-                        "color-action": "#c66216",
+                        "color-action": "#d97e38",
                         "color-transparent": "#ffffff",
-                        "color-warning": "#f65555",
+                        "color-warning": "#f86262",
                         "color-revert": "#cdcdcd",
                         "color-confirm": "#1d3b79"
                     },

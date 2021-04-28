@@ -15,8 +15,11 @@ const descriptions = {
         included: <strong>yyyy</strong>/m/d.</p>
 }
 
-const itemValueValidator = (itemData) => {
+const itemValueValidator = (itemData, arrayFieldSchema, mandatoryValidate = true) => {
+    const {items} = arrayFieldSchema;
     const itemFormData = {...itemData};
+    // console.log(itemData, items.properties);
+
     if (isEmpty(itemFormData)) {
         return false;
     } else {
@@ -31,13 +34,22 @@ const itemValueValidator = (itemData) => {
                     valid = true;
                 }
             })
+            if (mandatoryValidate) {
+                Object.keys(items.properties).forEach(subFieldName => {
+                    if (items.properties[subFieldName].mandatory === true) {
+                        if (!itemData[subFieldName]) {
+                            valid = false;
+                        }
+                    }
+                })
+            }
             return valid;
         }
     }
 }
 
 export function SortableArrayFieldTemplate(props) {
-    const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
+    const {title, items, canAdd, onAddClick, formData, formContext, schema} = props;
 
     const [state, setState] = useState(
         {
@@ -49,7 +61,7 @@ export function SortableArrayFieldTemplate(props) {
     )
 
     const isItemValueValid = (index) => {
-        return itemValueValidator(formData[index]);
+        return itemValueValidator(formData[index], schema, formContext.mandatoryFieldValidation);
     }
 
     const handleOnDragEnd = (result) => {
@@ -104,10 +116,10 @@ export function SortableArrayFieldTemplate(props) {
                         trigger="hover"
                         delayHide={150}
                         tooltip={
-                            <>
-                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                            <div className={tw`text-sm`}>
+                                <p dangerouslySetInnerHTML={{__html: schema.description}}/>
                                 <p>{descriptions[schema.field_type]}</p>
-                            </>
+                            </div>
                         }
                         hideArrow={true}
                         modifiers={[
@@ -219,7 +231,9 @@ export function SortableArrayFieldTemplate(props) {
 }
 
 export function ArrayFieldTemplate(props) {
-    const {title, items, canAdd, onAddClick, required, formData, formContext, schema} = props;
+    console.log(props);
+
+    const {title, items, canAdd, onAddClick, formData, formContext, schema, rawErrors} = props;
 
     const [state, setState] = useState(
         {
@@ -231,7 +245,7 @@ export function ArrayFieldTemplate(props) {
     )
 
     const isItemValueValid = (index) => {
-        return itemValueValidator(formData[index])
+        return itemValueValidator(formData[index], schema,formContext.mandatoryFieldValidation)
     }
 
     return (
@@ -245,10 +259,10 @@ export function ArrayFieldTemplate(props) {
                         trigger="hover"
                         delayHide={150}
                         tooltip={
-                            <>
-                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                            <div className={tw`text-sm`}>
+                                <p dangerouslySetInnerHTML={{__html: schema.description}}/>
                                 <p>{descriptions[schema.field_type]}</p>
-                            </>
+                            </div>
                         }
                         hideArrow={true}
                         modifiers={[
@@ -318,6 +332,13 @@ export function ArrayFieldTemplate(props) {
                             }
                         </ul>
                     </div>
+                    {rawErrors ? rawErrors.map((error, index) => {
+                        if (!error.includes("is required")) {
+                            return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
+                        }else {
+                            return (formContext.mandatoryFieldValidation && <li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
+                        }
+                    }) : null}
                 </div>
                 {
                     formData.length > 0 && state.open && state.index >= 0 &&

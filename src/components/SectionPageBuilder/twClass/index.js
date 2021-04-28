@@ -18,7 +18,7 @@ export const StyledSectionContainer = styled("div", {
 
     variants: {
         layer: {
-            1: `mb-1 pl-4 py-1 text-red-200`,
+            1: `mb-1 pl-4 py-1`,
             2: `mb-2 pl-4 py-1`,
             3: `mb-6 mt-1 mx-3`
         }
