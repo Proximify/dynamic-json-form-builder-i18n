@@ -106,6 +106,7 @@ export function StringInputWidget(props) {
             maxLength={props.schema.max_char_count ?? undefined}
             id={props.schema.id}
             value={value}
+            style={{height: '2.4rem'}}
             required={props.required}
             onChange={event => handleValueChange(event.target.value, props.rawErrors, setValue, props.onChange)}
             onBlur={() => props.onChange(value !== "" ? value : undefined)}

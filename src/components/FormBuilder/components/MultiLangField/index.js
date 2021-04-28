@@ -166,7 +166,7 @@ export function MultiLangFieldWidget(props) {
     const LangDropDownBtn = () => {
         return (
             <div
-                className={state.isRichText ? tw`focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500` : tw`w-full h-full focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-r align-middle text-gray-500`}
+                className={tw`text-sm border-gray-300 rounded-r align-middle text-gray-500 ${!state.isRichText && 'w-full h-full'}`}
             >
                 <div className={tw`w-full h-full items-center justify-center`}>
                     <Menu>
@@ -325,7 +325,7 @@ export function MultiLangFieldWidget(props) {
 
             </div>
 
-            <div className={`mt-1 ${!state.isBilingual ? "hidden" : ""}`}>
+            <div className={tw`mt-1 mb-1.5 ${!state.isBilingual ? "hidden" : ""}`}>
                 <div className={tw`${BilingualContainerStyle}`}>
                     {state.isRichText ?
                         <div className={tw`${MultiLangRichTextInputStyle}`}>
@@ -361,7 +361,7 @@ export function MultiLangFieldWidget(props) {
                     }
                 </div>
             </div>
-            <div>
+            <div className={tw`flex justify-end hover:underline`}>
                 <a
                     className={(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? tw`hidden` : tw`px-1 py-1 leading-normal text-sm text-blue-500 font-medium`}
                     onClick={() => {

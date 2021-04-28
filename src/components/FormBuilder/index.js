@@ -17,9 +17,7 @@ import {
     MultiColLargeSelectionWidget
 } from "./components/SelectionField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
-import {SortableArrayFieldTemplate, ArrayFieldTemplate} from './components/utils/ArrayFieldTemplate';
 import {ModalDeleteConfirm} from "./components/utils/Modals";
-import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
 import {tw} from "twind";
@@ -29,6 +27,7 @@ import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
 import {handleFormSubmit, handleFormDelete} from "./service/formDataHandler";
 import Tooltip from "./components/utils/Tooltip";
 import {AiOutlineQuestionCircle} from "react-icons/ai";
+import {FormCancelBtnClass, FormClass, FormDeleteBtnClass, FormSubmitBtnClass} from "./twClass";
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -147,7 +146,7 @@ const FormBuilder = (props) => {
                                 formData[fieldName].forEach((subsection, index) => {
                                     if (!subFieldValidation.validateMethod(subsection, state.mandatoryFieldValidation)) {
                                         errors[fieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
-                                        // errors[fieldName][index].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
+                                        errors[fieldName][index].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
                                         if (errors[fieldName][index][subFieldName]) {
                                             errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
                                         }
@@ -204,7 +203,7 @@ const FormBuilder = (props) => {
                     </div>
 
                     <Form
-                        id={formID ?? null}
+                        className={tw`${FormClass}`}
                         schema={state.formSchema}
                         uiSchema={state.uiSchema}
                         formData={state.formData}
@@ -235,14 +234,14 @@ const FormBuilder = (props) => {
                         showErrorList={false}
                         onSubmit={onFormSubmit}>
 
-                        <div className={tw`mt-1 mb-14 ml-10 mr-14`}>
-                            {state.formErrors && state.formErrors.length > 0 && <div className={tw`flex justify-end mb-2`}>
-                                <ul className={tw`border p-2 rounded-lg bg-red-200 text-sm`}>{getErrMsg()}</ul>
+                        <div className={'form-action'}>
+                            {state.formErrors && state.formErrors.length > 0 && <div className={'form-error-list'}>
+                                <ul className={'error-list'}>{getErrMsg()}</ul>
                             </div>}
-                            <div className={tw`flex justify-between pt-2`}>
+                            <div className={'action-btn-container'}>
                                 <div className={state.newForm ? tw`invisible` : tw``}>
                                     <button
-                                        className={tw`bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`}
+                                        className={tw`${FormDeleteBtnClass}`}
                                             type="button"
                                             onClick={() => {
                                                 setState({...state, shouldDeleteConfirmModalOpen: true})
@@ -252,15 +251,14 @@ const FormBuilder = (props) => {
                                 </div>
                                 <div>
                                     <button
-                                        className={tw`text-gray-500 font-bold uppercase px-5 py-2 text-sm outline-none focus:outline-none mr-1 mb-1`}
+                                        className={tw`${FormCancelBtnClass}`}
                                             type="button"
                                             onClick={() => {
                                                 handleFormCancel();
                                             }}>
                                         Cancel
                                     </button>
-                                    <button
-                                        className={tw`bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1`}
+                                    <button className={tw`${FormSubmitBtnClass}`}
                                             type="submit">
                                         Save
                                     </button>

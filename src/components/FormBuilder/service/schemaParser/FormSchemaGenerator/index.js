@@ -3,7 +3,7 @@ import FormValidationGenerator from "./FormValidationGenerator";
 import {bilingualValueParser} from '../../formDataHandler'
 import GenericFieldTemplate
     from "../../../components/utils/GenericFieldTemplate";
-import {SortableArrayFieldTemplate, ArrayFieldTemplate}
+import {ArrayFieldTemplate}
     from "../../../components/utils/ArrayFieldTemplate";
 import HiddenFieldTemplate
     from "../../../components/HiddenField/HiddenFieldTemplate";
@@ -205,7 +205,6 @@ class FormatterTracker {
 }
 
 const fieldIdNameMapper = (schema) => {
-    // console.log(schema);
     const {fields, subsections} = schema;
     const mapper = {};
     for (const [fieldId, field] of Object.entries(fields)) {
@@ -224,9 +223,6 @@ const fieldIdNameMapper = (schema) => {
                     parentName: subsection.name,
                     isSubsectionField: true
                 };
-                // if (field.type === 'section') {
-                //     mapper[fieldId]['subFields'] = fieldIdNameMapper(subsections[field.subsection_id])
-                // }
             }
         })
     }
@@ -335,13 +331,14 @@ const fieldStrSchemaGen = (field, schema) => {
             break;
         case "section":
             result["type"] = "array";
-            result["maxItems"] = field["max_char_count"] === null ? undefined : Number(schema["max_char_count"]);
             result["fullscreen"] = false;
             result["items"] = {}
             const subsectionId = field["subsection_id"];
             const subsections = schema.subsections
             if (subsectionId in subsections) {
                 result["fields"] = subsections[subsectionId].fields;
+                result["maxItems"] = subsections[subsectionId]["max_item_count"] ?? undefined;
+                result["sortable"] = subsections[subsectionId]['asc_item_order'] === "1";
                 result["items"] = formStrSchemaGen(subsections[subsectionId]);
                 if (result['items'].properties) {
                     result['items'].properties['itemId'] = {name: 'itemId', type: 'string'}
@@ -411,11 +408,6 @@ const customTemplates = {
     hiddenFieldTemplate: HiddenFieldTemplate
 }
 
-const customArrayTemplate = {
-    sortableArrayFieldTemplate: SortableArrayFieldTemplate,
-    arrayFieldTemplate: ArrayFieldTemplate
-}
-
 const fieldTypeWidgetMapper = {
     "lov": {
         "ui:FieldTemplate": customTemplates.genericFieldTemplate,
@@ -483,7 +475,8 @@ const formUISchemaGen = (schema) => {
             const subsections = schema.subsections;
             if (subsectionId in subsections) {
                 result[fieldName] = {
-                    "ui:ArrayFieldTemplate": subsections[subsectionId].asc_item_order === "1" ? customArrayTemplate.sortableArrayFieldTemplate : customArrayTemplate.arrayFieldTemplate,
+                    // "ui:ArrayFieldTemplate": subsections[subsectionId].asc_item_order === "1" ? customArrayTemplate.sortableArrayFieldTemplate : customArrayTemplate.arrayFieldTemplate,
+                    "ui:ArrayFieldTemplate": ArrayFieldTemplate,
                     "items": formUISchemaGen(subsections[subsectionId])
                 }
                 result[fieldName]['items']['itemId'] = {

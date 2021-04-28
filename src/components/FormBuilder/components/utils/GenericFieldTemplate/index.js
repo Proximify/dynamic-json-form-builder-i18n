@@ -2,6 +2,7 @@ import React from 'react';
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
 import Tooltip from "../Tooltip";
 import {tw} from "twind";
+import {FieldActionContainer, FieldContainer, FieldControlContainer, FieldLabelContainer} from "../twindClass";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -13,37 +14,13 @@ const GenericFieldTemplate = (props) => {
     const {label, children, rawErrors, schema, formContext, formData} = props;
 
     return (
-        <div className={tw`my-3 flex justify-between`}>
-            <div className={tw`w-5/12 flex justify-end`}>
-                <div className={tw`flex items-center text-base font-semibold text-gray-700`}>
-                    {label && <label className={tw`text-right`}>{label}</label>}
-                    {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
-                    {<Tooltip
-                        placement="right-start"
-                        trigger="hover"
-                        delayHide={150}
-                        tooltip={
-                            schema.description ? <div className={tw`text-sm`}>
-                                <p dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                <p>{descriptions[schema.field_type]}</p>
-                            </div> : <div className={tw`text-sm`}>{label}</div>
-                        }
-                        hideArrow={true}
-                        modifiers={[
-                            {
-                                name: "offset",
-                                enabled: true,
-                                options: {
-                                    offset: [0, 8]
-                                }
-                            }
-                        ]}
-                    >
-                        <AiOutlineQuestionCircle className={tw`text-gray-400 mx-1`} size={'1.1em'}/>
-                    </Tooltip>}
-                </div>
+        <div className={tw`${FieldContainer}`}>
+            <div className={tw`${FieldLabelContainer}`}>
+                {label && <label className={tw`text-right`}>{label}</label>}
+                {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
             </div>
-            <div className={tw`w-7/12 max-w-sm sm:(pl-4 pr-6) xl:(pl-0 pr-14)`}>
+
+            <div className={tw`${FieldControlContainer}`}>
                 {children}
                 <div className={tw`${rawErrors ? '' : 'hidden'}`}>
                     {rawErrors ? rawErrors.map((error, index) => {
@@ -55,7 +32,31 @@ const GenericFieldTemplate = (props) => {
                     <li className={tw`text-red-600 text-sm`}>{`${label} is required`}</li>}
                 </div>
             </div>
-
+            <div className={tw`${FieldActionContainer}`}>
+                {<Tooltip
+                    placement="right-start"
+                    trigger="hover"
+                    delayHide={150}
+                    tooltip={
+                        schema.description ? <div className={tw`text-sm`}>
+                            <p dangerouslySetInnerHTML={{__html: schema.description ?? label}}/>
+                            <p>{descriptions[schema.field_type]}</p>
+                        </div> : <div className={tw`text-sm`}>{label}</div>
+                    }
+                    hideArrow={true}
+                    modifiers={[
+                        {
+                            name: "offset",
+                            enabled: true,
+                            options: {
+                                offset: [0, 8]
+                            }
+                        }
+                    ]}
+                >
+                    <AiOutlineQuestionCircle className={tw`text-gray-400 mx-1`} size={'1.2em'}/>
+                </Tooltip>}
+            </div>
         </div>
     );
 }

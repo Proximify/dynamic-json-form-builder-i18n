@@ -6,7 +6,13 @@ import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import ModalArrayItem from "../Modals";
 import Formatter from "../../../../Formatter";
 import Tooltip from "../Tooltip";
-import {SubsectionFormatterContainerStyle} from "../twindClass";
+import {
+    FieldActionContainer,
+    FieldContainer,
+    FieldControlContainer,
+    FieldLabelContainer,
+    SubsectionFormatterContainerStyle
+} from "../twindClass";
 import {tw} from "twind";
 
 const descriptions = {
@@ -48,20 +54,22 @@ const itemValueValidator = (itemData, arrayFieldSchema, mandatoryValidate = true
     }
 }
 
-export function SortableArrayFieldTemplate(props) {
-    const {title, items, canAdd, onAddClick, formData, formContext, schema} = props;
+export function ArrayFieldTemplate(props) {
+    console.log(props);
+    const {title, items, canAdd, onAddClick, formData, formContext, schema, rawErrors} = props;
 
     const [state, setState] = useState(
         {
             open: false,
             edit: false,
             index: -1,
-            dataPrev: null
+            dataPrev: null,
+            sortable: schema.sortable
         }
     )
 
     const isItemValueValid = (index) => {
-        return itemValueValidator(formData[index], schema, formContext.mandatoryFieldValidation);
+        return itemValueValidator(formData[index], schema, formContext.mandatoryFieldValidation)
     }
 
     const handleOnDragEnd = (result) => {
@@ -106,41 +114,16 @@ export function SortableArrayFieldTemplate(props) {
     }
 
     return (
-        <div className={tw`my-3 flex justify-between`}>
-            <div className={tw`w-5/12 flex justify-end`}>
-                <div className={tw`flex items-center text-base font-semibold text-gray-700`}>
+        <div className={tw`${FieldContainer}`}>
+            <div className={tw`${FieldLabelContainer}`}>
                     {title && <label className={tw`text-right`}>{title}</label>}
                     {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
-                    {schema.description && <Tooltip
-                        placement="right-start"
-                        trigger="hover"
-                        delayHide={150}
-                        tooltip={
-                            <div className={tw`text-sm`}>
-                                <p dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                <p>{descriptions[schema.field_type]}</p>
-                            </div>
-                        }
-                        hideArrow={true}
-                        modifiers={[
-                            {
-                                name: "offset",
-                                enabled: true,
-                                options: {
-                                    offset: [0, 8]
-                                }
-                            }
-                        ]}
-                    >
-                        <AiOutlineQuestionCircle size={"1.1em"} className={tw`text-gray-400 mx-1`}/>
-                    </Tooltip>}
-                </div>
             </div>
-            <div className={tw`w-7/12 flex items-center max-w-sm sm:(pl-4 pr-6) xl:(pl-0 pr-14)`}>
+            <div className={tw`${FieldControlContainer}`}>
                 <div className={tw`${SubsectionFormatterContainerStyle}`}>
                     {canAdd &&
                     <a type="button"
-                       className={tw`text-blue-600`}
+                       className={tw`text-blue-600 flex items-center space-x-1`}
                        onClick={() => {
                            setState({
                                ...state,
@@ -151,196 +134,112 @@ export function SortableArrayFieldTemplate(props) {
                            })
                            return onAddClick();
                        }}
-                    >< AiOutlinePlusCircle size={"1.2em"}/></a>}
+                    ><AiOutlinePlusCircle size={"1.2em"} /><span className={tw`text-sm hover:underline`}>Add</span></a>}
                     <div
                         className={formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`}>
-                        <DragDropContext onDragEnd={handleOnDragEnd}>
-                            <Droppable droppableId={title}>
-                                {(provided) => (
-                                    <ul {...provided.droppableProps} ref={provided.innerRef}>
-                                        {
-                                            [...formData].sort((a, b) => ((a.order && b.order) && Number(a.order) > Number(b.order) ? 1 : -1)).map((item, index) => {
-                                                return (
-                                                    <Draggable key={index} draggableId={`${schema.id}_${index}`}
-                                                               index={index}>
-                                                        {(provided) => (
-                                                            <li {...provided.draggableProps} {...provided.dragHandleProps}
-                                                                ref={provided.innerRef}
-                                                                className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
-                                                            >
-                                                                <div>
-                                                                    <Formatter app={"CV"}
-                                                                               structureChain={[...formContext.structureChain, schema.name]}
-                                                                               isFullScreenViewMode={false}
-                                                                               schema={schema}
-                                                                               rawData={item}
-                                                                    />
-                                                                </div>
-                                                                <div className={tw`mt-0.5`}>
-                                                                    <BiPencil
-                                                                        className={tw`cursor-pointer mx-1`}
-                                                                        onClick={() => {
-                                                                            const itemIndex = formData.findIndex(data => data.order === item.order);
-                                                                            setState({
-                                                                                ...state,
-                                                                                open: true,
-                                                                                edit: true,
-                                                                                index: itemIndex,
-                                                                                dataPrev: formData[itemIndex]
-                                                                            })
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            </li>
-                                                        )}
-                                                    </Draggable>
-                                                )
-                                            })}
+                        {state.sortable ? <DragDropContext onDragEnd={handleOnDragEnd}>
+                                <Droppable droppableId={title}>
+                                    {(provided) => (
+                                        <ul {...provided.droppableProps} ref={provided.innerRef}>
+                                            {
+                                                [...formData].sort((a, b) => ((a.order && b.order) && Number(a.order) > Number(b.order) ? 1 : -1)).map((item, index) => {
+                                                    return (
+                                                        <Draggable key={index} draggableId={`${schema.id}_${index}`}
+                                                                   index={index}>
+                                                            {(provided) => (
+                                                                <li {...provided.draggableProps} {...provided.dragHandleProps}
+                                                                    ref={provided.innerRef}
+                                                                    className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
+                                                                >
+                                                                    <div>
+                                                                        <Formatter app={"CV"}
+                                                                                   structureChain={[...formContext.structureChain, schema.name]}
+                                                                                   isFullScreenViewMode={false}
+                                                                                   schema={schema}
+                                                                                   rawData={item}
+                                                                        />
+                                                                    </div>
+                                                                    <div className={tw`mt-0.5`}>
+                                                                        <BiPencil
+                                                                            className={tw`cursor-pointer mx-1`}
+                                                                            onClick={() => {
+                                                                                const itemIndex = formData.findIndex(data => data.order === item.order);
+                                                                                setState({
+                                                                                    ...state,
+                                                                                    open: true,
+                                                                                    edit: true,
+                                                                                    index: itemIndex,
+                                                                                    dataPrev: formData[itemIndex]
+                                                                                })
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </li>
+                                                            )}
+                                                        </Draggable>
+                                                    )
+                                                })}
 
-                                        {provided.placeholder}
-                                    </ul>
-                                )}
-                            </Droppable>
-                        </DragDropContext>
-                    </div>
-                </div>
-                {
-                    formData.length > 0 && state.open && state.index >= 0 &&
-                    formData.map((item, index) => {
-                        if (index === state.index) {
-                            if (!state.edit) {
-                                formData[index]["order"] = (Math.max(...formData.map(data => data.order ?? 0)) + 1).toString();
-                            }
-                        }
-                        return index === state.index &&
-                            <ModalArrayItem
-                                key={index} state={state}
-                                setState={setState}
-                                index={index}
-                                children={items[index].children}
-                                context={formContext}
-                                dropItem={items[index].onDropIndexClick(index)}
-                                title={title}
-                                itemValueValidator={isItemValueValid}
-                            />
-                    })
-                }
-            </div>
-        </div>
-    )
-}
-
-export function ArrayFieldTemplate(props) {
-    const {title, items, canAdd, onAddClick, formData, formContext, schema, rawErrors} = props;
-
-    const [state, setState] = useState(
-        {
-            open: false,
-            edit: false,
-            index: -1,
-            dataPrev: null
-        }
-    )
-
-    const isItemValueValid = (index) => {
-        return itemValueValidator(formData[index], schema,formContext.mandatoryFieldValidation)
-    }
-
-    return (
-        <div className={tw`my-3 flex justify-between`}>
-            <div className={tw`w-5/12 flex justify-end`}>
-                <div className={tw`flex items-center text-base font-semibold text-gray-700`}>
-                    {title && <label className={tw`text-right`}>{title}</label>}
-                    {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
-                    {schema.description && <Tooltip
-                        placement="right-start"
-                        trigger="hover"
-                        delayHide={150}
-                        tooltip={
-                            <div className={tw`text-sm`}>
-                                <p dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                <p>{descriptions[schema.field_type]}</p>
-                            </div>
-                        }
-                        hideArrow={true}
-                        modifiers={[
-                            {
-                                name: "offset",
-                                enabled: true,
-                                options: {
-                                    offset: [0, 8]
+                                            {provided.placeholder}
+                                        </ul>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
+                            :
+                            <ul>
+                                {
+                                    formData.map((item, index) => {
+                                        return (
+                                            <li key={index}
+                                                className={tw`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 && 'border-b'}`}
+                                            >
+                                                <div>
+                                                    <Formatter app={"CV"}
+                                                               structureChain={[...formContext.structureChain, schema.name]}
+                                                               isFullScreenViewMode={false}
+                                                               schema={schema}
+                                                               rawData={item}
+                                                    />
+                                                </div>
+                                                <div className={tw`mt-0.5`}>
+                                                    <BiPencil
+                                                        className={tw`cursor-pointer mx-1 align-top`}
+                                                        onClick={() => {
+                                                            setState({
+                                                                ...state,
+                                                                open: true,
+                                                                edit: true,
+                                                                index: index,
+                                                                dataPrev: formData[index]
+                                                            })
+                                                        }}
+                                                    />
+                                                </div>
+                                            </li>
+                                        )
+                                    })
                                 }
-                            }
-                        ]}
-                    >
-                        <AiOutlineQuestionCircle size={"1.1em"} className={tw`text-gray-400 mx-1`}/>
-                    </Tooltip>}
-                </div>
-            </div>
-            <div className={tw`w-7/12 flex items-center max-w-sm sm:(pl-4 pr-6) xl:(pl-0 pr-14)`}>
-                <div className={tw`${SubsectionFormatterContainerStyle}`}>
-                    {canAdd &&
-                    <a type="button"
-                       className={tw`text-blue-600`}
-                       onClick={() => {
-                           setState({
-                               ...state,
-                               open: true,
-                               edit: false,
-                               index: formData.length,
-                               dataPrev: null
-                           })
-                           return onAddClick();
-                       }}
-                    >< AiOutlinePlusCircle size={"1.2em"}/></a>}
-                    <div
-                        className={formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`}>
-                        <ul>
-                            {
-                                formData.map((item, index) => {
-                                    return (
-                                        <li key={index}
-                                            className={tw`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 && 'border-b'}`}
-                                        >
-                                            <div>
-                                                <Formatter app={"CV"}
-                                                           structureChain={[...formContext.structureChain, schema.name]}
-                                                           isFullScreenViewMode={false}
-                                                           schema={schema}
-                                                           rawData={item}
-                                                />
-                                            </div>
-                                            <div className={tw`mt-0.5`}>
-                                                <BiPencil
-                                                    className={tw`cursor-pointer mx-1 align-top`}
-                                                    onClick={() => {
-                                                        setState({
-                                                            ...state,
-                                                            open: true,
-                                                            edit: true,
-                                                            index: index,
-                                                            dataPrev: formData[index]
-                                                        })
-                                                    }}
-                                                />
-                                            </div>
-                                        </li>
-                                    )
-                                })
-                            }
-                        </ul>
+                            </ul>
+                        }
+
                     </div>
                     {rawErrors ? rawErrors.map((error, index) => {
                         if (!error.includes("is required")) {
                             return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
-                        }else {
-                            return (formContext.mandatoryFieldValidation && <li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
+                        } else {
+                            return (formContext.mandatoryFieldValidation &&
+                                <li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
                         }
                     }) : null}
                 </div>
                 {
                     formData.length > 0 && state.open && state.index >= 0 &&
                     formData.map((item, index) => {
+                        if (state.sortable && index === state.index) {
+                            if (!state.edit) {
+                                formData[index]["order"] = (Math.max(...formData.map(data => data.order ?? 0)) + 1).toString();
+                            }
+                        }
                         return index === state.index &&
                             <ModalArrayItem
                                 key={index}
@@ -355,6 +254,31 @@ export function ArrayFieldTemplate(props) {
                             />
                     })
                 }
+            </div>
+            <div className={tw`${FieldActionContainer}`}>
+                <Tooltip
+                    placement="right-start"
+                    trigger="hover"
+                    delayHide={150}
+                    tooltip={
+                        <div className={tw`text-sm`}>
+                            <p dangerouslySetInnerHTML={{__html: schema.description ?? title}}/>
+                            <p>{descriptions[schema.field_type]}</p>
+                        </div>
+                    }
+                    hideArrow={true}
+                    modifiers={[
+                        {
+                            name: "offset",
+                            enabled: true,
+                            options: {
+                                offset: [0, 8]
+                            }
+                        }
+                    ]}
+                >
+                    <AiOutlineQuestionCircle size={"1.2em"} className={tw`text-gray-400 mx-1`}/>
+                </Tooltip>
             </div>
         </div>
     )
