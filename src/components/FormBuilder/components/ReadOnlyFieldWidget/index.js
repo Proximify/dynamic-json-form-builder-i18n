@@ -7,7 +7,7 @@ import TextareaAutosize from "react-textarea-autosize";
 export default function ReadOnlyFieldWidget(props) {
     console.log("ReadOnlyFieldWidget", props);
     const {formData, fieldIdNameMapper} = props.formContext;
-    const {constraints} = props.schema;
+    const {constraints,type} = props.schema;
     const [value, setValue] = useState(props.value && props.value !== "NaN" ? props.value : "0");
 
     useEffect(() => {
@@ -38,13 +38,15 @@ export default function ReadOnlyFieldWidget(props) {
         }
     }, [formData])
 
-
+    if (props.schema.currencyField === 'convertedAmount'){
+        return <p>{value}</p>
+    }
     return (
         <TextareaAutosize
             minRows={1}
             readOnly={true}
             id={props.schema.id}
-            value={value + "%"}
+            value={value + `${type === 'slider' ? '%' : ''}`}
             className={tw`${TextAreaInputStyle} bg-gray-200`}
         />
     );

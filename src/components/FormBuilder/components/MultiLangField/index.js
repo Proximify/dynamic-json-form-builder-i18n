@@ -120,7 +120,6 @@ export function MultiLangFieldWidget(props) {
                 }
             } else {
                 if (state.primaryContent){
-                    console.log(state.primaryContent);
                     bilingualValue[state.primaryLanguage] = state.primaryContent;
                 }
             }
@@ -325,7 +324,7 @@ export function MultiLangFieldWidget(props) {
 
             </div>
 
-            <div className={tw`mt-1 mb-1.5 ${!state.isBilingual ? "hidden" : ""}`}>
+            <div className={tw`mt-1 ${!state.isBilingual ? "hidden" : ""}`}>
                 <div className={tw`${BilingualContainerStyle}`}>
                     {state.isRichText ?
                         <div className={tw`${MultiLangRichTextInputStyle}`}>

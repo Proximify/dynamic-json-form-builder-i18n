@@ -1,21 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import Form from "@rjsf/core";
+import clone from 'clone';
 import {
-    NumberInputWidget,
-    StringInputWidget,
-    PhoneInputWidget,
-    ElapsedTimeWidget,
-    DateInputWidget,
-    MonthDayInputWidget,
-    YearMonthInputWidget,
-    YearInputWidget,
     BooleanInputWidget,
-    SliderInputWidget
+    DateInputWidget,
+    ElapsedTimeWidget,
+    MonthDayInputWidget,
+    NumberInputWidget,
+    PhoneInputWidget,
+    SliderInputWidget,
+    StringInputWidget,
+    YearInputWidget,
+    YearMonthInputWidget
 } from "./components/SingleField";
-import {
-    SingleLargeSelectionWidget,
-    MultiColLargeSelectionWidget
-} from "./components/SelectionField";
+import {MultiColLargeSelectionWidget, SingleLargeSelectionWidget} from "./components/SelectionField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
 import {ModalDeleteConfirm} from "./components/utils/Modals";
 import HiddenFieldWidget from "./components/HiddenField";
@@ -24,10 +22,16 @@ import {tw} from "twind";
 
 import {fetchFormSchema, fetchLovOptions} from "./service/api";
 import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
-import {handleFormSubmit, handleFormDelete} from "./service/formDataHandler";
+import {handleFormDelete, handleFormSubmit} from "./service/formDataHandler";
 import Tooltip from "./components/utils/Tooltip";
 import {AiOutlineQuestionCircle} from "react-icons/ai";
 import {FormCancelBtnClass, FormClass, FormDeleteBtnClass, FormSubmitBtnClass} from "./twClass";
+import {
+    CurrencyFieldTemplate,
+    FundingFieldTemplate,
+    FundingGroupFieldTemplate
+} from "./components/utils/FundingFroupFieldTemplate";
+import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -73,7 +77,9 @@ const FormBuilder = (props) => {
         formData: {},
         initialFormData: {},
         formSchema: {},
+        initialFormSchema: {},
         uiSchema: {},
+        initialUiSchema: {},
         validations: {},
         lovOptions: {},
         newForm: false,
@@ -87,12 +93,22 @@ const FormBuilder = (props) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             fetchLovOptions(lovSubtypeIDs, (optRes => {
                 const parsedSchema = SchemaParser(res);
+                const preprocessedSchema = clone(parsedSchema.formSchema);
+                formSchemaPreprocessor(preprocessedSchema);
+                const preprocessedData = clone(parsedSchema.dataSchema);
+                dataSchemaPreprocessor(preprocessedData, parsedSchema.formSchema);
+                const preprocessedUi = clone(parsedSchema.uiSchema);
+                uiSchemaPreprocessor(preprocessedUi, parsedSchema.formSchema, 0, preprocessedSchema);
+
+
                 setState({
                     ...state,
-                    formData: parsedSchema.dataSchema,
+                    formData: preprocessedData,
                     initialFormData: parsedSchema.dataSchema,
-                    formSchema: parsedSchema.formSchema,
-                    uiSchema: parsedSchema.uiSchema,
+                    formSchema: preprocessedSchema,
+                    initialFormSchema: parsedSchema.formSchema,
+                    uiSchema: preprocessedUi,
+                    initialUiSchema: parsedSchema.uiSchema,
                     validations: parsedSchema.validations,
                     fieldIdNameMapper: parsedSchema.fieldIdNameMapper,
                     lovOptions: optRes,
@@ -112,6 +128,7 @@ const FormBuilder = (props) => {
 
 
     const onFormSubmit = () => {
+        //console.log(state.formData, state.initialFormData);
         handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes)
     }
 
@@ -163,12 +180,110 @@ const FormBuilder = (props) => {
     }
 
 
+    const formSchemaPreprocessor = (schema, count = 0) => {
+        const {properties: fields, fundingFormGroupFields} = schema;
+        if (fundingFormGroupFields) {
+            fundingFormGroupFields.forEach(groupFields => {
+                const fundingFormGroup = {
+                    "type": "object",
+                    "id": `fundingGroup${count}`,
+                    "properties": {}
+                }
+                groupFields.forEach(groupField => {
+                    const field = fields[groupField.field_name];
+                    if (groupField.fundingType === 'amount') {
+                        fundingFormGroup.title = field.title;
+                        fundingFormGroup['order_number'] = field.order_number;
+                    }
+                    fundingFormGroup.properties[groupField.field_name] = field;
+                    delete fields[groupField.field_name];
+                })
+                fields[fundingFormGroup.id] = fundingFormGroup;
+                count++;
+            })
+            for (const [fieldName, field] of Object.entries(fields)) {
+                if (field.type === "array") {
+                    formSchemaPreprocessor(field.items, count);
+                }
+            }
+        }
+    }
+
+    const dataSchemaPreprocessor = (formData, formSchema, count = 0) => {
+        // console.log(formData, formSchema);
+        const {properties: fields, fundingFormGroupFields} = formSchema;
+        if (fundingFormGroupFields) {
+            fundingFormGroupFields.forEach(groupFields => {
+                const fundingFormGroup = {};
+                const fundingFormGroupName = `fundingGroup${count}`;
+                groupFields.forEach(groupField => {
+                    fundingFormGroup[groupField.field_name] = formData[groupField.field_name];
+                    delete formData[groupField.field_name];
+                })
+                formData[fundingFormGroupName] = fundingFormGroup;
+                count++;
+            })
+            for (const [fieldName, field] of Object.entries(fields)) {
+                if (field.type === "array") {
+                    formData[fieldName].forEach(subFormData => {
+                        dataSchemaPreprocessor(subFormData, field.items, count);
+                    })
+                }
+            }
+        }
+    }
+
+    const uiSchemaPreprocessor = (uiSchema, formSchema, count = 0, preprocessedSchema) => {
+        const {properties: fields, fundingFormGroupFields} = formSchema;
+        if (fundingFormGroupFields) {
+            fundingFormGroupFields.forEach(groupFields => {
+                const fundingFormGroup = {
+                    "ui:ObjectFieldTemplate": FundingGroupFieldTemplate,
+                }
+                const fundingFormGroupName = `fundingGroup${count}`;
+                groupFields.forEach(groupField => {
+                    const fieldUi = uiSchema[groupField.field_name];
+                    if (groupField.fundingType === 'amount') {
+                        fieldUi['ui:FieldTemplate'] = FundingFieldTemplate;
+                    } else if (groupField.fundingType === 'currency') {
+                        fieldUi['ui:FieldTemplate'] = CurrencyFieldTemplate;
+                    } else if (groupField.fundingType === 'convertedAmount') {
+                        fieldUi['ui:FieldTemplate'] = HiddenFieldTemplate;
+                    }
+                    fundingFormGroup[groupField.field_name] = fieldUi;
+                    delete uiSchema[groupField.field_name];
+                })
+                uiSchema[fundingFormGroupName] = fundingFormGroup;
+                count++;
+            })
+            for (const [fieldName, field] of Object.entries(fields)) {
+                if (field.type === "array") {
+                    uiSchemaPreprocessor(uiSchema[fieldName]['items'], field.items, count, preprocessedSchema.properties[fieldName].items);
+                }
+            }
+        }
+        // console.log(formSchema, preprocessedSchema);
+        // console.log(Object.keys(preprocessedSchema.properties))
+        // console.log(sortedFieldName)
+        uiSchema['ui:order'] = Object.keys(preprocessedSchema.properties).sort((a, b) => {
+            // console.log(a,preprocessedSchema.properties[a]?.order_number, b,preprocessedSchema.properties[b]?.order_number)
+            return preprocessedSchema.properties[a]?.order_number - preprocessedSchema.properties[b]?.order_number
+        })
+    }
+
+
     if (!state.isReady) {
         return (
             <div>Loading...</div>
         )
     } else {
         // console.log(state)
+        // const preprocessedSchema = clone(state.formSchema);
+        // formSchemaPreprocessor(preprocessedSchema);
+        // console.log(state.uiSchema, state.formSchema)
+        // const preprocessedData = clone(state.formData);
+
+        // state.uiSchema[ "ui:order"]= ["end_date", "*"]
         return (
             <div className={tw`bg-gray-200 flex justify-center`}>
                 <div className={tw`w-1/5`}/>
@@ -242,20 +357,20 @@ const FormBuilder = (props) => {
                                 <div className={state.newForm ? tw`invisible` : tw``}>
                                     <button
                                         className={tw`${FormDeleteBtnClass}`}
-                                            type="button"
-                                            onClick={() => {
-                                                setState({...state, shouldDeleteConfirmModalOpen: true})
-                                            }}
+                                        type="button"
+                                        onClick={() => {
+                                            setState({...state, shouldDeleteConfirmModalOpen: true})
+                                        }}
                                     >Delete
                                     </button>
                                 </div>
                                 <div>
                                     <button
                                         className={tw`${FormCancelBtnClass}`}
-                                            type="button"
-                                            onClick={() => {
-                                                handleFormCancel();
-                                            }}>
+                                        type="button"
+                                        onClick={() => {
+                                            handleFormCancel();
+                                        }}>
                                         Cancel
                                     </button>
                                     <button className={tw`${FormSubmitBtnClass}`}

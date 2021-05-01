@@ -1,10 +1,13 @@
-import SchemaParser from "../schemaParser";
+import isObject from 'lodash/isObject';
 import api, {submitFormData} from "../api";
 
 export const handleFormSubmit = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, responseHandler) => {
-    const {formData: data, initialFormData: initialData, formSchema: schema, newForm} = state;
+    const {formData: data, initialFormData: initialData, initialFormSchema: schema, newForm} = state;
     const formData = new FormData();
     formData.append('action', newForm ? 'insert' : 'update');
+    // remove funding group
+    removeFundingGroupData(data);
+
     formDataBuilder(data, initialData, schema, formData, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
     submitFormData(formData, responseHandler);
 }
@@ -17,6 +20,22 @@ export const handleFormDelete = (state, sectionId, itemId, parentItemId, parentF
     submitFormData(formData, responseHandler);
 }
 
+const removeFundingGroupData = (data) => {
+    for (const [fieldName, fieldData] of Object.entries(data)) {
+        if (Array.isArray(fieldData)) {
+            fieldData.forEach(arrayFieldData => {
+                removeFundingGroupData(arrayFieldData);
+            })
+        } else {
+            if (fieldName.startsWith('fundingGroup')) {
+                Object.keys(fieldData).forEach(fundingGroupFieldName => {
+                    data[fundingGroupFieldName] = fieldData[fundingGroupFieldName];
+                })
+                delete data[fieldName];
+            }
+        }
+    }
+}
 
 export const bilingualValueParser = (field, fieldData, dataToServer = false, dataFromServer = false) => {
     const result = {};

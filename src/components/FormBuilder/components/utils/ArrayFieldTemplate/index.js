@@ -4,7 +4,7 @@ import {AiOutlinePlusCircle, AiOutlineQuestionCircle} from "react-icons/ai";
 import {BiPencil} from 'react-icons/bi';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import ModalArrayItem from "../Modals";
-import Formatter from "../../../../Formatter";
+import {formatBuilder} from "../ArrayFieldFormatter"
 import Tooltip from "../Tooltip";
 import {
     FieldActionContainer,
@@ -55,7 +55,6 @@ const itemValueValidator = (itemData, arrayFieldSchema, mandatoryValidate = true
 }
 
 export function ArrayFieldTemplate(props) {
-    console.log(props);
     const {title, items, canAdd, onAddClick, formData, formContext, schema, rawErrors} = props;
 
     const [state, setState] = useState(
@@ -116,8 +115,8 @@ export function ArrayFieldTemplate(props) {
     return (
         <div className={tw`${FieldContainer}`}>
             <div className={tw`${FieldLabelContainer}`}>
-                    {title && <label className={tw`text-right`}>{title}</label>}
-                    {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
+                {title && <label className={tw`text-right`}>{title}</label>}
+                {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
             </div>
             <div className={tw`${FieldControlContainer}`}>
                 <div className={tw`${SubsectionFormatterContainerStyle}`}>
@@ -134,7 +133,7 @@ export function ArrayFieldTemplate(props) {
                            })
                            return onAddClick();
                        }}
-                    ><AiOutlinePlusCircle size={"1.2em"} /><span className={tw`text-sm hover:underline`}>Add</span></a>}
+                    ><AiOutlinePlusCircle size={"1.2em"}/><span className={tw`text-sm hover:underline cursor-pointer`}>Add</span></a>}
                     <div
                         className={formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`}>
                         {state.sortable ? <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -152,16 +151,17 @@ export function ArrayFieldTemplate(props) {
                                                                     className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
                                                                 >
                                                                     <div>
-                                                                        <Formatter app={"CV"}
-                                                                                   structureChain={[...formContext.structureChain, schema.name]}
-                                                                                   isFullScreenViewMode={false}
-                                                                                   schema={schema}
-                                                                                   rawData={item}
-                                                                        />
+                                                                        <div dangerouslySetInnerHTML={{__html: formatBuilder(item, schema.sectionFormat,schema.fields)}}/>
+                                                                        {/*<Formatter app={"CV"}*/}
+                                                                        {/*           structureChain={[...formContext.structureChain, schema.name]}*/}
+                                                                        {/*           isFullScreenViewMode={false}*/}
+                                                                        {/*           schema={schema}*/}
+                                                                        {/*           rawData={item}*/}
+                                                                        {/*/>*/}
                                                                     </div>
                                                                     <div className={tw`mt-0.5`}>
                                                                         <BiPencil
-                                                                            className={tw`cursor-pointer mx-1`}
+                                                                            className={tw`cursor-pointer mx-1 text-gray-500`}
                                                                             onClick={() => {
                                                                                 const itemIndex = formData.findIndex(data => data.order === item.order);
                                                                                 setState({
@@ -194,12 +194,14 @@ export function ArrayFieldTemplate(props) {
                                                 className={tw`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 && 'border-b'}`}
                                             >
                                                 <div>
-                                                    <Formatter app={"CV"}
-                                                               structureChain={[...formContext.structureChain, schema.name]}
-                                                               isFullScreenViewMode={false}
-                                                               schema={schema}
-                                                               rawData={item}
-                                                    />
+                                                    <div dangerouslySetInnerHTML={{__html: formatBuilder(item, schema.sectionFormat,schema.fields)}}/>
+
+                                                    {/*<Formatter app={"CV"}*/}
+                                                    {/*           structureChain={[...formContext.structureChain, schema.name]}*/}
+                                                    {/*           isFullScreenViewMode={false}*/}
+                                                    {/*           schema={schema}*/}
+                                                    {/*           rawData={item}*/}
+                                                    {/*/>*/}
                                                 </div>
                                                 <div className={tw`mt-0.5`}>
                                                     <BiPencil
@@ -261,10 +263,10 @@ export function ArrayFieldTemplate(props) {
                     trigger="hover"
                     delayHide={150}
                     tooltip={
-                        <div className={tw`text-sm`}>
-                            <p dangerouslySetInnerHTML={{__html: schema.description ?? title}}/>
-                            <p>{descriptions[schema.field_type]}</p>
-                        </div>
+                        schema.description ? <div className={tw`text-sm`}>
+                            <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                            <div>{descriptions[schema.field_type]}</div>
+                        </div> : <div className={tw`text-sm`}>{title}</div>
                     }
                     hideArrow={true}
                     modifiers={[

@@ -18,7 +18,7 @@ export const TextAreaInputStyle = css`
 
 export const NumberInputStyle = css`
   ${baseFieldStyles};
-  ${apply('text-sm px-2.5')}
+  ${apply('text-sm px-2.5 mb-1.5')}
 `
 
 export const MultiNumberInputStyle = css`
@@ -29,7 +29,7 @@ export const MultiNumberInputStyle = css`
 
 export const BilingualContainerStyle = css`
   min-height: 2.4rem;
-  ${apply('shadow-sm text-sm flex')};
+  ${apply('shadow-sm text-sm flex mb-1.5')};
 `
 
 export const MultiLangRichTextInputStyle = css`
@@ -105,13 +105,13 @@ export const DatePickerContainerStyle = css`
     .react-datepicker__input-container {
       min-height: 2.4rem;
 
-      ${apply('text-sm w-full')}
+      ${apply('text-sm w-full h-full border border-gray-300 rounded shadow-sm')}
       .date_picker {
-        ${apply(`h-full w-full rounded py-2 px-2.5 border border-gray-300 rounded shadow-sm `)}
+        ${apply(`w-full rounded py-2 px-2.5   `)}
       }
 
       .react-datepicker__close-icon {
-        ${apply(`mr-1 h-full pb-0.5`)}
+        ${apply(`mr-1 h-full`)}
       }
 
       ::after {
@@ -175,7 +175,7 @@ export const DatePickerCalendarContainerStyle = css`
 `
 
 export const SubsectionFormatterContainerStyle = css`
-  ${apply('w-full h-full mb-1.5')}
+  ${apply('w-full h-full mb-1.5 pt-2')}
   & > div {
     ${apply('shadow-sm')}
   }
@@ -228,7 +228,7 @@ export const FieldContainer = css`
 `
 
 export const FieldLabelContainer = css`
-  ${apply('flex 2xl:(w-5/12 mr-6) xl:(w-5/12 mr-5) lg:(w-5/12 mr-5 text-sm) md:(w-5/12 mr-4 text-sm justify-end) sm:(my-1 font-semibold)')}
+  ${apply('pt-1 flex 2xl:(w-5/12 mr-6) xl:(w-5/12 mr-5) lg:(w-5/12 mr-5 text-sm) md:(w-5/12 mr-4 text-sm justify-end) sm:(my-1 font-semibold)')}
 `
 
 export const FieldControlContainer = css`
@@ -241,3 +241,16 @@ export const FieldActionContainer = css`
   ${apply('2xl:(pt-2.5) xl:(pt-2.5) lg:(pt-2.5) md:(pt-2.5) sm:()')}
 `
 
+export const FundingNumberInputStyle = css`
+  min-height: 2.4rem;
+  ${apply('w-full shadow-sm border border-gray-300 rounded-l text-sm px-2.5 mb-1.5')};
+`
+
+export const FundingCurrencySelectStyle = css`
+  ${apply(`w-full text-sm shadow-sm mb-1.5`)}
+  & > .react-select__control {
+    border-radius: 0 0.25rem 0.25rem 0;
+    min-height: 2.4rem;
+    ${apply('border-l-0')}
+  }
+`

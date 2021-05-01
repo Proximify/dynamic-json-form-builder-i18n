@@ -7,6 +7,7 @@ import {ArrayFieldTemplate}
     from "../../../components/utils/ArrayFieldTemplate";
 import HiddenFieldTemplate
     from "../../../components/HiddenField/HiddenFieldTemplate";
+import clone from 'clone';
 
 export const Months = [
     'January',
@@ -238,11 +239,13 @@ export const SchemaGenerator = (schema) => {
         fieldIdNameMapper: null
     }
     if (schema !== null) {
+        // const fieldIdNameMapper =
+        result.fieldIdNameMapper = fieldIdNameMapper(schema);
         result.formSchema = formStrSchemaGen(schema);
         result.dataSchema = formDataSchemaGen(schema);
         result.uiSchema = formUISchemaGen(schema);
         result.validations = FormValidationGenerator(result.formSchema?.properties || null);
-        result.fieldIdNameMapper = fieldIdNameMapper(schema);
+
     }
     console.log(result);
     return result;
@@ -258,10 +261,63 @@ const formStrSchemaGen = (schema) => {
     const fields = schema.fields;
     const sortedFields = Object.entries(fields).sort(([, a], [, b]) => a.order_number - b.order_number)
 
+    // get currency fields and put them together if necessary
+    const currencyAssociateFields = [];
+    sortedFields.forEach(([field_id, field], index) => {
+        if (field.constraints?.autofill?.functionName === 'convertCurrency' && field.constraints?.autofill?.arguments) {
+            currencyAssociateFields.push([]);
+            // hasConvertedCurrencyField = true;
+            field.constraints.autofill.arguments.forEach(argument => {
+                const associateField = fields[argument.id];
+                if (field.name.endsWith(associateField?.name) || associateField?.name.includes('currency')) {
+                    if (!associateField.name.includes('currency')) {
+                        // amount
+                        const amountFieldIndex = sortedFields.findIndex(([, field]) => field.name === associateField.name);
+                        if (amountFieldIndex !== -1) {
+                            associateField['currencyField'] = 'amount';
+                            currencyAssociateFields[currencyAssociateFields.length - 1].unshift({
+                                field_id: associateField.field_id,
+                                field_name: associateField.name,
+                                index: amountFieldIndex,
+                                fundingType: 'amount'
+                            });
+                        }
+                    } else {
+                        // converted amount
+                        const currencyFieldIndex = sortedFields.findIndex(([, field]) => field.name === associateField.name)
+                        if (currencyFieldIndex !== -1) {
+                            associateField['currencyField'] = 'currency';
+                            currencyAssociateFields[currencyAssociateFields.length - 1].push({
+                                field_id: associateField.field_id,
+                                field_name: associateField.name,
+                                index: currencyFieldIndex,
+                                fundingType: 'currency'
+                            });
+                        }
+                    }
+                }
+            })
+            field['currencyField'] = 'convertedAmount';
+            currencyAssociateFields[currencyAssociateFields.length - 1].push({
+                field_id: field.field_id,
+                field_name: field.name,
+                index: index,
+                fundingType: 'convertedAmount'
+            });
+        }
+    })
+    currencyAssociateFields.forEach(associateFields => {
+        associateFields.forEach((associateField, index) => {
+            if (index > 0) {
+                if (associateField.index !== associateFields[0].index + index) {
+                    sortedFields.splice(associateFields[0].index + index, 0, sortedFields.splice(associateFields[index].index, 1)[0]);
+                }
+            }
+        })
+    })
+
+
     sortedFields.forEach(([, field]) => {
-        // if (field["not_null"] === "1") {
-        //     required.push(field.name)
-        // }
         properties[field.name] = fieldStrSchemaGen(field, schema);
     })
     return {
@@ -270,7 +326,8 @@ const formStrSchemaGen = (schema) => {
         form_title: schema.title,
         form_description: schema.description,
         required: [],
-        properties: properties
+        properties: properties,
+        fundingFormGroupFields: currencyAssociateFields
     }
 }
 
@@ -291,7 +348,11 @@ const fieldStrSchemaGen = (field, schema) => {
     result["constraints"] = field.constraints;
     result["exclusive_with"] = field.exclusive_with;
     result["readOnly"] = field.constraints ? !!field.constraints["autoFill"] : false;
+    result["order_number"] = field.order_number;
     result["mandatory"] = field['not_null'] === "1";
+    if (field.currencyField) {
+        result["currencyField"] = field.currencyField;
+    }
     // add twClass for test
     // result["twClass"] = field.tw ?? 'bg-red-200';
     switch (field.type) {
@@ -332,6 +393,7 @@ const fieldStrSchemaGen = (field, schema) => {
         case "section":
             result["type"] = "array";
             result["fullscreen"] = false;
+            result["sectionFormat"] = "<p><strong>{area_of_research:label}</strong>: {area_of_research}</p>";
             result["items"] = {}
             const subsectionId = field["subsection_id"];
             const subsections = schema.subsections
@@ -475,7 +537,6 @@ const formUISchemaGen = (schema) => {
             const subsections = schema.subsections;
             if (subsectionId in subsections) {
                 result[fieldName] = {
-                    // "ui:ArrayFieldTemplate": subsections[subsectionId].asc_item_order === "1" ? customArrayTemplate.sortableArrayFieldTemplate : customArrayTemplate.arrayFieldTemplate,
                     "ui:ArrayFieldTemplate": ArrayFieldTemplate,
                     "items": formUISchemaGen(subsections[subsectionId])
                 }
@@ -495,13 +556,13 @@ const formUISchemaGen = (schema) => {
                     "ui:FieldTemplate": customTemplates.hiddenFieldTemplate,
                     "ui:widget": "hiddenFieldWidget"
                 }
-            } else if (field.constraints && (field.constraints.autofill || field.constraints.autoSum)) {
+            } else if (field.constraints && field.constraints.autoSum) {
                 result[fieldName] = {
                     "ui:FieldTemplate": customTemplates.genericFieldTemplate,
                     "ui:widget": "readOnlyFieldWidget"
                 }
             } else {
-                result[fieldName] = fieldTypeWidgetMapper[field.type];
+                result[fieldName] = clone(fieldTypeWidgetMapper[field.type]);
             }
         }
     })

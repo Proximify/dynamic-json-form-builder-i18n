@@ -10,7 +10,7 @@ import {
     MultiNumberInputStyle,
     BooleanFieldContainerStyle,
     DatePickerContainerStyle,
-    DatePickerCalendarContainerStyle
+    DatePickerCalendarContainerStyle, FundingNumberInputStyle
 } from "../utils/twindClass";
 import {tw} from "twind";
 
@@ -118,7 +118,7 @@ export function NumberInputWidget(props) {
     const [value, setValue] = useState(props.value ?? undefined);
     return (
         <NumberFormat
-            className={tw`${NumberInputStyle} ${props.schema.twClass}`}
+            className={tw`${props.schema.currencyField === 'amount' ?  FundingNumberInputStyle : NumberInputStyle} ${props.schema.twClass}`}
             id={props.schema.id}
             value={value}
             isAllowed={(values) => values.value >= 0 ? values : null}

@@ -4,7 +4,7 @@ import {
     MultiColWindowedSelectStyle,
     MultiColWindowedSelectMenuItem,
     MultiColWindowedSelectValueContainer,
-    WindowedSelectStyle
+    WindowedSelectStyle, FundingCurrencySelectStyle
 } from "../utils/twindClass";
 import {tw} from "twind";
 
@@ -20,7 +20,7 @@ export function SingleLargeSelectionWidget(props) {
     const lovValue = value ? JSON.parse(value) : undefined;
     return (
         <WindowedSelect
-            className={tw`${WindowedSelectStyle}`}
+            className={tw`${props.schema.currencyField === 'currency' ? FundingCurrencySelectStyle : WindowedSelectStyle}`}
             classNamePrefix="react-select"
             id={props.schema.id}
             getOptionLabel={option => option.value[1] ?? option.label}

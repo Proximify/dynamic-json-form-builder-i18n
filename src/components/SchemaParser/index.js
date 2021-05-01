@@ -1,5 +1,3 @@
-import {SchemaGenerator} from "./FormSchemaGenerator";
-
 const getLovSubtypeIdHelper = (sectionSchema) => {
     if (!sectionSchema.fields) {
         return [];
@@ -169,7 +167,7 @@ export default function SchemaParser(schema, singleForm = false) {
     const result = []
     sections.forEach(section => result.push(sectionParser(section, null)))
     if (singleForm) {
-        return SchemaGenerator(result[0]);
+        // return SchemaGenerator(result[0]);
     } else
         return result;
 }

@@ -39,8 +39,8 @@ const GenericFieldTemplate = (props) => {
                     delayHide={150}
                     tooltip={
                         schema.description ? <div className={tw`text-sm`}>
-                            <p dangerouslySetInnerHTML={{__html: schema.description ?? label}}/>
-                            <p>{descriptions[schema.field_type]}</p>
+                            <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                            <div>{descriptions[schema.field_type]}</div>
                         </div> : <div className={tw`text-sm`}>{label}</div>
                     }
                     hideArrow={true}
