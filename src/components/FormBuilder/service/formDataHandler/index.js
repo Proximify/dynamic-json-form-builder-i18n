@@ -13,9 +13,11 @@ export const handleFormSubmit = (state, sectionId, itemId, parentItemId, parentF
 }
 
 export const handleFormDelete = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, responseHandler) => {
-    const {formData: data, initialFormData: initialData, formSchema: schema} = state;
+    const {formData: data, initialFormData: initialData, initialFormSchema: schema} = state;
     const formData = new FormData();
     formData.append('action', 'delete');
+    // remove funding group
+    removeFundingGroupData(data);
     formDataBuilder(data, initialData, schema, formData, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType);
     submitFormData(formData, responseHandler);
 }

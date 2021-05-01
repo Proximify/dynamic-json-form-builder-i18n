@@ -100,12 +100,16 @@ export function FundingGroupFieldTemplate(props) {
     let groupFieldMandatory = false;
     let amountFieldContent = null;
     let currencyFieldContent = null;
+    let convertAmountFieldName = "";
     for (const [, field] of Object.entries(schema.properties)) {
         if (field.currencyField === 'amount') {
             groupFieldLabel = field.title;
             groupFieldDescription = field.description;
             groupFieldMandatory = field.mandatory;
             groupFieldFieldType = field.field_type;
+        }
+        if (field.currencyField === 'convertedAmount'){
+            convertAmountFieldName = field.name;
         }
     }
 
@@ -156,8 +160,8 @@ export function FundingGroupFieldTemplate(props) {
             </div>
             <div
                 className={tw`xl:(mr-24) lg:(ml-14 mr-14) md:(mr-16 my-0 flex justify-end text-sm text-gray-500) sm:(ml-12 mr-10 my-1)`}>
-                <p className={tw``}>Last converted to(recalculate on
-                    save) C$: {Number(formData.converted_amount).toFixed(2)} CAD</p>
+                {formData[convertAmountFieldName] && <p className={tw``}>Last converted to(recalculate on
+                    save) C$: {Number(formData[convertAmountFieldName]).toFixed(2)} CAD</p>}
             </div>
 
         </div>

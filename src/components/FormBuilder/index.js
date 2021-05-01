@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Form from "@rjsf/core";
 import clone from 'clone';
+import isEmpty from 'lodash/isEmpty'
 import {
     BooleanInputWidget,
     DateInputWidget,
@@ -211,23 +212,25 @@ const FormBuilder = (props) => {
 
     const dataSchemaPreprocessor = (formData, formSchema, count = 0) => {
         // console.log(formData, formSchema);
-        const {properties: fields, fundingFormGroupFields} = formSchema;
-        if (fundingFormGroupFields) {
-            fundingFormGroupFields.forEach(groupFields => {
-                const fundingFormGroup = {};
-                const fundingFormGroupName = `fundingGroup${count}`;
-                groupFields.forEach(groupField => {
-                    fundingFormGroup[groupField.field_name] = formData[groupField.field_name];
-                    delete formData[groupField.field_name];
-                })
-                formData[fundingFormGroupName] = fundingFormGroup;
-                count++;
-            })
-            for (const [fieldName, field] of Object.entries(fields)) {
-                if (field.type === "array") {
-                    formData[fieldName].forEach(subFormData => {
-                        dataSchemaPreprocessor(subFormData, field.items, count);
+        if (!isEmpty(formData)){
+            const {properties: fields, fundingFormGroupFields} = formSchema;
+            if (fundingFormGroupFields) {
+                fundingFormGroupFields.forEach(groupFields => {
+                    const fundingFormGroup = {};
+                    const fundingFormGroupName = `fundingGroup${count}`;
+                    groupFields.forEach(groupField => {
+                        fundingFormGroup[groupField.field_name] = formData[groupField.field_name];
+                        delete formData[groupField.field_name];
                     })
+                    formData[fundingFormGroupName] = fundingFormGroup;
+                    count++;
+                })
+                for (const [fieldName, field] of Object.entries(fields)) {
+                    if (field.type === "array") {
+                        formData[fieldName].forEach(subFormData => {
+                            dataSchemaPreprocessor(subFormData, field.items, count);
+                        })
+                    }
                 }
             }
         }
