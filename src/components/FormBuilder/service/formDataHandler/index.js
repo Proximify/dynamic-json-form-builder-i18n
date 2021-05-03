@@ -1,4 +1,3 @@
-import isObject from 'lodash/isObject';
 import api, {submitFormData} from "../api";
 
 export const handleFormSubmit = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, responseHandler) => {

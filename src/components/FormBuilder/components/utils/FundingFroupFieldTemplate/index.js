@@ -154,14 +154,13 @@ export function FundingGroupFieldTemplate(props) {
                             }
                         ]}
                     >
-                        <AiOutlineQuestionCircle className={tw`text-gray-400 mx-1`} size={'1.2em'}/>
+                        <AiOutlineQuestionCircle className={tw`text-gray-200 mx-1 hover:text-gray-400`} size={'1.2em'}/>
                     </Tooltip>}
                 </div>
             </div>
             <div
                 className={tw`xl:(mr-24) lg:(ml-14 mr-14) md:(mr-16 my-0 flex justify-end text-sm text-gray-500) sm:(ml-12 mr-10 my-1)`}>
-                {formData[convertAmountFieldName] && <p className={tw``}>Last converted to(recalculate on
-                    save) C$: {Number(formData[convertAmountFieldName]).toFixed(2)} CAD</p>}
+                {formData[convertAmountFieldName] && <p className={tw``}>C$ {Number(formData[convertAmountFieldName]).toFixed(2)} (calculated on save)</p>}
             </div>
 
         </div>

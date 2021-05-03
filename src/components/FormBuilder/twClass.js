@@ -28,6 +28,8 @@ export const FormClass = css`
     }
   }
 `
+
+
 export const FormSubmitBtnClass = css`
   ${apply('bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1')}
 `

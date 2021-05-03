@@ -54,7 +54,7 @@ const GenericFieldTemplate = (props) => {
                         }
                     ]}
                 >
-                    <AiOutlineQuestionCircle className={tw`text-gray-400 mx-1`} size={'1.2em'}/>
+                    <AiOutlineQuestionCircle className={tw`text-gray-200 mx-1 hover:text-gray-400`} size={'1.2em'}/>
                 </Tooltip>}
             </div>
         </div>

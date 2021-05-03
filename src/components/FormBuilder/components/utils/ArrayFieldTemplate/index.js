@@ -205,7 +205,7 @@ export function ArrayFieldTemplate(props) {
                                                 </div>
                                                 <div className={tw`mt-0.5`}>
                                                     <BiPencil
-                                                        className={tw`cursor-pointer mx-1 align-top`}
+                                                        className={tw`cursor-pointer mx-1 text-gray-500`}
                                                         onClick={() => {
                                                             setState({
                                                                 ...state,
@@ -279,7 +279,7 @@ export function ArrayFieldTemplate(props) {
                         }
                     ]}
                 >
-                    <AiOutlineQuestionCircle size={"1.2em"} className={tw`text-gray-400 mx-1`}/>
+                    <AiOutlineQuestionCircle size={"1.2em"} className={tw`text-gray-200 mx-1 hover:text-gray-400`}/>
                 </Tooltip>
             </div>
         </div>

@@ -11,23 +11,6 @@ const api = axios.create({
 });
 export default api;
 
-// export const fetchCVSchema = (callback) => {
-//     api.get(`profiles.php?action=display&editable=true&contentType=${contentType}&contentId=${contentId}&viewType=${viewType}&withFormat=${withFormat}`, {
-//         headers: {'Content-Type': 'application/json'}
-//     }).then(res => {
-//         if (!res.data.error && res.data.sections) {
-//             callback(res, null)
-//             console.log("load success", res)
-//         } else {
-//             callback(null, res.data)
-//             console.log("loading err", res.data);
-//         }
-//     }).catch(err => {
-//         callback(null, err)
-//         console.log("loading err", err);
-//     })
-// }
-
 export const fetchFormSchema = (section, itemId, parentItemId, parentFieldId, callback) => {
     const url = `profiles.php?action=edit&editable=true&contentType=${contentType}&contentId=${contentId}&viewType=${viewType}${section !== null ? '&section=' + section : ""}${itemId !== null ? '&itemId=' + itemId : ""}${parentItemId !== null ? '&parentItemId=' + parentItemId : ""}${parentFieldId !== null ? '&parentFieldId=' + parentFieldId : ""}`;
     api.get(url, {

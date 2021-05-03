@@ -306,6 +306,8 @@ const formStrSchemaGen = (schema) => {
             });
         }
     })
+
+    // sort fields, put funding field together
     currencyAssociateFields.forEach(associateFields => {
         associateFields.forEach((associateField, index) => {
             if (index > 0) {
@@ -315,7 +317,6 @@ const formStrSchemaGen = (schema) => {
             }
         })
     })
-
 
     sortedFields.forEach(([, field]) => {
         properties[field.name] = fieldStrSchemaGen(field, schema);

@@ -21,9 +21,6 @@ export default function FormValidationGenerator(fields) {
 
 
 const fieldConstraintsHandler = (field, fields) => {
-    // if (!field.constraints && !field.exclusive_with && field.field_type !== "elapsed-time") {
-    //     return null;
-    // }
     const validations = [];
     if (field.constraints) {
         Object.keys(field.constraints).forEach(constraintName => {

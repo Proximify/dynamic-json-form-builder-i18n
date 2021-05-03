@@ -16,7 +16,7 @@ import {
 } from "./components/SingleField";
 import {MultiColLargeSelectionWidget, SingleLargeSelectionWidget} from "./components/SelectionField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
-import {ModalDeleteConfirm} from "./components/utils/Modals";
+import {ModalDeleteConfirm, ModalSaveAnywayConfirm} from "./components/utils/Modals";
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
 import {tw} from "twind";
@@ -74,7 +74,9 @@ const FormBuilder = (props) => {
 
     const [state, setState] = useState({
         shouldDeleteConfirmModalOpen: false,
+        shouldSaveWithErrorModalOpen: false,
         shouldDeleteForm: false,
+        shouldSubmitForm: false,
         formData: {},
         initialFormData: {},
         formSchema: {},
@@ -127,9 +129,14 @@ const FormBuilder = (props) => {
         }
     }, [state.shouldDeleteForm])
 
+    useEffect(() => {
+        if (state.shouldSubmitForm) {
+            handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes);
+        }
+    }, [state.shouldSubmitForm])
+
 
     const onFormSubmit = () => {
-        //console.log(state.formData, state.initialFormData);
         handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes)
     }
 
@@ -212,7 +219,7 @@ const FormBuilder = (props) => {
 
     const dataSchemaPreprocessor = (formData, formSchema, count = 0) => {
         // console.log(formData, formSchema);
-        if (!isEmpty(formData)){
+        if (!isEmpty(formData)) {
             const {properties: fields, fundingFormGroupFields} = formSchema;
             if (fundingFormGroupFields) {
                 fundingFormGroupFields.forEach(groupFields => {
@@ -288,11 +295,10 @@ const FormBuilder = (props) => {
 
         // state.uiSchema[ "ui:order"]= ["end_date", "*"]
         return (
-            <div className={tw`bg-gray-200 flex justify-center`}>
-                <div className={tw`w-1/5`}/>
+            <>
+                {/*<div className={tw`w-1/5`}/>*/}
                 <div
-                    className={tw`w-3/5 max-w-screen-md justify-self-center bg-white px-5 my-2 border-l border-r border-gray-400`}>
-
+                    className={tw`bg-white`}>
                     <div className={tw`flex items-center mt-1 mb-5 p-2 px-7 border-b space-x-2`}>
                         <p className={tw`text-2xl font-bold`}>{state.formSchema.form_title}</p>
                         <Tooltip
@@ -343,15 +349,24 @@ const FormBuilder = (props) => {
                             return validation(formData, errors)
                         }}
                         onError={(errors) => {
-                            console.log(errors)
+
+                            let isAllMandatoryError = true;
+                            errors.forEach(error => {
+                                const errorMsg = error.stack;
+                                if (!errorMsg.includes('is required')) {
+                                    isAllMandatoryError = false;
+                                }
+                            })
+
                             setState({
                                 ...state,
-                                formErrors: errors
+                                formErrors: errors,
+                                shouldSaveWithErrorModalOpen: isAllMandatoryError
                             })
                         }}
                         showErrorList={false}
-                        onSubmit={onFormSubmit}>
-
+                        onSubmit={onFormSubmit}
+                    >
                         <div className={'form-action'}>
                             {state.formErrors && state.formErrors.length > 0 && <div className={'form-error-list'}>
                                 <ul className={'error-list'}>{getErrMsg()}</ul>
@@ -377,7 +392,8 @@ const FormBuilder = (props) => {
                                         Cancel
                                     </button>
                                     <button className={tw`${FormSubmitBtnClass}`}
-                                            type="submit">
+                                            type="submit"
+                                    >
                                         Save
                                     </button>
                                 </div>
@@ -385,23 +401,23 @@ const FormBuilder = (props) => {
                         </div>
                     </Form>
                 </div>
-                <div className={tw`w-1/5 p-5 mt-1`}>
-                    {/*<button onClick={() => {*/}
-                    {/*}}>{state.mandatoryFieldValidation ? "Save Without Required Field" : "Save With Required Field"}</button>*/}
-                    <input type={"radio"} checked={!state.mandatoryFieldValidation} className={tw``}
-                           onChange={() => {
-                           }}
-                           onClick={() => {
-                               setState({
-                                   ...state,
-                                   mandatoryFieldValidation: !state.mandatoryFieldValidation
-                               })
-                           }}
-                    /> Allow saving without required fields
-                </div>
+                {/*<div className={tw`w-1/5 p-5 mt-1`}>*/}
+                {/*    <input type={"radio"} checked={!state.mandatoryFieldValidation} className={tw``}*/}
+                {/*           onChange={() => {*/}
+                {/*           }}*/}
+                {/*           onClick={() => {*/}
+                {/*               setState({*/}
+                {/*                   ...state,*/}
+                {/*                   mandatoryFieldValidation: !state.mandatoryFieldValidation*/}
+                {/*               })*/}
+                {/*           }}*/}
+                {/*    /> Allow saving without required fields*/}
+                {/*</div>*/}
                 {state.shouldDeleteConfirmModalOpen &&
                 <ModalDeleteConfirm state={state} changeState={handleStateChange}/>}
-            </div>
+                {state.shouldSaveWithErrorModalOpen &&
+                <ModalSaveAnywayConfirm state={state} changeState={handleStateChange}/>}
+            </>
         );
     }
 }
