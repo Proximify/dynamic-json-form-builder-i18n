@@ -17,7 +17,7 @@
 //         included: <strong>yyyy</strong>/m/d.</p>
 // }
 //
-// const CurrencyFieldTemplate = (props) => {
+// const CurrencySelectTemplate = (props) => {
 //
 //     const {label, children, rawErrors, schema, formContext, formData} = props;
 //     const {currencyField} = schema;
@@ -70,14 +70,10 @@
 //     );
 // }
 //
-// export default CurrencyFieldTemplate;
+// export default CurrencySelectTemplate;
 
 
-const descriptions = {
-    "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
-    "year": <p><br/>The month is optional: <strong>yyyy</strong>/m. Or both month and day can be
-        included: <strong>yyyy</strong>/m/d.</p>
-}
+
 
 import React, {useState} from "react";
 import {tw} from 'twind';
@@ -85,14 +81,30 @@ import {FieldActionContainer, FieldContainer, FieldControlContainer, FieldLabelC
 import Tooltip from "../Tooltip";
 import {AiOutlineQuestionCircle} from "react-icons/ai";
 
+const descriptions = {
+    "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
+    "year": <p><br/>The month is optional: <strong>yyyy</strong>/m. Or both month and day can be
+        included: <strong>yyyy</strong>/m/d.</p>
+}
+
+const fieldNeedByReport = (fieldName, reports) => {
+    const reportsNeedFields = [];
+    for (const [reportId, report] of Object.entries(reports)) {
+        if (report.fields.includes(fieldName)) {
+            reportsNeedFields.push({reportName: report.name, color: report.color});
+        }
+    }
+    return reportsNeedFields;
+}
+
 /**
  *
  * @param props
  * @returns {JSX.Element}
  * @constructor
  */
-export function FundingGroupFieldTemplate(props) {
-    const {schema, formData} = props;
+export function CurrencyGroupFieldTemplate(props) {
+    const {schema, formData,formContext} = props;
     const properties = props.properties;
     let groupFieldLabel = "";
     let groupFieldDescription = "";
@@ -101,9 +113,11 @@ export function FundingGroupFieldTemplate(props) {
     let amountFieldContent = null;
     let currencyFieldContent = null;
     let convertAmountFieldName = "";
+    let reportsNeedField = [];
     for (const [, field] of Object.entries(schema.properties)) {
         if (field.currencyField === 'amount') {
             groupFieldLabel = field.title;
+            reportsNeedField = fieldNeedByReport(field.name, formContext.reports);
             groupFieldDescription = field.description;
             groupFieldMandatory = field.mandatory;
             groupFieldFieldType = field.field_type;
@@ -125,6 +139,29 @@ export function FundingGroupFieldTemplate(props) {
         <div>
             <div className={tw`${FieldContainer} mb-0!`}>
                 <div className={tw`${FieldLabelContainer}`}>
+                    {reportsNeedField.map((report,index) => {
+                        return (<Tooltip
+                            key={index}
+                            placement="left-start"
+                            trigger="hover"
+                            delayHide={100}
+                            tooltip={
+                                <p className={tw`text-sm`}>Field used by: {report.reportName}</p>
+                            }
+                            hideArrow={true}
+                            modifiers={[
+                                {
+                                    name: "offset",
+                                    enabled: true,
+                                    options: {
+                                        offset: [0, 8]
+                                    }
+                                }
+                            ]}
+                        >
+                            <span className={tw`inline-block rounded-lg border-solid h-2 w-2 mr-2`} style={{backgroundColor: `${report.color}`}}/>
+                        </Tooltip>)
+                    })}
                     {groupFieldLabel && <label className={tw`text-right`}>{groupFieldLabel}</label>}
                     {groupFieldMandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
                 </div>
@@ -167,7 +204,7 @@ export function FundingGroupFieldTemplate(props) {
     )
 }
 
-export function FundingFieldTemplate(props) {
+export function AmountInputTemplate(props) {
     const {children, rawErrors} = props;
 
     return (
@@ -181,7 +218,7 @@ export function FundingFieldTemplate(props) {
 }
 
 
-export function CurrencyFieldTemplate(props) {
+export function CurrencySelectTemplate(props) {
     const {children} = props;
     return (
         <>

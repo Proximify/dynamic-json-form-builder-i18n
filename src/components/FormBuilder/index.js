@@ -1,7 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import Form from "@rjsf/core";
 import clone from 'clone';
 import isEmpty from 'lodash/isEmpty'
+import isObject from 'lodash/isObject'
+import {Menu, Transition} from "@headlessui/react";
+import {tw} from "twind";
+import {RiArrowDropDownLine} from 'react-icons/ri';
+
+import {fetchFormSchema, fetchLovOptions} from "./service/api";
+import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
+import {handleFormDelete, handleFormSubmit} from "./service/formDataHandler";
+import Tooltip from "./components/utils/Tooltip";
+import {ModalDeleteConfirm, ModalSaveAnywayConfirm} from "./components/utils/Modals";
+
+
 import {
     BooleanInputWidget,
     DateInputWidget,
@@ -16,22 +28,15 @@ import {
 } from "./components/SingleField";
 import {MultiColLargeSelectionWidget, SingleLargeSelectionWidget} from "./components/SelectionField";
 import {MultiLangFieldWidget} from './components/MultiLangField'
-import {ModalDeleteConfirm, ModalSaveAnywayConfirm} from "./components/utils/Modals";
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
-import {tw} from "twind";
-
-import {fetchFormSchema, fetchLovOptions} from "./service/api";
-import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
-import {handleFormDelete, handleFormSubmit} from "./service/formDataHandler";
-import Tooltip from "./components/utils/Tooltip";
 import {AiOutlineQuestionCircle} from "react-icons/ai";
 import {FormCancelBtnClass, FormClass, FormDeleteBtnClass, FormSubmitBtnClass} from "./twClass";
 import {
-    CurrencyFieldTemplate,
-    FundingFieldTemplate,
-    FundingGroupFieldTemplate
-} from "./components/utils/FundingFroupFieldTemplate";
+    CurrencySelectTemplate,
+    AmountInputTemplate,
+    CurrencyGroupFieldTemplate
+} from "./components/utils/CurrencyGroupFieldTemplate";
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
 
 const customWidgets = {
@@ -56,23 +61,22 @@ const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
 const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
 const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
 
-
 const FormBuilder = (props) => {
     const {
-        formID,
-        HTTPMethod,
-        language,
-        itemId,
-        sectionId,
-        parentItemId,
-        parentFieldId,
         formContext,
+        multiplicity,
         handleFormSubmitRes,
         handleFormDeleteRes,
         handleFormCancel
     } = props;
 
+    let formRef = useRef(null);
+
     const [state, setState] = useState({
+        itemId: props.itemId,
+        sectionId: props.sectionId,
+        parentItemId: props.parentItemId,
+        parentFieldId: props.parentFieldId,
         shouldDeleteConfirmModalOpen: false,
         shouldSaveWithErrorModalOpen: false,
         shouldDeleteForm: false,
@@ -88,11 +92,15 @@ const FormBuilder = (props) => {
         newForm: false,
         mandatoryFieldValidation: true,
         formErrors: [],
+        submitType: "saveAndClose",
+        loadingError: "",
         isReady: false
     })
 
     useEffect(() => {
-        fetchFormSchema(sectionId, itemId, parentItemId, parentFieldId, (res) => {
+        if (state.isReady)
+            return;
+        fetchFormSchema(state.sectionId, state.itemId, state.parentItemId, state.parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             fetchLovOptions(lovSubtypeIDs, (optRes => {
                 const parsedSchema = SchemaParser(res);
@@ -102,7 +110,6 @@ const FormBuilder = (props) => {
                 dataSchemaPreprocessor(preprocessedData, parsedSchema.formSchema);
                 const preprocessedUi = clone(parsedSchema.uiSchema);
                 uiSchemaPreprocessor(preprocessedUi, parsedSchema.formSchema, 0, preprocessedSchema);
-
 
                 setState({
                     ...state,
@@ -115,29 +122,54 @@ const FormBuilder = (props) => {
                     validations: parsedSchema.validations,
                     fieldIdNameMapper: parsedSchema.fieldIdNameMapper,
                     lovOptions: optRes,
-                    newForm: itemId === "0",
+                    newForm: state.itemId === "0",
                     isReady: true
                 })
             }))
         })
 
-    }, [])
+    }, [state.isReady])
 
     useEffect(() => {
         if (state.shouldDeleteForm) {
-            handleFormDelete(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormDeleteRes);
+            handleFormDelete(state, contentType, contentId, viewType, handleFormDeleteRes);
         }
     }, [state.shouldDeleteForm])
 
     useEffect(() => {
         if (state.shouldSubmitForm) {
-            handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes);
+            handleFormSubmit(state, contentType, contentId, viewType, handleFormSubmitRes);
         }
     }, [state.shouldSubmitForm])
 
-
     const onFormSubmit = () => {
-        handleFormSubmit(state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes)
+        if (state.submitType === 'saveAndClose') {
+            handleFormSubmit(state, contentType, contentId, viewType, handleFormSubmitRes);
+        } else {
+            handleFormSubmit(state, contentType, contentId, viewType, (response, error) => {
+                if (response) {
+                    if (!response.data.error) {
+                        setState({
+                            ...state,
+                            isReady: false,
+                            itemId: "0"
+                        })
+                    } else {
+                        setState({
+                            ...state,
+                            isReady: true,
+                            loadingError: response.data.error
+                        })
+                    }
+                } else if (error) {
+                    setState({
+                        ...state,
+                        isReady: true,
+                        loadingError: error
+                    })
+                }
+            });
+        }
     }
 
     const handleStateChange = (newState) => {
@@ -162,13 +194,13 @@ const FormBuilder = (props) => {
                         errors[fieldName].addError(fieldValidation.getErrMsg(formData));
                     }
                 })
-            } else if (fieldValidations && fieldValidations.constructor === Object) {
+            } else if (isObject(fieldValidations)) {
                 Object.keys(fieldValidations).forEach(subFieldName => {
                     const subFieldValidations = validations[fieldName][subFieldName];
                     if (Array.isArray(subFieldValidations)) {
                         subFieldValidations.forEach(subFieldValidation => {
-                            if (formData[fieldName]) {
-                                formData[fieldName].forEach((subsection, index) => {
+                            if (state.formData[fieldName]) {
+                                state.formData[fieldName].forEach((subsection, index) => {
                                     if (!subFieldValidation.validateMethod(subsection, state.mandatoryFieldValidation)) {
                                         errors[fieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
                                         errors[fieldName][index].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
@@ -183,10 +215,8 @@ const FormBuilder = (props) => {
                 })
             }
         })
-        // console.log("-", errors)
         return errors;
     }
-
 
     const formSchemaPreprocessor = (schema, count = 0) => {
         const {properties: fields, fundingFormGroupFields} = schema;
@@ -248,15 +278,15 @@ const FormBuilder = (props) => {
         if (fundingFormGroupFields) {
             fundingFormGroupFields.forEach(groupFields => {
                 const fundingFormGroup = {
-                    "ui:ObjectFieldTemplate": FundingGroupFieldTemplate,
+                    "ui:ObjectFieldTemplate": CurrencyGroupFieldTemplate,
                 }
                 const fundingFormGroupName = `fundingGroup${count}`;
                 groupFields.forEach(groupField => {
                     const fieldUi = uiSchema[groupField.field_name];
                     if (groupField.fundingType === 'amount') {
-                        fieldUi['ui:FieldTemplate'] = FundingFieldTemplate;
+                        fieldUi['ui:FieldTemplate'] = AmountInputTemplate;
                     } else if (groupField.fundingType === 'currency') {
-                        fieldUi['ui:FieldTemplate'] = CurrencyFieldTemplate;
+                        fieldUi['ui:FieldTemplate'] = CurrencySelectTemplate;
                     } else if (groupField.fundingType === 'convertedAmount') {
                         fieldUi['ui:FieldTemplate'] = HiddenFieldTemplate;
                     }
@@ -272,19 +302,100 @@ const FormBuilder = (props) => {
                 }
             }
         }
-        // console.log(formSchema, preprocessedSchema);
-        // console.log(Object.keys(preprocessedSchema.properties))
-        // console.log(sortedFieldName)
         uiSchema['ui:order'] = Object.keys(preprocessedSchema.properties).sort((a, b) => {
-            // console.log(a,preprocessedSchema.properties[a]?.order_number, b,preprocessedSchema.properties[b]?.order_number)
             return preprocessedSchema.properties[a]?.order_number - preprocessedSchema.properties[b]?.order_number
         })
     }
 
+    const SaveBtnWithOptions = () => {
+        return (
+            <div
+                className={tw`${FormSubmitBtnClass} inline-flex ${isEmpty(state.formData) ? 'bg-gray-300 text-black' : 'bg-green-500 text-white active:bg-green-600'}`}>
+                <button
+                    disabled={isEmpty(state.formData)}
+                    onClick={() => {
+                        setState({
+                            ...state,
+                            submitType: "saveAndClose"
+                        })
+                        if (formRef)
+                            formRef.submit();
+                    }}>
+                    Save
+                </button>
+                <Menu as={"div"} className={tw`${multiplicity === 'multiple' ? 'inline-block' : 'hidden'}`}>
+                    {({open}) => (
+                        <>
+                            <div>
+                                <Menu.Button>
+                                    <RiArrowDropDownLine size={"1.5rem"}/>
+                                </Menu.Button>
+                            </div>
+                            <Transition
+                                show={open}
+                            >
+                                <Menu.Items
+                                    static
+                                    className={tw`absolute w-32 mt-0 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10`}
+                                >
+                                    <div className={tw`px-1 py-1`}>
+                                        <Menu.Item>
+                                            {({active}) => (
+                                                <button
+                                                    className={tw`${
+                                                        active ? "bg-blue-500 text-white" : "text-gray-900"
+                                                    } w-full p-2 text-sm`}
+                                                    onClick={() => {
+                                                        setState({
+                                                            ...state,
+                                                            submitType: "saveAndClose"
+                                                        })
+                                                        if (formRef)
+                                                            formRef.submit();
+                                                    }}
+                                                >
+                                                    Save and Close
+                                                </button>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {({active}) => (
+                                                <button
+                                                    className={tw`${
+                                                        active ? "bg-yellow-500 text-white" : "text-gray-900"
+                                                    } w-full p-2 text-sm`}
+                                                    onClick={() => {
+                                                        setState({
+                                                            ...state,
+                                                            submitType: "saveAndAddNew"
+                                                        })
+                                                        if (formRef)
+                                                            formRef.submit();
+                                                    }}
+                                                >
+                                                    Save and Add New
+                                                </button>
+                                            )}
+                                        </Menu.Item>
+                                    </div>
+                                </Menu.Items>
+                            </Transition>
+                        </>
+                    )}
+
+                </Menu>
+            </div>
+        )
+
+    }
 
     if (!state.isReady) {
         return (
             <div>Loading...</div>
+        )
+    } else if (state.loadingError) {
+        return (
+            <div>Error: {state.loadingError}</div>
         )
     } else {
         // console.log(state)
@@ -340,10 +451,10 @@ const FormBuilder = (props) => {
                         }}
                         widgets={customWidgets}
                         onChange={({formData}) => {
-                            setState({...state, formData: formData, formErrors: []})
+                            setState({...state, formData: formData})
                             console.log("data changed", formData);
                         }}
-                        liveValidate={true}
+                        liveValidate={!isEmpty(state.formErrors) || !state.newForm}
                         noHtml5Validate={true}
                         validate={(formData, errors) => {
                             return validation(formData, errors)
@@ -366,6 +477,9 @@ const FormBuilder = (props) => {
                         }}
                         showErrorList={false}
                         onSubmit={onFormSubmit}
+                        ref={(form) => {
+                            formRef = form
+                        }}
                     >
                         <div className={'form-action'}>
                             {state.formErrors && state.formErrors.length > 0 && <div className={'form-error-list'}>
@@ -391,11 +505,13 @@ const FormBuilder = (props) => {
                                         }}>
                                         Cancel
                                     </button>
-                                    <button className={tw`${FormSubmitBtnClass}`}
-                                            type="submit"
-                                    >
-                                        Save
-                                    </button>
+
+                                    {/*<button className={tw`${FormSubmitBtnClass}`}*/}
+                                    {/*        onClick={() => {*/}
+                                    {/*            formRef.submit();*/}
+                                    {/*        }}>Save*/}
+                                    {/*</button>*/}
+                                    {SaveBtnWithOptions()}
                                 </div>
                             </div>
                         </div>

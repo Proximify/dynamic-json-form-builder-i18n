@@ -10,12 +10,46 @@ const descriptions = {
         included: <strong>yyyy</strong>/m/d.</p>
 }
 
+const fieldNeedByReport = (fieldName, reports) => {
+    const reportsNeedFields = [];
+    for (const [reportId, report] of Object.entries(reports)) {
+        if (report.fields.includes(fieldName)) {
+            reportsNeedFields.push({reportName: report.name, color: report.color});
+        }
+    }
+    return reportsNeedFields;
+}
+
 const GenericFieldTemplate = (props) => {
     const {label, children, rawErrors, schema, formContext, formData} = props;
-
+    const reportsNeedField = fieldNeedByReport(schema.name, formContext.reports);
     return (
         <div className={tw`${FieldContainer}`}>
             <div className={tw`${FieldLabelContainer}`}>
+                {reportsNeedField.map((report, index) => {
+                    return (<Tooltip
+                        key={index}
+                        placement="left-start"
+                        trigger="hover"
+                        delayHide={100}
+                        tooltip={
+                            <p className={tw`text-sm`}>Field used by: {report.reportName}</p>
+                        }
+                        hideArrow={true}
+                        modifiers={[
+                            {
+                                name: "offset",
+                                enabled: true,
+                                options: {
+                                    offset: [0, 8]
+                                }
+                            }
+                        ]}
+                    >
+                        <span className={tw`inline-block rounded-lg border-solid h-2 w-2 mr-2`}
+                              style={{backgroundColor: `${report.color}`}}/>
+                    </Tooltip>)
+                })}
                 {label && <label className={tw`text-right`}>{label}</label>}
                 {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
             </div>
@@ -24,12 +58,8 @@ const GenericFieldTemplate = (props) => {
                 {children}
                 <div className={tw`${rawErrors ? '' : 'hidden'}`}>
                     {rawErrors ? rawErrors.map((error, index) => {
-                        if (!error.includes("is required")) {
-                            return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
-                        }
+                        return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
                     }) : null}
-                    {schema.mandatory && formContext.mandatoryFieldValidation && !formData &&
-                    <li className={tw`text-red-600 text-sm`}>{`${label} is required`}</li>}
                 </div>
             </div>
             <div className={tw`${FieldActionContainer}`}>

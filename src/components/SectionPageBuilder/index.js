@@ -13,6 +13,7 @@ import {
 } from './helper/sectionPageBuilderHelper'
 import {SectionLabel, StyledSectionContainer} from "./twClass";
 import {setup, tw} from "twind";
+import {Reports} from './dummyData/reports.js';
 
 export function SectionPageBuilder(props) {
     const [state, setState] = useState({
@@ -113,7 +114,7 @@ export function SectionPageBuilder(props) {
         if (response) {
             if (!response.data.error) {
                 const formSchema = SchemaParser({sections: [response.data]}, false);
-                console.log(formSchema)
+                //console.log(formSchema)
                 const newSection = [...state.sections];
                 const targetForm = getFormRecur(state.sections, state.form.structureChain);
                 const newData = formSchema[0].section_data;
@@ -202,7 +203,7 @@ export function SectionPageBuilder(props) {
 
     }
 
-    const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain) => {
+    const handleOnItemClick = (sectionId, itemId, parentItemId, parentFieldId, structureChain, multiplicity) => {
         setState({
             ...state,
             form: {
@@ -210,7 +211,8 @@ export function SectionPageBuilder(props) {
                 itemId: itemId,
                 structureChain: structureChain,
                 parentItemId: parentItemId,
-                parentFieldId: parentFieldId
+                parentFieldId: parentFieldId,
+                multiplicity: multiplicity
             },
             shouldModalOpen: true,
             scrollY: window.scrollY
@@ -250,7 +252,7 @@ export function SectionPageBuilder(props) {
                         <p className={tw`ml-1 text-color-action hover:text-color-confirm`}>{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
-                                                  handleOnItemClick(section.section_id, "0", parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                                  handleOnItemClick(section.section_id, "0", parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain, section.multiplicity)
                                               }}
                                               onDoubleClick={() => {
                                                   console.log('double clicked')
@@ -260,7 +262,7 @@ export function SectionPageBuilder(props) {
                             <FiEdit size={"1.1rem"}
                                     onClick={() => {
                                         // console.log(section, parentSection)
-                                        handleOnItemClick(section.section_id, section.section_data.length > 0 ? section.section_data[0].id : 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                        handleOnItemClick(section.section_id, section.section_data.length > 0 ? section.section_data[0].id : 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain,section.multiplicity)
                                     }}
                                     onDoubleClick={() => {
                                         console.log('double clicked')
@@ -322,7 +324,7 @@ export function SectionPageBuilder(props) {
                                                                     console.error("unable to get parent section item id")
                                                                     return;
                                                                 }
-                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain)
+                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain,section.multiplicity)
                                                             }}
                                                             onDoubleClick={(e) => {
                                                                 e.preventDefault();
@@ -358,21 +360,18 @@ export function SectionPageBuilder(props) {
                 <ModalFullScreen
                     content={
                         <FormBuilder
-                            formID={"user-profile-form"}
-                            resourceURL={"form/"}
-                            HTTPMethod={"PATCH"}
-                            language={"en"}
                             itemId={state.form.itemId}
                             sectionId={state.form.sectionId}
                             parentItemId={state.form.parentItemId}
                             parentFieldId={state.form.parentFieldId}
+                            multiplicity={state.form.multiplicity}
                             handleFormSubmitRes={handleFormSubmitRes}
                             handleFormDeleteRes={handleFormDeleteRes}
                             handleFormCancel={handleFormCancel}
                             formContext={{
                                 api: api,
-                                app: "CV",
-                                structureChain: state.form.structureChain
+                                structureChain: state.form.structureChain,
+                                reports: Reports
                             }}
                         />
                     }
