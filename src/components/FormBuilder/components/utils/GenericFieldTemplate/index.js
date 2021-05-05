@@ -2,7 +2,7 @@ import React from 'react';
 import {AiOutlineQuestionCircle} from 'react-icons/ai';
 import Tooltip from "../Tooltip";
 import {tw} from "twind";
-import {FieldActionContainer, FieldContainer, FieldControlContainer, FieldLabelContainer} from "../twindClass";
+import {FieldContainer, FieldControlContainer, FieldLabelContainer} from "../twindClass";
 
 const descriptions = {
     "yearmonth": <p>The day is optional: <strong>yyyy/m</strong>/d.</p>,
@@ -46,47 +46,47 @@ const GenericFieldTemplate = (props) => {
                             }
                         ]}
                     >
-                        <span className={tw`inline-block rounded-lg border-solid h-2 w-2 mr-2`}
+                        <span className={tw`inline-block rounded-lg border-solid h-2 w-2 mr-2 mb-0.5`}
                               style={{backgroundColor: `${report.color}`}}/>
                     </Tooltip>)
                 })}
-                {label && <label className={tw`text-right`}>{label}</label>}
+                {label && <label className={tw`text-right text-sm font-medium text-gray-700`}>{label}</label>}
                 {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
             </div>
-
             <div className={tw`${FieldControlContainer}`}>
-                {children}
+                <div className={"fieldControl"}>
+                    {children}
+                    {<Tooltip
+                        placement="right-start"
+                        trigger="hover"
+                        delayHide={150}
+                        tooltip={
+                            schema.description ? <div className={tw`text-sm`}>
+                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                <div>{descriptions[schema.field_type]}</div>
+                            </div> : <div className={tw`text-sm`}>{label}</div>
+                        }
+                        hideArrow={true}
+                        modifiers={[
+                            {
+                                name: "offset",
+                                enabled: true,
+                                options: {
+                                    offset: [0, 8]
+                                }
+                            }
+                        ]}
+                    >
+                        <AiOutlineQuestionCircle className={tw`text-gray-300 mx-2 hover:text-gray-400`} size={'1.2em'}/>
+                    </Tooltip>}
+                </div>
                 <div className={tw`${rawErrors ? '' : 'hidden'}`}>
                     {rawErrors ? rawErrors.map((error, index) => {
-                        return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
+                        return (<li key={index} className={tw`text-red-600 text-sm w-72`}>{error}</li>)
                     }) : null}
                 </div>
             </div>
-            <div className={tw`${FieldActionContainer}`}>
-                {<Tooltip
-                    placement="right-start"
-                    trigger="hover"
-                    delayHide={150}
-                    tooltip={
-                        schema.description ? <div className={tw`text-sm`}>
-                            <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                            <div>{descriptions[schema.field_type]}</div>
-                        </div> : <div className={tw`text-sm`}>{label}</div>
-                    }
-                    hideArrow={true}
-                    modifiers={[
-                        {
-                            name: "offset",
-                            enabled: true,
-                            options: {
-                                offset: [0, 8]
-                            }
-                        }
-                    ]}
-                >
-                    <AiOutlineQuestionCircle className={tw`text-gray-200 mx-1 hover:text-gray-400`} size={'1.2em'}/>
-                </Tooltip>}
-            </div>
+
         </div>
     );
 }

@@ -99,39 +99,39 @@ export function MultiLangFieldWidget(props) {
         const bilingualValue = {};
         if (state.isBilingual) {
             if (state.isRichText) {
-                if (state.primaryContent.getCurrentContent().hasText()){
+                if (state.primaryContent.getCurrentContent().hasText()) {
                     bilingualValue[state.primaryLanguage] = draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()));
                 }
-                if (state.secondaryContent.getCurrentContent().hasText()){
+                if (state.secondaryContent.getCurrentContent().hasText()) {
                     bilingualValue[state.secondaryLanguage] = draftToHtml(convertToRaw(state.secondaryContent.getCurrentContent()));
                 }
             } else {
-                if (state.primaryContent){
+                if (state.primaryContent) {
                     bilingualValue[state.primaryLanguage] = state.primaryContent;
                 }
-                if (state.secondaryContent){
+                if (state.secondaryContent) {
                     bilingualValue[state.secondaryLanguage] = state.secondaryContent;
                 }
             }
         } else {
             if (state.isRichText) {
-                if (state.primaryContent.getCurrentContent().hasText()){
+                if (state.primaryContent.getCurrentContent().hasText()) {
                     bilingualValue[state.primaryLanguage] = draftToHtml(convertToRaw(state.primaryContent.getCurrentContent()));
                 }
             } else {
-                if (state.primaryContent){
+                if (state.primaryContent) {
                     bilingualValue[state.primaryLanguage] = state.primaryContent;
                 }
             }
         }
-        if (value){
-            if (!isEmpty(bilingualValue) && value !== JSON.stringify(bilingualValue)){
+        if (value) {
+            if (!isEmpty(bilingualValue) && value !== JSON.stringify(bilingualValue)) {
                 props.onChange(JSON.stringify(bilingualValue));
-            }else if(isEmpty(bilingualValue)){
+            } else if (isEmpty(bilingualValue)) {
                 props.onChange(undefined);
             }
-        }else {
-            if (!isEmpty(bilingualValue)){
+        } else {
+            if (!isEmpty(bilingualValue)) {
                 props.onChange(JSON.stringify(bilingualValue));
             }
         }
@@ -283,8 +283,8 @@ export function MultiLangFieldWidget(props) {
     }
 
     return (
-        <React.Fragment>
-            <div className={tw`${BilingualContainerStyle}`}>
+        <div className={tw`${BilingualContainerStyle} bc`}>
+            <>
                 {state.isRichText ?
                     <div className={tw`${MultiLangRichTextInputStyle}`}>
                         <Editor
@@ -305,7 +305,7 @@ export function MultiLangFieldWidget(props) {
                             }}
                         />
                     </div> :
-                    <>
+                    <div className={tw`flex`}>
                         <TextareaAutosize
                             className={tw`${MultiLangTextareaStyle}`}
                             id={props.schema.id}
@@ -319,20 +319,17 @@ export function MultiLangFieldWidget(props) {
                             }}
                         />
                         <div className={tw`${MultiLangBtnContainerStyle}`}>{<LangDropDownBtn/>}</div>
-                    </>
+                    </div>
                 }
+            </>
 
-            </div>
-
-            <div className={tw`mt-1 ${!state.isBilingual ? "hidden" : ""}`}>
-                <div className={tw`${BilingualContainerStyle}`}>
+            <div className={tw`${!state.isBilingual ? "hidden" : "mt-1.5"}`}>
+                <>
                     {state.isRichText ?
                         <div className={tw`${MultiLangRichTextInputStyle}`}>
                             <Editor
                                 editorState={state.secondaryContent}
-                                wrapperClassName="multiLangRichTextAreaWrapper"
-                                toolbarClassName="multiLangRichTextAreaToolbar"
-                                editorClassName="multiLangRichTextAreaEditor"
+
                                 stripPastedStyles={true}
                                 toolbar={ToolbarStyleCompact}
                                 onEditorStateChange={text => {
@@ -344,7 +341,7 @@ export function MultiLangFieldWidget(props) {
                                 }}
                             />
                         </div> :
-                        <>
+                        <div className={tw`flex`}>
                             <TextareaAutosize
                                 className={tw`${MultiLangTextareaStyle}`}
                                 value={state.secondaryContent ?? undefined}
@@ -356,19 +353,17 @@ export function MultiLangFieldWidget(props) {
                                 }}
                             />
                             <div className={tw`${MultiLangBtnContainerStyle}`}>{<LangCloseBtn/>}</div>
-                        </>
+                        </div>
                     }
-                </div>
+                </>
             </div>
-            <div className={tw`flex justify-end hover:underline`}>
-                <a
-                    className={(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? tw`hidden` : tw`px-1 py-1 leading-normal text-sm text-blue-500 font-medium`}
-                    onClick={() => {
-                        handleOnBilingual()
-                    }}>undo
-                </a>
-            </div>
-        </React.Fragment>
+            <p
+                className={(!state.discardedContent || (state.isRichText && !state.discardedContent.getCurrentContent().hasText())) ? tw`hidden` : tw`px-1 pt-1 text-sm text-blue-500 font-medium flex justify-end hover:underline cursor-pointer leading-4`}
+                onClick={() => {
+                    handleOnBilingual()
+                }}>undo
+            </p>
+        </div>
     );
 
 }

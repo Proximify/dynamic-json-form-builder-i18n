@@ -15,23 +15,22 @@ export const FormClass = css`
   }
 
   .form-action {
-    ${apply('2xl:(ml-14 mr-10) xl:(ml-14 mr-10) lg:(ml-8 mr-4) md:(ml-2 my-3) sm:(ml-12 mr-10 my-1)')}
+    ${apply('md:(px-4 grid grid-cols-3 gap-x-6 py-2)')}
     .form-error-list {
-      ${apply('flex justify-end mb-2')}
+      ${apply('w-72')}
       .error-list {
         ${apply('border p-2 rounded-lg bg-red-200 text-sm')}
       }
     }
 
     .action-btn-container {
-      ${apply('flex justify-between pt-2 px-4')}
+      ${apply('col-start-2 col-end-4 space-y-2')}
     }
   }
 `
 
-
 export const FormSubmitBtnClass = css`
-  ${apply('font-bold uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1')}
+  ${apply('text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1')}
 `
 
 export const FormCancelBtnClass = css`

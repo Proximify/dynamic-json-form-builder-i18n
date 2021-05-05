@@ -310,8 +310,9 @@ const FormBuilder = (props) => {
     const SaveBtnWithOptions = () => {
         return (
             <div
-                className={tw`${FormSubmitBtnClass} inline-flex ${isEmpty(state.formData) ? 'bg-gray-300 text-black' : 'bg-green-500 text-white active:bg-green-600'}`}>
+                className={tw` px-5 py-2 rounded inline-flex ${isEmpty(state.formData) ? 'bg-gray-300 text-black' : 'bg-green-500 text-white active:bg-green-600'}`}>
                 <button
+                    className={tw`font-bold text-sm uppercase`}
                     disabled={isEmpty(state.formData)}
                     onClick={() => {
                         setState({
@@ -326,7 +327,7 @@ const FormBuilder = (props) => {
                 <Menu as={"div"} className={tw`${multiplicity === 'multiple' ? 'inline-block' : 'hidden'}`}>
                     {({open}) => (
                         <>
-                            <div>
+                            <div className={tw`${isEmpty(state.formData) ? 'invisible' : 'flex items-center justify-center'}`}>
                                 <Menu.Button>
                                     <RiArrowDropDownLine size={"1.5rem"}/>
                                 </Menu.Button>
@@ -409,7 +410,7 @@ const FormBuilder = (props) => {
             <>
                 {/*<div className={tw`w-1/5`}/>*/}
                 <div
-                    className={tw`bg-white`}>
+                    className={tw`bg-white pb-4`}>
                     <div className={tw`flex items-center mt-1 mb-5 p-2 px-7 border-b space-x-2`}>
                         <p className={tw`text-2xl font-bold`}>{state.formSchema.form_title}</p>
                         <Tooltip
@@ -482,37 +483,41 @@ const FormBuilder = (props) => {
                         }}
                     >
                         <div className={'form-action'}>
-                            {state.formErrors && state.formErrors.length > 0 && <div className={'form-error-list'}>
-                                <ul className={'error-list'}>{getErrMsg()}</ul>
-                            </div>}
-                            <div className={'action-btn-container'}>
-                                <div className={state.newForm ? tw`invisible` : tw``}>
-                                    <button
-                                        className={tw`${FormDeleteBtnClass}`}
-                                        type="button"
-                                        onClick={() => {
-                                            setState({...state, shouldDeleteConfirmModalOpen: true})
-                                        }}
-                                    >Delete
-                                    </button>
-                                </div>
-                                <div>
-                                    <button
-                                        className={tw`${FormCancelBtnClass}`}
-                                        type="button"
-                                        onClick={() => {
-                                            handleFormCancel();
-                                        }}>
-                                        Cancel
-                                    </button>
 
+                            <div className={'action-btn-container'}>
+                                {state.formErrors && state.formErrors.length > 0 && <div className={'form-error-list'}>
+                                    <ul className={'error-list'}>{getErrMsg()}</ul>
+                                </div>}
+                                <div className={tw`flex justify-between`}>
+                                    <div>
+                                        {SaveBtnWithOptions()}
+                                        <button
+                                            className={tw`${FormCancelBtnClass}`}
+                                            type="button"
+                                            onClick={() => {
+                                                handleFormCancel();
+                                            }}>
+                                            Cancel
+                                        </button>
+                                    </div>
                                     {/*<button className={tw`${FormSubmitBtnClass}`}*/}
                                     {/*        onClick={() => {*/}
                                     {/*            formRef.submit();*/}
                                     {/*        }}>Save*/}
                                     {/*</button>*/}
-                                    {SaveBtnWithOptions()}
+                                    <div className={state.newForm ? tw`invisible` : tw``}>
+                                        <button
+                                            className={tw`${FormDeleteBtnClass}`}
+                                            type="button"
+                                            onClick={() => {
+                                                setState({...state, shouldDeleteConfirmModalOpen: true})
+                                            }}
+                                        >Delete
+                                        </button>
+                                    </div>
                                 </div>
+
+
                             </div>
                         </div>
                     </Form>

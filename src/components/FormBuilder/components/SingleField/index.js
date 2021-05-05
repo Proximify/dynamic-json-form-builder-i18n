@@ -98,7 +98,6 @@ export function StringInputWidget(props) {
     }, []);
 
 
-
     return (
         <TextareaAutosize
             className={tw`${TextAreaInputStyle} ${props.schema.twClass}`}
@@ -118,7 +117,7 @@ export function NumberInputWidget(props) {
     const [value, setValue] = useState(props.value ?? undefined);
     return (
         <NumberFormat
-            className={tw`${props.schema.currencyField === 'amount' ?  FundingNumberInputStyle : NumberInputStyle} ${props.schema.twClass}`}
+            className={tw`${props.schema.currencyField === 'amount' ? FundingNumberInputStyle : NumberInputStyle} ${props.schema.twClass}`}
             id={props.schema.id}
             value={value}
             isAllowed={(values) => values.value >= 0 ? values : null}
@@ -383,7 +382,7 @@ export function YearInputWidget(props) {
 
     const handleChange = (dateValue, hasMonth, hasDate) => {
         if (!dateValue) {
-                props.onChange(undefined);
+            props.onChange(undefined);
         } else {
             const year = dateValue.getFullYear();
             const month = dateValue.getMonth();
@@ -484,7 +483,7 @@ export function BooleanInputWidget(props) {
         <input type="radio" value="0" name={`${schema.id}`} checked={value ? value === "0" : false}
                onChange={() => {
                }}/>
-        <span className={tw`ml-1.5 mr-3`}>No</span>
+        <span className={tw`ml-1.5 mr-5`}>No</span>
         <input type="radio" value="1" name={`${schema.id}`} checked={value ? value === "1" : false} onChange={() => {
         }}/>
         <span className={tw`ml-1.5`}>Yes</span>

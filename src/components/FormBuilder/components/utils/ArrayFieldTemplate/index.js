@@ -7,7 +7,6 @@ import ModalArrayItem from "../Modals";
 import {formatBuilder} from "../ArrayFieldFormatter"
 import Tooltip from "../Tooltip";
 import {
-    FieldActionContainer,
     FieldContainer,
     FieldControlContainer,
     FieldLabelContainer,
@@ -126,7 +125,7 @@ export function ArrayFieldTemplate(props) {
 
     return (
         <div className={tw`${FieldContainer}`}>
-            <div className={tw`${FieldLabelContainer}`}>
+            <div className={tw`${FieldLabelContainer} items-start!`}>
                 {reportsNeedSubsection.map((report, index) => {
                     return (<Tooltip
                         key={index}
@@ -147,125 +146,152 @@ export function ArrayFieldTemplate(props) {
                             }
                         ]}
                     >
-                        <span className={tw`inline-block rounded-lg border-solid h-2 w-2 mr-2`}
+                        <span className={tw`inline-block rounded-lg border-solid h-2 w-2 mr-2 mb-1`}
                               style={{backgroundColor: `${report.color}`}}/>
                     </Tooltip>)
                 })}
-                {title && <label className={tw`text-right`}>{title}</label>}
+                {title && <label className={tw`text-right text-sm font-medium text-gray-700`}>{title}</label>}
                 {schema.mandatory && <p className={tw`text-red-700 mx-0.5`}>*</p>}
             </div>
             <div className={tw`${FieldControlContainer}`}>
-                <div className={tw`${SubsectionFormatterContainerStyle}`}>
-                    {canAdd &&
-                    <a type="button"
-                       className={tw`text-blue-600 flex items-center space-x-1`}
-                       onClick={() => {
-                           setState({
-                               ...state,
-                               open: true,
-                               edit: false,
-                               index: formData.length,
-                               dataPrev: null
-                           })
-                           return onAddClick();
-                       }}
-                    ><AiOutlinePlusCircle size={"1.2em"}/><span
-                        className={tw`text-sm hover:underline cursor-pointer`}>Add</span></a>}
-                    <div
-                        className={formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`}>
-                        {state.sortable ? <DragDropContext onDragEnd={handleOnDragEnd}>
-                                <Droppable droppableId={title}>
-                                    {(provided) => (
-                                        <ul {...provided.droppableProps} ref={provided.innerRef}>
-                                            {
-                                                [...formData].sort((a, b) => ((a.order && b.order) && Number(a.order) > Number(b.order) ? 1 : -1)).map((item, index) => {
-                                                    return (
-                                                        <Draggable key={index} draggableId={`${schema.id}_${index}`}
-                                                                   index={index}>
-                                                            {(provided) => (
-                                                                <li {...provided.draggableProps} {...provided.dragHandleProps}
-                                                                    ref={provided.innerRef}
-                                                                    className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
-                                                                >
-                                                                    <div>
-                                                                        <div
-                                                                            dangerouslySetInnerHTML={{__html: formatBuilder(item, schema.sectionFormat, schema.fields)}}/>
-                                                                        {/*<Formatter app={"CV"}*/}
-                                                                        {/*           structureChain={[...formContext.structureChain, schema.name]}*/}
-                                                                        {/*           isFullScreenViewMode={false}*/}
-                                                                        {/*           schema={schema}*/}
-                                                                        {/*           rawData={item}*/}
-                                                                        {/*/>*/}
-                                                                    </div>
-                                                                    <div className={tw`mt-0.5`}>
-                                                                        <BiPencil
-                                                                            className={tw`cursor-pointer mx-1 text-gray-500`}
-                                                                            onClick={() => {
-                                                                                const itemIndex = formData.findIndex(data => data.order === item.order);
-                                                                                setState({
-                                                                                    ...state,
-                                                                                    open: true,
-                                                                                    edit: true,
-                                                                                    index: itemIndex,
-                                                                                    dataPrev: formData[itemIndex]
-                                                                                })
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                </li>
-                                                            )}
-                                                        </Draggable>
-                                                    )
-                                                })}
+                <div className={"subsectionFieldControl"}>
+                    <div className={tw`${SubsectionFormatterContainerStyle}`}>
+                        {canAdd &&
+                        <a type="button"
+                           className={tw`text-blue-600 flex items-center space-x-1`}
+                           onClick={() => {
+                               setState({
+                                   ...state,
+                                   open: true,
+                                   edit: false,
+                                   index: formData.length,
+                                   dataPrev: null
+                               })
+                               return onAddClick();
+                           }}
+                        ><AiOutlinePlusCircle size={"1.1em"}/><span
+                            className={tw`text-sm hover:underline cursor-pointer`}>Add</span></a>}
+                        <div
+                            className={formData && formData.length > 0 ? tw`border border-gray-300 rounded mt-1 text-sm` : tw`hidden`}>
+                            {state.sortable ? <DragDropContext onDragEnd={handleOnDragEnd}>
+                                    <Droppable droppableId={title}>
+                                        {(provided) => (
+                                            <ul {...provided.droppableProps} ref={provided.innerRef}>
+                                                {
+                                                    [...formData].sort((a, b) => ((a.order && b.order) && Number(a.order) > Number(b.order) ? 1 : -1)).map((item, index) => {
+                                                        return (
+                                                            <Draggable key={index} draggableId={`${schema.id}_${index}`}
+                                                                       index={index}>
+                                                                {(provided) => (
+                                                                    <li {...provided.draggableProps} {...provided.dragHandleProps}
+                                                                        ref={provided.innerRef}
+                                                                        className={index < items.length - 1 ? tw`flex mx-1 py-1 pl-1 justify-between border-b` : tw`flex mx-1 py-1 pl-1 justify-between`}
+                                                                    >
+                                                                        <div>
+                                                                            <div
+                                                                                dangerouslySetInnerHTML={{__html: formatBuilder(item, schema.sectionFormat, schema.fields)}}/>
+                                                                            {/*<Formatter app={"CV"}*/}
+                                                                            {/*           structureChain={[...formContext.structureChain, schema.name]}*/}
+                                                                            {/*           isFullScreenViewMode={false}*/}
+                                                                            {/*           schema={schema}*/}
+                                                                            {/*           rawData={item}*/}
+                                                                            {/*/>*/}
+                                                                        </div>
+                                                                        <div className={tw`mt-0.5`}>
+                                                                            <BiPencil
+                                                                                className={tw`cursor-pointer mx-1 text-gray-500`}
+                                                                                onClick={() => {
+                                                                                    const itemIndex = formData.findIndex(data => data.order === item.order);
+                                                                                    setState({
+                                                                                        ...state,
+                                                                                        open: true,
+                                                                                        edit: true,
+                                                                                        index: itemIndex,
+                                                                                        dataPrev: formData[itemIndex]
+                                                                                    })
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+                                                            </Draggable>
+                                                        )
+                                                    })}
 
-                                            {provided.placeholder}
-                                        </ul>
-                                    )}
-                                </Droppable>
-                            </DragDropContext>
-                            :
-                            <ul>
-                                {
-                                    formData.map((item, index) => {
-                                        return (
-                                            <li key={index}
-                                                className={tw`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 && 'border-b'}`}
-                                            >
-                                                <div>
-                                                    <div
-                                                        dangerouslySetInnerHTML={{__html: formatBuilder(item, schema.sectionFormat, schema.fields)}}/>
+                                                {provided.placeholder}
+                                            </ul>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
+                                :
+                                <ul>
+                                    {
+                                        formData.map((item, index) => {
+                                            return (
+                                                <li key={index}
+                                                    className={tw`flex mx-1 py-1 pl-1 justify-between items-center ${index < items.length - 1 && 'border-b'}`}
+                                                >
+                                                    <div>
+                                                        <div
+                                                            dangerouslySetInnerHTML={{__html: formatBuilder(item, schema.sectionFormat, schema.fields)}}/>
 
-                                                    {/*<Formatter app={"CV"}*/}
-                                                    {/*           structureChain={[...formContext.structureChain, schema.name]}*/}
-                                                    {/*           isFullScreenViewMode={false}*/}
-                                                    {/*           schema={schema}*/}
-                                                    {/*           rawData={item}*/}
-                                                    {/*/>*/}
-                                                </div>
-                                                <div className={tw`mt-0.5`}>
-                                                    <BiPencil
-                                                        className={tw`cursor-pointer mx-1 text-gray-500`}
-                                                        onClick={() => {
-                                                            setState({
-                                                                ...state,
-                                                                open: true,
-                                                                edit: true,
-                                                                index: index,
-                                                                dataPrev: formData[index]
-                                                            })
-                                                        }}
-                                                    />
-                                                </div>
-                                            </li>
-                                        )
-                                    })
-                                }
-                            </ul>
-                        }
+                                                        {/*<Formatter app={"CV"}*/}
+                                                        {/*           structureChain={[...formContext.structureChain, schema.name]}*/}
+                                                        {/*           isFullScreenViewMode={false}*/}
+                                                        {/*           schema={schema}*/}
+                                                        {/*           rawData={item}*/}
+                                                        {/*/>*/}
+                                                    </div>
+                                                    <div className={tw`mt-0.5`}>
+                                                        <BiPencil
+                                                            className={tw`cursor-pointer mx-1 text-gray-500`}
+                                                            onClick={() => {
+                                                                setState({
+                                                                    ...state,
+                                                                    open: true,
+                                                                    edit: true,
+                                                                    index: index,
+                                                                    dataPrev: formData[index]
+                                                                })
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </li>
+                                            )
+                                        })
+                                    }
+                                </ul>
+                            }
 
+                        </div>
                     </div>
+                    <Tooltip
+                        placement="right-start"
+                        trigger="hover"
+                        delayHide={150}
+                        tooltip={
+                            schema.description ? <div className={tw`text-sm`}>
+                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                <div>{descriptions[schema.field_type]}</div>
+                            </div> : <div className={tw`text-sm`}>{title}</div>
+                        }
+                        hideArrow={true}
+                        modifiers={[
+                            {
+                                name: "offset",
+                                enabled: true,
+                                options: {
+                                    offset: [0, 8]
+                                }
+                            }
+                        ]}
+                    >
+                        <AiOutlineQuestionCircle size={"1.2em"} className={tw`text-gray-300 mx-2 hover:text-gray-400`}/>
+                    </Tooltip>
+                </div>
+                <div className={tw`${rawErrors ? '' : 'hidden'}`}>
                     {rawErrors ? rawErrors.map((error, index) => {
-                        return (<li key={index} className={tw`text-red-600 text-sm`}>{error}</li>)
+                        return (<li key={index} className={tw`text-red-600 text-sm w-72`}>{error}</li>)
                     }) : null}
                 </div>
                 {
@@ -290,31 +316,6 @@ export function ArrayFieldTemplate(props) {
                             />
                     })
                 }
-            </div>
-            <div className={tw`${FieldActionContainer}`}>
-                <Tooltip
-                    placement="right-start"
-                    trigger="hover"
-                    delayHide={150}
-                    tooltip={
-                        schema.description ? <div className={tw`text-sm`}>
-                            <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                            <div>{descriptions[schema.field_type]}</div>
-                        </div> : <div className={tw`text-sm`}>{title}</div>
-                    }
-                    hideArrow={true}
-                    modifiers={[
-                        {
-                            name: "offset",
-                            enabled: true,
-                            options: {
-                                offset: [0, 8]
-                            }
-                        }
-                    ]}
-                >
-                    <AiOutlineQuestionCircle size={"1.2em"} className={tw`text-gray-200 mx-1 hover:text-gray-400`}/>
-                </Tooltip>
             </div>
         </div>
     )

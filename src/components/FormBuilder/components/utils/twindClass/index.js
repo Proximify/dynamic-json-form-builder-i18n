@@ -3,41 +3,72 @@ import {styled} from "@twind/react"
 
 const baseFieldStyles = css`
   min-height: 2.4rem;
-  ${apply('w-full shadow-sm border border-gray-300 rounded')};
+  ${apply('shadow-sm border border-gray-300 rounded w-72 text-sm')};
 `
 
 const baseTextAreaStyles = css`
-  ${apply('text-sm py-2 px-2.5')}
+  ${apply('py-2 px-2.5 resize-none leading-2')}
 `
 
 export const TextAreaInputStyle = css`
   ${baseFieldStyles};
   ${baseTextAreaStyles};
-  ${apply('resize-none')};
 `
 
 export const NumberInputStyle = css`
   ${baseFieldStyles};
-  ${apply('text-sm px-2.5 mb-1.5')}
+  ${apply('px-2.5')}
 `
 
 export const MultiNumberInputStyle = css`
   min-width: 5rem;
-  min-height: 2.4rem;
-  ${apply('shadow-sm border border-gray-300 rounded text-sm px-2.5')};
+  ${baseFieldStyles};
+  ${apply('px-2.5')};
+`
+
+export const WindowedSelectStyle = css`
+  & > .react-select__menu {
+    ${apply('text-sm')}
+  }
+  
+  & > .react-select__control {
+    ${baseFieldStyles};
+  }
+`
+
+export const MultiColWindowedSelectStyle = css`
+  & > .react-select__menu {
+    min-width: 35rem;
+    ${apply('text-sm')}
+  }
+
+  & > .react-select__control {
+    ${baseFieldStyles}
+  }
 `
 
 export const BilingualContainerStyle = css`
-  min-height: 2.4rem;
-  ${apply('shadow-sm text-sm flex mb-1.5')};
+  ${apply('w-72')};
+
+  & > div {
+    min-height: 2.4rem;
+  }
+`
+
+export const MultiLangTextareaStyle = css`
+  width: calc(100% - 2.3rem);
+  ${baseTextAreaStyles};
+  ${apply('border border-gray-300 rounded-l text-sm shadow-sm')};
+`
+
+export const MultiLangBtnContainerStyle = css`
+  width: 2.3rem;
+  ${apply(`border border-l-0 border-gray-300 rounded-r align-middle text-gray-500 shadow-sm`)}
 `
 
 export const MultiLangRichTextInputStyle = css`
-  ${apply('w-full h-full text-sm')};
-
   .rdw-editor-wrapper {
-    min-height: 8rem;
-    ${apply(`border border-gray-300 rounded mt-0.5`)};
+    ${apply(`border border-gray-300 rounded`)};
 
     .rdw-editor-toolbar {
       ${apply(`h-8 py-0 px-1 border-0 border-b border-gray-300 rounded-t-md justify-between`)};
@@ -48,7 +79,9 @@ export const MultiLangRichTextInputStyle = css`
     }
 
     .rdw-editor-main {
-      ${apply(`px-2 pb-1`)}
+      min-height: 6rem;
+
+      ${apply(`px-1.5 pb-1 text-sm`)}
       .DraftEditor-root {
         ${apply(`z-0`)}
       }
@@ -60,45 +93,13 @@ export const MultiLangRichTextInputStyle = css`
   }
 `
 
-export const MultiLangTextareaStyle = css`
-  width: calc(100% - 2.3rem);
-  min-height: 2.4rem;
-  ${baseTextAreaStyles} ${apply(`border border-gray-300 rounded-l align-middle h-full resize-none`)}
-`
-
-export const MultiLangBtnContainerStyle = css`
-  width: 2.3rem;
-  ${apply(`border border-l-0 border-gray-300 rounded-r align-middle text-gray-500`)}
-`
-
 export const BooleanFieldContainerStyle = css`
   min-height: 2.4rem;
-  ${apply('w-full shadow-sm h-full flex items-center shadow-none space-x-2')};
-`
-
-export const WindowedSelectStyle = css`
-  ${apply(`w-full text-sm shadow-sm mb-1.5`)}
-  & > .react-select__control {
-    min-height: 2.4rem;
-    ${apply('border border-gray-300')}
-  }
-`
-
-export const MultiColWindowedSelectStyle = css`
-  ${apply(`w-full text-sm shadow-sm mb-1.5`)}
-  & > .react-select__menu {
-    min-width: 35rem;
-  }
-
-  & > .react-select__control {
-    min-height: 2.4rem;
-    ${apply('border border-gray-300')}
-  }
+  ${apply('flex items-center px-3 shadow-none w-72 text-sm')};
 `
 
 export const DatePickerContainerStyle = css`
-
-  ${apply('w-full mb-1.5')};
+  ${apply('w-72')};
 
   .react-datepicker-wrapper {
     ${apply(`w-full`)}
@@ -175,7 +176,7 @@ export const DatePickerCalendarContainerStyle = css`
 `
 
 export const SubsectionFormatterContainerStyle = css`
-  ${apply('w-full h-full mb-1.5 pt-2')}
+  ${apply('w-72')}
   & > div {
     ${apply('shadow-sm')}
   }
@@ -224,33 +225,41 @@ export const MultiColWindowedSelectValueContainer = styled("div", {
 })
 
 export const FieldContainer = css`
-  ${apply('2xl:(ml-14 mr-10) xl:(ml-14 mr-10) lg:(ml-8 mr-4) md:(ml-2 flex my-3) sm:(ml-12 mr-10 my-1)')}
+  min-height: 3.5rem;
+  ${apply('md:(px-4 grid grid-cols-3 gap-6 py-2)')}
 `
 
 export const FieldLabelContainer = css`
-  ${apply('pt-1 flex 2xl:(w-5/12 mr-6) xl:(w-5/12 mr-5) lg:(w-5/12 mr-5 text-sm) md:(w-5/12 mr-4 text-sm justify-end) sm:(my-1 font-semibold)')}
+  ${apply('flex h-full items-center justify-end')}
 `
 
 export const FieldControlContainer = css`
-  max-width: 18rem;
-  ${apply('2xl:(w-6/12 mr-2) xl:(w-6/12 mr-2) lg:(w-6/12 mr-2) md:(w-6/12 mr-1)')}
+  ${apply('flex flex-wrap h-full')}
+  .fieldControl {
+    ${apply('flex items-center')}
+  }
+
+  .subsectionFieldControl {
+    ${apply('flex')}
+  }
+
+  .currencyFieldControl {
+    min-height: 2.4rem;
+    ${apply('flex w-72 items-center')}
+  }
 `
 
 export const FieldActionContainer = css`
-  max-width: 2rem;
-  ${apply('2xl:(pt-2.5) xl:(pt-2.5) lg:(pt-2.5) md:(pt-2.5) sm:()')}
+  ${apply('')}
 `
 
 export const FundingNumberInputStyle = css`
-  min-height: 2.4rem;
-  ${apply('w-full shadow-sm border border-gray-300 rounded-l text-sm px-2.5 mb-1.5')};
+  ${apply('border border-gray-300 rounded-l px-2.5 w-36 h-full text-sm shadow-sm')};
 `
 
 export const FundingCurrencySelectStyle = css`
-  ${apply(`w-full text-sm shadow-sm mb-1.5`)}
   & > .react-select__control {
     border-radius: 0 0.25rem 0.25rem 0;
-    min-height: 2.4rem;
-    ${apply('border-l-0')}
+    ${apply('border-l-0 border-gray-300 h-full w-36 text-sm shadow-sm')}
   }
 `
