@@ -1,18 +1,15 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {createRef, useEffect, useRef, useState} from 'react';
 import Form from "@rjsf/core";
 import clone from 'clone';
 import isEmpty from 'lodash/isEmpty'
 import isObject from 'lodash/isObject'
-import {Menu, Transition} from "@headlessui/react";
 import {tw} from "twind";
-import {RiArrowDropDownLine} from 'react-icons/ri';
 
 import {fetchFormSchema, fetchLovOptions} from "./service/api";
 import SchemaParser, {getLovSubtypeId} from "./service/schemaParser";
 import {handleFormDelete, handleFormSubmit} from "./service/formDataHandler";
 import Tooltip from "./components/utils/Tooltip";
 import {ModalDeleteConfirm, ModalSaveAnywayConfirm} from "./components/utils/Modals";
-
 
 import {
     BooleanInputWidget,
@@ -31,13 +28,14 @@ import {MultiLangFieldWidget} from './components/MultiLangField'
 import HiddenFieldWidget from "./components/HiddenField";
 import ReadOnlyFieldWidget from "./components/ReadOnlyFieldWidget";
 import {AiOutlineQuestionCircle} from "react-icons/ai";
-import {FormCancelBtnClass, FormClass, FormDeleteBtnClass, FormSubmitBtnClass} from "./twClass";
+import {FormCancelBtnClass, FormClass, FormDeleteBtnClass} from "./twClass";
 import {
-    CurrencySelectTemplate,
     AmountInputTemplate,
-    CurrencyGroupFieldTemplate
+    CurrencyGroupFieldTemplate,
+    CurrencySelectTemplate
 } from "./components/utils/CurrencyGroupFieldTemplate";
 import HiddenFieldTemplate from "./components/HiddenField/HiddenFieldTemplate";
+import ButtonWithDropdown from "./components/ButtonWithDropdown";
 
 const customWidgets = {
     multiLangFieldWidget: MultiLangFieldWidget,
@@ -57,26 +55,29 @@ const customWidgets = {
     readOnlyFieldWidget: ReadOnlyFieldWidget
 };
 
-const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
-const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
-const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
+// let formRef;
 
 const FormBuilder = (props) => {
+    let formRef = useRef(null);
+    let btnGroupRefs = {
+        saveAndCloseRef: useRef(null)
+    }
     const {
-        formContext,
+        sectionId,
+        parentItemId,
+        parentFieldId,
         multiplicity,
+        formContext,
         handleFormSubmitRes,
         handleFormDeleteRes,
-        handleFormCancel
+        handleFormCancel,
+        contentType,
+        contentId,
+        viewType
     } = props;
 
-    let formRef = useRef(null);
 
     const [state, setState] = useState({
-        itemId: props.itemId,
-        sectionId: props.sectionId,
-        parentItemId: props.parentItemId,
-        parentFieldId: props.parentFieldId,
         shouldDeleteConfirmModalOpen: false,
         shouldSaveWithErrorModalOpen: false,
         shouldDeleteForm: false,
@@ -90,17 +91,66 @@ const FormBuilder = (props) => {
         validations: {},
         lovOptions: {},
         newForm: false,
+        itemId: props.itemId,
         mandatoryFieldValidation: true,
-        formErrors: [],
+        formErrorMessages: [],
+        shouldDisplayErrorList: false,
         submitType: "saveAndClose",
         loadingError: "",
-        isReady: false
+        isReady: false,
+        saveAndCloseBtnRef: null
+        // formRef: undefined
     })
+
+    useEffect(() => {
+        document.addEventListener("keydown", listener);
+        return () => {
+            document.removeEventListener("keydown", listener);
+        };
+    }, [state.isReady]);
+
+    const listener = (event) => {
+        if (event.code === "Enter" || event.code === "NumpadEnter") {
+            console.log("Enter key was pressed. Run your function.");
+            event.preventDefault();
+            // callMyFunction();
+            console.log(btnGroupRefs);
+
+            if (btnGroupRefs?.saveAndCloseRef)
+                btnGroupRefs.saveAndCloseRef.click();
+            // if (formRef.current){
+            //     const form = formRef.current;
+            //     const errorMessages = validation(form.props.formData).errorMessages;
+            //     console.log(errorMessages)
+            //     if (errorMessages.length <= 0){
+            //         return form.props.onSubmit();
+            //     }
+            // }
+        }
+    };
+
+
+    // useEffect(() => {
+    //     window.addEventListener('keydown', handleKeyDown);
+    //
+    //     // return () => {
+    //     //     window.removeEventListener('keydown', handleKeyDown);
+    //     // };
+    // }, []);
+    //
+    // const handleKeyDown = (event) => {
+    //     console.log("handleOnKeyDown", event.keyCode)
+    //     if (event.keyCode === 13) {
+    //         console.log("enter ",formRef);
+    //
+    //         // formRef.submit();
+    //     }
+    // }
 
     useEffect(() => {
         if (state.isReady)
             return;
-        fetchFormSchema(state.sectionId, state.itemId, state.parentItemId, state.parentFieldId, (res) => {
+        fetchFormSchema(sectionId, state.itemId, parentItemId, parentFieldId, (res) => {
             const lovSubtypeIDs = getLovSubtypeId(res);
             fetchLovOptions(lovSubtypeIDs, (optRes => {
                 const parsedSchema = SchemaParser(res);
@@ -127,48 +177,55 @@ const FormBuilder = (props) => {
                 })
             }))
         })
-
     }, [state.isReady])
 
     useEffect(() => {
         if (state.shouldDeleteForm) {
-            handleFormDelete(state, contentType, contentId, viewType, handleFormDeleteRes);
+            handleFormDelete(state, sectionId, state.itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormDeleteRes);
         }
     }, [state.shouldDeleteForm])
 
     useEffect(() => {
         if (state.shouldSubmitForm) {
-            handleFormSubmit(state, contentType, contentId, viewType, handleFormSubmitRes);
+            handleFormSubmit(state, sectionId, state.itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes);
         }
     }, [state.shouldSubmitForm])
 
     const onFormSubmit = () => {
-        if (state.submitType === 'saveAndClose') {
-            handleFormSubmit(state, contentType, contentId, viewType, handleFormSubmitRes);
-        } else {
-            handleFormSubmit(state, contentType, contentId, viewType, (response, error) => {
-                if (response) {
-                    if (!response.data.error) {
-                        setState({
-                            ...state,
-                            isReady: false,
-                            itemId: "0"
-                        })
-                    } else {
+        if (isFormDataEmpty(state.formData)){
+            setState({
+                ...state,
+                formErrorMessages: ["All fields are empty. Please click Cancel or Delete instead of Save."],
+                shouldDisplayErrorList: true
+            })
+        }else {
+            if (state.submitType === 'saveAndClose') {
+                handleFormSubmit(state, sectionId, state.itemId, parentItemId, parentFieldId, contentType, contentId, viewType, handleFormSubmitRes);
+            } else {
+                handleFormSubmit(state, sectionId, state.itemId, parentItemId, parentFieldId, contentType, contentId, viewType, (response, error) => {
+                    if (response) {
+                        if (!response.data.error) {
+                            setState({
+                                ...state,
+                                isReady: false,
+                                itemId: "0"
+                            })
+                        } else {
+                            setState({
+                                ...state,
+                                isReady: true,
+                                loadingError: response.data.error
+                            })
+                        }
+                    } else if (error) {
                         setState({
                             ...state,
                             isReady: true,
-                            loadingError: response.data.error
+                            loadingError: error
                         })
                     }
-                } else if (error) {
-                    setState({
-                        ...state,
-                        isReady: true,
-                        loadingError: error
-                    })
-                }
-            });
+                });
+            }
         }
     }
 
@@ -176,22 +233,60 @@ const FormBuilder = (props) => {
         setState(newState);
     }
 
+    const isFormDataEmpty = (formData) => {
+        if (isEmpty(formData)){
+            return true;
+        }else {
+            let isAllEmpty = true;
+            for (const [, fieldValue] of Object.entries(formData)){
+                if (Array.isArray(fieldValue)){
+                    if (fieldValue.length > 0){
+                        isAllEmpty = false;
+                    }
+                }else {
+                    if (fieldValue){
+                        isAllEmpty = false;
+                    }
+                }
+            }
+            return isAllEmpty;
+        }
+    }
+
     const getErrMsg = () => {
-        return state.formErrors && state.formErrors.map((err, index) => {
-            return (
-                <li key={index}>{err.stack.split(':')[1].trim()}</li>
-            )
-        });
+        return state.formErrorMessages &&
+            <ul className={tw`border p-2 rounded-lg text-sm ${state.formErrorMessages.length > 0 ? 'bg-red-200' : 'bg-green-200'}`}>{
+                state.formErrorMessages.length > 0 ?
+                    state.formErrorMessages.map((errMsg, index) => <li key={index} className={tw`text-red-700`}>{errMsg}</li>)
+                    :
+                    <li className={tw`text-green-700`}>There are no more errors</li>
+            }</ul>
+
+        // if (state.formErrorMessages) {
+        //
+        //     // return state.formErrorMessages.length > 0 ?
+        //     //     <ul className={tw`border p-2 rounded-lg bg-red-200 text-sm`}>{state.formErrorMessages.map((err, index) => {
+        //     //         return (
+        //     //             <li key={index}>{err}</li>
+        //     //         )
+        //     //     })}</ul>
+        //     //     : <p>No error</p>
+        // }
     }
 
     const validation = (formData, errors) => {
         const validations = state.validations;
+        const errorMessages = [];
         Object.keys(validations).forEach(fieldName => {
             const fieldValidations = validations[fieldName];
             if (Array.isArray(fieldValidations)) {
                 fieldValidations.forEach(fieldValidation => {
                     if (!fieldValidation.validateMethod(formData, state.mandatoryFieldValidation)) {
-                        errors[fieldName].addError(fieldValidation.getErrMsg(formData));
+                        const errorMsg = fieldValidation.getErrMsg(formData);
+                        if (errors) {
+                            errors[fieldName].addError(errorMsg);
+                        }
+                        errorMessages.push(errorMsg);
                     }
                 })
             } else if (isObject(fieldValidations)) {
@@ -202,11 +297,15 @@ const FormBuilder = (props) => {
                             if (state.formData[fieldName]) {
                                 state.formData[fieldName].forEach((subsection, index) => {
                                     if (!subFieldValidation.validateMethod(subsection, state.mandatoryFieldValidation)) {
-                                        errors[fieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
-                                        errors[fieldName][index].addError(subFieldValidation.getErrMsg(subsection[subFieldName]))
-                                        if (errors[fieldName][index][subFieldName]) {
-                                            errors[fieldName][index][subFieldName].addError(subFieldValidation.getErrMsg(subsection[subFieldName]));
+                                        const errorMsg = subFieldValidation.getErrMsg(subsection[subFieldName]);
+                                        if (errors) {
+                                            errors[fieldName].addError(errorMsg);
+                                            errors[fieldName][index].addError(errorMsg);
+                                            if (errors[fieldName][index][subFieldName]) {
+                                                errors[fieldName][index][subFieldName].addError(errorMsg);
+                                            }
                                         }
+                                        errorMessages.push(errorMsg);
                                     }
                                 })
                             }
@@ -215,7 +314,8 @@ const FormBuilder = (props) => {
                 })
             }
         })
-        return errors;
+
+        return {errors: errors, errorMessages: errorMessages};
     }
 
     const formSchemaPreprocessor = (schema, count = 0) => {
@@ -248,7 +348,6 @@ const FormBuilder = (props) => {
     }
 
     const dataSchemaPreprocessor = (formData, formSchema, count = 0) => {
-        // console.log(formData, formSchema);
         if (!isEmpty(formData)) {
             const {properties: fields, fundingFormGroupFields} = formSchema;
             if (fundingFormGroupFields) {
@@ -273,6 +372,7 @@ const FormBuilder = (props) => {
         }
     }
 
+    // TODO: link string template name with component over here
     const uiSchemaPreprocessor = (uiSchema, formSchema, count = 0, preprocessedSchema) => {
         const {properties: fields, fundingFormGroupFields} = formSchema;
         if (fundingFormGroupFields) {
@@ -307,89 +407,6 @@ const FormBuilder = (props) => {
         })
     }
 
-    const SaveBtnWithOptions = () => {
-        return (
-            <div
-                className={tw` px-5 py-2 rounded inline-flex ${isEmpty(state.formData) ? 'bg-gray-300 text-black' : 'bg-green-500 text-white active:bg-green-600'}`}>
-                <button
-                    className={tw`font-bold text-sm uppercase`}
-                    disabled={isEmpty(state.formData)}
-                    onClick={() => {
-                        setState({
-                            ...state,
-                            submitType: "saveAndClose"
-                        })
-                        if (formRef)
-                            formRef.submit();
-                    }}>
-                    Save
-                </button>
-                <Menu as={"div"} className={tw`${multiplicity === 'multiple' ? 'inline-block' : 'hidden'}`}>
-                    {({open}) => (
-                        <>
-                            <div className={tw`${isEmpty(state.formData) ? 'invisible' : 'flex items-center justify-center'}`}>
-                                <Menu.Button>
-                                    <RiArrowDropDownLine size={"1.5rem"}/>
-                                </Menu.Button>
-                            </div>
-                            <Transition
-                                show={open}
-                            >
-                                <Menu.Items
-                                    static
-                                    className={tw`absolute w-32 mt-0 origin-top-right bg-white border border-gray-200 divide-y divide-gray-200 rounded-md shadow-lg outline-none z-10`}
-                                >
-                                    <div className={tw`px-1 py-1`}>
-                                        <Menu.Item>
-                                            {({active}) => (
-                                                <button
-                                                    className={tw`${
-                                                        active ? "bg-blue-500 text-white" : "text-gray-900"
-                                                    } w-full p-2 text-sm`}
-                                                    onClick={() => {
-                                                        setState({
-                                                            ...state,
-                                                            submitType: "saveAndClose"
-                                                        })
-                                                        if (formRef)
-                                                            formRef.submit();
-                                                    }}
-                                                >
-                                                    Save and Close
-                                                </button>
-                                            )}
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                            {({active}) => (
-                                                <button
-                                                    className={tw`${
-                                                        active ? "bg-yellow-500 text-white" : "text-gray-900"
-                                                    } w-full p-2 text-sm`}
-                                                    onClick={() => {
-                                                        setState({
-                                                            ...state,
-                                                            submitType: "saveAndAddNew"
-                                                        })
-                                                        if (formRef)
-                                                            formRef.submit();
-                                                    }}
-                                                >
-                                                    Save and Add New
-                                                </button>
-                                            )}
-                                        </Menu.Item>
-                                    </div>
-                                </Menu.Items>
-                            </Transition>
-                        </>
-                    )}
-
-                </Menu>
-            </div>
-        )
-
-    }
-
     if (!state.isReady) {
         return (
             <div>Loading...</div>
@@ -399,18 +416,11 @@ const FormBuilder = (props) => {
             <div>Error: {state.loadingError}</div>
         )
     } else {
-        // console.log(state)
-        // const preprocessedSchema = clone(state.formSchema);
-        // formSchemaPreprocessor(preprocessedSchema);
-        // console.log(state.uiSchema, state.formSchema)
-        // const preprocessedData = clone(state.formData);
-
-        // state.uiSchema[ "ui:order"]= ["end_date", "*"]
+        console.log(state)
         return (
             <>
-                {/*<div className={tw`w-1/5`}/>*/}
                 <div
-                    className={tw`bg-white pb-4`}>
+                    className={tw`bg-white pb-20`}>
                     <div className={tw`flex items-center mt-1 mb-5 p-2 px-7 border-b space-x-2`}>
                         <p className={tw`text-2xl font-bold`}>{state.formSchema.form_title}</p>
                         <Tooltip
@@ -452,19 +462,26 @@ const FormBuilder = (props) => {
                         }}
                         widgets={customWidgets}
                         onChange={({formData}) => {
-                            setState({...state, formData: formData})
                             console.log("data changed", formData);
+                            let errorMessages;
+                            if (state.shouldDisplayErrorList) {
+                                errorMessages = validation(formData).errorMessages;
+                            }
+                            setState({...state, formData: formData, formErrorMessages: errorMessages})
                         }}
-                        liveValidate={!isEmpty(state.formErrors) || !state.newForm}
+                        liveValidate={!isEmpty(state.formErrorMessages) || !state.newForm}
                         noHtml5Validate={true}
                         validate={(formData, errors) => {
-                            return validation(formData, errors)
+                            return validation(formData, errors).errors;
                         }}
                         onError={(errors) => {
-
                             let isAllMandatoryError = true;
-                            errors.forEach(error => {
-                                const errorMsg = error.stack;
+                            let rawErrors = errors;
+                            const errorMessages = [];
+
+                            rawErrors.forEach(error => {
+                                const errorMsg = error.stack.split(':')[1].trim();
+                                errorMessages.push(errorMsg);
                                 if (!errorMsg.includes('is required')) {
                                     isAllMandatoryError = false;
                                 }
@@ -472,25 +489,74 @@ const FormBuilder = (props) => {
 
                             setState({
                                 ...state,
-                                formErrors: errors,
+                                formErrorMessages: errorMessages,
+                                shouldDisplayErrorList: true,
                                 shouldSaveWithErrorModalOpen: isAllMandatoryError
                             })
                         }}
                         showErrorList={false}
                         onSubmit={onFormSubmit}
-                        ref={(form) => {
-                            formRef = form
-                        }}
+                        // ref={formRef}
+                        // ref={(form) => {
+                        //     // if (state.formRef === undefined && form){
+                        //     //     console.log("-------")
+                        //     //     setState({
+                        //     //         ...state,
+                        //     //         formRef: form
+                        //     //     })
+                        //     // }
+                        //     formRef = form
+                        //     // console.log(form)
+                        //     // if (!state.formRef){
+                        //     //     setState({
+                        //     //         ...state,
+                        //     //         formRef: form
+                        //     //     })
+                        //     // }
+                        // }}
                     >
                         <div className={'form-action'}>
-
+                            {state.shouldDisplayErrorList && <div className={'form-error-list'}>
+                                {getErrMsg()}
+                            </div>}
                             <div className={'action-btn-container'}>
-                                {state.formErrors && state.formErrors.length > 0 && <div className={'form-error-list'}>
-                                    <ul className={'error-list'}>{getErrMsg()}</ul>
-                                </div>}
-                                <div className={tw`flex justify-between`}>
-                                    <div>
-                                        {SaveBtnWithOptions()}
+                                <div className={tw`flex justify-between mr-10`}>
+                                    <div className={tw`space-x-5`}>
+                                        <ButtonWithDropdown
+                                            dropdownBtnText={""}
+                                            primaryBtn={
+                                                {
+                                                    btnGroupRefs:btnGroupRefs,
+                                                    label: 'Save Changes',
+                                                    handleOnClick: () => {
+                                                        setState({
+                                                            ...state,
+                                                            submitType: "saveAndClose"
+                                                        })
+                                                    },
+                                                    type: "submit"
+                                                }
+                                            }
+                                            dropdownOptions={multiplicity === 'multiple' && [
+                                                {
+                                                    label: "Save and Close", handleOnClick: () => {
+                                                        setState({
+                                                            ...state,
+                                                            submitType: "saveAndClose"
+                                                        })
+                                                    },
+                                                    type: "submit"
+                                                },
+                                                {
+                                                    label: "Save and Add New", handleOnClick: () => {
+                                                        setState({
+                                                            ...state,
+                                                            submitType: "saveAndAddNew"
+                                                        })
+                                                    },
+                                                    type: "submit"
+                                                }
+                                            ]}/>
                                         <button
                                             className={tw`${FormCancelBtnClass}`}
                                             type="button"
@@ -500,11 +566,6 @@ const FormBuilder = (props) => {
                                             Cancel
                                         </button>
                                     </div>
-                                    {/*<button className={tw`${FormSubmitBtnClass}`}*/}
-                                    {/*        onClick={() => {*/}
-                                    {/*            formRef.submit();*/}
-                                    {/*        }}>Save*/}
-                                    {/*</button>*/}
                                     <div className={state.newForm ? tw`invisible` : tw``}>
                                         <button
                                             className={tw`${FormDeleteBtnClass}`}
@@ -516,24 +577,24 @@ const FormBuilder = (props) => {
                                         </button>
                                     </div>
                                 </div>
-
-
+                                {/*<button type={"submit"}*/}
+                                {/*        ref={ref => {*/}
+                                {/*            if (ref)*/}
+                                {/*                formRef = ref*/}
+                                {/*        }}*/}
+                                {/*    //         onClick={() => {*/}
+                                {/*    //     console.log("==", formRef)*/}
+                                {/*    //     // // formRef.submit()*/}
+                                {/*    //     return formRef.current.props.onSubmit();*/}
+                                {/*    //     // formRef && formRef.current.onFormSubmit()*/}
+                                {/*    // }*/}
+                                {/*    //}*/}
+                                {/*>test*/}
+                                {/*</button>*/}
                             </div>
                         </div>
                     </Form>
                 </div>
-                {/*<div className={tw`w-1/5 p-5 mt-1`}>*/}
-                {/*    <input type={"radio"} checked={!state.mandatoryFieldValidation} className={tw``}*/}
-                {/*           onChange={() => {*/}
-                {/*           }}*/}
-                {/*           onClick={() => {*/}
-                {/*               setState({*/}
-                {/*                   ...state,*/}
-                {/*                   mandatoryFieldValidation: !state.mandatoryFieldValidation*/}
-                {/*               })*/}
-                {/*           }}*/}
-                {/*    /> Allow saving without required fields*/}
-                {/*</div>*/}
                 {state.shouldDeleteConfirmModalOpen &&
                 <ModalDeleteConfirm state={state} changeState={handleStateChange}/>}
                 {state.shouldSaveWithErrorModalOpen &&

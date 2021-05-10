@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@headlessui/react": "^0.2.0",
+    "@heroicons/react": "^1.0.1",
     "@rjsf/core": "^2.4.2",
     "@twind/react": "^0.0.4",
     "axios": "^0.21.0",

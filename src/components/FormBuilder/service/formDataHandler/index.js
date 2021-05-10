@@ -1,7 +1,7 @@
 import api, {submitFormData} from "../api";
 
-export const handleFormSubmit = (state, contentType, contentId, viewType, responseHandler) => {
-    const {formData: data, initialFormData: initialData, initialFormSchema: schema, newForm, sectionId, itemId, parentItemId, parentFieldId} = state;
+export const handleFormSubmit = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, responseHandler) => {
+    const {formData: data, initialFormData: initialData, initialFormSchema: schema, newForm} = state;
     const formData = new FormData();
     formData.append('action', newForm ? 'insert' : 'update');
     // remove funding group
@@ -11,8 +11,8 @@ export const handleFormSubmit = (state, contentType, contentId, viewType, respon
     submitFormData(formData, responseHandler);
 }
 
-export const handleFormDelete = (state, contentType, contentId, viewType, responseHandler) => {
-    const {formData: data, initialFormData: initialData, initialFormSchema: schema, sectionId, itemId, parentItemId, parentFieldId,} = state;
+export const handleFormDelete = (state, sectionId, itemId, parentItemId, parentFieldId, contentType, contentId, viewType, responseHandler) => {
+    const {formData: data, initialFormData: initialData, initialFormSchema: schema} = state;
     const formData = new FormData();
     formData.append('action', 'delete');
     // remove funding group

@@ -94,7 +94,6 @@ const fieldConstraintsHandler = (field, fields) => {
                 if (!needCheck) {
                     return true;
                 } else {
-                    console.log(formData, isEmpty(formData))
                     return isEmpty(formData) ? true : !!formData[field.name]
                 }
             },

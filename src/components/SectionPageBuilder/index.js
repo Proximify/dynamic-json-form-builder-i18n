@@ -15,6 +15,11 @@ import {SectionLabel, StyledSectionContainer} from "./twClass";
 import {setup, tw} from "twind";
 import {Reports} from './dummyData/reports.js';
 
+const contentType = process.env.REACT_APP_CONTENT_TYPE ?? 'members';
+const contentId = process.env.REACT_APP_CONTENT_ID ?? '3';
+const viewType = process.env.REACT_APP_VIEW_TYPE ?? 'cv';
+const withFormat = process.env.react_app_with_format ?? 'true';
+
 export function SectionPageBuilder(props) {
     const [state, setState] = useState({
         sections: [],
@@ -30,7 +35,7 @@ export function SectionPageBuilder(props) {
     useEffect(() => {
         if (state.ready)
             return;
-        fetchCVSchema((res, err) => {
+        fetchCVSchema(contentType, contentId, viewType, withFormat, (res, err) => {
             if (res && !err) {
                 const resData = res.data;
                 const cvSections = SchemaParser(resData);
@@ -192,7 +197,7 @@ export function SectionPageBuilder(props) {
                     form: null
                 })
             }
-        } else if(error){
+        } else if (error) {
             console.error(error);
             setState({
                 ...state,
@@ -252,7 +257,8 @@ export function SectionPageBuilder(props) {
                         <p className={tw`ml-1 text-color-action hover:text-color-confirm`}>{section.multiplicity === "multiple" ?
                             <AiOutlineFileAdd size={"1.1rem"}
                                               onClick={() => {
-                                                  handleOnItemClick(section.section_id, "0", parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain, section.multiplicity)
+                                                  //parentSection ? (parentSection.section_data.length > 0 ? parentSection.section_data[0].id : 0) : null
+                                                  handleOnItemClick(section.section_id, "0", parentSection?.section_data[0]?.id ?? "0", parentSection ? getParentFieldID(section, parentSection) : null, structureChain, section.multiplicity)
                                               }}
                                               onDoubleClick={() => {
                                                   console.log('double clicked')
@@ -262,7 +268,7 @@ export function SectionPageBuilder(props) {
                             <FiEdit size={"1.1rem"}
                                     onClick={() => {
                                         // console.log(section, parentSection)
-                                        handleOnItemClick(section.section_id, section.section_data.length > 0 ? section.section_data[0].id : 0, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain,section.multiplicity)
+                                        handleOnItemClick(section.section_id, section.section_data[0]?.id ?? "0", parentSection?.section_data[0]?.id ?? "0", parentSection ? getParentFieldID(section, parentSection) : null, structureChain, section.multiplicity)
                                     }}
                                     onDoubleClick={() => {
                                         console.log('double clicked')
@@ -324,7 +330,7 @@ export function SectionPageBuilder(props) {
                                                                     console.error("unable to get parent section item id")
                                                                     return;
                                                                 }
-                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain,section.multiplicity)
+                                                                handleOnItemClick(section.section_id, section.section_data[itemIndex].id, parentSection ? parentSection.section_data[0].id : null, parentSection ? getParentFieldID(section, parentSection) : null, structureChain, section.multiplicity)
                                                             }}
                                                             onDoubleClick={(e) => {
                                                                 e.preventDefault();
@@ -368,6 +374,9 @@ export function SectionPageBuilder(props) {
                             handleFormSubmitRes={handleFormSubmitRes}
                             handleFormDeleteRes={handleFormDeleteRes}
                             handleFormCancel={handleFormCancel}
+                            contentType={contentType}
+                            contentId={contentId}
+                            viewType={viewType}
                             formContext={{
                                 api: api,
                                 structureChain: state.form.structureChain,

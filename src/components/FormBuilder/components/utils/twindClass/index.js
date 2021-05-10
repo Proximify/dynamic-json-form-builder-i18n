@@ -7,7 +7,7 @@ const baseFieldStyles = css`
 `
 
 const baseTextAreaStyles = css`
-  ${apply('py-2 px-2.5 resize-none leading-2')}
+  ${apply('py-2 px-2.5 resize-none leading-5')}
 `
 
 export const TextAreaInputStyle = css`

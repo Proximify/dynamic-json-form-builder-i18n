@@ -265,29 +265,31 @@ export function ArrayFieldTemplate(props) {
 
                         </div>
                     </div>
-                    <Tooltip
-                        placement="right-start"
-                        trigger="hover"
-                        delayHide={150}
-                        tooltip={
-                            schema.description ? <div className={tw`text-sm`}>
-                                <div dangerouslySetInnerHTML={{__html: schema.description}}/>
-                                <div>{descriptions[schema.field_type]}</div>
-                            </div> : <div className={tw`text-sm`}>{title}</div>
-                        }
-                        hideArrow={true}
-                        modifiers={[
-                            {
-                                name: "offset",
-                                enabled: true,
-                                options: {
-                                    offset: [0, 8]
-                                }
+                    <div>
+                        <Tooltip
+                            placement="right-start"
+                            trigger="hover"
+                            delayHide={150}
+                            tooltip={
+                                schema.description ? <div className={tw`text-sm`}>
+                                    <div dangerouslySetInnerHTML={{__html: schema.description}}/>
+                                    <div>{descriptions[schema.field_type]}</div>
+                                </div> : <div className={tw`text-sm`}>{title}</div>
                             }
-                        ]}
-                    >
-                        <AiOutlineQuestionCircle size={"1.2em"} className={tw`text-gray-300 mx-2 hover:text-gray-400`}/>
-                    </Tooltip>
+                            hideArrow={true}
+                            modifiers={[
+                                {
+                                    name: "offset",
+                                    enabled: true,
+                                    options: {
+                                        offset: [0, 8]
+                                    }
+                                }
+                            ]}
+                        >
+                            <AiOutlineQuestionCircle size={"1.2em"} className={tw`text-gray-300 mx-2 hover:text-gray-400`}/>
+                        </Tooltip>
+                    </div>
                 </div>
                 <div className={tw`${rawErrors ? '' : 'hidden'}`}>
                     {rawErrors ? rawErrors.map((error, index) => {

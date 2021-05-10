@@ -283,7 +283,7 @@ export function MultiLangFieldWidget(props) {
     }
 
     return (
-        <div className={tw`${BilingualContainerStyle} bc`}>
+        <div className={tw`${BilingualContainerStyle}`}>
             <>
                 {state.isRichText ?
                     <div className={tw`${MultiLangRichTextInputStyle}`}>
